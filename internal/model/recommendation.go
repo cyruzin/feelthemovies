@@ -6,7 +6,9 @@ import (
 	"time"
 )
 
-// Recommendation type is a struct for recommendations.
+// TODO: Need to implement keywords and genres sync function.
+
+// Recommendation type is a struct for recommendations table.
 type Recommendation struct {
 	ID        int64     `json:"id"`
 	UserID    int64     `json:"user_id"`
@@ -26,7 +28,7 @@ type Result []*Recommendation
 // GetRecommendations retrieves the latest 20 recommendations.
 func GetRecommendations(db *sql.DB) (*Result, error) {
 
-	stmtOut, err := db.Query(`
+	stmt, err := db.Query(`
 		SELECT 
 		id, user_id, title, type, 
 		body, poster, backdrop, status, 
@@ -40,14 +42,14 @@ func GetRecommendations(db *sql.DB) (*Result, error) {
 		log.Fatal(err)
 	}
 
-	defer stmtOut.Close()
+	defer stmt.Close()
 
 	res := Result{}
 
-	for stmtOut.Next() {
+	for stmt.Next() {
 		rec := Recommendation{}
 
-		err = stmtOut.Scan(
+		err = stmt.Scan(
 			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
 			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
 			&rec.CreatedAt, &rec.UpdatedAt,
@@ -66,7 +68,7 @@ func GetRecommendations(db *sql.DB) (*Result, error) {
 
 // GetRecommendation retrieves a recommendation by a given ID.
 func GetRecommendation(id int64, db *sql.DB) (*Recommendation, error) {
-	stmtOut, err := db.Prepare(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, user_id, title, type, body, poster, 
 		backdrop, status, created_at, updated_at
@@ -78,11 +80,11 @@ func GetRecommendation(id int64, db *sql.DB) (*Recommendation, error) {
 		log.Fatal(err)
 	}
 
-	defer stmtOut.Close()
+	defer stmt.Close()
 
 	rec := Recommendation{}
 
-	err = stmtOut.QueryRow(id).Scan(
+	err = stmt.QueryRow(id).Scan(
 		&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
 		&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
 		&rec.CreatedAt, &rec.UpdatedAt,
@@ -97,7 +99,7 @@ func GetRecommendation(id int64, db *sql.DB) (*Recommendation, error) {
 
 // CreateRecommendation creates a new recommendation.
 func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error) {
-	stmtIns, err := db.Prepare(`
+	stmt, err := db.Prepare(`
 		INSERT INTO recommendations (
 		user_id, title, type, body, 
 		poster, backdrop, status, created_at, 
@@ -110,12 +112,12 @@ func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error
 		log.Fatal(err)
 	}
 
-	defer stmtIns.Close()
+	defer stmt.Close()
 
-	res, err := stmtIns.Exec(
-		r.UserID, r.Title, r.Type, r.Body,
-		r.Backdrop, r.Poster, r.Status, r.CreatedAt,
-		r.UpdatedAt,
+	res, err := stmt.Exec(
+		&r.UserID, &r.Title, &r.Type, &r.Body,
+		&r.Backdrop, &r.Poster, &r.Status, &r.CreatedAt,
+		&r.UpdatedAt,
 	)
 
 	if err != nil {
@@ -129,6 +131,75 @@ func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error
 	}
 
 	data, err := GetRecommendation(id, db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return data, nil
+}
+
+// UpdateRecommendation updates a recommendation by a given ID.
+func UpdateRecommendation(id int64, r *Recommendation, db *sql.DB) (*Recommendation, error) {
+	stmt, err := db.Prepare(`
+		UPDATE recommendations
+		SET title=?, type=?, body=?, poster=?,
+		backdrop=?, status=?, updated_at=?
+		WHERE id=?
+	`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	res, err := stmt.Exec(
+		&r.Title, &r.Type, &r.Body, &r.Poster,
+		&r.Backdrop, &r.Status, &r.UpdatedAt, &id,
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = res.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := GetRecommendation(id, db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return data, nil
+
+}
+
+// DeleteRecommendation deletes a recommendation by a given ID.
+func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
+	stmt, err := db.Prepare(`
+		DELETE 
+		FROM recommendations
+		WHERE id=?
+	`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	res, err := stmt.Exec(id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := res.RowsAffected()
 
 	if err != nil {
 		log.Fatal(err)
