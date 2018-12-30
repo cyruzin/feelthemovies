@@ -22,11 +22,11 @@ type Recommendation struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// Result type is a slice of recommendation.
-type Result []*Recommendation
+// ResultRecommendation type is a slice of recommendations.
+type ResultRecommendation []*Recommendation
 
 // GetRecommendations retrieves the latest 20 recommendations.
-func GetRecommendations(db *sql.DB) (*Result, error) {
+func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 
 	stmt, err := db.Query(`
 		SELECT 
@@ -44,7 +44,7 @@ func GetRecommendations(db *sql.DB) (*Result, error) {
 
 	defer stmt.Close()
 
-	res := Result{}
+	res := ResultRecommendation{}
 
 	for stmt.Next() {
 		rec := Recommendation{}
