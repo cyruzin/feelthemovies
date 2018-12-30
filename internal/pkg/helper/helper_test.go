@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/internal/model"
+	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
 
 func TestToJSON(t *testing.T) {
