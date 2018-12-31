@@ -176,7 +176,6 @@ func UpdateRecommendation(id int64, r *Recommendation, db *sql.DB) (*Recommendat
 	}
 
 	return data, nil
-
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
