@@ -9,7 +9,7 @@ import (
 
 // Attach receives a map of int/[]int and attach
 // the IDs on the given pivot table.
-func Attach(s map[int][]int, pivot string, db *sql.DB) (int64, error) {
+func Attach(s map[int64][]int, pivot string, db *sql.DB) (int64, error) {
 
 	for index, ids := range s {
 		for _, values := range ids {
@@ -38,7 +38,7 @@ func Attach(s map[int][]int, pivot string, db *sql.DB) (int64, error) {
 
 // Detach receives a map of int/[]int and Detach
 // the IDs on the given pivot table.
-func Detach(s map[int][]int, pivot, field string, db *sql.DB) (int64, error) {
+func Detach(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 	for index := range s {
 
 		query := fmt.Sprintf("DELETE FROM %s WHERE %s = ?", pivot, field)
@@ -62,7 +62,7 @@ func Detach(s map[int][]int, pivot, field string, db *sql.DB) (int64, error) {
 
 // Sync receives a map of int/[]int and sync
 // the IDs on the given pivot table.
-func Sync(s map[int][]int, pivot, field string, db *sql.DB) (int64, error) {
+func Sync(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 
 	empty, err := IsEmpty(s)
 
@@ -95,7 +95,7 @@ func Sync(s map[int][]int, pivot, field string, db *sql.DB) (int64, error) {
 }
 
 // IsEmpty checks if a given map of int/[]int is empty.
-func IsEmpty(s map[int][]int) (bool, error) {
+func IsEmpty(s map[int64][]int) (bool, error) {
 	empty := true
 
 	for _, ids := range s {

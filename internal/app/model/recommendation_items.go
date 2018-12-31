@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-// TODO: Implement sources sync.
-
 // RecommendationItem type is a struct for recommendation_items table.
 type RecommendationItem struct {
 	ID               int64     `json:"id"`

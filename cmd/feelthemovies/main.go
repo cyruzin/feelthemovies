@@ -2,10 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -26,18 +24,4 @@ func main() {
 
 	log.Println("Connection OK!")
 
-	m := make(map[int][]int)
-	g := []int{11, 4, 13}
-
-	m[3] = g
-
-	//res, err := helper.Sync(m, "genre_recommendation", "recommendation_id", db)
-	//res, err := helper.Attach(m, "genre_recommendation", db)
-	res, err := helper.Detach(m, "genre_recommendation", "recommendation_id", db)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(res)
 }
