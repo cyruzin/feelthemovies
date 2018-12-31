@@ -35,8 +35,8 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 		created_at, updated_at
 		FROM recommendations
 		ORDER BY id DESC
-		LIMIT 20
-	`)
+		LIMIT ?
+	`, 20)
 
 	if err != nil {
 		log.Fatal(err)
