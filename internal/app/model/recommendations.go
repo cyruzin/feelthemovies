@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-// TODO: Need to implement keywords and genres sync function.
-
 // Recommendation type is a struct for recommendations table.
 type Recommendation struct {
 	ID        int64     `json:"id"`

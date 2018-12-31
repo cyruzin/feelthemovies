@@ -2,10 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -26,18 +24,47 @@ func main() {
 
 	log.Println("Connection OK!")
 
-	m := make(map[int][]int)
-	g := []int{11, 4, 13}
+	// r := model.Recommendation{
+	// 	UserID:    1,
+	// 	Title:     "The Best Soccer Movies of All Time",
+	// 	Type:      0,
+	// 	Body:      "Only the best movies, no bad movies are allowed!",
+	// 	Poster:    "PlQeeRjZkl",
+	// 	Backdrop:  "QrTtMklOpz",
+	// 	Status:    0,
+	// 	CreatedAt: time.Now(),
+	// 	UpdatedAt: time.Now(),
+	// }
 
-	m[3] = g
+	// rec, err := model.CreateRecommendation(&r, db)
 
-	//res, err := helper.Sync(m, "genre_recommendation", "recommendation_id", db)
-	//res, err := helper.Attach(m, "genre_recommendation", db)
-	res, err := helper.Detach(m, "genre_recommendation", "recommendation_id", db)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	// g := make(map[int64][]int)
+	// k := make(map[int64][]int)
 
-	fmt.Println(res)
+	// g[rec.ID] = []int{1, 5, 8}
+	// k[rec.ID] = []int{12, 2, 4}
+
+	// _, err = helper.Attach(g, "genre_recommendation", db)
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// _, err = helper.Attach(k, "keyword_recommendation", db)
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// data, err := helper.ToJSONIndent(rec)
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println(data)
 }
