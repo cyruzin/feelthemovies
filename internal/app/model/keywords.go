@@ -134,7 +134,7 @@ func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&k.Name, &k.UpdatedAt,
+		&k.Name, &k.UpdatedAt, &id,
 	)
 
 	if err != nil {

@@ -134,7 +134,7 @@ func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&s.Name, &s.UpdatedAt,
+		&s.Name, &s.UpdatedAt, &id,
 	)
 
 	if err != nil {

@@ -134,7 +134,7 @@ func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&g.Name, &g.UpdatedAt,
+		&g.Name, &g.UpdatedAt, &id,
 	)
 
 	if err != nil {
