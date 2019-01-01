@@ -7,8 +7,7 @@ import (
 	"log"
 )
 
-// Attach receives a map of int/[]int and attach
-// the IDs on the given pivot table.
+// Attach receives a map of int/[]int and attach the IDs on the given pivot table.
 func Attach(s map[int64][]int, pivot string, db *sql.DB) (int64, error) {
 
 	for index, ids := range s {
@@ -36,8 +35,7 @@ func Attach(s map[int64][]int, pivot string, db *sql.DB) (int64, error) {
 	return 1, nil
 }
 
-// Detach receives a map of int/[]int and Detach
-// the IDs on the given pivot table.
+// Detach receives a map of int/[]int and Detach the IDs on the given pivot table.
 func Detach(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 	for index := range s {
 
@@ -60,8 +58,7 @@ func Detach(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 	return 1, nil
 }
 
-// Sync receives a map of int/[]int and sync
-// the IDs on the given pivot table.
+// Sync receives a map of int/[]int and sync the IDs on the given pivot table.
 func Sync(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 
 	empty, err := IsEmpty(s)
@@ -107,8 +104,7 @@ func IsEmpty(s map[int64][]int) (bool, error) {
 	return empty, nil
 }
 
-// ToJSON receives an interface as argument and
-// returns a JSON string.
+// ToJSON receives an interface as argument and returns a JSON string.
 func ToJSON(j interface{}) (string, error) {
 	data, err := json.Marshal(j)
 
@@ -121,8 +117,7 @@ func ToJSON(j interface{}) (string, error) {
 	return res, nil
 }
 
-// ToJSONIndent receives an interface as argument
-// and returns a JSON string indented.
+// ToJSONIndent receives an interface as argument and returns a JSON string indented.
 func ToJSONIndent(j interface{}) (string, error) {
 	data, err := json.MarshalIndent(j, "", "\t")
 
