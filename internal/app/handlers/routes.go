@@ -22,6 +22,7 @@ func NewRouter() (*mux.Router, error) {
 	r := mux.NewRouter()
 
 	r.Use(loggingMiddleware)
+	r.Use(authMiddleware)
 
 	publicRoutes(r)
 	authRoutes(r)
@@ -36,13 +37,8 @@ func NewRouter() (*mux.Router, error) {
 
 }
 
-func getRoot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Welcome to Feel the Movies API v1."))
-}
-
 func publicRoutes(r *mux.Router) {
-	r.HandleFunc("/v1/", getRoot).Methods("GET")
-	// r.HandleFunc("/v1/auth", getAuth).Methods("GET")
+	r.HandleFunc("/v1/auth", authUser).Methods("POST")
 }
 
 func authRoutes(r *mux.Router) {
