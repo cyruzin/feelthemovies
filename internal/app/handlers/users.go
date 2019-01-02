@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -10,8 +11,6 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/gorilla/mux"
 )
-
-// TODO: Hash Password
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
@@ -53,16 +52,28 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqU)
 
+	hashPass, err := helper.HashPassword(reqU.Password, 10)
+
+	hashAPI := helper.UUIDGenerator()
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	newU := model.User{
 		Name:      reqU.Name,
 		Email:     reqU.Email,
-		Password:  reqU.Password,
-		APIToken:  helper.RandStringRunes(32),
+		Password:  hashPass,
+		APIToken:  hashAPI,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
 	u, err := model.CreateUser(&newU, db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -80,11 +91,20 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqU)
 
+	hashPass, err := helper.HashPassword(reqU.Password, 10)
+
+	// TODO: Accept Api Token only if its length has 32 characters.
+	hashAPI := helper.UUIDGenerator()
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	upU := model.User{
 		Name:      reqU.Name,
 		Email:     reqU.Email,
-		Password:  reqU.Password,
-		APIToken:  reqU.APIToken,
+		Password:  hashPass,
+		APIToken:  hashAPI,
 		UpdatedAt: time.Now(),
 	}
 
