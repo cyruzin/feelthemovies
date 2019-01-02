@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,49 +12,43 @@ import (
 
 func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	w.WriteHeader(200)
 
 	rec, err := model.GetRecommendations(db)
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(rec)
 	}
-
-	json.NewEncoder(w).Encode(rec)
 }
 
 func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	w.WriteHeader(200)
 
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	rec, err := model.GetRecommendation(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(rec)
 	}
 
-	json.NewEncoder(w).Encode(rec)
 }
 
 func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	w.WriteHeader(201)
 
 	var reqRec model.Recommendation
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	newRec := model.Recommendation{
 		UserID:    reqRec.ID,
@@ -72,23 +65,20 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	rec, err := model.CreateRecommendation(&newRec, db)
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else {
+		w.WriteHeader(201)
+		json.NewEncoder(w).Encode(rec)
 	}
-
-	json.NewEncoder(w).Encode(rec)
 }
 
 func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	w.WriteHeader(200)
 
 	var reqRec model.Recommendation
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	upRec := model.Recommendation{
 		Title:     reqRec.Title,
@@ -100,34 +90,40 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	rec, err := model.UpdateRecommendation(reqRec.ID, &upRec, db)
+	params := mux.Vars(r)
+
+	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	rec, err := model.UpdateRecommendation(id, &upRec, db)
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(rec)
 	}
-
-	json.NewEncoder(w).Encode(rec)
 }
 
 func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	w.WriteHeader(200)
 
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
-	if err != nil {
-		log.Fatal(err)
+	d, err := model.DeleteRecommendation(id, db)
+
+	if d == 0 {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode("Something went wrong!")
 	}
 
-	_, err = model.DeleteRecommendation(id, db)
-
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode("Deleted Successfully!")
 	}
-
-	msg, _ := json.Marshal("Deleted Successfully!")
-
-	w.Write(msg)
 }
