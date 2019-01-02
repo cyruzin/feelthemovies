@@ -45,6 +45,9 @@ func Attach(s map[int64][]int, pivot string, db *sql.DB) (int64, error) {
 
 // Detach receives a map of int/[]int and Detach the IDs on the given pivot table.
 func Detach(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
+
+	var err error
+
 	for index := range s {
 
 		query := fmt.Sprintf("DELETE FROM %s WHERE %s = ?", pivot, field)
@@ -109,7 +112,7 @@ func IsEmpty(s map[int64][]int) (bool, error) {
 		}
 	}
 
-	return empty, err
+	return empty, nil
 }
 
 // ToJSON receives an interface as argument and returns a JSON string.
