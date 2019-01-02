@@ -1,13 +1,14 @@
 package helper
 
 import (
+	"crypto/rand"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
 
 	"github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Attach receives a map of int/[]int and attach the IDs on the given pivot table.
@@ -141,12 +142,28 @@ func ToJSONIndent(j interface{}) (string, error) {
 	return res, err
 }
 
-// RandStringRunes generates a random string.
-func RandStringRunes(n int) string {
-	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+// HashPassword encrypts a given password using bcrypt algorithm.
+func HashPassword(password string, cost int) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	return string(bytes), err
+}
+
+// CheckPasswordHash checks if the given passwords matches.
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+
+// UUIDGenerator generates a unique ID.
+func UUIDGenerator() (uuid string) {
+	b := make([]byte, 16)
+	_, err := rand.Read(b)
+
+	if err != nil {
+		log.Println(err)
 	}
-	return string(b)
+
+	uuid = fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+
+	return uuid
 }

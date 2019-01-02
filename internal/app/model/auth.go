@@ -34,8 +34,29 @@ func CheckAPIToken(token string, db *sql.DB) (bool, error) {
 	return false, err
 }
 
-// Authenticate the current user and returns it's info.
-// TODO: Implement! Use User struct.
-func Authenticate() bool {
-	return true
+// Authenticate authenticates the current user and returns it's info.
+func Authenticate(email string, db *sql.DB) (*User, error) {
+	stmt, err := db.Prepare(`
+		SELECT 
+		id, name, email, password, api_token
+		FROM users
+		WHERE email = ?
+`)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	var u User
+
+	err = stmt.QueryRow(email).Scan(
+		&u.ID, &u.Name, &u.Email, &u.Password, &u.APIToken,
+	)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return &u, err
 }
