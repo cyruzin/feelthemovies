@@ -125,7 +125,3 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Deleted Successfully!")
 	}
 }
-
-func authUser(w http.ResponseWriter, r *http.Request) {
-
-}
