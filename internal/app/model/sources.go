@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 // Source type is a struct for sources table.
@@ -28,7 +30,7 @@ func GetSources(db *sql.DB) (*ResultSource, error) {
 	`, 20)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -43,14 +45,14 @@ func GetSources(db *sql.DB) (*ResultSource, error) {
 		)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		res = append(res, &s)
 
 	}
 
-	return &res, nil
+	return &res, err
 }
 
 // GetSource retrieves a source by a given ID.
@@ -63,7 +65,7 @@ func GetSource(id int64, db *sql.DB) (*Source, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -75,10 +77,10 @@ func GetSource(id int64, db *sql.DB) (*Source, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return &s, nil
+	return &s, err
 }
 
 // CreateSource creates a new source.
@@ -91,7 +93,7 @@ func CreateSource(s *Source, db *sql.DB) (*Source, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -100,23 +102,26 @@ func CreateSource(s *Source, db *sql.DB) (*Source, error) {
 		&s.Name, &s.CreatedAt, &s.UpdatedAt,
 	)
 
-	if err != nil {
-		log.Fatal(err)
+	// Error handler for duplicate entries
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return nil, err
+		}
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetSource(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // UpdateSource updates a source by a given ID.
@@ -128,7 +133,7 @@ func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -138,22 +143,22 @@ func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, err = res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetSource(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // DeleteSource deletes a source by a given ID.
@@ -165,7 +170,7 @@ func DeleteSource(id int64, db *sql.DB) (int64, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -173,14 +178,14 @@ func DeleteSource(id int64, db *sql.DB) (int64, error) {
 	res, err := stmt.Exec(id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }

@@ -40,7 +40,7 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 	`, id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -58,14 +58,14 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 		)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		res = append(res, &rec)
 
 	}
 
-	return &res, nil
+	return &res, err
 }
 
 // GetRecommendationItem retrieves a recommendation items by a given ID.
@@ -81,7 +81,7 @@ func GetRecommendationItem(id int64, db *sql.DB) (*RecommendationItem, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -96,10 +96,10 @@ func GetRecommendationItem(id int64, db *sql.DB) (*RecommendationItem, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return &rec, nil
+	return &rec, err
 }
 
 // CreateRecommendationItem creates a new recommendation item.
@@ -114,7 +114,7 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -126,22 +126,22 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetRecommendationItem(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // UpdateRecommendationItem updates a recommendation item by a given ID.
@@ -155,7 +155,7 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -167,22 +167,22 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, err = res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetRecommendationItem(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 
 }
 
@@ -195,7 +195,7 @@ func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -203,14 +203,14 @@ func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
 	res, err := stmt.Exec(id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }

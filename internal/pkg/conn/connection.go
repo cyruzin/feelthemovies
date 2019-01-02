@@ -32,5 +32,7 @@ func Connect() (*sql.DB, error) {
 		log.Fatal("Could not connect to MySQL: ", err)
 	}
 
-	return db, nil
+	log.Println("MySQL: Connection OK.")
+
+	return db, err
 }

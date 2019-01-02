@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 // Keyword type is a struct for keywords table.
@@ -28,7 +30,7 @@ func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
 	`, 20)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -43,14 +45,14 @@ func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
 		)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		res = append(res, &k)
 
 	}
 
-	return &res, nil
+	return &res, err
 }
 
 // GetKeyword retrieves a keyword by a given ID.
@@ -63,7 +65,7 @@ func GetKeyword(id int64, db *sql.DB) (*Keyword, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -75,10 +77,10 @@ func GetKeyword(id int64, db *sql.DB) (*Keyword, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return &k, nil
+	return &k, err
 }
 
 // CreateKeyword creates a new keyword.
@@ -91,7 +93,7 @@ func CreateKeyword(k *Keyword, db *sql.DB) (*Keyword, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -100,23 +102,26 @@ func CreateKeyword(k *Keyword, db *sql.DB) (*Keyword, error) {
 		&k.Name, &k.CreatedAt, &k.UpdatedAt,
 	)
 
-	if err != nil {
-		log.Fatal(err)
+	// Error handler for duplicate entries
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return nil, err
+		}
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetKeyword(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // UpdateKeyword updates a keyword by a given ID.
@@ -128,7 +133,7 @@ func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -138,22 +143,22 @@ func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, err = res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetKeyword(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // DeleteKeyword deletes a keyword by a given ID.
@@ -165,7 +170,7 @@ func DeleteKeyword(id int64, db *sql.DB) (int64, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -173,14 +178,14 @@ func DeleteKeyword(id int64, db *sql.DB) (int64, error) {
 	res, err := stmt.Exec(id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }

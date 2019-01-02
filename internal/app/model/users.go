@@ -4,9 +4,12 @@ import (
 	"database/sql"
 	"log"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
-//TODO: Pagination
+// TODO: Pagination
+// TODO: BCrypt password
 
 // User type is a struct for users table.
 type User struct {
@@ -34,7 +37,7 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -50,14 +53,14 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 		)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		res = append(res, &user)
 
 	}
 
-	return &res, nil
+	return &res, err
 }
 
 // GetUser retrieves a user by a given ID.
@@ -71,7 +74,7 @@ func GetUser(id int64, db *sql.DB) (*User, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -84,10 +87,10 @@ func GetUser(id int64, db *sql.DB) (*User, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return &user, nil
+	return &user, err
 }
 
 // CreateUser creates a new user.
@@ -101,7 +104,7 @@ func CreateUser(u *User, db *sql.DB) (*User, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -111,23 +114,26 @@ func CreateUser(u *User, db *sql.DB) (*User, error) {
 		&u.CreatedAt, &u.UpdatedAt,
 	)
 
-	if err != nil {
-		log.Fatal(err)
+	// Error handler for duplicate entries
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return nil, err
+		}
 	}
 
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetUser(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // UpdateUser updates a user by a given ID.
@@ -140,7 +146,7 @@ func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -151,22 +157,22 @@ func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, err = res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetUser(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 
 }
 
@@ -179,7 +185,7 @@ func DeleteUser(id int64, db *sql.DB) (int64, error) {
 	`)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -187,14 +193,16 @@ func DeleteUser(id int64, db *sql.DB) (int64, error) {
 	res, err := stmt.Exec(id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := res.RowsAffected()
 
+	log.Println(data)
+
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }

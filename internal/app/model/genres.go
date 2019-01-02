@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 // Genre type is a struct for genres table.
@@ -28,7 +30,7 @@ func GetGenres(db *sql.DB) (*ResultGenre, error) {
 	`, 20)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -43,14 +45,14 @@ func GetGenres(db *sql.DB) (*ResultGenre, error) {
 		)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		res = append(res, &genre)
 
 	}
 
-	return &res, nil
+	return &res, err
 }
 
 // GetGenre retrieves a genre by a given ID.
@@ -63,7 +65,7 @@ func GetGenre(id int64, db *sql.DB) (*Genre, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -75,10 +77,10 @@ func GetGenre(id int64, db *sql.DB) (*Genre, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return &genre, nil
+	return &genre, err
 }
 
 // CreateGenre creates a new genre.
@@ -91,7 +93,7 @@ func CreateGenre(g *Genre, db *sql.DB) (*Genre, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -100,23 +102,25 @@ func CreateGenre(g *Genre, db *sql.DB) (*Genre, error) {
 		&g.Name, &g.CreatedAt, &g.UpdatedAt,
 	)
 
-	if err != nil {
-		log.Fatal(err)
+	// Error handler for duplicate entries
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return nil, err
+		}
 	}
-
 	id, err := res.LastInsertId()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetGenre(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // UpdateGenre updates a genre by a given ID.
@@ -128,7 +132,7 @@ func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -138,22 +142,22 @@ func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	_, err = res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := GetGenre(id, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
 
 // DeleteGenre deletes a genre by a given ID.
@@ -165,7 +169,7 @@ func DeleteGenre(id int64, db *sql.DB) (int64, error) {
 `)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	defer stmt.Close()
@@ -173,14 +177,14 @@ func DeleteGenre(id int64, db *sql.DB) (int64, error) {
 	res, err := stmt.Exec(id)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	data, err := res.RowsAffected()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	return data, nil
+	return data, err
 }
