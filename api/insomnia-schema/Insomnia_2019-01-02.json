@@ -1,0 +1,1127 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2019-01-03T01:33:28.013Z",
+	"__export_source": "insomnia.desktop.app:v6.3.2",
+	"resources": [
+		{
+			"_id": "wrk_510f549825d244c5926a538b0f855c53",
+			"created": 1543673158231,
+			"description": "",
+			"modified": 1543673158231,
+			"name": "Insomnia",
+			"parentId": null,
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_7ce4b342efbc4b26a1620ba53c1861ad",
+			"color": null,
+			"created": 1543673158265,
+			"data": {},
+			"isPrivate": false,
+			"metaSortKey": 1543673158266,
+			"modified": 1543673158265,
+			"name": "New Environment",
+			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_e77be4907439404fa559bcce932f055a",
+			"cookies": [],
+			"created": 1543673158267,
+			"modified": 1543673158267,
+			"name": "Default Jar",
+			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"created": 1546359816290,
+			"description": "",
+			"environment": {
+				"api_token": "54B19FD4-EB1B-76BE-7D21-B8F5F4F3A521",
+				"base_url": "http://localhost:8000/v1"
+			},
+			"metaSortKey": -1546359816290,
+			"modified": 1546474986350,
+			"name": "Feel the Movies",
+			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"created": 1546359823111,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823111,
+			"modified": 1546359823111,
+			"name": "Recommendations",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"created": 1546386620666,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546386620666,
+			"modified": 1546386620666,
+			"name": "Users",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_051a3ba4c3444d82a85623431650fc45",
+			"created": 1546391823802,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823061,
+			"modified": 1546391826097,
+			"name": "Sources",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_6e2a0754bf7d4f48a3f66c3fb8d674b7",
+			"created": 1546448422746,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546386620716,
+			"modified": 1546448429914,
+			"name": "Auth",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_36c1e7a279354c4685304e6b652b2295",
+			"created": 1546473700920,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823086,
+			"modified": 1546473703634,
+			"name": "Keywords",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"created": 1546474113696,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823098.5,
+			"modified": 1546474117797,
+			"name": "Genres",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"created": 1546474937047,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823104.75,
+			"modified": 1546474940310,
+			"name": "Recommendation Items",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_fb959f6cfe204aa5ae8a758488a2c4ed",
+			"authentication": {},
+			"body": {},
+			"created": 1546359832095,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_752d0d9f51db47828589439d2dfed667",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359832096,
+			"method": "GET",
+			"modified": 1546468340410,
+			"name": "/recommendations",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendations",
+			"_type": "request"
+		},
+		{
+			"_id": "req_2122d7d7717f490eaf0cceb9402fe7ea",
+			"authentication": {},
+			"body": {},
+			"created": 1546360257370,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_dfebee5d5221404ab68cc988deeae464",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359832046,
+			"method": "GET",
+			"modified": 1546473072217,
+			"name": "/recommendation/{id}",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_3e2412467a7847b6a3e4abc1084c8f39",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Java is another beast!\",\n\t\"type\": 0,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 0\n}"
+			},
+			"created": 1546362293924,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_37ca6da9f5584419b9905df49e67fab4",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_a610a2a5dc9441c986afa80ad6fbe65f",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359831996,
+			"method": "POST",
+			"modified": 1546472785825,
+			"name": "/recommendation",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation",
+			"_type": "request"
+		},
+		{
+			"_id": "req_ebb5ef772cd1421aa67bdbef410698b1",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Go is a beast!\",\n\t\"type\": 0,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznqaa\",\n\t\"backdrop\": \"IjqIzzMninQmokaaa\",\n\t\"status\": 0\n}"
+			},
+			"created": 1546363702513,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_5a068342b517428987c900e7dc0b0e4c",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_f084f777742b4f069ba60956deefc5f4",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359831946,
+			"method": "PUT",
+			"modified": 1546473065432,
+			"name": "/recommendation/{id}",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_541407beb3274d6286a0ae9199695be7",
+			"authentication": {},
+			"body": {},
+			"created": 1546368315284,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_a8dc1278ead34844a108f3b34cd9d189",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359831896,
+			"method": "DELETE",
+			"modified": 1546473041467,
+			"name": "/recommendation",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation/3",
+			"_type": "request"
+		},
+		{
+			"_id": "req_8acee4f2232e47bf83bde7b724847dd1",
+			"authentication": {},
+			"body": {},
+			"created": 1546386626746,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_21edd37642484b8dadb8e2898d858f5e",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546386626746,
+			"method": "GET",
+			"modified": 1546468302522,
+			"name": "/users",
+			"parameters": [],
+			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/users",
+			"_type": "request"
+		},
+		{
+			"_id": "req_61f2649908d343c18f78803f7843de33",
+			"authentication": {},
+			"body": {},
+			"created": 1546386659673,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_370fa5ab0b4e4c5c8b8478d7f6cae449",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546386626696,
+			"method": "GET",
+			"modified": 1546473315623,
+			"name": "/user/{id}",
+			"parameters": [],
+			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/user/4",
+			"_type": "request"
+		},
+		{
+			"_id": "req_596f6e8a5f5749bd96a5809492e44a0d",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"James Rodriguez\",\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQ\"\n}"
+			},
+			"created": 1546386681568,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_715a1309f22d42899cbc6afd28550c0c",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_73b0692634354facbb33467cc83f13af",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546386626646,
+			"method": "POST",
+			"modified": 1546479088976,
+			"name": "/user",
+			"parameters": [],
+			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/user",
+			"_type": "request"
+		},
+		{
+			"_id": "req_c5bdea91ee9343439114030b3c1392ec",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"James Rodriguez\",\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQazl\",\n\t\"api_token\": \"mAnknkQnjqnqjn\"\n}"
+			},
+			"created": 1546386851209,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_00f549b6c0de46cbb9fda4e46786a321",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_fc0fdb77aec34ea3b641398ad5bb0c31",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546386626596,
+			"method": "PUT",
+			"modified": 1546479123413,
+			"name": "/user/{id}",
+			"parameters": [],
+			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/user/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_6ec473c578a646cc848ead80570ef835",
+			"authentication": {},
+			"body": {},
+			"created": 1546387377640,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_8a688fd155bd448b9486411bfad952bb",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546386626546,
+			"method": "DELETE",
+			"modified": 1546473303913,
+			"name": "/user/{id}",
+			"parameters": [],
+			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/user/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_5c23cfbf9ef54ac59d61cbdb9786ad93",
+			"authentication": {},
+			"body": {},
+			"created": 1546391830958,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_3718e2218c004fa79c9eaaf1d7a32b26",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546391830958,
+			"method": "GET",
+			"modified": 1546468377142,
+			"name": "/sources",
+			"parameters": [],
+			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/sources",
+			"_type": "request"
+		},
+		{
+			"_id": "req_92e978c3dda94d4f8f3f6d04c6520c32",
+			"authentication": {},
+			"body": {},
+			"created": 1546391852667,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_fbf6754e132d423aac0a2810506a279b",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546391830908,
+			"method": "GET",
+			"modified": 1546473555494,
+			"name": "/source/{id}",
+			"parameters": [],
+			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/source/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_5d24001a489441c08d70d8b163548952",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Prime Video\"\n}"
+			},
+			"created": 1546391891715,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_20d4deab12f6457aa5b0ea72621a09ca",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_502a1896adc745d08a7bcf5735eaaa65",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546391830858,
+			"method": "POST",
+			"modified": 1546473360265,
+			"name": "/source",
+			"parameters": [],
+			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/source",
+			"_type": "request"
+		},
+		{
+			"_id": "req_b93e4f1163f3439cbb30027d880a6a5a",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Net NOW\"\n}"
+			},
+			"created": 1546473518399,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_2e2167ad6f2d4b3cb4450ea8be20baac",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_1cea3fdcda1d457999c23686a74d2d0e",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546391830808,
+			"method": "PUT",
+			"modified": 1546473605593,
+			"name": "/source/{id}",
+			"parameters": [],
+			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/source/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_cf8ed60366fa480b9199b8ea19e26399",
+			"authentication": {},
+			"body": {},
+			"created": 1546473659659,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_8f3ff9d5bd70447f9c9b332528dbda09",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546391830758,
+			"method": "DELETE",
+			"modified": 1546473685810,
+			"name": "/source/{id}",
+			"parameters": [],
+			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/source/3",
+			"_type": "request"
+		},
+		{
+			"_id": "req_a5b167edd1f24f6184baf4cdd44c6990",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQ\"\n}"
+			},
+			"created": 1546448441083,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_c03595e774654d07bd738b713209923d",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546448441083,
+			"method": "POST",
+			"modified": 1546479160757,
+			"name": "/auth",
+			"parameters": [],
+			"parentId": "fld_6e2a0754bf7d4f48a3f66c3fb8d674b7",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/auth",
+			"_type": "request"
+		},
+		{
+			"_id": "req_600c41c9cffc40e88803a2e47df91c93",
+			"authentication": {},
+			"body": {},
+			"created": 1546473712600,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_f98d2eaeaeca4126a5d18c8422eda360",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546473712600,
+			"method": "GET",
+			"modified": 1546473794471,
+			"name": "/keywords",
+			"parameters": [],
+			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/keywords",
+			"_type": "request"
+		},
+		{
+			"_id": "req_788e34da29954e4aa92d5e9ae6f73adc",
+			"authentication": {},
+			"body": {},
+			"created": 1546473719145,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_d16fde5189994c278e6f836af7d9d2e6",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546473712550,
+			"method": "GET",
+			"modified": 1546474011172,
+			"name": "/keyword/{id}",
+			"parameters": [],
+			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/keyword/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_025dc655ba564afcbbb5ea82cf783a44",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Ocean\"\n}"
+			},
+			"created": 1546473740310,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_1dfb1e178d2d429a94fdb0415ae5c617",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_7245aa4da1a249359b306f57e94a5f64",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546473712450,
+			"method": "PUT",
+			"modified": 1546474000477,
+			"name": "/keyword/{id}",
+			"parameters": [],
+			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/keyword/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_044e2d94b03e4b0c80b0246694697fa1",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Sea\"\n}"
+			},
+			"created": 1546473751093,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_63b067776e834dceb61bdd0ac96292a6",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_8b76d29430e64a288c3ccec4461fdfec",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546473712500,
+			"method": "POST",
+			"modified": 1546474019460,
+			"name": "/keyword",
+			"parameters": [],
+			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/keyword",
+			"_type": "request"
+		},
+		{
+			"_id": "req_769bac50909140199107650103474973",
+			"authentication": {},
+			"body": {},
+			"created": 1546473765612,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_5211cc41bfe74adea1e78daee9b5349c",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546473712400,
+			"method": "DELETE",
+			"modified": 1546474691802,
+			"name": "/keyword/{id}",
+			"parameters": [],
+			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/keyword/3",
+			"_type": "request"
+		},
+		{
+			"_id": "req_ebb886d712bc4745bce4d4eb3e16486d",
+			"authentication": {},
+			"body": {},
+			"created": 1546474714675,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_a9c37a4daf524f449fca7a65be768653",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474714675,
+			"method": "GET",
+			"modified": 1546474725148,
+			"name": "/genres",
+			"parameters": [],
+			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/genres",
+			"_type": "request"
+		},
+		{
+			"_id": "req_598c40ae0515492185fdd81d5a632c60",
+			"authentication": {},
+			"body": {},
+			"created": 1546474738186,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_4759a23554a34123b7821ca550eb03b0",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474714625,
+			"method": "GET",
+			"modified": 1546474830496,
+			"name": "/genre/{id}",
+			"parameters": [],
+			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/genre/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_cf0702c915b144f9a5421ecdf2fdf558",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"name\": \"Comedy\"\t\n}"
+			},
+			"created": 1546474786105,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_38d0258e996247338e859d1801cde2e9",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_2726ffee8bc54bd8b239204c31327cdd",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474714575,
+			"method": "POST",
+			"modified": 1546474820015,
+			"name": "/genre",
+			"parameters": [],
+			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/genre",
+			"_type": "request"
+		},
+		{
+			"_id": "req_218ea0222805464892e5102c365a7552",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\"name\": \"Drama\"\t\n}"
+			},
+			"created": 1546474845087,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_cf149abb63ed405297693c77c0f99ba8",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_c2e8e4714c2b4f4090cabd852e7f7152",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474714525,
+			"method": "PUT",
+			"modified": 1546474870542,
+			"name": "/genre/{id}",
+			"parameters": [],
+			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/genre/3",
+			"_type": "request"
+		},
+		{
+			"_id": "req_5e3eea34b129452fb18ec664a5fe9703",
+			"authentication": {},
+			"body": {},
+			"created": 1546474888731,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_9e9365cbb8df4f48b8ee3e14e254a71e",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474714475,
+			"method": "DELETE",
+			"modified": 1546474908043,
+			"name": "/genre/{id}",
+			"parameters": [],
+			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/genre/3",
+			"_type": "request"
+		},
+		{
+			"_id": "req_7513a3470c644122abc5981a2944d7ba",
+			"authentication": {},
+			"body": {},
+			"created": 1546474951648,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_f66e23ad18bc423abac6ef66abebb721",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474951648,
+			"method": "GET",
+			"modified": 1546475018987,
+			"name": "/recomendation_items/{id}",
+			"parameters": [],
+			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation_items/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_116fb0eb152b472b96803371cdc685b9",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"recommendation_id\": 1,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\"\n}"
+			},
+			"created": 1546475043713,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_2875c82c63b143ac90cab5332dcaa37c",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_284f0290350740b79a3b95d23619ff8a",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474951598,
+			"method": "POST",
+			"modified": 1546478163303,
+			"name": "/recommendation_item",
+			"parameters": [],
+			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation_item",
+			"_type": "request"
+		},
+		{
+			"_id": "req_51080a6e57b74869badde992b08f1aed",
+			"authentication": {},
+			"body": {},
+			"created": 1546478477357,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_aa496a278a3e45c58feebdfdb11c2550",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474951623,
+			"method": "GET",
+			"modified": 1546478725741,
+			"name": "/recommendation_item/{id}",
+			"parameters": [],
+			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation_item/1",
+			"_type": "request"
+		},
+		{
+			"_id": "req_7f1f6b0d518a4e65a825c0be4f32ff01",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 2000,\n\t\"year\": \"2017-02-11\",\n\t\"overview\": \"Kill!\",\n\t\"poster\": \"OqAmzALlnkasQmlp\",\n\t\"backdrop\": \"pKqnkmAqmlasasp\",\n\t\"trailer\": \"/iqnonAsnkasp\",\n\t\"commentary\": \"Really great movie!!!!\",\n\t\"media_type\": \"movie\"\n}"
+			},
+			"created": 1546478525137,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_d2624c2cc6374f62bf2b0b3b6ea351a9",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_c8f0ec14da024b1f929764c98210fd7b",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474951548,
+			"method": "PUT",
+			"modified": 1546478658821,
+			"name": "/recommendation_item/{id}",
+			"parameters": [],
+			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation_item/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_a429ef280c0f46bd91b00fb6866b1706",
+			"authentication": {},
+			"body": {},
+			"created": 1546478693764,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_17c142c8642e4a4eac29bf3981e0f443",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546474951498,
+			"method": "DELETE",
+			"modified": 1546478714304,
+			"name": "/recommendation_item/{id}",
+			"parameters": [],
+			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation_item/2",
+			"_type": "request"
+		}
+	]
+}
