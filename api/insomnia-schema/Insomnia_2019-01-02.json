@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2019-01-03T21:00:34.029Z",
+	"__export_date": "2019-01-03T01:33:28.013Z",
 	"__export_source": "insomnia.desktop.app:v6.3.2",
 	"resources": [
 		{
@@ -188,7 +188,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"PHP is another beast!\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [1],\n\t\"keywords\": [1]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Java is another beast!\",\n\t\"type\": 0,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 0\n}"
 			},
 			"created": 1546362293924,
 			"description": "",
@@ -207,7 +207,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831996,
 			"method": "POST",
-			"modified": 1546548395491,
+			"modified": 1546472785825,
 			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -225,7 +225,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"JavaScript is another beast!\",\n\t\"type\": 1,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1,5],\n\t\"keywords\": [1,4]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Go is a beast!\",\n\t\"type\": 0,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznqaa\",\n\t\"backdrop\": \"IjqIzzMninQmokaaa\",\n\t\"status\": 0\n}"
 			},
 			"created": 1546363702513,
 			"description": "",
@@ -244,7 +244,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831946,
 			"method": "PUT",
-			"modified": 1546548624783,
+			"modified": 1546473065432,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -254,7 +254,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/38",
+			"url": "{{ base_url  }}/recommendation/1",
 			"_type": "request"
 		},
 		{
@@ -349,7 +349,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Cristiano Ronaldo\",\n\t\"email\": \"cristiano.ronaldo@gmail.com\",\n\t\"password\": \"12345678\"\n}"
+				"text": "{\n\t\"name\": \"James Rodriguez\",\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQ\"\n}"
 			},
 			"created": 1546386681568,
 			"description": "",
@@ -368,7 +368,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626646,
 			"method": "POST",
-			"modified": 1546532298836,
+			"modified": 1546479088976,
 			"name": "/user",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -386,7 +386,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Cristiano Ronaldo\",\n\t\"email\": \"cristiano.ronaldo@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"James Rodriguez\",\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQazl\",\n\t\"api_token\": \"mAnknkQnjqnqjn\"\n}"
 			},
 			"created": 1546386851209,
 			"description": "",
@@ -405,7 +405,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626596,
 			"method": "PUT",
-			"modified": 1546532358148,
+			"modified": 1546479123413,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -415,7 +415,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/16",
+			"url": "{{ base_url  }}/user/2",
 			"_type": "request"
 		},
 		{
@@ -510,7 +510,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"NET NOW\"\n}"
+				"text": "{\n\t\"name\": \"Prime Video\"\n}"
 			},
 			"created": 1546391891715,
 			"description": "",
@@ -529,7 +529,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546391830858,
 			"method": "POST",
-			"modified": 1546537154528,
+			"modified": 1546473360265,
 			"name": "/source",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -547,7 +547,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"YouTube\"\n}"
+				"text": "{\n\t\"name\": \"Net NOW\"\n}"
 			},
 			"created": 1546473518399,
 			"description": "",
@@ -566,7 +566,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546391830808,
 			"method": "PUT",
-			"modified": 1546537174892,
+			"modified": 1546473605593,
 			"name": "/source/{id}",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -576,7 +576,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/source/6",
+			"url": "{{ base_url  }}/source/2",
 			"_type": "request"
 		},
 		{
@@ -627,7 +627,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546448441083,
 			"method": "POST",
-			"modified": 1546537742068,
+			"modified": 1546479160757,
 			"name": "/auth",
 			"parameters": [],
 			"parentId": "fld_6e2a0754bf7d4f48a3f66c3fb8d674b7",
@@ -703,7 +703,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Oceanborn\"\n}"
+				"text": "{\n\t\"name\": \"Ocean\"\n}"
 			},
 			"created": 1546473740310,
 			"description": "",
@@ -722,7 +722,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546473712450,
 			"method": "PUT",
-			"modified": 1546537038773,
+			"modified": 1546474000477,
 			"name": "/keyword/{id}",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -740,7 +740,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Bloodbath\"\n}"
+				"text": "{\n\t\"name\": \"Sea\"\n}"
 			},
 			"created": 1546473751093,
 			"description": "",
@@ -759,7 +759,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546473712500,
 			"method": "POST",
-			"modified": 1546537029226,
+			"modified": 1546474019460,
 			"name": "/keyword",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -864,7 +864,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"Ocean\"\t\n}"
+				"text": "{\n\"name\": \"Comedy\"\t\n}"
 			},
 			"created": 1546474786105,
 			"description": "",
@@ -883,7 +883,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714575,
 			"method": "POST",
-			"modified": 1546532268824,
+			"modified": 1546474820015,
 			"name": "/genre",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -901,7 +901,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"Biography\"\t\n}"
+				"text": "{\n\"name\": \"Drama\"\t\n}"
 			},
 			"created": 1546474845087,
 			"description": "",
@@ -920,7 +920,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714525,
 			"method": "PUT",
-			"modified": 1546532260535,
+			"modified": 1546474870542,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -930,7 +930,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/genre/7",
+			"url": "{{ base_url  }}/genre/3",
 			"_type": "request"
 		},
 		{
@@ -978,7 +978,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951648,
 			"method": "GET",
-			"modified": 1546485901646,
+			"modified": 1546475018987,
 			"name": "/recomendation_items/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -996,7 +996,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 1,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,4,5]\n}"
+				"text": "{\n\t\"recommendation_id\": 1,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\"\n}"
 			},
 			"created": 1546475043713,
 			"description": "",
@@ -1015,7 +1015,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951598,
 			"method": "POST",
-			"modified": 1546548882499,
+			"modified": 1546478163303,
 			"name": "/recommendation_item",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1062,7 +1062,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 12,\n\t\"name\": \"John Wick: Chapter III\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [3]\n}"
+				"text": "{\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 2000,\n\t\"year\": \"2017-02-11\",\n\t\"overview\": \"Kill!\",\n\t\"poster\": \"OqAmzALlnkasQmlp\",\n\t\"backdrop\": \"pKqnkmAqmlasasp\",\n\t\"trailer\": \"/iqnonAsnkasp\",\n\t\"commentary\": \"Really great movie!!!!\",\n\t\"media_type\": \"movie\"\n}"
 			},
 			"created": 1546478525137,
 			"description": "",
@@ -1081,7 +1081,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951548,
 			"method": "PUT",
-			"modified": 1546549016494,
+			"modified": 1546478658821,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1091,7 +1091,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_item/12",
+			"url": "{{ base_url  }}/recommendation_item/2",
 			"_type": "request"
 		},
 		{

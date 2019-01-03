@@ -30,7 +30,7 @@ func NewRouter() (*mux.Router, error) {
 
 	http.Handle("/", r)
 
-	handler := cors.AllowAll().Handler(r)
+	handler := cors.Default().Handler(r)
 
 	log.Fatal(http.ListenAndServe(":8000", handler))
 
