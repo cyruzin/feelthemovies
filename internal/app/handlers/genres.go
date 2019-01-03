@@ -102,13 +102,11 @@ func deleteGenre(w http.ResponseWriter, r *http.Request) {
 
 	d, err := model.DeleteGenre(id, db)
 
-	if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	}
-
 	if err != nil {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else if d == 0 {
+		w.WriteHeader(422)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)

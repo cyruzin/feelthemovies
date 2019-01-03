@@ -156,6 +156,13 @@ func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
 		&u.UpdatedAt, &id,
 	)
 
+	// Error handler for duplicate entries
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return nil, err
+		}
+	}
+
 	if err != nil {
 		log.Println(err)
 	}

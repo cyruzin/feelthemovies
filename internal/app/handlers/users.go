@@ -132,13 +132,11 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 
 	d, err := model.DeleteUser(id, db)
 
-	if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	}
-
 	if err != nil {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else if d == 0 {
+		w.WriteHeader(422)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
