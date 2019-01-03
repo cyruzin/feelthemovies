@@ -17,7 +17,9 @@ type Source struct {
 }
 
 // ResultSource type is a slice of sources.
-type ResultSource []*Source
+type ResultSource struct {
+	Data []*Source `json:"data"`
+}
 
 // GetSources retrieves the latest 20 sources.
 func GetSources(db *sql.DB) (*ResultSource, error) {
@@ -48,7 +50,7 @@ func GetSources(db *sql.DB) (*ResultSource, error) {
 			log.Println(err)
 		}
 
-		res = append(res, &s)
+		res.Data = append(res.Data, &s)
 
 	}
 

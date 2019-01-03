@@ -23,7 +23,9 @@ type User struct {
 }
 
 // ResultUser type is a slice of users.
-type ResultUser []*User
+type ResultUser struct {
+	Data []*User `json:"data"`
+}
 
 // GetUsers retrieves the first twenty users.
 func GetUsers(db *sql.DB) (*ResultUser, error) {
@@ -56,7 +58,7 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 			log.Println(err)
 		}
 
-		res = append(res, &user)
+		res.Data = append(res.Data, &user)
 
 	}
 

@@ -17,7 +17,9 @@ type Keyword struct {
 }
 
 // ResultKeyword type is a slice of keywords.
-type ResultKeyword []*Keyword
+type ResultKeyword struct {
+	Data []*Keyword `json:"data"`
+}
 
 // GetKeywords retrieves the latest 20 keywords.
 func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
@@ -48,7 +50,7 @@ func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
 			log.Println(err)
 		}
 
-		res = append(res, &k)
+		res.Data = append(res.Data, &k)
 
 	}
 
