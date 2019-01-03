@@ -56,8 +56,10 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	hashAPI := helper.UUIDGenerator()
 
-	if err != nil {
-		log.Println(err)
+	if reqU.Name == "" || reqU.Email == "" || reqU.Password == "" {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("All fields are required!")
+		return
 	}
 
 	newU := model.User{
@@ -72,7 +74,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	u, err := model.CreateUser(&newU, db)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	if err != nil {
