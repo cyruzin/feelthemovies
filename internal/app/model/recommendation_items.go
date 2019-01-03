@@ -9,17 +9,17 @@ import (
 // RecommendationItem type is a struct for recommendation_items table.
 type RecommendationItem struct {
 	ID               int64     `json:"id"`
-	RecommendationID int64     `json:"recommendation_id"`
-	Name             string    `json:"name"`
-	TMDBID           int64     `json:"tmdb_id"`
-	Year             string    `json:"year"`
+	RecommendationID int64     `json:"recommendation_id" validate:"required,numeric"`
+	Name             string    `json:"name" validate:"required"`
+	TMDBID           int64     `json:"tmdb_id" validate:"required,numeric"`
+	Year             string    `json:"year" validate:"required"`
 	YearParsed       time.Time `json:"-"`
-	Overview         string    `json:"overview"`
-	Poster           string    `json:"poster"`
-	Backdrop         string    `json:"backdrop"`
+	Overview         string    `json:"overview" validate:"required"`
+	Poster           string    `json:"poster" validate:"required"`
+	Backdrop         string    `json:"backdrop" validate:"required"`
 	Trailer          string    `json:"trailer"`
 	Commentary       string    `json:"commentary"`
-	MediaType        string    `json:"media_type"`
+	MediaType        string    `json:"media_type" validate:"required"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 	Sources          []int     `json:"sources,omitempty"`

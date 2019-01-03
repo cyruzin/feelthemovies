@@ -8,6 +8,7 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/gorilla/mux"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getGenres(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +51,15 @@ func createGenre(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqG)
 
+	validate = validator.New()
+	err = validate.Struct(reqG)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	newG := model.Genre{
 		Name:      reqG.Name,
 		CreatedAt: time.Now(),
@@ -73,6 +83,15 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 	var reqG model.Genre
 
 	err = json.NewDecoder(r.Body).Decode(&reqG)
+
+	validate = validator.New()
+	err = validate.Struct(reqG)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	upG := model.Genre{
 		Name:      reqG.Name,

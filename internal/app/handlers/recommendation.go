@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/gorilla/mux"
@@ -52,6 +53,15 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
+	validate = validator.New()
+	err = validate.Struct(reqRec)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	newRec := model.Recommendation{
 		UserID:    reqRec.UserID,
 		Title:     reqRec.Title,
@@ -91,6 +101,15 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	var reqRec model.Recommendation
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
+
+	validate = validator.New()
+	err = validate.Struct(reqRec)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	upRec := model.Recommendation{
 		Title:     reqRec.Title,

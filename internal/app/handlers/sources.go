@@ -8,6 +8,7 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/gorilla/mux"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getSources(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +51,15 @@ func createSource(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqS)
 
+	validate = validator.New()
+	err = validate.Struct(reqS)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	newS := model.Source{
 		Name:      reqS.Name,
 		CreatedAt: time.Now(),
@@ -73,6 +83,15 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 	var reqS model.Source
 
 	err = json.NewDecoder(r.Body).Decode(&reqS)
+
+	validate = validator.New()
+	err = validate.Struct(reqS)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	upS := model.Source{
 		Name:      reqS.Name,

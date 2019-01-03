@@ -11,7 +11,7 @@ import (
 // Source type is a struct for sources table.
 type Source struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
+	Name      string    `json:"name" validate:"required"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

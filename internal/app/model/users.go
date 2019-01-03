@@ -9,14 +9,13 @@ import (
 )
 
 // TODO: Pagination
-// TODO: BCrypt password
 
 // User type is a struct for users table.
 type User struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
+	Name      string    `json:"name" validate:"required,alpha"`
+	Email     string    `json:"email" validate:"required,email"`
+	Password  string    `json:"password" validate:"required,min=8"`
 	APIToken  string    `json:"api_token"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -35,6 +34,7 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 		id, name, email, password,
 		api_token, created_at, updated_at
 		FROM users
+		ORDER BY id DESC
 		LIMIT 20
 	`)
 

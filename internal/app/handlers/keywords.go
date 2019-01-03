@@ -8,6 +8,7 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/gorilla/mux"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getKeywords(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +51,15 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqK)
 
+	validate = validator.New()
+	err = validate.Struct(reqK)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	newK := model.Keyword{
 		Name:      reqK.Name,
 		CreatedAt: time.Now(),
@@ -73,6 +83,15 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 	var reqK model.Keyword
 
 	err = json.NewDecoder(r.Body).Decode(&reqK)
+
+	validate = validator.New()
+	err = validate.Struct(reqK)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	upK := model.Keyword{
 		Name:      reqK.Name,

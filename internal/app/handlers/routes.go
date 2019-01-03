@@ -5,16 +5,17 @@ import (
 	"net/http"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/conn"
+	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
-// TODO: Implement form validation
-// TODO: Implement Attach / Sync functions on handlers
-
 // Initializing database connection.
 var db, err = conn.Connect()
+
+// Validator instance
+var validate *validator.Validate
 
 // NewRouter initiates the server with the given routes.
 // CORS are enabled.
