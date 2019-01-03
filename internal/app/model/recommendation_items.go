@@ -22,10 +22,13 @@ type RecommendationItem struct {
 	MediaType        string    `json:"media_type"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
+	Sources          []int     `json:"sources,omitempty"`
 }
 
 // ResultRecommendationItem type is a slice of recommendation items.
-type ResultRecommendationItem []*RecommendationItem
+type ResultRecommendationItem struct {
+	Data []*RecommendationItem `json:"data"`
+}
 
 // GetRecommendationItems retrieves all items of a given recommendation by ID.
 func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, error) {
@@ -62,7 +65,7 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 			log.Println(err)
 		}
 
-		res = append(res, &rec)
+		res.Data = append(res.Data, &rec)
 
 	}
 

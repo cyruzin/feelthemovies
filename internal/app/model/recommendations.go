@@ -18,10 +18,14 @@ type Recommendation struct {
 	Status    int       `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Genres    []int     `json:"genres,omitempty"`
+	Keywords  []int     `json:"keywords,omitempty"`
 }
 
 // ResultRecommendation type is a slice of recommendations.
-type ResultRecommendation []*Recommendation
+type ResultRecommendation struct {
+	Data []*Recommendation `json:"data"`
+}
 
 // GetRecommendations retrieves the latest 20 recommendations.
 func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
@@ -57,7 +61,7 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 			log.Println(err)
 		}
 
-		res = append(res, &rec)
+		res.Data = append(res.Data, &rec)
 
 	}
 

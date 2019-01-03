@@ -17,7 +17,9 @@ type Genre struct {
 }
 
 // ResultGenre type is a slice of genres.
-type ResultGenre []*Genre
+type ResultGenre struct {
+	Data []*Genre `json:"data"`
+}
 
 // GetGenres retrieves the latest 20 genres.
 func GetGenres(db *sql.DB) (*ResultGenre, error) {
@@ -48,7 +50,7 @@ func GetGenres(db *sql.DB) (*ResultGenre, error) {
 			log.Println(err)
 		}
 
-		res = append(res, &genre)
+		res.Data = append(res.Data, &genre)
 
 	}
 

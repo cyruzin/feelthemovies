@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/gorilla/mux"
 )
 
@@ -75,6 +76,13 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := model.CreateRecommendationItem(&newRec, db)
 
+	// Attaching sources IDs in its respective pivot table.
+	sources := make(map[int64][]int)
+
+	sources[rec.ID] = reqRec.Sources
+
+	_, err = helper.Attach(sources, "recommendation_item_source", db)
+
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -111,6 +119,13 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
 	rec, err := model.UpdateRecommendationItem(id, &upRec, db)
+
+	// Syncing sources IDs in its respective pivot table.
+	sources := make(map[int64][]int)
+
+	sources[rec.ID] = reqRec.Sources
+
+	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db)
 
 	if err != nil {
 		w.WriteHeader(400)
