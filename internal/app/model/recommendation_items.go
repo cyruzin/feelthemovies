@@ -12,7 +12,8 @@ type RecommendationItem struct {
 	RecommendationID int64     `json:"recommendation_id"`
 	Name             string    `json:"name"`
 	TMDBID           int64     `json:"tmdb_id"`
-	Year             time.Time `json:"year"`
+	Year             string    `json:"year"`
+	YearParsed       time.Time `json:"-"`
 	Overview         string    `json:"overview"`
 	Poster           string    `json:"poster"`
 	Backdrop         string    `json:"backdrop"`
@@ -120,7 +121,7 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&r.RecommendationID, &r.Name, &r.TMDBID, &r.Year,
+		&r.RecommendationID, &r.Name, &r.TMDBID, &r.YearParsed,
 		&r.Overview, &r.Poster, &r.Backdrop, &r.Trailer,
 		&r.Commentary, &r.MediaType, &r.CreatedAt, &r.UpdatedAt,
 	)
@@ -161,7 +162,7 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&r.Name, &r.TMDBID, &r.Year, &r.Overview,
+		&r.Name, &r.TMDBID, &r.YearParsed, &r.Overview,
 		&r.Poster, &r.Backdrop, &r.Trailer, &r.Commentary,
 		&r.MediaType, &r.UpdatedAt, &id,
 	)

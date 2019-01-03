@@ -54,11 +54,15 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
+	// Parsing string to time.Time
+	// YearParsed field is used only for converting string to time.
+	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
+
 	newRec := model.RecommendationItem{
 		RecommendationID: reqRec.RecommendationID,
 		Name:             reqRec.Name,
 		TMDBID:           reqRec.TMDBID,
-		Year:             reqRec.Year,
+		YearParsed:       yearParsed,
 		Overview:         reqRec.Overview,
 		Poster:           reqRec.Poster,
 		Backdrop:         reqRec.Backdrop,
@@ -87,10 +91,12 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
+	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
+
 	upRec := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
-		Year:       reqRec.Year,
+		YearParsed: yearParsed,
 		Overview:   reqRec.Overview,
 		Poster:     reqRec.Poster,
 		Backdrop:   reqRec.Backdrop,
@@ -124,13 +130,11 @@ func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	d, err := model.DeleteRecommendationItem(id, db)
 
-	if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	}
-
 	if err != nil {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else if d == 0 {
+		w.WriteHeader(422)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)

@@ -51,7 +51,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
 	newRec := model.Recommendation{
-		UserID:    reqRec.ID,
+		UserID:    reqRec.UserID,
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
 		Body:      reqRec.Body,
@@ -114,13 +114,11 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	d, err := model.DeleteRecommendation(id, db)
 
-	if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	}
-
 	if err != nil {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Something went wrong!")
+	} else if d == 0 {
+		w.WriteHeader(422)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
