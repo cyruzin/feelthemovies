@@ -9,6 +9,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/gorilla/mux"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +56,15 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
+	validate = validator.New()
+	err = validate.Struct(reqRec)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	// Parsing string to time.Time
 	// YearParsed field is used only for converting string to time.
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
@@ -98,6 +108,15 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	var reqRec model.RecommendationItem
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
+
+	validate = validator.New()
+	err = validate.Struct(reqRec)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 

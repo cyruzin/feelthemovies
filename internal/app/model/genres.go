@@ -11,7 +11,7 @@ import (
 // Genre type is a struct for genres table.
 type Genre struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
+	Name      string    `json:"name" validate:"required,alpha"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

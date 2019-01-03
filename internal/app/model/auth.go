@@ -5,6 +5,15 @@ import (
 	"log"
 )
 
+// Auth struct is a type for authentication.
+type Auth struct {
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+	APIToken string `json:"api_token"`
+}
+
 // CheckAPIToken checks if the given token exists.
 func CheckAPIToken(token string, db *sql.DB) (bool, error) {
 	stmt, err := db.Prepare(`
@@ -35,7 +44,7 @@ func CheckAPIToken(token string, db *sql.DB) (bool, error) {
 }
 
 // Authenticate authenticates the current user and returns it's info.
-func Authenticate(email string, db *sql.DB) (*User, error) {
+func Authenticate(email string, db *sql.DB) (*Auth, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password, api_token
@@ -48,15 +57,15 @@ func Authenticate(email string, db *sql.DB) (*User, error) {
 
 	defer stmt.Close()
 
-	var u User
+	var a Auth
 
 	err = stmt.QueryRow(email).Scan(
-		&u.ID, &u.Name, &u.Email, &u.Password, &u.APIToken,
+		&a.ID, &a.Name, &a.Email, &a.Password, &a.APIToken,
 	)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	return &u, err
+	return &a, err
 }

@@ -7,24 +7,34 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func authUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var reqU model.User
+	var reqA model.Auth
 
-	err = json.NewDecoder(r.Body).Decode(&reqU)
+	err = json.NewDecoder(r.Body).Decode(&reqA)
+
+	validate = validator.New()
+	err = validate.Struct(reqA)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
 
 	// TODO: Remove password field from this request.
 	// This is only for comparison.
-	user, err := model.Authenticate(reqU.Email, db)
+	user, err := model.Authenticate(reqA.Email, db)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	checkPass := helper.CheckPasswordHash(reqU.Password, user.Password)
+	checkPass := helper.CheckPasswordHash(reqA.Password, user.Password)
 
 	if err != nil {
 		w.WriteHeader(400)

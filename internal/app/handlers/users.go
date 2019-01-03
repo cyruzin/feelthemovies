@@ -10,6 +10,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/gorilla/mux"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
@@ -52,15 +53,18 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqU)
 
+	validate = validator.New()
+	err = validate.Struct(reqU)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 
 	hashAPI := helper.UUIDGenerator()
-
-	if reqU.Name == "" || reqU.Email == "" || reqU.Password == "" {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("All fields are required!")
-		return
-	}
 
 	newU := model.User{
 		Name:      reqU.Name,
@@ -72,10 +76,6 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u, err := model.CreateUser(&newU, db)
-
-	if err != nil {
-		log.Println(err)
-	}
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -93,9 +93,17 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&reqU)
 
+	validate = validator.New()
+	err = validate.Struct(reqU)
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check your fields.")
+		return
+	}
+
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 
-	// TODO: Accept Api Token only if its length has 32 characters.
 	hashAPI := helper.UUIDGenerator()
 
 	if err != nil {
