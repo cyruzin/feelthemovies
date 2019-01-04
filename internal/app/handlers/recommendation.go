@@ -29,17 +29,17 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 
-		recFinal := model.ResponseRecommendation{
-			r,
-			recG,
-			recK,
-		}
+		recFinal := model.ResponseRecommendation{}
+
+		recFinal.Recommendation = r
+		recFinal.Genres = recG
+		recFinal.Keywords = recK
 
 		result = append(result, &recFinal)
 	}
 
 	resultFinal := struct {
-		Data []*model.ResponseRecommendation `json:"data`
+		Data []*model.ResponseRecommendation `json:"data"`
 	}{
 		result,
 	}
@@ -64,7 +64,11 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	recG, err := model.GetRecommendationGenres(id, db)
 	recK, err := model.GetRecommendationKeywords(id, db)
 
-	response := model.ResponseRecommendation{
+	response := struct {
+		*model.Recommendation
+		Genres   []*model.RecommendationGenres   `json:"genres"`
+		Keywords []*model.RecommendationKeywords `json:"keywords"`
+	}{
 		rec,
 		recG,
 		recK,

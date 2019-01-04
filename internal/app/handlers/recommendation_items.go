@@ -13,8 +13,6 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-// TODO: Refactor code and fix warnings
-
 func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
@@ -33,10 +31,10 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 
-		recFinal := model.ResponseRecommendationItem{
-			r,
-			recS,
-		}
+		recFinal := model.ResponseRecommendationItem{}
+
+		recFinal.RecommendationItem = r
+		recFinal.Sources = recS
 
 		result = append(result, &recFinal)
 	}
