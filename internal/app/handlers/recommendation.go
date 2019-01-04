@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -18,12 +19,37 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := model.GetRecommendations(db)
 
+	result := []*model.ResponseRecommendation{}
+
+	for _, r := range rec.Data {
+		recG, err := model.GetRecommendationGenres(r.ID, db)
+		recK, err := model.GetRecommendationKeywords(r.ID, db)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		recFinal := model.ResponseRecommendation{
+			r,
+			recG,
+			recK,
+		}
+
+		result = append(result, &recFinal)
+	}
+
+	resultFinal := struct {
+		Data []*model.ResponseRecommendation `json:"data`
+	}{
+		result,
+	}
+
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(rec)
+		json.NewEncoder(w).Encode(resultFinal)
 	}
 }
 
@@ -35,13 +61,21 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
 	rec, err := model.GetRecommendation(id, db)
+	recG, err := model.GetRecommendationGenres(id, db)
+	recK, err := model.GetRecommendationKeywords(id, db)
+
+	response := model.ResponseRecommendation{
+		rec,
+		recG,
+		recK,
+	}
 
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(rec)
+		json.NewEncoder(w).Encode(response)
 	}
 
 }
@@ -49,7 +83,11 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var reqRec model.Recommendation
+	var reqRec struct {
+		*model.Recommendation
+		Genres   []int `json:"genres"`
+		Keywords []int `json:"keywords"`
+	}
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
@@ -98,7 +136,11 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var reqRec model.Recommendation
+	var reqRec struct {
+		*model.Recommendation
+		Genres   []int `json:"genres"`
+		Keywords []int `json:"keywords"`
+	}
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 

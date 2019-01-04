@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +13,8 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
+// TODO: Refactor code and fix warnings
+
 func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
@@ -21,12 +24,35 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := model.GetRecommendationItems(id, db)
 
+	result := []*model.ResponseRecommendationItem{}
+
+	for _, r := range rec.Data {
+		recS, err := model.GetRecommendationItemSources(r.ID, db)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		recFinal := model.ResponseRecommendationItem{
+			r,
+			recS,
+		}
+
+		result = append(result, &recFinal)
+	}
+
+	resultFinal := struct {
+		Data []*model.ResponseRecommendationItem `json:"data"`
+	}{
+		result,
+	}
+
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(rec)
+		json.NewEncoder(w).Encode(resultFinal)
 	}
 }
 
@@ -38,13 +64,22 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
 	rec, err := model.GetRecommendationItem(id, db)
+	recS, err := model.GetRecommendationItemSources(id, db)
+
+	response := struct {
+		*model.RecommendationItem
+		Sources []*model.RecommendationItemSources `json:"sources"`
+	}{
+		rec,
+		recS,
+	}
 
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(rec)
+		json.NewEncoder(w).Encode(response)
 	}
 
 }
@@ -52,28 +87,31 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var reqRec model.RecommendationItem
+	var reqRec struct {
+		*model.RecommendationItem
+		Sources []int  `json:"sources" validate:"required"`
+		Year    string `json:"year" validate:"required"`
+	}
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
-
 	validate = validator.New()
 	err = validate.Struct(reqRec)
 
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
 
 	// Parsing string to time.Time
-	// YearParsed field is used only for converting string to time.
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 
 	newRec := model.RecommendationItem{
 		RecommendationID: reqRec.RecommendationID,
 		Name:             reqRec.Name,
 		TMDBID:           reqRec.TMDBID,
-		YearParsed:       yearParsed,
+		Year:             yearParsed,
 		Overview:         reqRec.Overview,
 		Poster:           reqRec.Poster,
 		Backdrop:         reqRec.Backdrop,
@@ -105,7 +143,11 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var reqRec model.RecommendationItem
+	var reqRec struct {
+		*model.RecommendationItem
+		Sources []int  `json:"sources" validate:"required"`
+		Year    string `json:"year" validate:"required"`
+	}
 
 	err = json.NewDecoder(r.Body).Decode(&reqRec)
 
@@ -123,7 +165,7 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	upRec := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
-		YearParsed: yearParsed,
+		Year:       yearParsed,
 		Overview:   reqRec.Overview,
 		Poster:     reqRec.Poster,
 		Backdrop:   reqRec.Backdrop,
