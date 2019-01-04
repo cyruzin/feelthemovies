@@ -14,23 +14,24 @@ import (
 func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var s model.Search
+	params := r.URL.Query()
 
-	err = json.NewDecoder(r.Body).Decode(&s)
-
-	validate = validator.New()
-	err = validate.Struct(s)
-
-	if err != nil {
+	if len(params) == 0 {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is required")
 		return
 	}
 
-	// Start pagination
-	params := r.URL.Query()
+	validate = validator.New()
+	err = validate.Var(params["query"][0], "required")
 
-	total, err := model.GetSearchRecommendationTotalRows(s.Query, db) // total results
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+
+	total, err := model.GetSearchRecommendationTotalRows(params["query"][0], db) // total results
 	var (
 		limit       float64 = 10                       // limit per page
 		offset      float64                            // offset record
@@ -39,24 +40,22 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	)
 
 	// checking if request contains the "page" parameter
-	if len(params) > 0 {
-		if params["page"][0] != "" {
-			page, err := strconv.ParseFloat(params["page"][0], 64)
+	if params["page"] != nil {
+		page, err := strconv.ParseFloat(params["page"][0], 64)
 
-			if err != nil {
-				log.Println(err)
-			}
+		if err != nil {
+			log.Println(err)
+		}
 
-			if page > currentPage {
-				currentPage = page
-				offset = (currentPage - 1) * limit
-			}
+		if page > currentPage {
+			currentPage = page
+			offset = (currentPage - 1) * limit
 		}
 	}
 
 	// End pagination
 
-	search, err := model.SearchRecommendation(offset, limit, s.Query, db)
+	search, err := model.SearchRecommendation(offset, limit, params["query"][0], db)
 
 	result := []*model.ResponseRecommendation{}
 
@@ -97,20 +96,24 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 func searchUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var s model.Search
+	params := r.URL.Query()
 
-	err = json.NewDecoder(r.Body).Decode(&s)
-
-	validate = validator.New()
-	err = validate.Struct(s)
-
-	if err != nil {
+	if len(params) == 0 {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is required")
 		return
 	}
 
-	search, err := model.SearchUser(s.Query, db)
+	validate = validator.New()
+	err = validate.Var(params["query"][0], "required")
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+
+	search, err := model.SearchUser(params["query"][0], db)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -125,20 +128,24 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 func searchGenre(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var s model.Search
+	params := r.URL.Query()
 
-	err = json.NewDecoder(r.Body).Decode(&s)
-
-	validate = validator.New()
-	err = validate.Struct(s)
-
-	if err != nil {
+	if len(params) == 0 {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is required")
 		return
 	}
 
-	search, err := model.SearchGenre(s.Query, db)
+	validate = validator.New()
+	err = validate.Var(params["query"][0], "required")
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+
+	search, err := model.SearchGenre(params["query"][0], db)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -153,20 +160,24 @@ func searchGenre(w http.ResponseWriter, r *http.Request) {
 func searchKeyword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var s model.Search
+	params := r.URL.Query()
 
-	err = json.NewDecoder(r.Body).Decode(&s)
-
-	validate = validator.New()
-	err = validate.Struct(s)
-
-	if err != nil {
+	if len(params) == 0 {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is required")
 		return
 	}
 
-	search, err := model.SearchKeyword(s.Query, db)
+	validate = validator.New()
+	err = validate.Var(params["query"][0], "required")
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+
+	search, err := model.SearchKeyword(params["query"][0], db)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -181,20 +192,24 @@ func searchKeyword(w http.ResponseWriter, r *http.Request) {
 func searchSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	var s model.Search
+	params := r.URL.Query()
 
-	err = json.NewDecoder(r.Body).Decode(&s)
-
-	validate = validator.New()
-	err = validate.Struct(s)
-
-	if err != nil {
+	if len(params) == 0 {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is required")
 		return
 	}
 
-	search, err := model.SearchSource(s.Query, db)
+	validate = validator.New()
+	err = validate.Var(params["query"][0], "required")
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+
+	search, err := model.SearchSource(params["query"][0], db)
 
 	if err != nil {
 		w.WriteHeader(400)
