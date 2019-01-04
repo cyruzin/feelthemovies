@@ -19,9 +19,7 @@ func Attach(s map[int64][]int, pivot string, db *sql.DB) (int64, error) {
 	for index, ids := range s {
 		for _, values := range ids {
 
-			query := fmt.Sprintf("INSERT INTO %s VALUES (?,?)", pivot)
-
-			stmt, err := db.Prepare(query)
+			stmt, err := db.Prepare("INSERT INTO " + pivot + " VALUES (?,?)")
 
 			if err != nil {
 				log.Println(err)
@@ -51,9 +49,7 @@ func Detach(s map[int64][]int, pivot, field string, db *sql.DB) (int64, error) {
 
 	for index := range s {
 
-		query := fmt.Sprintf("DELETE FROM %s WHERE %s = ?", pivot, field)
-
-		stmt, err := db.Prepare(query)
+		stmt, err := db.Prepare("DELETE FROM " + pivot + " WHERE " + field + " = ?")
 
 		if err != nil {
 			log.Println(err)

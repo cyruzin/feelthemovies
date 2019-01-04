@@ -78,4 +78,10 @@ func authRoutes(r *mux.Router) {
 	r.HandleFunc("/v1/source", createSource).Methods("POST")
 	r.HandleFunc("/v1/source/{id}", updateSource).Methods("PUT")
 	r.HandleFunc("/v1/source/{id}", deleteSource).Methods("DELETE")
+
+	r.HandleFunc("/v1/search_recommendation", searchRecommendation).Methods("GET")
+	r.HandleFunc("/v1/search_user", searchUser).Methods("GET")
+	r.HandleFunc("/v1/search_genre", searchGenre).Methods("GET")
+	r.HandleFunc("/v1/search_keyword", searchKeyword).Methods("GET")
+	r.HandleFunc("/v1/search_source", searchSource).Methods("GET")
 }

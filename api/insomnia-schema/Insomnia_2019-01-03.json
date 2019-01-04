@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2019-01-03T21:00:34.029Z",
+	"__export_date": "2019-01-04T00:37:25.482Z",
 	"__export_source": "insomnia.desktop.app:v6.3.2",
 	"resources": [
 		{
@@ -126,6 +126,17 @@
 			"_type": "request_group"
 		},
 		{
+			"_id": "fld_b0fdc80353344790b58c959c868b7030",
+			"created": 1546558965426,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1546359823011,
+			"modified": 1546558968669,
+			"name": "Search",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
 			"_id": "req_fb959f6cfe204aa5ae8a758488a2c4ed",
 			"authentication": {},
 			"body": {},
@@ -188,7 +199,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"PHP is another beast!\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [1],\n\t\"keywords\": [1]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best War Movies II\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [9, 1],\n\t\"keywords\": [1]\n}"
 			},
 			"created": 1546362293924,
 			"description": "",
@@ -207,7 +218,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831996,
 			"method": "POST",
-			"modified": 1546548395491,
+			"modified": 1546560332643,
 			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -225,7 +236,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"JavaScript is another beast!\",\n\t\"type\": 1,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1,5],\n\t\"keywords\": [1,4]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste\",\n\t\"type\": 1,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
 			},
 			"created": 1546363702513,
 			"description": "",
@@ -244,7 +255,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831946,
 			"method": "PUT",
-			"modified": 1546548624783,
+			"modified": 1546560422598,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -254,7 +265,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/38",
+			"url": "{{ base_url  }}/recommendation/40",
 			"_type": "request"
 		},
 		{
@@ -349,7 +360,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Cristiano Ronaldo\",\n\t\"email\": \"cristiano.ronaldo@gmail.com\",\n\t\"password\": \"12345678\"\n}"
+				"text": "{\n\t\"name\": \"Admin\",\n\t\"email\": \"admin@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386681568,
 			"description": "",
@@ -360,6 +371,7 @@
 					"value": "application/json"
 				},
 				{
+					"disabled": false,
 					"id": "pair_73b0692634354facbb33467cc83f13af",
 					"name": "Api-Token",
 					"value": "{{ api_token  }}"
@@ -368,7 +380,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626646,
 			"method": "POST",
-			"modified": 1546532298836,
+			"modified": 1546549922807,
 			"name": "/user",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -864,7 +876,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"Ocean\"\t\n}"
+				"text": "{\n\"name\": \"War\"\t\n}"
 			},
 			"created": 1546474786105,
 			"description": "",
@@ -883,7 +895,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714575,
 			"method": "POST",
-			"modified": 1546532268824,
+			"modified": 1546560302670,
 			"name": "/genre",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -1121,6 +1133,192 @@
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
 			"url": "{{ base_url  }}/recommendation_item/2",
+			"_type": "request"
+		},
+		{
+			"_id": "req_b51e6f6dc6b649fda71f030c8ab6e1fa",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"query\": \"War\",\n\t\"type\": 0\n}"
+			},
+			"created": 1546558984132,
+			"description": "",
+			"headers": [
+				{
+					"disabled": false,
+					"id": "pair_ca88a86ba82648dabcbadecd79eadfe0",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				},
+				{
+					"id": "pair_8fcac9c2dac14868845e1a176bc03532",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546558984132,
+			"method": "GET",
+			"modified": 1546562204308,
+			"name": "/search_recommendation",
+			"parameters": [],
+			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/search_recommendation",
+			"_type": "request"
+		},
+		{
+			"_id": "req_227a34258cca48308866b0373ec3f2c8",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"query\": \"Cristiano Ronaldo\"\n}"
+			},
+			"created": 1546561020782,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_5b51edd2aa2e485cb0092671de09ecf2",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				},
+				{
+					"id": "pair_10fdbdd36e574207bc775d5f41f26d16",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546558984082,
+			"method": "GET",
+			"modified": 1546562193889,
+			"name": "/search_user",
+			"parameters": [],
+			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/search_user",
+			"_type": "request"
+		},
+		{
+			"_id": "req_32584cd11e79454b9cfa13498fb1daa8",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"query\": \"Shark\"\n}"
+			},
+			"created": 1546561756199,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546558984032,
+			"method": "GET",
+			"modified": 1546562163213,
+			"name": "/search_keyword",
+			"parameters": [],
+			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/search_keyword",
+			"_type": "request"
+		},
+		{
+			"_id": "req_0d12b97b112f41e38981b0e1cd5a11b0",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"query\": \"Horror\"\n}"
+			},
+			"created": 1546561830182,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546516967840,
+			"method": "GET",
+			"modified": 1546562144755,
+			"name": "/search_genre",
+			"parameters": [],
+			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/search_genre",
+			"_type": "request"
+		},
+		{
+			"_id": "req_37ef750c8f764e0da8341613f4d66665",
+			"authentication": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"query\": \"Netflix\"\n}"
+			},
+			"created": 1546561892552,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
+					"name": "Content-Type",
+					"value": "application/json"
+				},
+				{
+					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
+					"name": "Api-Token",
+					"value": "{{ api_token  }}"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546495959744,
+			"method": "GET",
+			"modified": 1546562151473,
+			"name": "/search_source",
+			"parameters": [],
+			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/search_source",
 			"_type": "request"
 		}
 	]
