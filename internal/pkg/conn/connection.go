@@ -24,8 +24,6 @@ func Connect() (*sql.DB, error) {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
 
-	//defer db.Close()
-
 	err = db.Ping()
 
 	if err != nil {

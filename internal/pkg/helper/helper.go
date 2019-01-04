@@ -151,6 +151,7 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 // UUIDGenerator generates a unique ID.
+// TODO: Use Google official pkg.
 func UUIDGenerator() (uuid string) {
 	b := make([]byte, 16)
 	_, err := rand.Read(b)

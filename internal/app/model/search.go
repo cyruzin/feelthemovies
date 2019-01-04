@@ -12,7 +12,8 @@ type Search struct {
 }
 
 // SearchRecommendation search for recommendations.
-func SearchRecommendation(s string, t int, db *sql.DB) (*ResultRecommendation, error) {
+// o = offset | l = limit | s = search term | t = type
+func SearchRecommendation(o, l float64, s string, db *sql.DB) (*ResultRecommendation, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -24,11 +25,11 @@ func SearchRecommendation(s string, t int, db *sql.DB) (*ResultRecommendation, e
 		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
 		JOIN genres AS g ON g.id = gr.genre_id
 		JOIN keywords AS k ON k.id = kr.keyword_id
-		WHERE r.title LIKE ? AND r.type = ?
+		WHERE r.title LIKE ?
 		OR k.name LIKE ?
 		OR g.name LIKE ?
 		ORDER BY r.id DESC
-		LIMIT ?
+		LIMIT ?,?
 	`)
 
 	if err != nil {
@@ -37,7 +38,7 @@ func SearchRecommendation(s string, t int, db *sql.DB) (*ResultRecommendation, e
 
 	defer stmt.Close()
 
-	rows, err := stmt.Query("%"+s+"%", t, "%"+s+"%", "%"+s+"%", 20)
+	rows, err := stmt.Query("%"+s+"%", "%"+s+"%", "%"+s+"%", o, l)
 
 	if err != nil {
 		log.Println(err)
@@ -246,4 +247,36 @@ func SearchSource(s string, db *sql.DB) (*ResultSource, error) {
 
 	return &res, err
 
+}
+
+// GetSearchRecommendationTotalRows retrieves the total rows of recommendations table.
+func GetSearchRecommendationTotalRows(s string, db *sql.DB) (float64, error) {
+	stmt, err := db.Prepare(`
+		SELECT 
+		COUNT(*)
+		FROM recommendations AS r
+		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
+		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
+		JOIN genres AS g ON g.id = gr.genre_id
+		JOIN keywords AS k ON k.id = kr.keyword_id
+		WHERE r.title LIKE ?
+		OR k.name LIKE ?
+		OR g.name LIKE ?
+	`)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	var total float64
+
+	err = stmt.QueryRow("%"+s+"%", "%"+s+"%", "%"+s+"%").Scan(&total)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return total, err
 }

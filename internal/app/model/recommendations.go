@@ -44,18 +44,28 @@ type RecommendationKeywords struct {
 	Name string `json:"name"`
 }
 
-// GetRecommendations retrieves the latest 20 recommendations.
-func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
+// RecommendationPagination type is a struct for paginate recommendations results.
+type RecommendationPagination struct {
+	Data        []*ResponseRecommendation `json:"data"`
+	CurrentPage float64                   `json:"current_page"`
+	LastPage    float64                   `json:"last_page"`
+	PerPage     float64                   `json:"per_page"`
+	Total       float64                   `json:"total"`
+}
 
-	stmt, err := db.Query(`
+// GetRecommendations retrieves the latest recommendations.
+// o = offset | l = limit
+func GetRecommendations(o, l float64, db *sql.DB) (*ResultRecommendation, error) {
+
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, user_id, title, type, 
 		body, poster, backdrop, status, 
 		created_at, updated_at
 		FROM recommendations
 		ORDER BY id DESC
-		LIMIT ?
-	`, 10)
+		LIMIT ?,?
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -63,12 +73,14 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(o, l)
+
 	res := ResultRecommendation{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := Recommendation{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
 			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
 			&rec.CreatedAt, &rec.UpdatedAt,
@@ -228,14 +240,14 @@ func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
 func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		g.id, g.name 
 		FROM genres AS g
 		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
 		JOIN recommendations AS r ON r.id = gr.recommendation_id
 		WHERE r.id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -243,12 +255,14 @@ func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, err
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	recG := []*RecommendationGenres{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationGenres{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
 
@@ -265,14 +279,14 @@ func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, err
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
 func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		k.id, k.name 
 		FROM keywords AS k
 		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
 		JOIN recommendations AS r ON r.id = kr.recommendation_id
 		WHERE r.id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -280,12 +294,14 @@ func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords,
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	recK := []*RecommendationKeywords{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationKeywords{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
 
@@ -298,4 +314,26 @@ func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords,
 	}
 
 	return recK, err
+}
+
+// GetRecommendationTotalRows retrieves the total rows of recommendations table.
+// TODO: Optimize this function.
+func GetRecommendationTotalRows(db *sql.DB) (float64, error) {
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	var total float64
+
+	err = stmt.QueryRow().Scan(&total)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return total, err
 }
