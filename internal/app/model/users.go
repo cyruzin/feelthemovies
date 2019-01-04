@@ -35,8 +35,8 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 		api_token, created_at, updated_at
 		FROM users
 		ORDER BY id DESC
-		LIMIT 20
-	`)
+		LIMIT ?
+	`, 20)
 
 	if err != nil {
 		log.Println(err)
