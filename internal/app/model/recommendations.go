@@ -44,8 +44,18 @@ type RecommendationKeywords struct {
 	Name string `json:"name"`
 }
 
-// GetRecommendations retrieves the latest 20 recommendations.
-func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
+// RecommendationPagination type is a struct for paginate recommendations results.
+type RecommendationPagination struct {
+	Data        []*ResponseRecommendation `json:"data"`
+	CurrentPage float64                   `json:"current_page"`
+	LastPage    float64                   `json:"last_page"`
+	PerPage     float64                   `json:"per_page"`
+	Total       float64                   `json:"total"`
+}
+
+// GetRecommendations retrieves the latest recommendations.
+// o = offset | l = limit
+func GetRecommendations(o, l float64, db *sql.DB) (*ResultRecommendation, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -54,7 +64,7 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 		created_at, updated_at
 		FROM recommendations
 		ORDER BY id DESC
-		LIMIT ?
+		LIMIT ?,?
 	`)
 
 	if err != nil {
@@ -63,7 +73,7 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 
 	defer stmt.Close()
 
-	rows, err := stmt.Query(10)
+	rows, err := stmt.Query(o, l)
 
 	res := ResultRecommendation{}
 
@@ -304,4 +314,26 @@ func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords,
 	}
 
 	return recK, err
+}
+
+// GetRecommendationTotalRows retrieves the total rows of recommendations table.
+// TODO: Optimize this function.
+func GetRecommendationTotalRows(db *sql.DB) (float64, error) {
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	var total float64
+
+	err = stmt.QueryRow().Scan(&total)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return total, err
 }

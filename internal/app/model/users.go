@@ -8,8 +8,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-// TODO: Pagination
-
 // User type is a struct for users table.
 type User struct {
 	ID        int64     `json:"id"`

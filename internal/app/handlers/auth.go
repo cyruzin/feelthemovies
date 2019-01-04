@@ -26,7 +26,6 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Remove password field from this request.
 	// This is only for comparison.
 	user, err := model.Authenticate(reqA.Email, db)
 

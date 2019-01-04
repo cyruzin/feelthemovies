@@ -64,13 +64,10 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	rec, err := model.GetRecommendationItem(id, db)
 	recS, err := model.GetRecommendationItemSources(id, db)
 
-	response := struct {
-		*model.RecommendationItem
-		Sources []*model.RecommendationItemSources `json:"sources"`
-	}{
-		rec,
-		recS,
-	}
+	response := model.ResponseRecommendationItem{}
+
+	response.RecommendationItem = rec
+	response.Sources = recS
 
 	if err != nil {
 		w.WriteHeader(400)
