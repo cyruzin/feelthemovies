@@ -43,7 +43,7 @@ type RecommendationItemSources struct {
 // GetRecommendationItems retrieves all items of a given recommendation by ID.
 func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, error) {
 
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
 		year, overview, poster, backdrop, 
@@ -51,7 +51,7 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 		updated_at
 		FROM recommendation_items
 		WHERE recommendation_id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -59,12 +59,14 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	res := ResultRecommendationItem{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationItem{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.RecommendationID, &rec.Name, &rec.TMDBID,
 			&rec.Year, &rec.Overview, &rec.Poster, &rec.Backdrop,
 			&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
@@ -231,14 +233,14 @@ func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
 
 // GetRecommendationItemSources retrieves all sources of a given recommendation item.
 func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSources, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		s.id, s.name 
 		FROM sources AS s
 		JOIN recommendation_item_source AS ris ON ris.source_id = s.id 	
 		JOIN recommendation_items AS ri ON ri.id = ris.recommendation_item_id	
 		WHERE ri.id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -246,12 +248,14 @@ func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSo
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	recS := []*RecommendationItemSources{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationItemSources{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
 

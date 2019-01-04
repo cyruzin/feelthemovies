@@ -23,13 +23,13 @@ type ResultKeyword struct {
 
 // GetKeywords retrieves the latest 20 keywords.
 func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM keywords
 		ORDER BY id DESC
 		LIMIT ?
-	`, 20)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -37,12 +37,14 @@ func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(10)
+
 	res := ResultKeyword{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		k := Keyword{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 		)
 

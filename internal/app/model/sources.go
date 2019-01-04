@@ -23,13 +23,13 @@ type ResultSource struct {
 
 // GetSources retrieves the latest 20 sources.
 func GetSources(db *sql.DB) (*ResultSource, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM sources
 		ORDER BY id DESC
 		LIMIT ?
-	`, 20)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -37,12 +37,14 @@ func GetSources(db *sql.DB) (*ResultSource, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(10)
+
 	res := ResultSource{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		s := Source{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&s.ID, &s.Name, &s.CreatedAt, &s.UpdatedAt,
 		)
 

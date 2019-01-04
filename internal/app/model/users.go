@@ -29,14 +29,14 @@ type ResultUser struct {
 // GetUsers retrieves the first twenty users.
 func GetUsers(db *sql.DB) (*ResultUser, error) {
 
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password,
 		api_token, created_at, updated_at
 		FROM users
 		ORDER BY id DESC
 		LIMIT ?
-	`, 20)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -44,12 +44,14 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(10)
+
 	res := ResultUser{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		user := User{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&user.ID, &user.Name, &user.Email, &user.Password,
 			&user.APIToken, &user.CreatedAt, &user.UpdatedAt,
 		)

@@ -23,13 +23,13 @@ type ResultGenre struct {
 
 // GetGenres retrieves the latest 20 genres.
 func GetGenres(db *sql.DB) (*ResultGenre, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM genres
 		ORDER BY id DESC
 		LIMIT ?
-	`, 20)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -37,12 +37,14 @@ func GetGenres(db *sql.DB) (*ResultGenre, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(10)
+
 	res := ResultGenre{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		genre := Genre{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&genre.ID, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
 		)
 

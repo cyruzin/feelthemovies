@@ -47,7 +47,7 @@ type RecommendationKeywords struct {
 // GetRecommendations retrieves the latest 20 recommendations.
 func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		id, user_id, title, type, 
 		body, poster, backdrop, status, 
@@ -55,7 +55,7 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 		FROM recommendations
 		ORDER BY id DESC
 		LIMIT ?
-	`, 10)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -63,12 +63,14 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(10)
+
 	res := ResultRecommendation{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := Recommendation{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
 			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
 			&rec.CreatedAt, &rec.UpdatedAt,
@@ -228,14 +230,14 @@ func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
 func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		g.id, g.name 
 		FROM genres AS g
 		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
 		JOIN recommendations AS r ON r.id = gr.recommendation_id
 		WHERE r.id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -243,12 +245,14 @@ func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, err
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	recG := []*RecommendationGenres{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationGenres{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
 
@@ -265,14 +269,14 @@ func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, err
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
 func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords, error) {
-	stmt, err := db.Query(`
+	stmt, err := db.Prepare(`
 		SELECT 
 		k.id, k.name 
 		FROM keywords AS k
 		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
 		JOIN recommendations AS r ON r.id = kr.recommendation_id
 		WHERE r.id = ?
-	`, id)
+	`)
 
 	if err != nil {
 		log.Println(err)
@@ -280,12 +284,14 @@ func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords,
 
 	defer stmt.Close()
 
+	rows, err := stmt.Query(id)
+
 	recK := []*RecommendationKeywords{}
 
-	for stmt.Next() {
+	for rows.Next() {
 		rec := RecommendationKeywords{}
 
-		err = stmt.Scan(
+		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
 
