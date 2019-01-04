@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-// TODO: Create Genres/Keywords structs for pivot table.
-
 // Recommendation type is a struct for recommendations table.
 type Recommendation struct {
 	ID        int64     `json:"id"`
@@ -20,13 +18,30 @@ type Recommendation struct {
 	Status    int       `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Genres    []int     `json:"genres,omitempty"`
-	Keywords  []int     `json:"keywords,omitempty"`
 }
 
 // ResultRecommendation type is a slice of recommendations.
 type ResultRecommendation struct {
 	Data []*Recommendation `json:"data"`
+}
+
+// ResponseRecommendation type is a struct for a final response.
+type ResponseRecommendation struct {
+	*Recommendation
+	Genres   []*RecommendationGenres   `json:"genres"`
+	Keywords []*RecommendationKeywords `json:"keywords"`
+}
+
+// RecommendationGenres type is a struct for genre_recommendation pivot table.
+type RecommendationGenres struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// RecommendationKeywords type is a struct for keyword_recommendation pivot table.
+type RecommendationKeywords struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 // GetRecommendations retrieves the latest 20 recommendations.
@@ -40,7 +55,7 @@ func GetRecommendations(db *sql.DB) (*ResultRecommendation, error) {
 		FROM recommendations
 		ORDER BY id DESC
 		LIMIT ?
-	`, 20)
+	`, 10)
 
 	if err != nil {
 		log.Println(err)
@@ -209,4 +224,78 @@ func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
 	}
 
 	return data, err
+}
+
+// GetRecommendationGenres retrieves all genres of a given recommendation.
+func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, error) {
+	stmt, err := db.Query(`
+		SELECT 
+		g.id, g.name 
+		FROM genres AS g
+		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
+		JOIN recommendations AS r ON r.id = gr.recommendation_id
+		WHERE r.id = ?
+	`, id)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	recG := []*RecommendationGenres{}
+
+	for stmt.Next() {
+		rec := RecommendationGenres{}
+
+		err = stmt.Scan(
+			&rec.ID, &rec.Name,
+		)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		recG = append(recG, &rec)
+
+	}
+
+	return recG, err
+}
+
+// GetRecommendationKeywords retrieves all keywords of a given recommendation.
+func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords, error) {
+	stmt, err := db.Query(`
+		SELECT 
+		k.id, k.name 
+		FROM keywords AS k
+		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
+		JOIN recommendations AS r ON r.id = kr.recommendation_id
+		WHERE r.id = ?
+	`, id)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	recK := []*RecommendationKeywords{}
+
+	for stmt.Next() {
+		rec := RecommendationKeywords{}
+
+		err = stmt.Scan(
+			&rec.ID, &rec.Name,
+		)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		recK = append(recK, &rec)
+
+	}
+
+	return recK, err
 }

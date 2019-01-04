@@ -6,14 +6,15 @@ import (
 	"time"
 )
 
+// TODO: Fix YearParsed field in RecommendationItem struct.
+
 // RecommendationItem type is a struct for recommendation_items table.
 type RecommendationItem struct {
 	ID               int64     `json:"id"`
 	RecommendationID int64     `json:"recommendation_id" validate:"required,numeric"`
 	Name             string    `json:"name" validate:"required"`
 	TMDBID           int64     `json:"tmdb_id" validate:"required,numeric"`
-	Year             string    `json:"year" validate:"required"`
-	YearParsed       time.Time `json:"-"`
+	Year             time.Time `json:"year"`
 	Overview         string    `json:"overview" validate:"required"`
 	Poster           string    `json:"poster" validate:"required"`
 	Backdrop         string    `json:"backdrop" validate:"required"`
@@ -22,12 +23,23 @@ type RecommendationItem struct {
 	MediaType        string    `json:"media_type" validate:"required"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
-	Sources          []int     `json:"sources,omitempty"`
 }
 
 // ResultRecommendationItem type is a slice of recommendation items.
 type ResultRecommendationItem struct {
 	Data []*RecommendationItem `json:"data"`
+}
+
+// ResponseRecommendationItem type is a struct for a final response.
+type ResponseRecommendationItem struct {
+	*RecommendationItem
+	Sources []*RecommendationItemSources `json:"sources"`
+}
+
+// RecommendationItemSources type is a struct for recommendation_item_source pivot table.
+type RecommendationItemSources struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 // GetRecommendationItems retrieves all items of a given recommendation by ID.
@@ -124,7 +136,7 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&r.RecommendationID, &r.Name, &r.TMDBID, &r.YearParsed,
+		&r.RecommendationID, &r.Name, &r.TMDBID, &r.Year,
 		&r.Overview, &r.Poster, &r.Backdrop, &r.Trailer,
 		&r.Commentary, &r.MediaType, &r.CreatedAt, &r.UpdatedAt,
 	)
@@ -165,7 +177,7 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 	defer stmt.Close()
 
 	res, err := stmt.Exec(
-		&r.Name, &r.TMDBID, &r.YearParsed, &r.Overview,
+		&r.Name, &r.TMDBID, &r.Year, &r.Overview,
 		&r.Poster, &r.Backdrop, &r.Trailer, &r.Commentary,
 		&r.MediaType, &r.UpdatedAt, &id,
 	)
@@ -217,4 +229,41 @@ func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
 	}
 
 	return data, err
+}
+
+// GetRecommendationItemSources retrieves all sources of a given recommendation item.
+func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSources, error) {
+	stmt, err := db.Query(`
+		SELECT 
+		s.id, s.name 
+		FROM sources AS s
+		JOIN recommendation_item_source AS ris ON ris.source_id = s.id 	
+		JOIN recommendation_items AS ri ON ri.id = ris.recommendation_item_id	
+		WHERE ri.id = ?
+	`, id)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	recS := []*RecommendationItemSources{}
+
+	for stmt.Next() {
+		rec := RecommendationItemSources{}
+
+		err = stmt.Scan(
+			&rec.ID, &rec.Name,
+		)
+
+		if err != nil {
+			log.Println(err)
+		}
+
+		recS = append(recS, &rec)
+
+	}
+
+	return recS, err
 }
