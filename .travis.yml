@@ -27,10 +27,7 @@ git:
 # MySQL / Overalls config
 before_install:
   - mysql -e 'create database api_feelthemovies;'
-  #- sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
-  #- sudo mysql_upgrade -u root -pnew_password
-  # - sudo service mysql restart
-  - mysql -u root --password="" < db/api_feelthemovies.sql
+  - mysql api_feelthemovies < $GOPATH/src/github.com/cyruzin/feelthemovies/db/api_feelthemovies.sql
   - go get go-sql-driver/mysql get github.com/joho/godotenv github.com/gorilla/mux go-playground/validator rs/cors github.com/mattn/goveralls
 
 # Overalls / Test scripts 
