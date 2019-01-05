@@ -70,6 +70,11 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	for _, r := range search.Data {
 		recG, err := model.GetRecommendationGenres(r.ID, db)
+
+		if err != nil {
+			log.Println(err)
+		}
+
 		recK, err := model.GetRecommendationKeywords(r.ID, db)
 
 		if err != nil {

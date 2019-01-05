@@ -195,6 +195,10 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	upRec := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
