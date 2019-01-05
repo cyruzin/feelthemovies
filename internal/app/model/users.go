@@ -11,7 +11,7 @@ import (
 // User type is a struct for users table.
 type User struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name" validate:"required,alpha"`
+	Name      string    `json:"name" validate:"required"`
 	Email     string    `json:"email" validate:"required,email"`
 	Password  string    `json:"password" validate:"required,min=8"`
 	APIToken  string    `json:"api_token"`

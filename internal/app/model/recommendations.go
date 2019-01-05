@@ -7,15 +7,16 @@ import (
 )
 
 // Recommendation type is a struct for recommendations table.
+// TODO: Check validation for type and status, it cannot be 0.
 type Recommendation struct {
 	ID        int64     `json:"id"`
 	UserID    int64     `json:"user_id" validate:"required,numeric"`
 	Title     string    `json:"title" validate:"required"`
-	Type      int       `json:"type" validate:"required,numeric"`
+	Type      int       `json:"type" validate:"min=0,max=2"`
 	Body      string    `json:"body" validate:"required"`
 	Poster    string    `json:"poster" validate:"required"`
 	Backdrop  string    `json:"backdrop" validate:"required"`
-	Status    int       `json:"status"`
+	Status    int       `json:"status" validate:"min=0,max=1"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
