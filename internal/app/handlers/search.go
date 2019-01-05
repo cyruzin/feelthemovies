@@ -32,6 +32,11 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	total, err := model.GetSearchRecommendationTotalRows(params["query"][0], db) // total results
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	var (
 		limit       float64 = 10                       // limit per page
 		offset      float64                            // offset record
@@ -56,6 +61,10 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// End pagination
 
 	search, err := model.SearchRecommendation(offset, limit, params["query"][0], db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	result := []*model.ResponseRecommendation{}
 

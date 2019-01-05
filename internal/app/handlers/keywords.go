@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -32,6 +33,10 @@ func getKeyword(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	k, err := model.GetKeyword(id, db)
 
 	if err != nil {
@@ -49,7 +54,11 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 
 	var reqK model.Keyword
 
-	err = json.NewDecoder(r.Body).Decode(&reqK)
+	err := json.NewDecoder(r.Body).Decode(&reqK)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqK)
@@ -82,7 +91,11 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	var reqK model.Keyword
 
-	err = json.NewDecoder(r.Body).Decode(&reqK)
+	err := json.NewDecoder(r.Body).Decode(&reqK)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqK)
@@ -102,6 +115,10 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	k, err := model.UpdateKeyword(id, &upK, db)
 
 	if err != nil {
@@ -119,6 +136,10 @@ func deleteKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteKeyword(id, db)
 

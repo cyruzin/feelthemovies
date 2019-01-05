@@ -20,7 +20,15 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	rec, err := model.GetRecommendationItems(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	result := []*model.ResponseRecommendationItem{}
 
@@ -61,8 +69,21 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	rec, err := model.GetRecommendationItem(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	recS, err := model.GetRecommendationItemSources(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	response := model.ResponseRecommendationItem{}
 
@@ -88,7 +109,12 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		Year    string `json:"year" validate:"required"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&reqRec)
+	err := json.NewDecoder(r.Body).Decode(&reqRec)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	validate = validator.New()
 	err = validate.Struct(reqRec)
 
@@ -101,6 +127,10 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	// Parsing string to time.Time
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	newRec := model.RecommendationItem{
 		RecommendationID: reqRec.RecommendationID,
@@ -118,6 +148,10 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rec, err := model.CreateRecommendationItem(&newRec, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	// Attaching sources IDs in its respective pivot table.
 	sources := make(map[int64][]int)
@@ -144,7 +178,11 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		Year    string `json:"year" validate:"required"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&reqRec)
+	err := json.NewDecoder(r.Body).Decode(&reqRec)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqRec)
@@ -174,7 +212,15 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	rec, err := model.UpdateRecommendationItem(id, &upRec, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	// Syncing sources IDs in its respective pivot table.
 	sources := make(map[int64][]int)
@@ -198,6 +244,10 @@ func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteRecommendationItem(id, db)
 
