@@ -29,6 +29,7 @@ These are the packages that helped me build this project:
 Package validator implements value validations for structs and individual fields based on tags.
 * [rs/cors](https://github.com/rs/cors) - 
 CORS is a net/http handler implementing Cross Origin Resource Sharing W3 specification in Golang.
+* [joho/godotenv](https://github.com/joho/godotenv) - A Go (golang) port of the Ruby dotenv project (which loads env vars from a .env file).
 * [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
 
 ### Useful links
