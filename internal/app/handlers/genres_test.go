@@ -30,7 +30,7 @@ func TestGetGenresSuccess(t *testing.T) {
 	}
 }
 func TestGetGenreSuccess(t *testing.T) {
-	req, err := http.NewRequest("GET", "/v1/genre/2", nil)
+	req, err := http.NewRequest("GET", "/v1/genre/4", nil)
 
 	if err != nil {
 		log.Println(err)
@@ -72,7 +72,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 
 	var newGenre = []byte(`{"name":"Space 24"}`)
 
-	req, err := http.NewRequest("PUT", "/v1/genre/1", bytes.NewBuffer(newGenre))
+	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(newGenre))
 
 	if err != nil {
 		log.Println(err)
@@ -90,7 +90,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 }
 
 func TestDeleteGenreSuccess(t *testing.T) {
-	req, err := http.NewRequest("DELETE", "/v1/genre/16", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/1", nil)
 
 	if err != nil {
 		log.Println(err)
