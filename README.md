@@ -18,7 +18,7 @@ $ go run main.go
 ```
 ### Tests 
 
-- As soon as I finish coding, I'll start the tests :).
+As soon as I finish coding, I'll start the tests :).
 
 ### Packages
 
