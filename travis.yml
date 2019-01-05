@@ -1,0 +1,43 @@
+# Language
+language: go
+
+# Enable sudo
+# sudo: false
+
+# Golang versions
+go:
+  - master
+
+# The API needs MySQL
+services:
+  - mysql
+
+# MySQL config
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+# Build only the latest commit
+git:
+  depth: 1
+
+# MySQL / Overalls config
+before_install:
+  - mysql -e 'create database api_feelthemovies;'
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade -u root -pnew_password
+  - sudo service mysql restart
+  - sudo mysql -u root --password="" < db/api_feelthemovies.sql
+  - go get github.com/mattn/goveralls
+
+# Overalls / Test scripts 
+script:
+  - $GOPATH/bin/goveralls -service=travis-ci
+  - go test -v ./...
+
+# Do not notify
+notifications:
+  email: false

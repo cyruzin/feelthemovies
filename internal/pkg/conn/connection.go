@@ -12,7 +12,8 @@ import (
 
 // Connect creates a connection with MySQL database.
 func Connect() (*sql.DB, error) {
-	err := godotenv.Load("../../.env")
+	//err := godotenv.Load("../../.env")
+	err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/cyruzin/feelthemovies/.env"))
 
 	if err != nil {
 		log.Fatal("Error loading .env file", err)
