@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -51,35 +49,15 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	newGenre := struct {
-		Name string `json:"string"`
-	}{
-		"Fantasy",
-	}
+	var newGenre = []byte(`{"name":"Bio"}`)
 
-	j, err := json.Marshal(newGenre)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(j))
+	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
 	if err != nil {
 		log.Println(err)
 	}
 
 	rr := httptest.NewRecorder()
-
-	rr.Header().Set("Content-Type", "Application/json")
-
-	data, err := ioutil.ReadAll(rr.Body)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	log.Println(data)
 
 	r.HandleFunc("/v1/genre", createGenre).Methods("POST")
 
@@ -92,26 +70,15 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 func TestUpdateGenreSuccess(t *testing.T) {
 
-	newGenre := struct {
-		Name string `json:"string"`
-	}{
-		"Music",
-	}
+	var newGenre = []byte(`{"name":"Music"}`)
 
-	j, err := json.Marshal(newGenre)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(j))
+	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(newGenre))
 
 	if err != nil {
 		log.Println(err)
 	}
 
 	rr := httptest.NewRecorder()
-	rr.Header().Set("Content-Type", "Application/json")
 
 	r.HandleFunc("/v1/genre/{id}", updateGenre).Methods("PUT")
 
