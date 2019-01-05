@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2019-01-04T00:37:25.482Z",
+	"__export_date": "2019-01-05T02:38:07.127Z",
 	"__export_source": "insomnia.desktop.app:v6.3.2",
 	"resources": [
 		{
@@ -152,7 +152,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359832096,
 			"method": "GET",
-			"modified": 1546468340410,
+			"modified": 1546633909948,
 			"name": "/recommendations",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -181,7 +181,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359832046,
 			"method": "GET",
-			"modified": 1546473072217,
+			"modified": 1546653568183,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -191,7 +191,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/1",
+			"url": "{{ base_url  }}/recommendation/61",
 			"_type": "request"
 		},
 		{
@@ -199,7 +199,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best War Movies II\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [9, 1],\n\t\"keywords\": [1]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste do Insomnia 3\",\n\t\"type\": 0,\n\t\"body\": \"<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [16,9],\n\t\"keywords\": [9,5]\n}"
 			},
 			"created": 1546362293924,
 			"description": "",
@@ -218,7 +218,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831996,
 			"method": "POST",
-			"modified": 1546560332643,
+			"modified": 1546654995664,
 			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -236,7 +236,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste\",\n\t\"type\": 1,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
 			},
 			"created": 1546363702513,
 			"description": "",
@@ -255,7 +255,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831946,
 			"method": "PUT",
-			"modified": 1546560422598,
+			"modified": 1546655712821,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -265,7 +265,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/40",
+			"url": "{{ base_url  }}/recommendation/64",
 			"_type": "request"
 		},
 		{
@@ -360,7 +360,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Admin\",\n\t\"email\": \"admin@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"Administrator Dubeux\",\n\t\"email\": \"admin21@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386681568,
 			"description": "",
@@ -380,7 +380,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626646,
 			"method": "POST",
-			"modified": 1546549922807,
+			"modified": 1546643197358,
 			"name": "/user",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -398,7 +398,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Cristiano Ronaldo\",\n\t\"email\": \"cristiano.ronaldo@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"Ronaldo Fenômenoa\",\n\t\"email\": \"ronaldo__fenomeno@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386851209,
 			"description": "",
@@ -417,7 +417,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626596,
 			"method": "PUT",
-			"modified": 1546532358148,
+			"modified": 1546643254574,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -427,7 +427,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/16",
+			"url": "{{ base_url  }}/user/21",
 			"_type": "request"
 		},
 		{
@@ -715,7 +715,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Oceanborn\"\n}"
+				"text": "{\n\t\"name\": \"Oceanborn a\"\n}"
 			},
 			"created": 1546473740310,
 			"description": "",
@@ -734,7 +734,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546473712450,
 			"method": "PUT",
-			"modified": 1546537038773,
+			"modified": 1546643340143,
 			"name": "/keyword/{id}",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -752,7 +752,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Bloodbath\"\n}"
+				"text": "{\n\t\"name\": \"Fork Gold\"\n}"
 			},
 			"created": 1546473751093,
 			"description": "",
@@ -771,7 +771,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546473712500,
 			"method": "POST",
-			"modified": 1546537029226,
+			"modified": 1546643330106,
 			"name": "/keyword",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -876,7 +876,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"War\"\t\n}"
+				"text": "{\n\"name\": \"NewGenre\"\t\n}"
 			},
 			"created": 1546474786105,
 			"description": "",
@@ -895,7 +895,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714575,
 			"method": "POST",
-			"modified": 1546560302670,
+			"modified": 1546633883974,
 			"name": "/genre",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -990,7 +990,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951648,
 			"method": "GET",
-			"modified": 1546485901646,
+			"modified": 1546650338536,
 			"name": "/recomendation_items/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1000,7 +1000,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_items/1",
+			"url": "{{ base_url  }}/recommendation_items/54",
 			"_type": "request"
 		},
 		{
@@ -1008,7 +1008,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 1,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,4,5]\n}"
+				"text": "{\n\t\"recommendation_id\": 2,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,2]\n}"
 			},
 			"created": 1546475043713,
 			"description": "",
@@ -1027,7 +1027,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951598,
 			"method": "POST",
-			"modified": 1546548882499,
+			"modified": 1546649958174,
 			"name": "/recommendation_item",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1056,7 +1056,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951623,
 			"method": "GET",
-			"modified": 1546478725741,
+			"modified": 1546629056513,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1066,7 +1066,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_item/1",
+			"url": "{{ base_url  }}/recommendation_item/18",
 			"_type": "request"
 		},
 		{
@@ -1074,7 +1074,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 12,\n\t\"name\": \"John Wick: Chapter III\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [3]\n}"
+				"text": "{\n\t\"recommendation_id\": 12,\n\t\"name\": \"John Wick: Chapter III\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [4,6]\n}"
 			},
 			"created": 1546478525137,
 			"description": "",
@@ -1093,7 +1093,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951548,
 			"method": "PUT",
-			"modified": 1546549016494,
+			"modified": 1546581777579,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1103,7 +1103,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_item/12",
+			"url": "{{ base_url  }}/recommendation_item/16",
 			"_type": "request"
 		},
 		{
@@ -1140,7 +1140,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"query\": \"War\",\n\t\"type\": 0\n}"
+				"text": ""
 			},
 			"created": 1546558984132,
 			"description": "",
@@ -1160,7 +1160,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546558984132,
 			"method": "GET",
-			"modified": 1546562204308,
+			"modified": 1546636126873,
 			"name": "/search_recommendation",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1170,7 +1170,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_recommendation",
+			"url": "{{ base_url  }}/search_recommendation?query=war&page=1",
 			"_type": "request"
 		},
 		{
@@ -1178,7 +1178,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"query\": \"Cristiano Ronaldo\"\n}"
+				"text": ""
 			},
 			"created": 1546561020782,
 			"description": "",
@@ -1197,7 +1197,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546558984082,
 			"method": "GET",
-			"modified": 1546562193889,
+			"modified": 1546635526351,
 			"name": "/search_user",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1207,7 +1207,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_user",
+			"url": "{{ base_url  }}/search_user?query=cyro",
 			"_type": "request"
 		},
 		{
@@ -1215,7 +1215,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"query\": \"Shark\"\n}"
+				"text": ""
 			},
 			"created": 1546561756199,
 			"description": "",
@@ -1234,7 +1234,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546558984032,
 			"method": "GET",
-			"modified": 1546562163213,
+			"modified": 1546635524351,
 			"name": "/search_keyword",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1244,7 +1244,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_keyword",
+			"url": "{{ base_url  }}/search_keyword?query=shark",
 			"_type": "request"
 		},
 		{
@@ -1252,7 +1252,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"query\": \"Horror\"\n}"
+				"text": ""
 			},
 			"created": 1546561830182,
 			"description": "",
@@ -1271,7 +1271,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546516967840,
 			"method": "GET",
-			"modified": 1546562144755,
+			"modified": 1546639984565,
 			"name": "/search_genre",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1281,7 +1281,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_genre",
+			"url": "{{ base_url  }}/search_genre?query=a",
 			"_type": "request"
 		},
 		{
@@ -1289,7 +1289,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"query\": \"Netflix\"\n}"
+				"text": ""
 			},
 			"created": 1546561892552,
 			"description": "",
@@ -1308,7 +1308,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546495959744,
 			"method": "GET",
-			"modified": 1546562151473,
+			"modified": 1546635521587,
 			"name": "/search_source",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1318,7 +1318,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_source",
+			"url": "{{ base_url  }}/search_source?query=hbo",
 			"_type": "request"
 		}
 	]
