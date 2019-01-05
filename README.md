@@ -35,7 +35,7 @@ A curated list of awesome Go frameworks, libraries and software.
 
 ### Contributing
 
-To start contributing, please check [CONTRIBUTING](https://github.com/cyruzin/feelthemovies/blob/master/CONTRIBUTING.md)
+To start contributing, please check [CONTRIBUTING](https://github.com/cyruzin/feelthemovies/blob/master/CONTRIBUTING.md).
 
 ### License
 
