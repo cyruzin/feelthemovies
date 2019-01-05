@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -46,67 +49,78 @@ func TestGetGenreSuccess(t *testing.T) {
 	}
 }
 
-// func TestCreateGenreSuccess(t *testing.T) {
+func TestCreateGenreSuccess(t *testing.T) {
 
-// 	newGenre := struct {
-// 		Name string `json:"string"`
-// 	}{
-// 		"Fantasy",
-// 	}
+	newGenre := struct {
+		Name string `json:"string"`
+	}{
+		"Fantasy",
+	}
 
-// 	j, err := json.Marshal(newGenre)
+	j, err := json.Marshal(newGenre)
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(j))
+	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(j))
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	rr := httptest.NewRecorder()
+	rr := httptest.NewRecorder()
 
-// 	rr.Header().Set("Content-Type", "Application/json")
+	rr.Header().Set("Content-Type", "Application/json")
 
-// 	data, err := ioutil.ReadAll(rr.Body)
+	data, err := ioutil.ReadAll(rr.Body)
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	log.Println(data)
+	log.Println(data)
 
-// 	r.HandleFunc("/v1/genre", createGenre).Methods("POST")
+	r.HandleFunc("/v1/genre", createGenre).Methods("POST")
 
-// 	r.ServeHTTP(rr, req)
+	r.ServeHTTP(rr, req)
 
-// 	if status := rr.Code; status != http.StatusCreated {
-// 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
-// 	}
-// }
+	if status := rr.Code; status != http.StatusCreated {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
 
-// func TestUpdateGenreSuccess(t *testing.T) {
+func TestUpdateGenreSuccess(t *testing.T) {
 
-// 	var newGenre = []byte(`{"name":"Music"}`)
+	newGenre := struct {
+		Name string `json:"string"`
+	}{
+		"Music",
+	}
 
-// 	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(newGenre))
+	j, err := json.Marshal(newGenre)
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	rr := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(j))
 
-// 	r.HandleFunc("/v1/genre/{id}", updateGenre).Methods("PUT")
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	r.ServeHTTP(rr, req)
+	rr := httptest.NewRecorder()
+	rr.Header().Set("Content-Type", "Application/json")
 
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
-// 	}
-// }
+	r.HandleFunc("/v1/genre/{id}", updateGenre).Methods("PUT")
+
+	r.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
 
 // func TestDeleteGenreSuccess(t *testing.T) {
 // 	req, err := http.NewRequest("DELETE", "/v1/genre/5", nil)
