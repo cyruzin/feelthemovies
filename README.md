@@ -1,6 +1,6 @@
 # Feel the Movies
 
-[![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies)
+[![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
 
@@ -16,6 +16,9 @@ That's it! Go to folder "cmd/feelthemovies" and run the command:
 ```sh
 $ go run main.go
 ```
+### Tests 
+
+- As soon as I finish coding, I'll start the tests :).
 
 ### Packages
 
