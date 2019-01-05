@@ -24,6 +24,7 @@ addons:
       - mysql-5.7-trusty
     packages:
       - mysql-server
+      - mysql-client
 
 # Build only the latest commit
 git:
@@ -32,7 +33,10 @@ git:
 # MySQL / Overalls config
 before_install:
   - mysql -e 'create database api_feelthemovies;'
-  - mysql api_feelthemovies < $GOPATH/src/github.com/cyruzin/feelthemovies/db/api_feelthemovies.sql
+  - mysql -e "use mysql; update user set authentication_string=PASSWORD('') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - mysql_upgrade -u root -pnew_password
+  - service mysql restart
+  - mysql api_feelthemovies < db/api_feelthemovies.sql
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls
 
