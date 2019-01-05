@@ -34,6 +34,10 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	u, err := model.GetUser(id, db)
 
 	if err != nil {
@@ -51,7 +55,11 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	var reqU model.User
 
-	err = json.NewDecoder(r.Body).Decode(&reqU)
+	err := json.NewDecoder(r.Body).Decode(&reqU)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqU)
@@ -91,7 +99,11 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	var reqU model.User
 
-	err = json.NewDecoder(r.Body).Decode(&reqU)
+	err := json.NewDecoder(r.Body).Decode(&reqU)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqU)
@@ -104,11 +116,11 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 
-	hashAPI := helper.UUIDGenerator()
-
 	if err != nil {
 		log.Println(err)
 	}
+
+	hashAPI := helper.UUIDGenerator()
 
 	upU := model.User{
 		Name:      reqU.Name,
@@ -121,6 +133,10 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	u, err := model.UpdateUser(id, &upU, db)
 
@@ -139,6 +155,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteUser(id, db)
 

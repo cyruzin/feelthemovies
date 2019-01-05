@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -32,6 +33,10 @@ func getGenre(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	g, err := model.GetGenre(id, db)
 
 	if err != nil {
@@ -49,7 +54,11 @@ func createGenre(w http.ResponseWriter, r *http.Request) {
 
 	var reqG model.Genre
 
-	err = json.NewDecoder(r.Body).Decode(&reqG)
+	err := json.NewDecoder(r.Body).Decode(&reqG)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqG)
@@ -82,9 +91,14 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 
 	var reqG model.Genre
 
-	err = json.NewDecoder(r.Body).Decode(&reqG)
+	err := json.NewDecoder(r.Body).Decode(&reqG)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
+
 	err = validate.Struct(reqG)
 
 	if err != nil {
@@ -100,6 +114,10 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	g, err := model.UpdateGenre(id, &upG, db)
 
@@ -118,6 +136,10 @@ func deleteGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteGenre(id, db)
 

@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-// Search type is a struct for seach queries.
+// Search type is a struct for search queries.
 type Search struct {
 	Query string `json:"query" validate:"required"`
 	Type  int    `json:"type"`

@@ -1,5 +1,7 @@
 # Feel the Movies
 
+[![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies)
+
 This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
 
 This is my first Golang project, so probably there's a lot to improve. Any kind of help is welcome. I did my best researching the best practices, the best folder structuration and all that I could find. In the future, I pretend to bump this project to the version 2.0 using advanced concepts, like design patterns.
@@ -26,7 +28,7 @@ Package validator implements value validations for structs and individual fields
 CORS is a net/http handler implementing Cross Origin Resource Sharing W3 specification in Golang.
 * [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
 
-## Useful links
+### Useful links
 
 * [golang-standards / project-layout](https://github.com/golang-standards/project-layout) - Standard Go Project Layout.
 * [avelino / awesome-go](https://github.com/avelino/awesome-go) - 

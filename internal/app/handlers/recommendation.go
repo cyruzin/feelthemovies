@@ -22,6 +22,11 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
 	total, err := model.GetRecommendationTotalRows(db) // total results
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	var (
 		limit       float64 = 10                       // limit per page
 		offset      float64                            // offset record
@@ -49,10 +54,19 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := model.GetRecommendations(offset, limit, db)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	result := []*model.ResponseRecommendation{}
 
 	for _, r := range rec.Data {
 		recG, err := model.GetRecommendationGenres(r.ID, db)
+
+		if err != nil {
+			log.Println(err)
+		}
+
 		recK, err := model.GetRecommendationKeywords(r.ID, db)
 
 		if err != nil {
@@ -92,9 +106,27 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	rec, err := model.GetRecommendation(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	recG, err := model.GetRecommendationGenres(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	recK, err := model.GetRecommendationKeywords(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	response := model.ResponseRecommendation{}
 
@@ -121,7 +153,11 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		Keywords []int `json:"keywords"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&reqRec)
+	err := json.NewDecoder(r.Body).Decode(&reqRec)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqRec)
@@ -146,6 +182,10 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := model.CreateRecommendation(&newRec, db)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	// Attaching keyword / genres IDs in their respective pivot tables.
 	keywords := make(map[int64][]int)
 	genres := make(map[int64][]int)
@@ -154,6 +194,11 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	genres[rec.ID] = reqRec.Genres
 
 	_, err = helper.Attach(keywords, "keyword_recommendation", db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	_, err = helper.Attach(genres, "genre_recommendation", db)
 
 	if err != nil {
@@ -174,7 +219,11 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		Keywords []int `json:"keywords"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&reqRec)
+	err := json.NewDecoder(r.Body).Decode(&reqRec)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqRec)
@@ -199,7 +248,15 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	rec, err := model.UpdateRecommendation(id, &upRec, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	// Syncing keyword / genres IDs in their respective pivot tables.
 	keywords := make(map[int64][]int)
@@ -209,6 +266,11 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	genres[rec.ID] = reqRec.Genres
 
 	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db)
 
 	if err != nil {
@@ -226,6 +288,10 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteRecommendation(id, db)
 

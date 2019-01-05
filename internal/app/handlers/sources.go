@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -32,6 +33,10 @@ func getSource(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	s, err := model.GetSource(id, db)
 
 	if err != nil {
@@ -49,7 +54,11 @@ func createSource(w http.ResponseWriter, r *http.Request) {
 
 	var reqS model.Source
 
-	err = json.NewDecoder(r.Body).Decode(&reqS)
+	err := json.NewDecoder(r.Body).Decode(&reqS)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
 	err = validate.Struct(reqS)
@@ -82,9 +91,14 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 
 	var reqS model.Source
 
-	err = json.NewDecoder(r.Body).Decode(&reqS)
+	err := json.NewDecoder(r.Body).Decode(&reqS)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	validate = validator.New()
+
 	err = validate.Struct(reqS)
 
 	if err != nil {
@@ -101,6 +115,10 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	s, err := model.UpdateSource(id, &upS, db)
 
@@ -119,6 +137,10 @@ func deleteSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	d, err := model.DeleteSource(id, db)
 
