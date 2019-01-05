@@ -72,6 +72,10 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 
+	if err != nil {
+		log.Println(err)
+	}
+
 	hashAPI := helper.UUIDGenerator()
 
 	newU := model.User{
