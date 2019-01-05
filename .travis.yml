@@ -2,11 +2,16 @@
 language: go
 
 # Enable sudo
-# sudo: false
+sudo: false
+
+# Enabling Go Modules 
+# This won't be necessary in version 1.12
+env:
+  - GO111MODULE=on
 
 # Golang versions
 go:
-  - master
+  - 1.11.x
 
 # The API needs MySQL
 services:
@@ -34,7 +39,7 @@ before_install:
 # Overalls / Test scripts 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
-  - go test -v ./...
+  - go test -v -race ./...
 
 # Do not notify
 notifications:

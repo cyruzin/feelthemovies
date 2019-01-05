@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -49,7 +50,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"Bio"}`)
+	var newGenre = []byte(`{"name":"World War II"}`)
 
 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
@@ -89,28 +90,28 @@ func TestUpdateGenreSuccess(t *testing.T) {
 	}
 }
 
-// func TestDeleteGenreSuccess(t *testing.T) {
-// 	req, err := http.NewRequest("DELETE", "/v1/genre/5", nil)
+func TestDeleteGenreSuccess(t *testing.T) {
+	req, err := http.NewRequest("DELETE", "/v1/genre/3", nil)
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	rr := httptest.NewRecorder()
+	rr := httptest.NewRecorder()
 
-// 	data, err := ioutil.ReadAll(rr.Body)
+	data, err := ioutil.ReadAll(rr.Body)
 
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
+	if err != nil {
+		log.Println(err)
+	}
 
-// 	log.Println(data)
+	log.Println(data)
 
-// 	r.HandleFunc("/v1/genre/{id}", deleteGenre).Methods("DELETE")
+	r.HandleFunc("/v1/genre/{id}", deleteGenre).Methods("DELETE")
 
-// 	r.ServeHTTP(rr, req)
+	r.ServeHTTP(rr, req)
 
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
-// 	}
-// }
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
