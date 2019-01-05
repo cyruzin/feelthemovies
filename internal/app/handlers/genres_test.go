@@ -30,7 +30,7 @@ func TestGetGenresSuccess(t *testing.T) {
 	}
 }
 func TestGetGenreSuccess(t *testing.T) {
-	req, err := http.NewRequest("GET", "/v1/genre/4", nil)
+	req, err := http.NewRequest("GET", "/v1/genre/1", nil)
 
 	if err != nil {
 		log.Println(err)
@@ -49,7 +49,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"Hunter"}`)
+	var newGenre = []byte(`{"name":"War"}`)
 
 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
@@ -70,7 +70,7 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 func TestUpdateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"Space 24"}`)
+	var newGenre = []byte(`{"name":"Music"}`)
 
 	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(newGenre))
 
@@ -90,7 +90,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 }
 
 func TestDeleteGenreSuccess(t *testing.T) {
-	req, err := http.NewRequest("DELETE", "/v1/genre/1", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/4", nil)
 
 	if err != nil {
 		log.Println(err)
