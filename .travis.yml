@@ -31,6 +31,11 @@ before_install:
   - sudo mysql_upgrade -u root -pnew_password
   - sudo service mysql restart
   - sudo mysql -u root --password="" < db/api_feelthemovies.sql
+  - go get go-sql-driver/mysql
+  - go get github.com/joho/godotenv
+  - go get github.com/gorilla/mux
+  - go get go-playground/validator
+  - go get rs/cors
   - go get github.com/mattn/goveralls
 
 # Overalls / Test scripts 
