@@ -49,7 +49,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"Space2"}`)
+	var newGenre = []byte(`{"name":"Hunter"}`)
 
 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
@@ -98,7 +98,7 @@ func TestDeleteGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/genre/{id}", getGenre).Methods("DELETE")
+	r.HandleFunc("/v1/genre/{id}", deleteGenre).Methods("DELETE")
 
 	r.ServeHTTP(rr, req)
 
