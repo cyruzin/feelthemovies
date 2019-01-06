@@ -5,6 +5,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/satori/go.uuid"
+
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -14,7 +16,7 @@ type User struct {
 	Name      string    `json:"name" validate:"required"`
 	Email     string    `json:"email" validate:"required,email"`
 	Password  string    `json:"password" validate:"required,min=8"`
-	APIToken  string    `json:"api_token"`
+	APIToken  uuid.UUID `json:"api_token"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

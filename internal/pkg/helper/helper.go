@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"crypto/rand"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -148,19 +147,4 @@ func HashPassword(password string, cost int) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
-}
-
-// UUIDGenerator generates a unique ID.
-// TODO: Use Google official pkg.
-func UUIDGenerator() (uuid string) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	uuid = fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-
-	return uuid
 }

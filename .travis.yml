@@ -9,7 +9,7 @@ go:
 git:
   depth: 1
 
-# MySQL / Overalls config
+# Overalls config
 before_install:
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls

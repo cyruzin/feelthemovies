@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/satori/go.uuid"
+
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/gorilla/mux"
@@ -76,7 +78,11 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	hashAPI := helper.UUIDGenerator()
+	hashAPI, err := uuid.NewV4()
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	newU := model.User{
 		Name:      reqU.Name,
@@ -124,7 +130,11 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	hashAPI := helper.UUIDGenerator()
+	hashAPI, err := uuid.NewV4()
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	upU := model.User{
 		Name:      reqU.Name,

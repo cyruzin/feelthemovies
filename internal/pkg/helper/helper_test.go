@@ -118,11 +118,3 @@ func TestCheckPassword(t *testing.T) {
 	}
 
 }
-
-func TestUUIDGenerator(t *testing.T) {
-	uuid := UUIDGenerator()
-
-	if uuid == "" {
-		t.Error("Expected a string")
-	}
-}
