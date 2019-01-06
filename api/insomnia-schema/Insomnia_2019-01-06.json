@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2019-01-05T02:38:07.127Z",
+	"__export_date": "2019-01-06T22:09:49.474Z",
 	"__export_source": "insomnia.desktop.app:v6.3.2",
 	"resources": [
 		{
@@ -39,11 +39,11 @@
 			"created": 1546359816290,
 			"description": "",
 			"environment": {
-				"api_token": "54B19FD4-EB1B-76BE-7D21-B8F5F4F3A521",
+				"api_token": "aa0f3579-c1ed-4377-867d-e5a11c45f76f",
 				"base_url": "http://localhost:8000/v1"
 			},
 			"metaSortKey": -1546359816290,
-			"modified": 1546474986350,
+			"modified": 1546812530783,
 			"name": "Feel the Movies",
 			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
 			"_type": "request_group"
@@ -181,7 +181,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359832046,
 			"method": "GET",
-			"modified": 1546653568183,
+			"modified": 1546742115411,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -191,7 +191,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/61",
+			"url": "{{ base_url  }}/recommendation/2",
 			"_type": "request"
 		},
 		{
@@ -199,7 +199,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste do Insomnia 3\",\n\t\"type\": 0,\n\t\"body\": \"<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [16,9],\n\t\"keywords\": [9,5]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Romance Movies\",\n\t\"type\": 0,\n\t\"body\": \"<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [1,2],\n\t\"keywords\": [1,2]\n}"
 			},
 			"created": 1546362293924,
 			"description": "",
@@ -218,7 +218,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831996,
 			"method": "POST",
-			"modified": 1546654995664,
+			"modified": 1546741715134,
 			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -236,7 +236,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"Teste\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Romance Movies\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
 			},
 			"created": 1546363702513,
 			"description": "",
@@ -255,7 +255,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546359831946,
 			"method": "PUT",
-			"modified": 1546655712821,
+			"modified": 1546742145053,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -265,7 +265,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/64",
+			"url": "{{ base_url  }}/recommendation/2",
 			"_type": "request"
 		},
 		{
@@ -342,7 +342,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626696,
 			"method": "GET",
-			"modified": 1546473315623,
+			"modified": 1546744495943,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -352,7 +352,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/4",
+			"url": "{{ base_url  }}/user/1",
 			"_type": "request"
 		},
 		{
@@ -360,7 +360,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Administrator Dubeux\",\n\t\"email\": \"admin21@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"John Doe\",\n\t\"email\": \"johndoe@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386681568,
 			"description": "",
@@ -380,7 +380,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626646,
 			"method": "POST",
-			"modified": 1546643197358,
+			"modified": 1546811186182,
 			"name": "/user",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -398,7 +398,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Ronaldo Fenômenoa\",\n\t\"email\": \"ronaldo__fenomeno@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"Cyro Dubeux\",\n\t\"email\": \"xorycx@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386851209,
 			"description": "",
@@ -417,7 +417,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546386626596,
 			"method": "PUT",
-			"modified": 1546643254574,
+			"modified": 1546811151967,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -427,7 +427,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/21",
+			"url": "{{ base_url  }}/user/1",
 			"_type": "request"
 		},
 		{
@@ -625,7 +625,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"email\": \"james_rodruiguez@gmail.com\",\n\t\"password\": \"hpqkmpxQniasnaQ\"\n}"
+				"text": "{\n\t\"email\": \"xorycx@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546448441083,
 			"description": "",
@@ -639,7 +639,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546448441083,
 			"method": "POST",
-			"modified": 1546537742068,
+			"modified": 1546743053796,
 			"name": "/auth",
 			"parameters": [],
 			"parentId": "fld_6e2a0754bf7d4f48a3f66c3fb8d674b7",
@@ -752,7 +752,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Fork Gold\"\n}"
+				"text": "{\n\t\"name\": \"Action\"\n}"
 			},
 			"created": 1546473751093,
 			"description": "",
@@ -771,7 +771,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546473712500,
 			"method": "POST",
-			"modified": 1546643330106,
+			"modified": 1546741685927,
 			"name": "/keyword",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -858,7 +858,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714625,
 			"method": "GET",
-			"modified": 1546474830496,
+			"modified": 1546727684613,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -868,7 +868,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/genre/2",
+			"url": "{{ base_url  }}/genre/1",
 			"_type": "request"
 		},
 		{
@@ -876,7 +876,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"NewGenre\"\t\n}"
+				"text": "{\n\"name\": \"Comedy\"\t\n}"
 			},
 			"created": 1546474786105,
 			"description": "",
@@ -895,7 +895,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714575,
 			"method": "POST",
-			"modified": 1546633883974,
+			"modified": 1546727708354,
 			"name": "/genre",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -961,7 +961,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474714475,
 			"method": "DELETE",
-			"modified": 1546474908043,
+			"modified": 1546732618177,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -990,7 +990,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951648,
 			"method": "GET",
-			"modified": 1546650338536,
+			"modified": 1546742086877,
 			"name": "/recomendation_items/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1000,7 +1000,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_items/54",
+			"url": "{{ base_url  }}/recommendation_items/1",
 			"_type": "request"
 		},
 		{
@@ -1008,7 +1008,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 2,\n\t\"name\": \"John Wick: Chapter II\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,2]\n}"
+				"text": "{\n\t\"recommendation_id\": 2,\n\t\"name\": \"Aquamarine\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,2]\n}"
 			},
 			"created": 1546475043713,
 			"description": "",
@@ -1027,7 +1027,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546474951598,
 			"method": "POST",
-			"modified": 1546649958174,
+			"modified": 1546742175532,
 			"name": "/recommendation_item",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
