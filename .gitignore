@@ -12,7 +12,7 @@
 *.out
 
 # Env files
-.env
+#.env
 
 # IDE
 \.idea/

@@ -1,0 +1,24 @@
+# Language
+language: go
+
+# Golang versions
+go:
+  - 1.11.x
+
+# Build only the latest commit
+git:
+  depth: 1
+
+# MySQL / Overalls config
+before_install:
+  - go get -t -v ./...  
+  - go get github.com/mattn/goveralls
+
+# Overalls / Test scripts 
+script:
+  - $GOPATH/bin/goveralls -service=travis-ci
+  - go test -v ./...
+
+# Do not notify
+notifications:
+  email: false
