@@ -21,13 +21,15 @@ func TestToJSON(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 
-	res, err := ToJSON(rec)
+	data, err := ToJSON(rec)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(res)
+	if data == "" {
+		t.Error("Expected a string")
+	}
 }
 
 func TestToJSONIndent(t *testing.T) {
@@ -44,11 +46,83 @@ func TestToJSONIndent(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 
-	res, err := ToJSONIndent(rec)
+	data, err := ToJSONIndent(rec)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log(res)
+	if data == "" {
+		t.Error("Expected a string")
+	}
+
+}
+
+func TestIsEmptyTrue(t *testing.T) {
+
+	m := make(map[int64][]int)
+
+	empty, err := IsEmpty(m)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !empty {
+		t.Errorf("Expected %t.\n Got %t.", empty, !empty)
+	}
+}
+
+func TestIsEmptyFalse(t *testing.T) {
+
+	m := make(map[int64][]int)
+
+	m[0] = []int{1, 2, 3}
+
+	empty, err := IsEmpty(m)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if empty {
+		t.Errorf("Expected %t.\n Got %t.", !empty, empty)
+	}
+}
+
+func TestHashPassword(t *testing.T) {
+
+	hashPass, err := HashPassword("teste", 10)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if hashPass == "" {
+		t.Error("Expected a string")
+	}
+}
+
+func TestCheckPassword(t *testing.T) {
+	pass := "teste"
+	hashPass, err := HashPassword(pass, 10)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	match := CheckPasswordHash("teste", hashPass)
+
+	if match == false {
+		t.Errorf("Expected %t.\n Got %t", !match, match)
+	}
+
+}
+
+func TestUUIDGenerator(t *testing.T) {
+	uuid := UUIDGenerator()
+
+	if uuid == "" {
+		t.Error("Expected a string")
+	}
 }
