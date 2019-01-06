@@ -16,7 +16,7 @@ type Search struct {
 func SearchRecommendation(o, l float64, s string, db *sql.DB) (*ResultRecommendation, error) {
 
 	stmt, err := db.Prepare(`
-		SELECT 
+		SELECT DISTINCT
 		r.id, r.user_id, r.title, r.type,
 		r.body, r.backdrop, r.poster, r.status,
 		r.created_at, r.updated_at
@@ -253,7 +253,7 @@ func SearchSource(s string, db *sql.DB) (*ResultSource, error) {
 func GetSearchRecommendationTotalRows(s string, db *sql.DB) (float64, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
-		COUNT(*)
+		COUNT(DISTINCT r.id)
 		FROM recommendations AS r
 		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
 		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
