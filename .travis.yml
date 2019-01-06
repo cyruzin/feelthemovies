@@ -17,7 +17,7 @@ before_install:
 # Overalls / Test scripts 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
-  - go test -v ./internal/pkg/helper
+  - go test -v ./...
 
 # Do not notify
 notifications:
