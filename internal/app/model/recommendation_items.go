@@ -269,3 +269,28 @@ func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSo
 
 	return recS, err
 }
+
+// GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
+func GetRecommendationItemsTotalRows(id int64, db *sql.DB) (float64, error) {
+	stmt, err := db.Prepare(`
+		SELECT COUNT(*) 
+		FROM recommendation_items 
+		WHERE recommendation_id = ?
+		`)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	var total float64
+
+	err = stmt.QueryRow(id).Scan(&total)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return total, err
+}

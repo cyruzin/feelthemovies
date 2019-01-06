@@ -26,23 +26,31 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// This is only for comparison.
-	user, err := model.Authenticate(reqA.Email, db)
+	dbPass, err := model.Authenticate(reqA.Email, db)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	checkPass := helper.CheckPasswordHash(reqA.Password, user.Password)
+	checkPass := helper.CheckPasswordHash(reqA.Password, dbPass)
+
+	if !checkPass {
+		w.WriteHeader(403)
+		json.NewEncoder(w).Encode("Unauthorized.")
+		return
+	}
+
+	authInfo, err := model.GetAuthInfo(reqA.Email, db)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if !checkPass {
-		w.WriteHeader(403)
-		json.NewEncoder(w).Encode("Unauthorized.")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(user)
+		json.NewEncoder(w).Encode(authInfo)
 	}
 }

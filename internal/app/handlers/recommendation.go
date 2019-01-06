@@ -252,6 +252,19 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	// Empty recommendation check
+	itemCount, err := model.GetRecommendationItemsTotalRows(id, db)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if itemCount == 0 {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode("You can not activate an empty recommendation.")
+		return
+	}
+
 	rec, err := model.UpdateRecommendation(id, &upRec, db)
 
 	if err != nil {

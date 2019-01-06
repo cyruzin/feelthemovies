@@ -10,7 +10,7 @@ type Auth struct {
 	ID       int64  `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password,omitempty" validate:"required"`
 	APIToken string `json:"api_token"`
 }
 
@@ -44,10 +44,9 @@ func CheckAPIToken(token string, db *sql.DB) (bool, error) {
 }
 
 // Authenticate authenticates the current user and returns it's info.
-func Authenticate(email string, db *sql.DB) (*Auth, error) {
+func Authenticate(email string, db *sql.DB) (string, error) {
 	stmt, err := db.Prepare(`
-		SELECT 
-		id, name, email, password, api_token
+		SELECT password
 		FROM users
 		WHERE email = ?
 `)
@@ -57,10 +56,38 @@ func Authenticate(email string, db *sql.DB) (*Auth, error) {
 
 	defer stmt.Close()
 
-	var a Auth
+	var password string
 
 	err = stmt.QueryRow(email).Scan(
-		&a.ID, &a.Name, &a.Email, &a.Password, &a.APIToken,
+		&password,
+	)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return password, err
+}
+
+// GetAuthInfo retrieves info for the authenticated user.
+func GetAuthInfo(email string, db *sql.DB) (*Auth, error) {
+	stmt, err := db.Prepare(`
+		SELECT 
+		id, name, email, api_token
+		FROM users
+		WHERE email = ?
+	`)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer stmt.Close()
+
+	a := Auth{}
+
+	err = stmt.QueryRow(email).Scan(
+		&a.ID, &a.Name, &a.Email, &a.APIToken,
 	)
 
 	if err != nil {
