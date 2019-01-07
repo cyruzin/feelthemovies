@@ -31,11 +31,11 @@ before_install:
   - docker-compose up -d
   - docker ps -a
   - docker exec -ti api-mysql bash
-  - mysql
-  - use api_feelthemovies;
-  - select * from genres;
-  - quit;
-  - exit
+  - echo | mysql
+  - echo | use api_feelthemovies;
+  - echo | select * from genres;
+  - echo | quit;
+  - echo | exit
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
