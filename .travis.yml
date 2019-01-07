@@ -30,12 +30,12 @@ before_install:
   #- docker-compose --version
   - docker-compose up -d
   - docker ps -a
-  - docker exec -ti api-mysql bash "
-    echo | mysql
-    echo | use api_feelthemovies;
-    echo | select * from genres;
-    echo | quit;
-    echo | exit"
+  - docker exec -ti api-mysql bash
+  - echo mysql
+  - echo use api_feelthemovies;
+  - echo select * from genres;
+  - echo quit;
+  - echo exit
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
