@@ -9,7 +9,7 @@ language: go
 
 # Golang versions
 go:
-  - master
+  - 1.11.x
 
 services:
  - docker
