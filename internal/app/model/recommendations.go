@@ -15,7 +15,7 @@ type Recommendation struct {
 	Body      string    `json:"body" validate:"required"`
 	Poster    string    `json:"poster" validate:"required"`
 	Backdrop  string    `json:"backdrop" validate:"required"`
-	Status    int       `json:"status" validate:"required,min=1,max=2"`
+	Status    int       `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

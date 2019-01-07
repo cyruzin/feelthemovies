@@ -234,6 +234,15 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check status
+	err = validate.Var(reqRec.Status, "required,min=1,max=2")
+
+	if err != nil {
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("Validation error, check status field.")
+		return
+	}
+
 	upRec := model.Recommendation{
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
