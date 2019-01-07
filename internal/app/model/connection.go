@@ -3,7 +3,9 @@ package model
 import (
 	"database/sql"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	// MySQL connection driver
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -15,14 +17,13 @@ type Conn struct {
 
 // Connect creates a connection with MySQL database.
 func Connect() (*Conn, error) {
-	//err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/cyruzin/feelthemovies/.env"))
+	err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/cyruzin/feelthemovies/.env"))
 
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file", err)
-	// }
+	if err != nil {
+		log.Fatal("Error loading .env file", err)
+	}
 
-	//db, err := sql.Open("mysql", os.Getenv("MYSQL"))
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/api_feelthemovies?parseTime=true")
+	db, err := sql.Open("mysql", os.Getenv("MYSQL"))
 
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
