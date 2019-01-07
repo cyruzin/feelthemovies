@@ -35,19 +35,17 @@ steps:
     action: 'Run a docker compose command'
     serviceName: 'MySQL'
     containerName: 'api-mysql'
-    ports: '3306:3306'
+    ports: '3307:3306'
     detached: true
     dockerComposeCommand: 'up -d'
 
 - script: |
     go version
     go get -v -t -d ./...
-    go get github.com/mattn/goveralls 
     if [ -f Gopkg.toml ]; then
         curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         dep ensure
     fi
-    $GOPATH/bin/goveralls -service=travis-ci
     go test -v ./...
   workingDirectory: '$(modulePath)'
   displayName: 'Run tests'

@@ -8,23 +8,19 @@ go:
 services:
  - docker
 
-#env:
-#- DOCKER_COMPOSE_VERSION=1.23.2
-
 # Build only the latest commit
 git:
   depth: 1
 
 # Docker / Overalls config
 before_install:
-  - sudo service mysql stop
+  - docker-compose up -d
+  - docker ps
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
 # Overalls / Test scripts
 script:
-  - docker-compose up -d
-  - docker ps
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./...
 
