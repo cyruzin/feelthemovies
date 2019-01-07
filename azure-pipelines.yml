@@ -37,10 +37,7 @@ steps:
     containerName: 'api-mysql'
     ports: '3306:3306'
     detached: true
-    dockerComposeCommand: 'up'
-
-- script: |
-    service mysql stop
+    dockerComposeCommand: 'up -d'
 
 - script: |
     go version
