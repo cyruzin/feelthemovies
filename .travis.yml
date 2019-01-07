@@ -19,9 +19,8 @@ git:
 before_install:
   - sudo service mysql stop
   - docker-compose up -d
-  - docker ps -a
-  - docker exec -ti api-mysql bash
-  - mysql -e 'select * from genres' api_feelthemovies
+  - docker ps
+  - docker exec -ti api-mysql bash -c "mysql -e 'select * from genres' api_feelthemovies;"
   - exit
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
