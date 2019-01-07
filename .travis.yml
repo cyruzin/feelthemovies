@@ -30,7 +30,6 @@ before_install:
   - docker-compose --version
   - docker-compose up -d
   - docker ps -a
-  - sleep 20
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
