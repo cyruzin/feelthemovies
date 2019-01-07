@@ -37,5 +37,8 @@ func Connect() (*Conn, error) {
 
 	log.Println("MySQL: Connection OK.")
 
+	db.SetMaxIdleConns(100)
+	db.SetMaxOpenConns(100)
+
 	return &Conn{db}, err
 }
