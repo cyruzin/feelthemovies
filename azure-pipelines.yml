@@ -37,7 +37,7 @@ steps:
     containerName: 'api-mysql'
     ports: '3306:3306'
     detached: true
-    dockerComposeCommand: 'docker-compose run'
+    dockerComposeCommand: 'docker-compose up'
 
 - script: |
     go version
