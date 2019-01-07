@@ -28,7 +28,7 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   - docker-compose --version
-  - docker-compose up
+  - docker-compose up -d
   - docker ps -a
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
