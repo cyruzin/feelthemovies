@@ -8,8 +8,8 @@ go:
 services:
  - docker
 
-env:
-  - DOCKER_COMPOSE_VERSION=1.23.2
+#env:
+#- DOCKER_COMPOSE_VERSION=1.23.2
 
 # Build only the latest commit
 git:
@@ -18,18 +18,24 @@ git:
 # Docker / Overalls config
 before_install:
   - sudo service mysql stop
-  - sudo apt-get update
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - docker --version 
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - docker-compose --version
+  #- sudo apt-get update
+  #- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  #- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  #- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  #- docker --version 
+  #- sudo rm /usr/local/bin/docker-compose
+  #- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  #- chmod +x docker-compose
+  #- sudo mv docker-compose /usr/local/bin
+  #- docker-compose --version
   - docker-compose up -d
   - docker ps -a
+  - docker exec -ti api-mysql bash
+  - mysql
+  - use api_feelthemovies;
+  - select * from genres;
+  - quit;
+  - exit
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
