@@ -21,7 +21,7 @@ func Connect() (*Conn, error) {
 	// 	log.Fatal("Error loading .env file", err)
 	// }
 
-	db, err := sql.Open("mysql", "root:@tcp(localhost:3307)/api_feelthemovies?parseTime=true")
+	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3307)/api_feelthemovies?parseTime=true")
 
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
