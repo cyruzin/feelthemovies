@@ -21,6 +21,8 @@ var validate *validator.Validate
 // NewRouter initiates the server with the given routes.
 // CORS are enabled.
 func NewRouter() *mux.Router {
+
+	defer db.Close()
 	r := mux.NewRouter()
 
 	r.Use(loggingMiddleware)
