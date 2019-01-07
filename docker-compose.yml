@@ -3,7 +3,8 @@ version: "3.7"
 services: 
 
   mysql:
-    image: mysql:5.7
+    #image: mysql:5.7
+    image: mariadb:10.4.1-bionic
     container_name: api-mysql
     volumes:
     - ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql

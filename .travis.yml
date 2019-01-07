@@ -1,11 +1,15 @@
+# Sudo option
+sudo: false
+
+# SO
+dist: xenial
+
 # Language
 language: go
 
-dist: xenial
-
 # Golang versions
 go:
-  - tip
+  - master
 
 env:
   - DOCKER_COMPOSE_VERSION=1.23.2
