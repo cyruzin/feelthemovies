@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -49,7 +50,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"New Genre Test"}`)
+	var newGenre = []byte(`{"name":"NewGenreTest"}`)
 
 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
@@ -58,6 +59,14 @@ func TestCreateGenreSuccess(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
+
+	data, err := ioutil.ReadAll(rr.Body)
+
+	if err != nil {
+		t.Log("Error creating genre: ", data)
+	}
+
+	t.Log(data)
 
 	r.HandleFunc("/v1/genre", createGenre).Methods("POST")
 
@@ -70,7 +79,7 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 func TestUpdateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"Update Genre Test"}`)
+	var newGenre = []byte(`{"name":"UpdateGenreTest"}`)
 
 	req, err := http.NewRequest("PUT", "/v1/genre/2", bytes.NewBuffer(newGenre))
 
@@ -97,6 +106,14 @@ func TestDeleteGenreSuccess(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
+
+	data, err := ioutil.ReadAll(rr.Body)
+
+	if err != nil {
+		t.Log("Error deleting genre: ", data)
+	}
+
+	t.Log(data)
 
 	r.HandleFunc("/v1/genre/{id}", deleteGenre).Methods("DELETE")
 
