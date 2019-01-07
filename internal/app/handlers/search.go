@@ -31,7 +31,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	total, err := model.GetSearchRecommendationTotalRows(params["query"][0], db) // total results
+	total, err := db.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 
 	if err != nil {
 		log.Println(err)
@@ -60,7 +60,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// End pagination
 
-	search, err := model.SearchRecommendation(offset, limit, params["query"][0], db)
+	search, err := db.SearchRecommendation(offset, limit, params["query"][0])
 
 	if err != nil {
 		log.Println(err)
@@ -69,13 +69,13 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	result := []*model.ResponseRecommendation{}
 
 	for _, r := range search.Data {
-		recG, err := model.GetRecommendationGenres(r.ID, db)
+		recG, err := db.GetRecommendationGenres(r.ID)
 
 		if err != nil {
 			log.Println(err)
 		}
 
-		recK, err := model.GetRecommendationKeywords(r.ID, db)
+		recK, err := db.GetRecommendationKeywords(r.ID)
 
 		if err != nil {
 			log.Println(err)
@@ -127,7 +127,7 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	search, err := model.SearchUser(params["query"][0], db)
+	search, err := db.SearchUser(params["query"][0])
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -159,7 +159,7 @@ func searchGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	search, err := model.SearchGenre(params["query"][0], db)
+	search, err := db.SearchGenre(params["query"][0])
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -191,7 +191,7 @@ func searchKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	search, err := model.SearchKeyword(params["query"][0], db)
+	search, err := db.SearchKeyword(params["query"][0])
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -223,7 +223,7 @@ func searchSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	search, err := model.SearchSource(params["query"][0], db)
+	search, err := db.SearchSource(params["query"][0])
 
 	if err != nil {
 		w.WriteHeader(400)

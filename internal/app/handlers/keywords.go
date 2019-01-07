@@ -15,7 +15,7 @@ import (
 func getKeywords(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	k, err := model.GetKeywords(db)
+	k, err := db.GetKeywords()
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -37,7 +37,7 @@ func getKeyword(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	k, err := model.GetKeyword(id, db)
+	k, err := db.GetKeyword(id)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -75,7 +75,7 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	k, err := model.CreateKeyword(&newK, db)
+	k, err := db.CreateKeyword(&newK)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -119,7 +119,7 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	k, err := model.UpdateKeyword(id, &upK, db)
+	k, err := db.UpdateKeyword(id, &upK)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -141,7 +141,7 @@ func deleteKeyword(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteKeyword(id, db)
+	d, err := db.DeleteKeyword(id)
 
 	if err != nil {
 		w.WriteHeader(400)

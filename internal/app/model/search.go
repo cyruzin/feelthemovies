@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 )
 
@@ -13,7 +12,7 @@ type Search struct {
 
 // SearchRecommendation search for recommendations.
 // o = offset | l = limit | s = search term | t = type
-func SearchRecommendation(o, l float64, s string, db *sql.DB) (*ResultRecommendation, error) {
+func (db *Conn) SearchRecommendation(o, l float64, s string) (*ResultRecommendation, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT DISTINCT
@@ -68,7 +67,7 @@ func SearchRecommendation(o, l float64, s string, db *sql.DB) (*ResultRecommenda
 }
 
 // SearchUser search for users.
-func SearchUser(s string, db *sql.DB) (*ResultUser, error) {
+func (db *Conn) SearchUser(s string) (*ResultUser, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -115,7 +114,7 @@ func SearchUser(s string, db *sql.DB) (*ResultUser, error) {
 }
 
 // SearchGenre search for genres.
-func SearchGenre(s string, db *sql.DB) (*ResultGenre, error) {
+func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -160,7 +159,7 @@ func SearchGenre(s string, db *sql.DB) (*ResultGenre, error) {
 }
 
 // SearchKeyword search for keywords.
-func SearchKeyword(s string, db *sql.DB) (*ResultKeyword, error) {
+func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -205,7 +204,7 @@ func SearchKeyword(s string, db *sql.DB) (*ResultKeyword, error) {
 }
 
 // SearchSource search for sources.
-func SearchSource(s string, db *sql.DB) (*ResultSource, error) {
+func (db *Conn) SearchSource(s string) (*ResultSource, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -250,7 +249,7 @@ func SearchSource(s string, db *sql.DB) (*ResultSource, error) {
 }
 
 // GetSearchRecommendationTotalRows retrieves the total rows of recommendations table.
-func GetSearchRecommendationTotalRows(s string, db *sql.DB) (float64, error) {
+func (db *Conn) GetSearchRecommendationTotalRows(s string) (float64, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		COUNT(DISTINCT r.id)

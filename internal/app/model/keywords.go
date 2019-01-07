@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
@@ -22,7 +21,7 @@ type ResultKeyword struct {
 }
 
 // GetKeywords retrieves the latest 20 keywords.
-func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
+func (db *Conn) GetKeywords() (*ResultKeyword, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -60,7 +59,7 @@ func GetKeywords(db *sql.DB) (*ResultKeyword, error) {
 }
 
 // GetKeyword retrieves a keyword by a given ID.
-func GetKeyword(id int64, db *sql.DB) (*Keyword, error) {
+func (db *Conn) GetKeyword(id int64) (*Keyword, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -88,7 +87,7 @@ func GetKeyword(id int64, db *sql.DB) (*Keyword, error) {
 }
 
 // CreateKeyword creates a new keyword.
-func CreateKeyword(k *Keyword, db *sql.DB) (*Keyword, error) {
+func (db *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO keywords (
 		name, created_at, updated_at
@@ -119,7 +118,7 @@ func CreateKeyword(k *Keyword, db *sql.DB) (*Keyword, error) {
 		log.Println(err)
 	}
 
-	data, err := GetKeyword(id, db)
+	data, err := db.GetKeyword(id)
 
 	if err != nil {
 		log.Println(err)
@@ -129,7 +128,7 @@ func CreateKeyword(k *Keyword, db *sql.DB) (*Keyword, error) {
 }
 
 // UpdateKeyword updates a keyword by a given ID.
-func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
+func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
 	stmt, err := db.Prepare(`
 		UPDATE keywords
 		SET name=?, updated_at=?
@@ -156,7 +155,7 @@ func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
 		log.Println(err)
 	}
 
-	data, err := GetKeyword(id, db)
+	data, err := db.GetKeyword(id)
 
 	if err != nil {
 		log.Println(err)
@@ -166,7 +165,7 @@ func UpdateKeyword(id int64, k *Keyword, db *sql.DB) (*Keyword, error) {
 }
 
 // DeleteKeyword deletes a keyword by a given ID.
-func DeleteKeyword(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteKeyword(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM keywords

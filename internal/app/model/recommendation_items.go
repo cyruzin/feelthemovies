@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 )
@@ -41,7 +40,7 @@ type RecommendationItemSources struct {
 }
 
 // GetRecommendationItems retrieves all items of a given recommendation by ID.
-func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, error) {
+func (db *Conn) GetRecommendationItems(id int64) (*ResultRecommendationItem, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -85,7 +84,7 @@ func GetRecommendationItems(id int64, db *sql.DB) (*ResultRecommendationItem, er
 }
 
 // GetRecommendationItem retrieves a recommendation items by a given ID.
-func GetRecommendationItem(id int64, db *sql.DB) (*RecommendationItem, error) {
+func (db *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
@@ -119,7 +118,7 @@ func GetRecommendationItem(id int64, db *sql.DB) (*RecommendationItem, error) {
 }
 
 // CreateRecommendationItem creates a new recommendation item.
-func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*RecommendationItem, error) {
+func (db *Conn) CreateRecommendationItem(r *RecommendationItem) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO recommendation_items (
 		recommendation_id, name, tmdb_id, year, 
@@ -151,7 +150,7 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 		log.Println(err)
 	}
 
-	data, err := GetRecommendationItem(id, db)
+	data, err := db.GetRecommendationItem(id)
 
 	if err != nil {
 		log.Println(err)
@@ -161,7 +160,7 @@ func CreateRecommendationItem(r *RecommendationItem, db *sql.DB) (*Recommendatio
 }
 
 // UpdateRecommendationItem updates a recommendation item by a given ID.
-func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*RecommendationItem, error) {
+func (db *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		UPDATE recommendation_items
 		SET name=?, tmdb_id=?, year=?, overview=?,
@@ -192,7 +191,7 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 		log.Println(err)
 	}
 
-	data, err := GetRecommendationItem(id, db)
+	data, err := db.GetRecommendationItem(id)
 
 	if err != nil {
 		log.Println(err)
@@ -203,7 +202,7 @@ func UpdateRecommendationItem(id int64, r *RecommendationItem, db *sql.DB) (*Rec
 }
 
 // DeleteRecommendationItem deletes a recommendation item by a given ID.
-func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteRecommendationItem(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendation_items
@@ -232,7 +231,7 @@ func DeleteRecommendationItem(id int64, db *sql.DB) (int64, error) {
 }
 
 // GetRecommendationItemSources retrieves all sources of a given recommendation item.
-func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSources, error) {
+func (db *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSources, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		s.id, s.name 
@@ -271,7 +270,7 @@ func GetRecommendationItemSources(id int64, db *sql.DB) ([]*RecommendationItemSo
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
-func GetRecommendationItemsTotalRows(id int64, db *sql.DB) (float64, error) {
+func (db *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
 	stmt, err := db.Prepare(`
 		SELECT COUNT(*) 
 		FROM recommendation_items 

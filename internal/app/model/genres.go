@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
@@ -22,7 +21,7 @@ type ResultGenre struct {
 }
 
 // GetGenres retrieves the latest 20 genres.
-func GetGenres(db *sql.DB) (*ResultGenre, error) {
+func (db *Conn) GetGenres() (*ResultGenre, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -60,7 +59,7 @@ func GetGenres(db *sql.DB) (*ResultGenre, error) {
 }
 
 // GetGenre retrieves a genre by a given ID.
-func GetGenre(id int64, db *sql.DB) (*Genre, error) {
+func (db *Conn) GetGenre(id int64) (*Genre, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -88,7 +87,7 @@ func GetGenre(id int64, db *sql.DB) (*Genre, error) {
 }
 
 // CreateGenre creates a new genre.
-func CreateGenre(g *Genre, db *sql.DB) (*Genre, error) {
+func (db *Conn) CreateGenre(g *Genre) (*Genre, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO genres (
 		name, created_at, updated_at
@@ -118,7 +117,7 @@ func CreateGenre(g *Genre, db *sql.DB) (*Genre, error) {
 		log.Println(err)
 	}
 
-	data, err := GetGenre(id, db)
+	data, err := db.GetGenre(id)
 
 	if err != nil {
 		log.Println(err)
@@ -128,7 +127,7 @@ func CreateGenre(g *Genre, db *sql.DB) (*Genre, error) {
 }
 
 // UpdateGenre updates a genre by a given ID.
-func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
+func (db *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
 	stmt, err := db.Prepare(`
 		UPDATE genres
 		SET name=?, updated_at=?
@@ -155,7 +154,7 @@ func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
 		log.Println(err)
 	}
 
-	data, err := GetGenre(id, db)
+	data, err := db.GetGenre(id)
 
 	if err != nil {
 		log.Println(err)
@@ -165,7 +164,7 @@ func UpdateGenre(id int64, g *Genre, db *sql.DB) (*Genre, error) {
 }
 
 // DeleteGenre deletes a genre by a given ID.
-func DeleteGenre(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteGenre(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM genres

@@ -26,7 +26,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dbPass, err := model.Authenticate(reqA.Email, db)
+	dbPass, err := db.Authenticate(reqA.Email)
 
 	if err != nil {
 		log.Println(err)
@@ -40,7 +40,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authInfo, err := model.GetAuthInfo(reqA.Email, db)
+	authInfo, err := db.GetAuthInfo(reqA.Email)
 
 	if err != nil {
 		log.Println(err)

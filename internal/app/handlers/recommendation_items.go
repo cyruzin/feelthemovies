@@ -24,7 +24,7 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	rec, err := model.GetRecommendationItems(id, db)
+	rec, err := db.GetRecommendationItems(id)
 
 	if err != nil {
 		log.Println(err)
@@ -33,7 +33,7 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	result := []*model.ResponseRecommendationItem{}
 
 	for _, r := range rec.Data {
-		recS, err := model.GetRecommendationItemSources(r.ID, db)
+		recS, err := db.GetRecommendationItemSources(r.ID)
 
 		if err != nil {
 			log.Println(err)
@@ -73,13 +73,13 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	rec, err := model.GetRecommendationItem(id, db)
+	rec, err := db.GetRecommendationItem(id)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	recS, err := model.GetRecommendationItemSources(id, db)
+	recS, err := db.GetRecommendationItemSources(id)
 
 	if err != nil {
 		log.Println(err)
@@ -147,7 +147,7 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:        time.Now(),
 	}
 
-	rec, err := model.CreateRecommendationItem(&newRec, db)
+	rec, err := db.CreateRecommendationItem(&newRec)
 
 	if err != nil {
 		log.Println(err)
@@ -158,7 +158,7 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	sources[rec.ID] = reqRec.Sources
 
-	_, err = helper.Attach(sources, "recommendation_item_source", db)
+	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -220,7 +220,7 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	rec, err := model.UpdateRecommendationItem(id, &upRec, db)
+	rec, err := db.UpdateRecommendationItem(id, &upRec)
 
 	if err != nil {
 		log.Println(err)
@@ -231,7 +231,7 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	sources[rec.ID] = reqRec.Sources
 
-	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db)
+	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -253,7 +253,7 @@ func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteRecommendationItem(id, db)
+	d, err := db.DeleteRecommendationItem(id)
 
 	if err != nil {
 		w.WriteHeader(400)

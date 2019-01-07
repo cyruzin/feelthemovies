@@ -1,4 +1,4 @@
-package conn
+package model
 
 import (
 	"database/sql"
@@ -10,9 +10,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// Conn type is a struct for connections.
+type Conn struct {
+	*sql.DB
+}
+
 // Connect creates a connection with MySQL database.
-func Connect() (*sql.DB, error) {
-	//err := godotenv.Load("../../.env")
+func Connect() (*Conn, error) {
 	err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/cyruzin/feelthemovies/.env"))
 
 	if err != nil {
@@ -33,5 +37,5 @@ func Connect() (*sql.DB, error) {
 
 	log.Println("MySQL: Connection OK.")
 
-	return db, err
+	return &Conn{db}, err
 }

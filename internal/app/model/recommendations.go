@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 )
@@ -56,7 +55,7 @@ type RecommendationPagination struct {
 
 // GetRecommendations retrieves the latest recommendations.
 // o = offset | l = limit
-func GetRecommendations(o, l float64, db *sql.DB) (*ResultRecommendation, error) {
+func (db *Conn) GetRecommendations(o, l float64) (*ResultRecommendation, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -99,7 +98,7 @@ func GetRecommendations(o, l float64, db *sql.DB) (*ResultRecommendation, error)
 }
 
 // GetRecommendation retrieves a recommendation by a given ID.
-func GetRecommendation(id int64, db *sql.DB) (*Recommendation, error) {
+func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, user_id, title, type, body, poster, 
@@ -130,7 +129,7 @@ func GetRecommendation(id int64, db *sql.DB) (*Recommendation, error) {
 }
 
 // CreateRecommendation creates a new recommendation.
-func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error) {
+func (db *Conn) CreateRecommendation(r *Recommendation) (*Recommendation, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO recommendations (
 		user_id, title, type, body, 
@@ -162,7 +161,7 @@ func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error
 		log.Println(err)
 	}
 
-	data, err := GetRecommendation(id, db)
+	data, err := db.GetRecommendation(id)
 
 	if err != nil {
 		log.Println(err)
@@ -172,7 +171,7 @@ func CreateRecommendation(r *Recommendation, db *sql.DB) (*Recommendation, error
 }
 
 // UpdateRecommendation updates a recommendation by a given ID.
-func UpdateRecommendation(id int64, r *Recommendation, db *sql.DB) (*Recommendation, error) {
+func (db *Conn) UpdateRecommendation(id int64, r *Recommendation) (*Recommendation, error) {
 	stmt, err := db.Prepare(`
 		UPDATE recommendations
 		SET title=?, type=?, body=?, poster=?,
@@ -201,7 +200,7 @@ func UpdateRecommendation(id int64, r *Recommendation, db *sql.DB) (*Recommendat
 		log.Println(err)
 	}
 
-	data, err := GetRecommendation(id, db)
+	data, err := db.GetRecommendation(id)
 
 	if err != nil {
 		log.Println(err)
@@ -211,7 +210,7 @@ func UpdateRecommendation(id int64, r *Recommendation, db *sql.DB) (*Recommendat
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
-func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteRecommendation(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendations
@@ -240,7 +239,7 @@ func DeleteRecommendation(id int64, db *sql.DB) (int64, error) {
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
-func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, error) {
+func (db *Conn) GetRecommendationGenres(id int64) ([]*RecommendationGenres, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		g.id, g.name 
@@ -279,7 +278,7 @@ func GetRecommendationGenres(id int64, db *sql.DB) ([]*RecommendationGenres, err
 }
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
-func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords, error) {
+func (db *Conn) GetRecommendationKeywords(id int64) ([]*RecommendationKeywords, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		k.id, k.name 
@@ -318,8 +317,8 @@ func GetRecommendationKeywords(id int64, db *sql.DB) ([]*RecommendationKeywords,
 }
 
 // GetRecommendationTotalRows retrieves the total rows of recommendations table.
-// TODO: Optimize this function.
-func GetRecommendationTotalRows(db *sql.DB) (float64, error) {
+// TODO: Optimize this func (db *Conn) tion.
+func (db *Conn) GetRecommendationTotalRows() (float64, error) {
 	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
 
 	if err != nil {

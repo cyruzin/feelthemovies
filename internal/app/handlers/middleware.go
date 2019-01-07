@@ -3,8 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-
-	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -21,7 +19,7 @@ func authMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		} else {
 			token := r.Header.Get("Api-Token")
-			auth, err := model.CheckAPIToken(token, db)
+			auth, err := db.CheckAPIToken(token)
 
 			if err != nil {
 				log.Println(err)

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
@@ -22,7 +21,7 @@ type ResultSource struct {
 }
 
 // GetSources retrieves the latest 20 sources.
-func GetSources(db *sql.DB) (*ResultSource, error) {
+func (db *Conn) GetSources() (*ResultSource, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -60,7 +59,7 @@ func GetSources(db *sql.DB) (*ResultSource, error) {
 }
 
 // GetSource retrieves a source by a given ID.
-func GetSource(id int64, db *sql.DB) (*Source, error) {
+func (db *Conn) GetSource(id int64) (*Source, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -88,7 +87,7 @@ func GetSource(id int64, db *sql.DB) (*Source, error) {
 }
 
 // CreateSource creates a new source.
-func CreateSource(s *Source, db *sql.DB) (*Source, error) {
+func (db *Conn) CreateSource(s *Source) (*Source, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO sources (
 		name, created_at, updated_at
@@ -119,7 +118,7 @@ func CreateSource(s *Source, db *sql.DB) (*Source, error) {
 		log.Println(err)
 	}
 
-	data, err := GetSource(id, db)
+	data, err := db.GetSource(id)
 
 	if err != nil {
 		log.Println(err)
@@ -129,7 +128,7 @@ func CreateSource(s *Source, db *sql.DB) (*Source, error) {
 }
 
 // UpdateSource updates a source by a given ID.
-func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
+func (db *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
 	stmt, err := db.Prepare(`
 		UPDATE sources
 		SET name=?, updated_at=?
@@ -156,7 +155,7 @@ func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
 		log.Println(err)
 	}
 
-	data, err := GetSource(id, db)
+	data, err := db.GetSource(id)
 
 	if err != nil {
 		log.Println(err)
@@ -166,7 +165,7 @@ func UpdateSource(id int64, s *Source, db *sql.DB) (*Source, error) {
 }
 
 // DeleteSource deletes a source by a given ID.
-func DeleteSource(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteSource(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM sources

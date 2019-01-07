@@ -4,7 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/conn"
+	"github.com/cyruzin/feelthemovies/internal/app/model"
+
 	validator "gopkg.in/go-playground/validator.v9"
 
 	"github.com/gorilla/mux"
@@ -12,7 +13,7 @@ import (
 )
 
 // Initializing database connection.
-var db, err = conn.Connect()
+var db, err = model.Connect()
 
 // Validator instance
 var validate *validator.Validate

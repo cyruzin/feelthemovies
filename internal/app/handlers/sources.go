@@ -15,7 +15,7 @@ import (
 func getSources(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	s, err := model.GetSources(db)
+	s, err := db.GetSources()
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -37,7 +37,7 @@ func getSource(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	s, err := model.GetSource(id, db)
+	s, err := db.GetSource(id)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -75,7 +75,7 @@ func createSource(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	s, err := model.CreateSource(&newS, db)
+	s, err := db.CreateSource(&newS)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -120,7 +120,7 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	s, err := model.UpdateSource(id, &upS, db)
+	s, err := db.UpdateSource(id, &upS)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -142,7 +142,7 @@ func deleteSource(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteSource(id, db)
+	d, err := db.DeleteSource(id)
 
 	if err != nil {
 		w.WriteHeader(400)

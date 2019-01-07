@@ -18,7 +18,7 @@ import (
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	u, err := model.GetUsers(db)
+	u, err := db.GetUsers()
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -40,7 +40,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	u, err := model.GetUser(id, db)
+	u, err := db.GetUser(id)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -89,7 +89,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	u, err := model.CreateUser(&newU, db)
+	u, err := db.CreateUser(&newU)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -144,7 +144,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	u, err := model.UpdateUser(id, &upU, db)
+	u, err := db.UpdateUser(id, &upU)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -166,7 +166,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteUser(id, db)
+	d, err := db.DeleteUser(id)
 
 	if err != nil {
 		w.WriteHeader(400)

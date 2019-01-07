@@ -21,7 +21,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	// Start pagination
 	params := r.URL.Query()
 
-	total, err := model.GetRecommendationTotalRows(db) // total results
+	total, err := db.GetRecommendationTotalRows() // total results
 
 	if err != nil {
 		log.Println(err)
@@ -52,7 +52,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 
 	// End pagination
 
-	rec, err := model.GetRecommendations(offset, limit, db)
+	rec, err := db.GetRecommendations(offset, limit)
 
 	if err != nil {
 		log.Println(err)
@@ -61,13 +61,13 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	result := []*model.ResponseRecommendation{}
 
 	for _, r := range rec.Data {
-		recG, err := model.GetRecommendationGenres(r.ID, db)
+		recG, err := db.GetRecommendationGenres(r.ID)
 
 		if err != nil {
 			log.Println(err)
 		}
 
-		recK, err := model.GetRecommendationKeywords(r.ID, db)
+		recK, err := db.GetRecommendationKeywords(r.ID)
 
 		if err != nil {
 			log.Println(err)
@@ -110,19 +110,19 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	rec, err := model.GetRecommendation(id, db)
+	rec, err := db.GetRecommendation(id)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	recG, err := model.GetRecommendationGenres(id, db)
+	recG, err := db.GetRecommendationGenres(id)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	recK, err := model.GetRecommendationKeywords(id, db)
+	recK, err := db.GetRecommendationKeywords(id)
 
 	if err != nil {
 		log.Println(err)
@@ -180,7 +180,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	rec, err := model.CreateRecommendation(&newRec, db)
+	rec, err := db.CreateRecommendation(&newRec)
 
 	if err != nil {
 		log.Println(err)
@@ -193,13 +193,13 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	keywords[rec.ID] = reqRec.Keywords
 	genres[rec.ID] = reqRec.Genres
 
-	_, err = helper.Attach(keywords, "keyword_recommendation", db)
+	_, err = helper.Attach(keywords, "keyword_recommendation", db.DB)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	_, err = helper.Attach(genres, "genre_recommendation", db)
+	_, err = helper.Attach(genres, "genre_recommendation", db.DB)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -253,7 +253,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Empty recommendation check
-	itemCount, err := model.GetRecommendationItemsTotalRows(id, db)
+	itemCount, err := db.GetRecommendationItemsTotalRows(id)
 
 	if err != nil {
 		log.Println(err)
@@ -265,7 +265,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rec, err := model.UpdateRecommendation(id, &upRec, db)
+	rec, err := db.UpdateRecommendation(id, &upRec)
 
 	if err != nil {
 		log.Println(err)
@@ -278,13 +278,13 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	keywords[rec.ID] = reqRec.Keywords
 	genres[rec.ID] = reqRec.Genres
 
-	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db)
+	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db)
+	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -306,7 +306,7 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteRecommendation(id, db)
+	d, err := db.DeleteRecommendation(id)
 
 	if err != nil {
 		w.WriteHeader(400)

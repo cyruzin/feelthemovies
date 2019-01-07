@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
@@ -27,7 +26,7 @@ type ResultUser struct {
 }
 
 // GetUsers retrieves the first twenty users.
-func GetUsers(db *sql.DB) (*ResultUser, error) {
+func (db *Conn) GetUsers() (*ResultUser, error) {
 
 	stmt, err := db.Prepare(`
 		SELECT 
@@ -68,7 +67,7 @@ func GetUsers(db *sql.DB) (*ResultUser, error) {
 }
 
 // GetUser retrieves a user by a given ID.
-func GetUser(id int64, db *sql.DB) (*User, error) {
+func (db *Conn) GetUser(id int64) (*User, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password,
@@ -98,7 +97,7 @@ func GetUser(id int64, db *sql.DB) (*User, error) {
 }
 
 // CreateUser creates a new user.
-func CreateUser(u *User, db *sql.DB) (*User, error) {
+func (db *Conn) CreateUser(u *User) (*User, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO users (
 		name, email, password,
@@ -131,7 +130,7 @@ func CreateUser(u *User, db *sql.DB) (*User, error) {
 		log.Println(err)
 	}
 
-	data, err := GetUser(id, db)
+	data, err := db.GetUser(id)
 
 	if err != nil {
 		log.Println(err)
@@ -141,7 +140,7 @@ func CreateUser(u *User, db *sql.DB) (*User, error) {
 }
 
 // UpdateUser updates a user by a given ID.
-func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
+func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
 	stmt, err := db.Prepare(`
 		UPDATE users
 		SET name=?, email=?, password=?,
@@ -177,7 +176,7 @@ func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
 		log.Println(err)
 	}
 
-	data, err := GetUser(id, db)
+	data, err := db.GetUser(id)
 
 	if err != nil {
 		log.Println(err)
@@ -188,7 +187,7 @@ func UpdateUser(id int64, u *User, db *sql.DB) (*User, error) {
 }
 
 // DeleteUser deletes a user by a given ID.
-func DeleteUser(id int64, db *sql.DB) (int64, error) {
+func (db *Conn) DeleteUser(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM users

@@ -15,7 +15,7 @@ import (
 func getGenres(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 
-	g, err := model.GetGenres(db)
+	g, err := db.GetGenres()
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -37,7 +37,7 @@ func getGenre(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	g, err := model.GetGenre(id, db)
+	g, err := db.GetGenre(id)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -75,7 +75,7 @@ func createGenre(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	g, err := model.CreateGenre(&newG, db)
+	g, err := db.CreateGenre(&newG)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -119,7 +119,7 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	g, err := model.UpdateGenre(id, &upG, db)
+	g, err := db.UpdateGenre(id, &upG)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -141,7 +141,7 @@ func deleteGenre(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	d, err := model.DeleteGenre(id, db)
+	d, err := db.DeleteGenre(id)
 
 	if err != nil {
 		w.WriteHeader(400)

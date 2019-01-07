@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"log"
 )
 
@@ -15,7 +14,7 @@ type Auth struct {
 }
 
 // CheckAPIToken checks if the given token exists.
-func CheckAPIToken(token string, db *sql.DB) (bool, error) {
+func (db *Conn) CheckAPIToken(token string) (bool, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		api_token
@@ -44,7 +43,7 @@ func CheckAPIToken(token string, db *sql.DB) (bool, error) {
 }
 
 // Authenticate authenticates the current user and returns it's info.
-func Authenticate(email string, db *sql.DB) (string, error) {
+func (db *Conn) Authenticate(email string) (string, error) {
 	stmt, err := db.Prepare(`
 		SELECT password
 		FROM users
@@ -70,7 +69,7 @@ func Authenticate(email string, db *sql.DB) (string, error) {
 }
 
 // GetAuthInfo retrieves info for the authenticated user.
-func GetAuthInfo(email string, db *sql.DB) (*Auth, error) {
+func (db *Conn) GetAuthInfo(email string) (*Auth, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, api_token
