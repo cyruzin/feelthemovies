@@ -20,18 +20,15 @@ before_install:
   - sudo service mysql stop
   - docker-compose up -d
   - docker ps -a
+  - docker exec -ti api-mysql bash
+  - mysql -e 'select * from genres' api_feelthemovies
+  - exit
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
 # Overalls / Test script 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
-  - docker exec -ti api-mysql bash
-  - mysql
-  - use api_feelthemovies;
-  - select * from genres;
-  - quit;
-  - exit
   - go test -v ./...
 
 # Do not notify
