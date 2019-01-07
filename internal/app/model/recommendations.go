@@ -11,11 +11,11 @@ type Recommendation struct {
 	ID        int64     `json:"id"`
 	UserID    int64     `json:"user_id" validate:"required,numeric"`
 	Title     string    `json:"title" validate:"required"`
-	Type      int       `json:"type" validate:"min=0,max=2"`
+	Type      int       `json:"type" validate:"min=1,max=3"`
 	Body      string    `json:"body" validate:"required"`
 	Poster    string    `json:"poster" validate:"required"`
 	Backdrop  string    `json:"backdrop" validate:"required"`
-	Status    int       `json:"status" validate:"min=0,max=1"`
+	Status    int       `json:"status" validate:"required,min=1,max=2"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

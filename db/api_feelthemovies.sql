@@ -1,184 +1,533 @@
--- MySQL dump 10.13  Distrib 5.7.24, for Linux (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 4.7.7
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1    Database: api_feelthemovies
--- ------------------------------------------------------
--- Server version	5.7.24
+-- Host: localhost:3306
+-- Generation Time: 06-Jan-2019 às 22:20
+-- Versão do servidor: 5.6.41-84.1
+-- PHP Version: 5.6.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `genre_recommendation`
+-- Database: `feelt796_api`
 --
 
-DROP TABLE IF EXISTS `genre_recommendation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `genre_recommendation` (
-  `recommendation_id` int(10) unsigned NOT NULL,
-  `genre_id` int(10) unsigned NOT NULL,
-  KEY `genre_recommendation_recommendation_id_foreign` (`recommendation_id`),
-  KEY `genre_recommendation_genre_id_foreign` (`genre_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `genre_recommendation`
+-- Estrutura da tabela `genres`
 --
 
-LOCK TABLES `genre_recommendation` WRITE;
-/*!40000 ALTER TABLE `genre_recommendation` DISABLE KEYS */;
-INSERT INTO `genre_recommendation` VALUES (1,1),(1,2),(2,1);
-/*!40000 ALTER TABLE `genre_recommendation` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `genres`
---
-
-DROP TABLE IF EXISTS `genres`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `genres` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `genres_name_unique` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `genres`
---
-
-LOCK TABLES `genres` WRITE;
-/*!40000 ALTER TABLE `genres` DISABLE KEYS */;
-INSERT INTO `genres` VALUES (1,'Horror','2019-01-05 22:34:32','2019-01-05 22:34:32'),(2,'Music','2019-01-05 22:34:37','2019-01-06 02:07:57'),(4,'Comedy','2019-01-05 22:35:10','2019-01-05 22:35:10'),(5,'War','2019-01-05 23:18:47','2019-01-05 23:18:47'),(6,'Bio','2019-01-05 23:30:39','2019-01-05 23:30:39'),(7,'Bioa','2019-01-05 23:37:45','2019-01-05 23:37:45'),(8,'Bioas','2019-01-05 23:38:22','2019-01-05 23:38:22'),(9,'World War II','2019-01-06 00:09:45','2019-01-06 00:09:45');
-/*!40000 ALTER TABLE `genres` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `keyword_recommendation`
---
-
-DROP TABLE IF EXISTS `keyword_recommendation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `keyword_recommendation` (
-  `recommendation_id` int(10) unsigned NOT NULL,
-  `keyword_id` int(10) unsigned NOT NULL,
-  KEY `keyword_recommendation_recommendation_id_foreign` (`recommendation_id`),
-  KEY `keyword_recommendation_keyword_id_foreign` (`keyword_id`)
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `keyword_recommendation`
+-- Extraindo dados da tabela `genres`
 --
 
-LOCK TABLES `keyword_recommendation` WRITE;
-/*!40000 ALTER TABLE `keyword_recommendation` DISABLE KEYS */;
-INSERT INTO `keyword_recommendation` VALUES (1,1),(1,2),(2,5);
-/*!40000 ALTER TABLE `keyword_recommendation` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `genres` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Action', '2018-10-31 01:19:37', '2018-10-31 01:19:37'),
+(2, 'Adventure', '2018-10-31 01:19:39', '2018-10-31 01:19:39'),
+(3, 'Drama', '2018-10-31 01:19:42', '2018-10-31 01:19:42'),
+(4, 'Horror', '2018-10-31 01:19:44', '2018-10-31 01:19:44'),
+(5, 'Thriller', '2018-10-31 01:19:46', '2018-10-31 01:19:46'),
+(6, 'Comedy', '2018-10-31 01:19:48', '2018-10-31 01:19:48'),
+(7, 'Documentary', '2018-10-31 01:19:51', '2018-10-31 01:19:51'),
+(8, 'Animation', '2018-10-31 01:19:54', '2018-10-31 01:19:54'),
+(9, 'War', '2018-10-31 01:19:57', '2018-10-31 01:19:57'),
+(10, 'Romance', '2018-10-31 01:20:04', '2018-10-31 01:20:04'),
+(11, 'Crime', '2018-10-31 01:20:34', '2018-10-31 01:20:34'),
+(12, 'Sci-Fi', '2018-10-31 01:20:37', '2018-10-31 01:20:37'),
+(13, 'Fantasy', '2018-10-31 01:20:40', '2018-10-31 01:20:40'),
+(14, 'Family', '2018-10-31 01:20:42', '2018-10-31 01:20:42'),
+(15, 'Music', '2018-10-31 01:20:58', '2018-10-31 01:20:58'),
+(16, 'Mystery', '2018-10-31 01:21:00', '2018-10-31 01:21:00'),
+(17, 'Western', '2018-10-31 01:21:14', '2018-10-31 01:21:14'),
+(18, 'History ', '2018-11-09 17:49:20', '2018-11-09 17:49:20'),
+(19, 'Biography ', '2018-11-09 17:49:44', '2018-11-09 17:49:44');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `keywords`
+-- Estrutura da tabela `genre_recommendation`
 --
 
-DROP TABLE IF EXISTS `keywords`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `genre_recommendation` (
+  `recommendation_id` int(10) UNSIGNED NOT NULL,
+  `genre_id` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `genre_recommendation`
+--
+
+INSERT INTO `genre_recommendation` (`recommendation_id`, `genre_id`) VALUES
+(1, 4),
+(1, 5),
+(2, 1),
+(2, 2),
+(2, 3),
+(3, 1),
+(3, 3),
+(3, 9),
+(4, 1),
+(4, 2),
+(4, 3),
+(5, 3),
+(6, 1),
+(7, 3),
+(7, 11),
+(8, 1),
+(8, 3),
+(8, 5),
+(9, 3),
+(9, 5),
+(9, 11),
+(10, 11),
+(10, 1),
+(10, 3),
+(10, 17),
+(11, 1),
+(11, 3),
+(11, 11),
+(11, 17),
+(12, 1),
+(12, 11),
+(12, 3),
+(12, 5),
+(13, 11),
+(13, 5),
+(14, 1),
+(14, 5),
+(14, 3),
+(14, 8),
+(14, 2),
+(14, 14),
+(14, 12),
+(15, 1),
+(15, 18),
+(15, 3),
+(16, 3),
+(16, 1),
+(16, 12),
+(16, 19),
+(16, 6),
+(17, 1),
+(17, 5),
+(17, 4),
+(17, 16),
+(18, 3),
+(18, 5),
+(19, 3),
+(19, 1),
+(19, 12),
+(19, 5),
+(20, 1),
+(20, 3),
+(20, 11),
+(21, 3),
+(21, 1),
+(21, 9),
+(21, 11),
+(22, 3),
+(22, 11),
+(22, 1),
+(22, 6),
+(22, 4),
+(22, 5),
+(22, 12),
+(23, 2),
+(23, 8),
+(23, 1),
+(23, 6),
+(24, 1),
+(24, 3),
+(24, 19),
+(24, 5),
+(25, 3),
+(25, 19),
+(25, 15),
+(26, 4),
+(26, 5),
+(26, 1),
+(26, 3),
+(27, 5),
+(27, 11),
+(27, 1),
+(28, 3),
+(28, 1),
+(28, 12),
+(28, 5),
+(28, 13),
+(29, 1),
+(29, 3),
+(29, 18),
+(30, 1),
+(30, 11),
+(31, 5),
+(31, 4),
+(31, 3),
+(31, 13),
+(31, 6),
+(32, 3),
+(32, 12),
+(32, 2),
+(32, 1),
+(32, 6),
+(33, 6),
+(33, 14),
+(34, 3),
+(34, 5),
+(34, 4),
+(35, 11),
+(35, 3),
+(36, 3),
+(36, 19),
+(37, 2),
+(37, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `keywords`
+--
+
 CREATE TABLE `keywords` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `keywords_name_unique` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `keywords`
---
-
-LOCK TABLES `keywords` WRITE;
-/*!40000 ALTER TABLE `keywords` DISABLE KEYS */;
-INSERT INTO `keywords` VALUES (1,'War','2019-01-06 02:28:03','2019-01-06 02:28:03'),(2,'Action','2019-01-06 02:28:07','2019-01-06 02:28:07');
-/*!40000 ALTER TABLE `keywords` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `migrations`
---
-
-DROP TABLE IF EXISTS `migrations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `migrations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `migrations`
---
-
-LOCK TABLES `migrations` WRITE;
-/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2018_09_30_013707_create_users_table',1),(2,'2018_09_30_013722_create_recommendations_table',1),(3,'2018_09_30_014443_create_recommendation_items_table',1),(4,'2018_10_01_160531_create_genres_table',1),(5,'2018_10_01_160552_create_genre_recommendation_table',1),(6,'2018_10_01_170339_create_keywords_table',1),(7,'2018_10_01_170402_create_keyword_recommendation_table',1),(8,'2018_10_01_233309_create_sources_table',1),(9,'2018_10_01_233540_create_recommendation_item_source_table',1),(10,'2018_10_31_235414_add_media_type_to_recommendation_items_table',2);
-/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `recommendation_item_source`
---
-
-DROP TABLE IF EXISTS `recommendation_item_source`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `recommendation_item_source` (
-  `recommendation_item_id` int(10) unsigned NOT NULL,
-  `source_id` int(10) unsigned NOT NULL,
-  KEY `recommendation_item_source_recommendation_item_id_foreign` (`recommendation_item_id`),
-  KEY `recommendation_item_source_source_id_foreign` (`source_id`)
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `recommendation_item_source`
+-- Extraindo dados da tabela `keywords`
 --
 
-LOCK TABLES `recommendation_item_source` WRITE;
-/*!40000 ALTER TABLE `recommendation_item_source` DISABLE KEYS */;
-INSERT INTO `recommendation_item_source` VALUES (1,1),(1,2),(2,1),(2,2),(3,1),(3,2),(4,1),(4,2),(5,1),(5,2);
-/*!40000 ALTER TABLE `recommendation_item_source` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `keywords` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Superhero', '2018-10-31 01:21:27', '2018-10-31 01:21:27'),
+(2, 'Marvel', '2018-10-31 01:21:29', '2018-10-31 01:21:29'),
+(3, 'DC', '2018-10-31 01:21:31', '2018-10-31 01:21:31'),
+(4, 'Comics', '2018-10-31 01:21:33', '2018-10-31 01:21:33'),
+(5, 'Shark', '2018-10-31 01:21:36', '2018-10-31 01:21:36'),
+(6, 'Alligator', '2018-10-31 01:21:38', '2018-10-31 01:21:38'),
+(7, 'Crocodile', '2018-10-31 01:21:41', '2018-10-31 01:21:41'),
+(8, 'River', '2018-10-31 01:21:43', '2018-10-31 01:21:43'),
+(9, 'Swamp', '2018-10-31 01:21:44', '2018-10-31 01:21:44'),
+(10, 'Demon', '2018-10-31 01:21:49', '2018-10-31 01:21:49'),
+(11, 'Ghost', '2018-10-31 01:21:52', '2018-10-31 01:21:52'),
+(12, 'Dog', '2018-10-31 01:21:55', '2018-10-31 01:21:55'),
+(13, 'Wolf', '2018-10-31 01:21:57', '2018-10-31 01:21:57'),
+(14, 'Snow', '2018-10-31 01:21:58', '2018-10-31 01:21:58'),
+(15, 'Fire', '2018-10-31 01:22:01', '2018-10-31 01:22:01'),
+(16, 'War', '2018-10-31 01:22:06', '2018-10-31 01:22:06'),
+(17, 'World War II', '2018-10-31 01:22:10', '2018-10-31 01:22:10'),
+(18, 'World War I', '2018-10-31 01:22:16', '2018-10-31 01:22:16'),
+(19, 'Vietnam War', '2018-10-31 01:22:20', '2018-10-31 01:22:20'),
+(20, 'Biography', '2018-10-31 01:22:45', '2018-10-31 01:22:45'),
+(21, 'True Events', '2018-10-31 01:22:48', '2018-10-31 01:22:48'),
+(22, 'Medical', '2018-11-01 18:44:45', '2018-11-01 18:44:45'),
+(23, 'Doctor', '2018-11-01 18:44:47', '2018-11-01 18:44:47'),
+(24, 'Fight', '2018-11-02 16:45:21', '2018-11-02 16:45:21'),
+(25, 'Martial Arts', '2018-11-02 16:45:40', '2018-11-02 16:45:40'),
+(26, 'Prison', '2018-11-02 21:44:41', '2018-11-02 21:44:41'),
+(27, 'Prison Break', '2018-11-02 21:44:59', '2018-11-02 21:44:59'),
+(28, 'Escape', '2018-11-02 21:45:09', '2018-11-02 21:45:09'),
+(29, 'Ocean', '2018-11-02 23:31:11', '2018-11-02 23:31:11'),
+(30, 'Sea', '2018-11-02 23:31:13', '2018-11-02 23:31:13'),
+(31, 'Attorney', '2018-11-03 13:47:50', '2018-11-03 13:47:50'),
+(32, 'Lawyer', '2018-11-03 13:47:56', '2018-11-03 13:47:56'),
+(33, 'Law', '2018-11-03 13:47:58', '2018-11-03 13:47:58'),
+(34, 'Crime', '2018-11-04 22:29:38', '2018-11-04 22:29:38'),
+(35, 'Car', '2018-11-04 22:29:40', '2018-11-04 22:29:40'),
+(36, 'Money', '2018-11-04 22:30:09', '2018-11-04 22:30:09'),
+(37, 'Sword ', '2018-11-04 22:30:29', '2018-11-04 22:30:29'),
+(38, 'Sword Fight ', '2018-11-04 22:30:36', '2018-11-04 22:30:36'),
+(39, 'Gun', '2018-11-04 22:33:10', '2018-11-04 22:33:10'),
+(40, 'Shooting', '2018-11-04 22:33:37', '2018-11-04 22:33:37'),
+(41, 'Old West', '2018-11-05 12:34:20', '2018-11-05 12:34:20'),
+(42, 'Kidnapping', '2018-11-06 12:49:28', '2018-11-06 12:49:28'),
+(43, 'Serial Killer', '2018-11-07 20:33:33', '2018-11-07 20:33:33'),
+(44, 'Murder', '2018-11-07 20:34:05', '2018-11-07 20:34:05'),
+(45, 'Investigation', '2018-11-07 20:34:09', '2018-11-07 20:34:09'),
+(46, 'Prehistoric', '2018-11-09 12:00:52', '2018-11-09 12:00:52'),
+(47, 'Civilization ', '2018-11-09 17:48:07', '2018-11-09 17:48:07'),
+(48, 'Strong', '2018-11-10 10:00:22', '2018-11-10 10:00:22'),
+(49, 'Strong Women ', '2018-11-10 10:00:31', '2018-11-10 10:00:31'),
+(50, 'Alien', '2018-11-12 17:39:04', '2018-11-12 17:39:04'),
+(51, 'Extraterrestrial ', '2018-11-12 17:39:31', '2018-11-12 17:39:31'),
+(52, 'Racism', '2018-11-12 22:29:08', '2018-11-12 22:29:08'),
+(53, 'Ship Crash', '2018-11-16 22:27:53', '2018-11-16 22:27:53'),
+(54, 'Airplane', '2018-11-16 22:28:20', '2018-11-16 22:28:20'),
+(55, 'Drugs', '2018-11-16 22:28:49', '2018-11-16 22:28:49'),
+(56, 'Gangster', '2018-11-16 22:29:02', '2018-11-16 22:29:02'),
+(57, 'Diamond', '2018-11-16 22:29:55', '2018-11-16 22:29:55'),
+(58, 'True Story', '2018-11-19 10:56:51', '2018-11-19 10:56:51'),
+(59, 'Autism', '2018-11-21 09:20:34', '2018-11-21 09:20:34'),
+(60, 'Money Laundry', '2018-11-21 09:35:45', '2018-11-21 09:35:45'),
+(61, 'Cartoon', '2018-11-21 09:51:14', '2018-11-21 09:51:14'),
+(62, 'Suicide', '2018-11-21 09:52:39', '2018-11-21 09:52:39'),
+(63, 'Vampire', '2018-11-22 16:55:30', '2018-11-22 16:55:30'),
+(64, 'Cat', '2018-11-22 16:55:35', '2018-11-22 16:55:35'),
+(65, 'Bear', '2018-11-22 16:55:38', '2018-11-22 16:55:38'),
+(66, 'Lion', '2018-11-22 16:55:42', '2018-11-22 16:55:42'),
+(67, 'Firefighter', '2018-11-25 10:23:46', '2018-11-25 10:23:46'),
+(68, 'Music', '2018-11-25 10:48:40', '2018-11-25 10:48:40'),
+(69, 'Musician', '2018-11-25 10:48:42', '2018-11-25 10:48:42'),
+(70, 'Technology', '2018-11-25 21:17:21', '2018-11-25 21:17:21'),
+(71, 'Hacking', '2018-11-25 21:17:26', '2018-11-25 21:17:26'),
+(72, 'Geek', '2018-11-25 21:17:34', '2018-11-25 21:17:34'),
+(73, 'Nerd', '2018-11-25 21:17:37', '2018-11-25 21:17:37'),
+(74, 'Africa', '2018-11-28 22:40:44', '2018-11-28 22:40:44'),
+(75, 'Civil War', '2018-11-28 22:56:18', '2018-11-28 22:56:18'),
+(76, 'Artificial Intelligence', '2018-11-28 22:56:47', '2018-11-28 22:56:47'),
+(77, 'Zombie', '2018-11-28 22:59:05', '2018-11-28 22:59:05'),
+(78, 'Monster', '2018-11-28 22:59:15', '2018-11-28 22:59:15'),
+(79, 'Samurai', '2018-11-30 22:25:34', '2018-11-30 22:25:34'),
+(80, 'Japan', '2018-11-30 22:25:42', '2018-11-30 22:25:42'),
+(81, 'Ninja', '2018-12-02 22:54:44', '2018-12-02 22:54:44'),
+(82, 'Witch', '2018-12-05 21:51:47', '2018-12-05 21:51:47'),
+(83, 'Time Travel', '2018-12-08 08:28:06', '2018-12-08 08:28:06'),
+(84, 'Christmas', '2018-12-09 09:05:14', '2018-12-09 09:05:14'),
+(85, 'Xmas', '2018-12-09 09:05:34', '2018-12-09 09:05:34'),
+(86, 'Ice', '2018-12-09 11:47:02', '2018-12-09 11:47:02'),
+(87, 'Sport', '2018-12-18 20:12:31', '2018-12-18 20:12:31'),
+(88, 'Boxing', '2018-12-18 20:13:06', '2018-12-18 20:13:06'),
+(89, 'Basketball', '2018-12-26 21:43:23', '2018-12-26 21:43:23');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `recommendation_items`
+-- Estrutura da tabela `keyword_recommendation`
 --
 
-DROP TABLE IF EXISTS `recommendation_items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `keyword_recommendation` (
+  `recommendation_id` int(10) UNSIGNED NOT NULL,
+  `keyword_id` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `keyword_recommendation`
+--
+
+INSERT INTO `keyword_recommendation` (`recommendation_id`, `keyword_id`) VALUES
+(1, 6),
+(1, 7),
+(1, 9),
+(1, 8),
+(2, 1),
+(2, 2),
+(2, 4),
+(3, 16),
+(3, 19),
+(4, 1),
+(4, 4),
+(4, 3),
+(5, 23),
+(5, 22),
+(6, 25),
+(6, 24),
+(7, 26),
+(7, 27),
+(7, 28),
+(8, 5),
+(8, 29),
+(8, 30),
+(9, 33),
+(9, 32),
+(9, 31),
+(10, 38),
+(10, 35),
+(10, 40),
+(10, 16),
+(11, 39),
+(11, 40),
+(11, 41),
+(12, 42),
+(13, 43),
+(13, 45),
+(13, 44),
+(14, 46),
+(15, 47),
+(16, 48),
+(16, 49),
+(17, 50),
+(17, 51),
+(18, 52),
+(19, 39),
+(10, 39),
+(10, 17),
+(19, 53),
+(19, 54),
+(19, 41),
+(19, 56),
+(19, 55),
+(19, 57),
+(20, 42),
+(20, 32),
+(20, 54),
+(20, 43),
+(20, 16),
+(20, 26),
+(21, 17),
+(21, 16),
+(21, 21),
+(21, 58),
+(22, 60),
+(22, 2),
+(22, 61),
+(22, 43),
+(22, 62),
+(23, 1),
+(23, 12),
+(23, 46),
+(23, 63),
+(24, 15),
+(24, 67),
+(24, 21),
+(25, 68),
+(25, 69),
+(26, 63),
+(27, 71),
+(27, 70),
+(27, 72),
+(28, 74),
+(28, 76),
+(28, 77),
+(29, 79),
+(29, 80),
+(29, 25),
+(30, 80),
+(30, 25),
+(30, 81),
+(31, 82),
+(32, 83),
+(33, 85),
+(33, 84),
+(34, 14),
+(34, 86),
+(34, 30),
+(34, 65),
+(34, 13),
+(34, 16),
+(35, 55),
+(36, 87),
+(36, 88),
+(37, 87),
+(37, 89);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '2018_09_30_013707_create_users_table', 1),
+(2, '2018_09_30_013722_create_recommendations_table', 1),
+(3, '2018_09_30_014443_create_recommendation_items_table', 1),
+(4, '2018_10_01_160531_create_genres_table', 1),
+(5, '2018_10_01_160552_create_genre_recommendation_table', 1),
+(6, '2018_10_01_170339_create_keywords_table', 1),
+(7, '2018_10_01_170402_create_keyword_recommendation_table', 1),
+(8, '2018_10_01_233309_create_sources_table', 1),
+(9, '2018_10_01_233540_create_recommendation_item_source_table', 1),
+(10, '2018_10_31_235414_add_media_type_to_recommendation_items_table', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `recommendations`
+--
+
+CREATE TABLE `recommendations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `poster` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `backdrop` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `recommendations`
+--
+
+INSERT INTO `recommendations` (`id`, `user_id`, `title`, `type`, `body`, `poster`, `backdrop`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Movies about Alligator and Crocodile', 0, '<p>It is not a big list but is a great one! My favorite movie is \"Black Water\" because is based on true events.</p>', '/eoLKVlcg2kq22dCW58WqHqYSteK.jpg', '/oqkbIfxOFFncu1aBBEOZung3Pmp.jpg', 1, '2018-10-31 01:23:41', '2018-10-31 01:27:57'),
+(2, 1, 'Marvel Universe Series', 1, '<p>This a list of some of Marvel Universe series.</p>', '/wVadC1BT2w3hDh5Vq0J0LFFTrLP.jpg', '/dpNeXLEnuKzAvbNwveJhNEiQvXZ.jpg', 1, '2018-10-31 01:24:52', '2018-10-31 01:34:28'),
+(3, 1, 'Movies about Vietnam War', 0, '<p>10 must see Vietnam War movies!</p>', '/sYPOQI57JVNmjiLI3KeZ5KA8O9i.jpg', '/a9lSR1Lu7Tphl6lSLuxvKLfqWBC.jpg', 1, '2018-10-31 01:26:09', '2018-10-31 01:34:18'),
+(4, 1, 'DC Universe Titles', 2, '<p>This is a mixed list of some of cool movies / series of DC Universe.</p>', '/cGOPbv9wA5gEejkUN892JrveARt.jpg', '/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg', 1, '2018-10-31 22:51:22', '2018-11-01 00:26:19'),
+(5, 1, 'The Best Movies For Doctors And Medical Students', 0, '<p>Check out 10 great movies about medicine that every doctor and medical student must watch.</p>', '/zOnuvmY4vuabnkEZwQAXvErIaTE.jpg', '/jbTbTZhmZsKVWxk0436ymadWQBd.jpg', 1, '2018-11-01 18:48:03', '2018-11-01 19:00:19'),
+(6, 1, ' The Best Fight Movies - Part I', 0, '<p>I plan to create more fight movie lists. Enjoy the first part.</p>', '/mfDGRp19BcZUfPIhdqzdQ2uGZrf.jpg', '/fCcWGyNgz4pmCdgqQsYVZfAgT1K.jpg', 1, '2018-11-02 16:47:31', '2018-11-02 16:56:33'),
+(7, 1, 'The Best Prison Movies', 0, '<p>Check out these amazing prison movies.</p>', '/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg', '/Rlt20sEbOQKPVjia7lUilFm49W.jpg', 1, '2018-11-02 21:45:29', '2018-11-02 21:59:22'),
+(8, 1, 'Movies about Sharks', 0, '<p>Check out this list with the best shark movies.</p>', '/eyWICPcxOuTcDDDbTMOZawoOn8d.jpg', '/rH79sB6Nkx4cMW3JzsUy7wK0rhX.jpg', 1, '2018-11-02 23:33:56', '2018-11-02 23:37:53'),
+(9, 1, 'Great Lawyer Movies', 0, '<p>Check out this great lawyer movies list.</p>', '/bTXtxFUyqQ6T9FRa3ajSdMtwnAj.jpg', '/zxN5XhQKDT5GwlpZo7yKxDAJMyQ.jpg', 1, '2018-11-03 13:48:30', '2018-11-03 13:55:22'),
+(10, 1, 'The best Quentin Tarantino movies', 0, '<p>This is a list of Quentin Tarantino\'s movies, from worst to best in my opinion.</p>', '/dM2w364MScsjFf8pfMbaWUcWrR.jpg', '/4cDFJr4HnXN5AdPw4AKrmLlMWdO.jpg', 1, '2018-11-04 22:33:57', '2018-11-04 22:38:27'),
+(11, 1, 'The Best Modern Westerns Movies', 0, '<p>The focus of this list is modern westerns movies. I know that a lot of people like old westerns, as I do, but I\'m trying to show you new movies with great quality effects, great production and so on...</p>', '/9Nwkh0eQmkymEOR0ovAALtjSIZW.jpg', '/fOuig5rhqkrVVD1VsoL1jPz15hR.jpg', 1, '2018-11-05 12:34:34', '2018-11-05 13:08:32'),
+(12, 1, 'Movies about kidnapping', 0, '<p>Check out this list with some of the best movies about kidnapping.</p>', '/3zlffXmo7QpVBc17QIJWrRfasVr.jpg', '/d5vwBiuJI1a2hBcGjhsWhpmAkL7.jpg', 1, '2018-11-06 12:50:01', '2018-11-06 13:00:52'),
+(13, 1, 'Movies About Serial Killers', 0, '<p>Check out this list with 10 movies about serial killers.</p>', '/qjAyTj2BSth1EQ89vNfo0JYVPFN.jpg', '/pzmrKXQgL7GEZvigD6W1bUEzXJN.jpg', 1, '2018-11-07 20:34:34', '2018-11-07 20:56:58'),
+(14, 1, 'Great prehistoric movies', 0, '<p>Here are some of my favorites movies about our prehistoric past.</p>', '/afdZAIcAQscziqVtsEoh2PwsYTW.jpg', '/nKMeTdm72LQ756Eq20uTjF1zDXu.jpg', 1, '2018-11-09 12:02:25', '2018-11-09 12:19:14'),
+(15, 1, 'Ancient Civilization Films', 0, '<p>Check out this list with 10 amazing movies about ancient civilizations.</p>', '/5BTFXR96hcBzmJvd9FwNayV79Xu.jpg', '/2zLULpdiHDWV8Zf5jJ5uOITbxhC.jpg', 1, '2018-11-09 17:51:39', '2018-11-09 18:03:58'),
+(16, 1, 'Inspiring films about strong women', 0, '<p>This list was created by Luh Brecailo. What a list!</p>', '/p2SdfGmQRaw8xhFbexlHL7srMM8.jpg', '/nkSW9TqN9PHOkiej1D3SnmOhmCl.jpg', 1, '2018-11-10 10:00:50', '2018-11-10 10:11:44'),
+(17, 1, 'Humans vs. Aliens', 0, '<p>Great films about aliens visiting earth and fighting humans.</p>', '/9uZsGCP4rvOHVGCpMpYq5gNCuNI.jpg', '/gTDwoJBCu7scwYQoykIlLNpkCes.jpg', 1, '2018-11-12 17:44:41', '2018-11-12 17:55:26'),
+(18, 1, 'Movies About Racism', 0, '<p>\"Take your racism out of the way, that I want to pass with my color.\" Georges Najjar Jr.</p>', '/1SwAVYpuLj8KsHxllTF8Dt9dSSX.jpg', '/5OlAmzEUaO0A12cM7g5g420w4d7.jpg', 1, '2018-11-12 22:29:35', '2018-11-12 22:38:37'),
+(19, 1, 'Top Greatest Leonardo DiCaprio Movies', 0, '<p>Check out my favorite movies of this great actor!</p>', '/vK1o5rZGqxyovfIhZyMELhk03wO.jpg', '/rP36Rx5RQh0rmH2ynEIaG8DxbV2.jpg', 1, '2018-11-14 16:09:29', '2018-11-16 23:16:33'),
+(20, 1, 'Top Greatest Denzel Washington Films', 0, '<p>Check out my favorite movies of this great actor.</p>', '/2eQfjqlvPAxd9aLDs8DvsKLnfed.jpg', '/hEJ52KqwOmyRpcihs10h7xOwN7e.jpg', 1, '2018-11-18 18:00:49', '2018-11-18 18:13:43'),
+(21, 1, 'World War II Movies Based On True Events', 0, '<p>This lists contains only those that are based on true events.</p>', '/i8VKy2dhezT9V8IDUIbeGtlUaVV.jpg', '/weaVoeok7SMSob9RCmFQnNaRQ6s.jpg', 1, '2018-11-19 10:57:06', '2018-11-19 11:32:26'),
+(22, 1, 'Netflix - The Best Original Series - Part I', 1, '<p>If you don\'t know what to watch on Netflix, don\'t waste more time searching, check out this list.</p>', '/oxFlfbCuDmgIDEsi0JRfaGeKgQ7.jpg', '/cvGZ42YsWHcdIa3rXGuoMqU2xSw.jpg', 1, '2018-11-21 09:22:23', '2018-11-21 14:40:39'),
+(23, 1, 'The Best Animated Films of 2018', 0, '<p>If you love animations like me, check out this amazing list.</p>', '/x1txcDXkcM65gl7w20PwYSxAYah.jpg', '/mabuNsGJgRuCTuGqjFkWe1xdu19.jpg', 1, '2018-11-22 16:49:55', '2018-11-22 16:57:24'),
+(24, 1, 'The Best Firefighter Movies', 0, '<p>This list is dedicated to all firefighters in the world.</p>', '/opgPMSdkXsTOB5W169VlivKyaZQ.jpg', '/zWGxpPFVvnhwKgrqVzflZOdjdkr.jpg', 1, '2018-11-25 10:24:10', '2018-11-25 10:32:59'),
+(25, 1, 'Biographical Movies About Real Musicians', 0, '<p>I deleted the fictional films because the focus of this list is bibliographical works.</p>', '/fPDsBL0MdegEvyPhim9b5srHOqG.jpg', '/lcVQocaLf4wf5Inmwj7TtrPRnPp.jpg', 1, '2018-11-25 10:53:17', '2018-11-25 11:03:59'),
+(26, 1, 'The Best Vampire Movies', 0, '<p>Only the best films about these creatures of the night.</p>', '/hldXwwViSfHJS0kIJr07KBGmHJI.jpg', '/GRyynLqafMrLFMHqvfGdUweavA.jpg', 1, '2018-11-25 13:57:39', '2018-11-25 14:12:23'),
+(27, 1, 'The Best Hacking Movies', 0, '<p>This list is for all technology enthusiasts and geeks.</p>', '/rQocmooj7bFKS2vZfzWBB5O12eR.jpg', '/AkwLeC0Q8GIkYJ6ZI0tc0118AY6.jpg', 1, '2018-11-25 21:20:26', '2018-11-25 21:36:27'),
+(28, 1, 'Netflix - The Best Original Movies - Part I', 0, '<p>Don\'t waste your time, check out the first part of the best Netflix movies.</p>', '/geb6DKAnaRf0PFRlqm8i02G6JBv.jpg', '/17zo8xzwqwr7pqCZt1ABaAAakTv.jpg', 1, '2018-11-28 22:40:55', '2018-11-28 23:01:17'),
+(29, 1, 'The Greatest Samurai Movies Of All Time', 0, '<p>Don\'t be shy, take a look on this great list!</p>', '/sLv5pXysIz7QbtKFJy85d5yxv2W.jpg', '/cQ6oBTUkkl26Ndmpte2wYEdACBu.jpg', 1, '2018-11-30 22:28:59', '2018-11-30 22:34:54'),
+(30, 1, 'The Best Ninja Movies', 0, '<p>Get in before they disappear!</p>', '/k0Nu7HuUdnjfeNPR6YSY0PDH2et.jpg', '/kmKZVgUPqf9v4c0UitSZlDM3RPv.jpg', 1, '2018-12-02 22:55:06', '2018-12-02 23:02:10'),
+(31, 1, 'The 15 Greatest Witch Movies of All Time', 0, '<p>From vulture.com</p>', '/efVJYzeOWAE3z4Usu16RCSheYav.jpg', '/FLa6tHBr4P4DLQhQecDtXslPTY.jpg', 1, '2018-12-05 21:51:55', '2018-12-05 21:56:57'),
+(32, 1, 'The Best Time Travel Movies', 0, '<p>Man, this list is amazing!</p>', '/3PAQy3CyNNJPES772OFMx47lFEE.jpg', '/zXTUrm0BIrrZn3nEhybg0hlY275.jpg', 1, '2018-12-08 08:28:20', '2018-12-08 08:40:52'),
+(33, 1, 'The Best Christmas Movies of All Time', 0, '<p>The best of Christmas movies to make heart warmer in the winter time.</p>', '/5Lo3sWuvbO4AnrAHYBgB5U1Opqd.jpg', '/vUyDnfk7DHaozfl1cXFh6PzbUW4.jpg', 1, '2018-12-09 09:07:40', '2018-12-09 09:24:20'),
+(34, 1, 'The Best Survival Movies', 0, '<p>Only the best!</p>', '/w515BrZvczKIxbHurG6HIiYYrba.jpg', '/frbW3kQXhVZPhceuQa1EqwZPXQr.jpg', 1, '2018-12-09 11:47:47', '2018-12-09 12:03:55'),
+(35, 1, 'The Best Drug Movies', 0, '<p>Check out some movies about drugs.</p>', '/zr2p353wrd6j3wjLgDT4TcaestB.jpg', '/51fjuzYoJKvGW43j32nBpWW6Tm1.jpg', 1, '2018-12-13 20:15:33', '2018-12-13 20:24:20'),
+(36, 1, 'The Best Boxing Movies', 0, '<p>Knockout! :)</p>', '/hKzhV274pkZBSpXfCjUyzbyYKLl.jpg', '/fs2yhdSCzMVlNECrN84WuCkgXov.jpg', 1, '2018-12-18 20:13:24', '2018-12-18 20:22:09'),
+(37, 1, 'The Best Basketball Movies of All Time', 0, '<p>Space Jam *.*</p>', '/xI9AwhOWtsbFlS8tYD2PXa80p7u.jpg', '/kBTdPNTAzagAY6UiwY957KCDGuu.jpg', 1, '2018-12-26 21:43:31', '2018-12-26 21:53:13');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `recommendation_items`
+--
+
 CREATE TABLE `recommendation_items` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `recommendation_id` int(10) unsigned NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
+  `recommendation_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tmdb_id` int(11) NOT NULL,
   `year` date NOT NULL,
@@ -189,119 +538,1322 @@ CREATE TABLE `recommendation_items` (
   `commentary` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `media_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `recommendation_items_recommendation_id_foreign` (`recommendation_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `media_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `recommendation_items`
+-- Extraindo dados da tabela `recommendation_items`
 --
 
-LOCK TABLES `recommendation_items` WRITE;
-/*!40000 ALTER TABLE `recommendation_items` DISABLE KEYS */;
-INSERT INTO `recommendation_items` VALUES (1,1,'John Wick: Chapter II',5232,'2017-12-24','I\'ll kill them all!','OqAmzALlnkasQml','pKqnkmAqmlasas','/iqnonAsnkas','Really great movie!','2019-01-06 02:28:50','2019-01-06 02:28:50','movie'),(2,1,'Aquaman',5232,'2017-12-24','I\'ll kill them all!','OqAmzALlnkasQml','pKqnkmAqmlasas','/iqnonAsnkas','Really great movie!','2019-01-06 02:28:58','2019-01-06 02:28:58','movie'),(3,1,'Wonder Woman',5232,'2017-12-24','I\'ll kill them all!','OqAmzALlnkasQml','pKqnkmAqmlasas','/iqnonAsnkas','Really great movie!','2019-01-06 02:29:04','2019-01-06 02:29:04','movie'),(4,1,'Man of Steel',5232,'2017-12-24','I\'ll kill them all!','OqAmzALlnkasQml','pKqnkmAqmlasas','/iqnonAsnkas','Really great movie!','2019-01-06 02:29:11','2019-01-06 02:29:11','movie'),(5,2,'Aquamarine',5232,'2017-12-24','I\'ll kill them all!','OqAmzALlnkasQml','pKqnkmAqmlasas','/iqnonAsnkas','Really great movie!','2019-01-06 02:36:17','2019-01-06 02:36:17','movie');
-/*!40000 ALTER TABLE `recommendation_items` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(1, 1, 'Black Water', 14138, '2007-06-01', 'A terrifying tale of survival in the mangrove swamps of Northern Australia.', '/eoLKVlcg2kq22dCW58WqHqYSteK.jpg', '/oqkbIfxOFFncu1aBBEOZung3Pmp.jpg', 'xeucMCAnzeU', '<p>This is my favorite. This is a true story.</p>', '2018-10-31 01:26:43', '2018-11-01 17:49:51', 'movie'),
+(2, 1, 'Lake Placid', 9825, '1999-07-15', 'When a man is eaten alive by an unknown creature, the local Game Warden teams up with a paleontologist from New York to find the beast. Add to the mix an eccentric philanthropist with a penchant for \"Crocs\", and here we go! This quiet, remote lake is suddenly the focus of an intense search for a crocodile with a taste for live animals...and people!', '/6lE0EahK7xDOYWRH6On5uKPnwQZ.jpg', '/9q5X0G5zUxLZNwGKT49ZpB0AqNC.jpg', 'qqK07DFav8k', '<p>This is a classic, a pity that the sequels are so bad!</p>', '2018-10-31 01:26:51', '2018-11-01 17:49:18', 'movie'),
+(3, 1, 'Rogue', 13022, '2007-11-08', 'From the director of Wolf Creek comes this terrifying look at nature\'s perfect killing machine. When a group of tourists stumble into the remote Australian river territory of an enormous crocodile, the deadly creature traps them on a tiny mud island with the tide quickly rising and darkness descending. As the hungry predator closes in, they must fight for survival against all odds.', '/pZC9HA9ngsG68vsGzwZwpSYFnDh.jpg', '/2HpxNuR5iNSxSbEBRxd0YXJv3f6.jpg', 'BFx00dpfApQ', '<p>A good movie.</p>', '2018-10-31 01:26:59', '2018-11-01 17:51:29', 'movie'),
+(4, 1, 'Primeval', 4283, '2007-01-12', 'A news team is sent to Burundi to capture and bring home a legendary 25-foot crocodile. Their difficult task turns potentially deadly when a warlord targets them for death.', '/z0xEaDwHIgY53kT6wvkPmQ6558n.jpg', '/6EqtHjwgljI4nAlKAY5QmvzXATm.jpg', 'RARfk8cXPeg', '<p>This one has a bit of action and tension, I like it.</p>', '2018-10-31 01:27:09', '2018-11-01 17:52:28', 'movie'),
+(5, 1, 'Eaten Alive', 30062, '1976-12-25', 'A psychotic redneck who owns a dilapidated hotel in the backwater swamps of Louisiana kills various people who upset him or his business, and he feeds their bodies to a large crocodile that he keeps as a pet in the swamp beside his hotel.', '/4sz1YFCtLxQJQ5yxsJsmiJRHcMs.jpg', '/c3muvxHlVOh9Fic0zYT8YGizMPG.jpg', '9cQGA5VRj50', '', '2018-10-31 01:27:20', '2018-10-31 01:27:20', 'movie'),
+(6, 1, 'Alligator', 33518, '1980-07-02', 'A baby alligator is flushed down a Chicago toilet and survives by eating discarded lab rats, injected with growth hormones. The now gigantic animal, escapes the city sewers, and goes on a rampage, pursued by a cop and a big-game hunter.', '/xGdzbwVDnTu3WwOtrFjI8qDfoLU.jpg', '/qMVM1NZvj70UPLGKYh22uSjY2OH.jpg', '5UP0vSYE0tE', '', '2018-10-31 01:27:26', '2018-10-31 01:27:26', 'movie'),
+(7, 1, 'Dark Age', 83866, '1987-05-21', 'In the Australian outback, a park ranger and two local guides set out to track down a giant crocodile that has been killing and eating the local populace..', '/xrkFUUEzi8VvKF8o84mAMYQdbkR.jpg', '/eV5nemTdC2hD64xdHMVq9ZgCDcs.jpg', 'A9hl41MBq8A', '', '2018-10-31 01:27:46', '2018-10-31 01:27:46', 'movie'),
+(8, 3, 'Platoon', 792, '1986-12-19', 'As a young and naive recruit in Vietnam, Chris Taylor faces a moral crisis when confronted with the horrors of war and the duality of man.', '/sYPOQI57JVNmjiLI3KeZ5KA8O9i.jpg', '/a9lSR1Lu7Tphl6lSLuxvKLfqWBC.jpg', 'pPi8EQzJ2Bg', '<p>Platoon is just amazing! My favorite movie about Vietnam.</p>', '2018-10-31 01:28:36', '2018-11-01 17:53:42', 'movie'),
+(9, 3, 'The Deer Hunter', 11778, '1978-12-08', 'A group of working-class friends decides to enlist in the Army during the Vietnam War and finds it to be hellish chaos -- not the noble venture they imagined. Before they left, Steven married his pregnant girlfriend -- and Michael and Nick were in love with the same woman. But all three are different men upon their return.', '/slNJESItHPqp1CENEJQUPw8d7WE.jpg', '/kzRUFR2FiITeP9LMPe8j2zrC7Xv.jpg', 'vw-Tyr6Rb6I', '', '2018-10-31 01:28:43', '2018-10-31 01:28:43', 'movie'),
+(10, 3, 'Apocalypse Now', 28, '1979-08-15', 'At the height of the Vietnam war, Captain Benjamin Willard is sent on a dangerous mission that, officially, \"does not exist, nor will it ever exist.\" His goal is to locate - and eliminate - a mysterious Green Beret Colonel named Walter Kurtz, who has been leading his personal army on illegal guerrilla missions into enemy territory.', '/jcvJ2xcVWU9Wh0hZAxcs103s8nN.jpg', '/k91Dag8AZbhjIJqrtf7F1bQnGPg.jpg', 'CxENJ2LwecY', '', '2018-10-31 01:28:58', '2018-10-31 01:28:58', 'movie'),
+(11, 3, 'Full Metal Jacket', 600, '1987-06-26', 'A pragmatic U.S. Marine observes the dehumanizing effects the U.S.-Vietnam War has on his fellow recruits from their brutal boot camp training to the bloody street fighting in Hue.', '/29veIwD38rVL2qY74emXQw4y25H.jpg', '/nfm6JCKUaM6dT0mATmShLY6cpmc.jpg', 'x9f6JaaX7Wg', '', '2018-10-31 01:29:05', '2018-10-31 01:29:05', 'movie'),
+(12, 3, 'Rambo: First Blood Part II', 1369, '1985-05-21', 'John Rambo is released from prison by the government for a top-secret covert mission to the last place on Earth he\'d want to return - the jungles of Vietnam.', '/l6zUaYqaQ5TFokesv3BPzBvSN0.jpg', '/2a8Dr2iHznBKjdpXceVRmpxQEgm.jpg', 's3nblhkrHG0', '', '2018-10-31 01:29:23', '2018-10-31 01:29:23', 'movie'),
+(13, 3, 'Good Morning, Vietnam', 801, '1987-12-23', 'Radio funny man Adrian Cronauer is sent to Vietnam to bring a little comedy back into the lives of the soldiers. After setting up shop, Cronauer delights the G.I.s but shocks his superior officer, Sergeant Major Dickerson, with his irreverent take on the war. While Dickerson attempts to censor Cronauer\'s broadcasts, Cronauer pursues a relationship with a Vietnamese girl named Trinh, who shows him the horrors of war first-hand.', '/62Ve2yREvobU0qo4DxdSrShh1YO.jpg', '/5HdzBJBdvaqpPHjbH3qcSqHPJ0S.jpg', '3mJoHqmtFcQ', '', '2018-10-31 01:29:44', '2018-10-31 01:29:44', 'movie'),
+(14, 3, 'Born on the Fourth of July', 2604, '1989-12-20', 'The biography of Ron Kovic. Paralyzed in the Vietnam war, he becomes an anti-war and pro-human rights political activist after feeling betrayed by the country he fought for.', '/iAUSzQNpxf9fX1EvhNbeguo6aVA.jpg', '/t9MrNY0xM9U5JSe5vHN9z08UYty.jpg', 't8NR6n1nRMI', '', '2018-10-31 01:30:15', '2018-10-31 01:30:15', 'movie'),
+(15, 3, 'Tigerland', 10687, '2000-09-22', 'A group of recruits go through Advanced Infantry Training at Fort Polk, Louisiana\'s infamous Tigerland, last stop before Vietnam for tens of thousands of young men in 1971', '/yyW54WcjMFX4NTRy1NnKIeaWhLS.jpg', '/fjHKnEnlgTswengC5eCjUM6by3m.jpg', 'LABt1rwmIgg', '', '2018-10-31 01:30:20', '2018-10-31 01:30:20', 'movie'),
+(16, 3, 'We Were Soldiers', 10590, '2002-03-01', 'The story of the first major battle of the American phase of the Vietnam War and the soldiers on both sides that fought it.', '/kjG02l5Nqcgd3ZOb7aMBb9CIIIi.jpg', '/8ikyF16LecHlHkkMmuZJDV9GWa7.jpg', 'HnLHmGzByPA', '', '2018-10-31 01:30:33', '2018-10-31 01:30:33', 'movie'),
+(17, 3, 'Rescue Dawn', 9952, '2006-09-09', 'A US Fighter pilot\'s epic struggle of survival after being shot down on a mission over Laos during the Vietnam War.', '/sNQ1drGljoZ0PpCJoKYtIDiNQ61.jpg', '/bj1ZF5vj23N8pFIGlG2f7IPTtpf.jpg', 'B2jIKkxSsBg', '', '2018-10-31 01:30:50', '2018-10-31 01:30:50', 'movie'),
+(18, 2, 'Marvel\'s Daredevil', 61889, '2015-04-10', 'Lawyer-by-day Matt Murdock uses his heightened senses from being blinded as a young boy to fight crime at night on the streets of Hell’s Kitchen as Daredevil.', '/wVadC1BT2w3hDh5Vq0J0LFFTrLP.jpg', '/dpNeXLEnuKzAvbNwveJhNEiQvXZ.jpg', 'jAy6NJ_D5vU', '', '2018-10-31 01:32:39', '2018-10-31 01:32:39', 'tv'),
+(19, 2, 'Marvel\'s Luke Cage', 62126, '2016-09-30', 'Given superstrength and durability by a sabotaged experiment, a wrongly accused man escapes prison to become a superhero for hire.', '/9nWZZ1ghE0LuXEWJi7QjCymHygi.jpg', '/jM31AtkE5QEfateaLXjc0gkY8Ih.jpg', 'Ymw5uvViqPU', '', '2018-10-31 01:32:50', '2018-10-31 01:32:50', 'tv'),
+(20, 2, 'Marvel\'s Jessica Jones', 38472, '2015-11-20', 'After a tragic ending to her short-lived super hero stint, Jessica Jones is rebuilding her personal life and career as a detective who gets pulled into cases involving people with extraordinary abilities in New York City.', '/8a7e2GNpMnjI2hgRZH3jq2c7ffv.jpg', '/ibU4iTytIlcxYJqRJsNUEBp6te5.jpg', 'nWHUjuJ8zxE', '', '2018-10-31 01:32:56', '2018-10-31 01:32:56', 'tv'),
+(21, 2, 'Marvel\'s Iron Fist', 62127, '2017-03-17', 'Danny Rand resurfaces 15 years after being presumed dead. Now, with the power of the Iron Fist, he seeks to reclaim his past and fulfill his destiny.', '/nv4nLXbDhcISPP8C1mgaxKU50KO.jpg', '/xHCfWGlxwbtMeeOnTvxUCZRGnkk.jpg', 'QCSPda7xQ3s', '', '2018-10-31 01:33:01', '2018-10-31 01:33:01', 'tv'),
+(22, 2, 'Marvel\'s The Defenders', 62285, '2017-08-18', 'Daredevil, Jessica Jones, Luke Cage and Iron Fist join forces to take on common enemies as a sinister conspiracy threatens New York City.', '/49XzINhH4LFsgz7cx6TOPcHUJUL.jpg', '/7eV2vDrj1AwlTffUud66v9o0Ytq.jpg', '', '', '2018-10-31 01:33:31', '2018-10-31 01:33:31', 'tv'),
+(23, 2, 'Marvel\'s The Punisher', 67178, '2017-11-17', 'A former Marine out to punish the criminals responsible for his family\'s murder finds himself ensnared in a military conspiracy.', '/s2YM9zHF3tf2coi8t0UEzYrOHg8.jpg', '/2yfmJudf695JBUJRW7QJjVN1rg5.jpg', 'lIY6zFL95hE', '', '2018-10-31 01:33:38', '2018-10-31 01:33:38', 'tv'),
+(24, 2, 'Legion', 67195, '2017-02-08', 'David Haller, AKA Legion, is a troubled young man who may be more than human. Diagnosed as schizophrenic, David has been in and out of psychiatric hospitals for years. But after a strange encounter with a fellow patient, he’s confronted with the possibility that the voices he hears and the visions he sees might be real.', '/l8paJlma8P3t73B4SPtFjr8nsWF.jpg', '/87eP7ITTrOWvkA4EqCuoRdyjzLy.jpg', '4SZ3rMMYBLY', '', '2018-10-31 01:33:44', '2018-10-31 01:33:44', 'tv'),
+(25, 2, 'Marvel\'s Inhumans', 68716, '2017-09-29', 'After the Royal Family of Inhumans is splintered by a military coup, they barely escape to Hawaii where their surprising interactions with the lush world and humanity around them may prove to not only save them, but Earth itself.', '/y3aFlpB4Vwn1Qz0WOTUOTf6GmPl.jpg', '/9GNdPoCSzWYeo2eYKFVLvzcG6Wg.jpg', 'KaaLbjZ3mj8', '', '2018-10-31 01:33:52', '2018-10-31 01:33:52', 'tv'),
+(26, 2, 'Marvel\'s Runaways', 67466, '2017-11-21', 'Every teenager thinks their parents are evil. What if you found out they actually were? Six diverse teenagers who can barely stand each other must unite against a common foe – their parents.', '/9558pmQu0xyJ2E9n87le3BtIj6n.jpg', '/nY24YycegEs1mYNe7rq55bW2qbL.jpg', 'plyJQG-nRN0', '', '2018-10-31 01:33:59', '2018-10-31 01:33:59', 'tv'),
+(27, 4, 'The Flash', 60735, '2014-10-07', 'After a particle accelerator causes a freak storm, CSI Investigator Barry Allen is struck by lightning and falls into a coma. Months later he awakens with the power of super speed, granting him the ability to move through Central City like an unseen guardian angel. Though initially excited by his newfound powers, Barry is shocked to discover he is not the only \"meta-human\" who was created in the wake of the accelerator explosion -- and not everyone is using their new powers for good. Barry partners with S.T.A.R. Labs and dedicates his life to protect the innocent. For now, only a few close friends and associates know that Barry is literally the fastest man alive, but it won\'t be long before the world learns what Barry Allen has become...The Flash.', '/fki3kBlwJzFp8QohL43g9ReV455.jpg', '/mmxxEpTqVdwBlu5Pii7tbedBkPC.jpg', 'Mx7xTF8fKz4', '<p>My favorite DC series on CW.</p>', '2018-10-31 22:51:43', '2018-11-01 14:46:49', 'tv'),
+(28, 4, 'Arrow', 1412, '2012-10-10', 'Spoiled billionaire playboy Oliver Queen is missing and presumed dead when his yacht is lost at sea. He returns five years later a changed man, determined to clean up the city as a hooded vigilante armed with a bow.', '/mo0FP1GxOFZT4UDde7RFDz5APXF.jpg', '/dKxkwAJfGuznW8Hu0mhaDJtna0n.jpg', 'hTv13EjlLNg', '<p>Lately Arrow is not as good as it once was.</p>', '2018-10-31 22:51:48', '2018-11-01 14:47:44', 'tv'),
+(29, 4, 'Supergirl', 62688, '2015-10-26', 'Twenty-four-year-old Kara Zor-El, who was taken in by the Danvers family when she was 13 after being sent away from Krypton, must learn to embrace her powers after previously hiding them. The Danvers teach her to be careful with her powers, until she has to reveal them during an unexpected disaster, setting her on her journey of heroism.', '/vqBsgL9nd2v04ZvCqPzwtckDdFD.jpg', '/2qou2R47XZ1N6SlqGZcoCHDyEhN.jpg', 'Mh8MYFadTmQ', '<p>I only watched the first season and I really enjoyed it.</p>', '2018-10-31 22:51:55', '2018-11-01 14:45:42', 'tv'),
+(30, 4, 'Batman v Superman: Dawn of Justice', 209112, '2016-03-23', 'Fearing the actions of a god-like Super Hero left unchecked, Gotham City’s own formidable, forceful vigilante takes on Metropolis’s most revered, modern-day savior, while the world wrestles with what sort of hero it really needs. And with Batman and Superman at war with one another, a new threat quickly arises, putting mankind in greater danger than it’s ever known before.', '/cGOPbv9wA5gEejkUN892JrveARt.jpg', '/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg', 'fis-9Zqu2Ro', '', '2018-10-31 22:52:03', '2018-10-31 22:52:03', 'movie'),
+(31, 4, 'Man of Steel', 49521, '2013-06-12', 'A young boy learns that he has extraordinary powers and is not of this earth. As a young man, he journeys to discover where he came from and what he was sent here to do. But the hero in him must emerge if he is to save the world from annihilation and become the symbol of hope for all mankind.', '/xWlaTLnD8NJMTT9PGOD9z5re1SL.jpg', '/jYLh4mdOqkt30i7LTFs3o02UcGF.jpg', 'KVu3gS7iJu4', '', '2018-10-31 22:52:12', '2018-10-31 22:52:12', 'movie'),
+(32, 4, 'Wonder Woman', 297762, '2017-05-30', 'An Amazon princess comes to the world of Man in the grips of the First World War to confront the forces of evil and bring an end to human conflict.', '/imekS7f1OuHyUP2LAiTEM0zBzUz.jpg', '/6iUNJZymJBMXXriQyFZfLAKnjO6.jpg', '1Q8fG0TtVAY', '', '2018-10-31 22:52:19', '2018-10-31 22:52:19', 'movie'),
+(33, 4, 'Justice League', 141052, '2017-11-15', 'Fuelled by his restored faith in humanity and inspired by Superman\'s selfless act, Bruce Wayne and Diana Prince assemble a team of metahumans consisting of Barry Allen, Arthur Curry and Victor Stone to face the catastrophic threat of Steppenwolf and the Parademons who are on the hunt for three Mother Boxes on Earth.', '/eifGNCSDuxJeS1loAXil5bIGgvC.jpg', '/o5T8rZxoWSBMYwjsUFUqTt6uMQB.jpg', '3cxixDgHUYw', '', '2018-10-31 22:52:26', '2018-10-31 22:52:26', 'movie'),
+(34, 4, 'Gotham', 60708, '2014-09-22', 'Before there was Batman, there was GOTHAM. \n\nEveryone knows the name Commissioner Gordon. He is one of the crime world\'s greatest foes, a man whose reputation is synonymous with law and order. But what is known of Gordon\'s story and his rise from rookie detective to Police Commissioner? What did it take to navigate the multiple layers of corruption that secretly ruled Gotham City, the spawning ground of the world\'s most iconic villains? And what circumstances created them – the larger-than-life personas who would become Catwoman, The Penguin, The Riddler, Two-Face and The Joker? ', '/5tSHzkJ1HBnyGdcpr6wSyw7jYnJ.jpg', '/mKBP1OCgCG0jw8DwVYlnYqVILtc.jpg', '', '', '2018-10-31 22:52:44', '2018-10-31 22:52:44', 'tv'),
+(35, 4, 'Black Lightning', 71663, '2018-01-16', 'Jefferson Pierce is a man wrestling with a secret. As the father of two daughters and principal of a charter high school that also serves as a safe haven for young people in a New Orleans neighborhood overrun by gang violence, he is a hero to his community.', '/tM3i08Xs5I1bg5DB6sa9H0Zpt9e.jpg', '/h3wTKlnA2ABrkQRm3WNk3mOaTjO.jpg', '3LAUGA01mUc', '', '2018-10-31 22:54:54', '2018-10-31 22:54:54', 'tv'),
+(36, 4, 'Titans', 75450, '2018-10-12', 'A team of young superheroes led by Nightwing (formerly Batman\'s first Robin) form to combat evil and other perils.', '/oCK6fykCZUQjTJG4IDhfWCxcXqG.jpg', '/9foO1E8sliKN2dvtMOEwwQgynlW.jpg', 'd5dIwGAYcWk', '', '2018-10-31 22:55:04', '2018-10-31 22:55:04', 'tv'),
+(37, 5, 'Patch Adams', 10312, '1998-12-25', 'Meet Patch Adams, a doctor who doesn\'t look, act or think like any doctor you\'ve met before. For Patch, humor is the best medicine, and he\'s willing to do just anything to make his patients laugh - even if it means risking his own career.', '/2T0Mj8gkTXgciedz8W5nsnjCHig.jpg', '/9CtyPVGETuWUlqnNswo7R98xGgU.jpg', 'lZqGA1ldvYE', '', '2018-11-01 18:48:42', '2018-11-01 18:48:42', 'movie'),
+(38, 5, 'The Physician', 169881, '2013-12-25', 'The story of Rob Cole, a boy who is left a penniless orphan in an 11th-century English mining town when his mother dies of a mysterious illness. Vowing to become a physician and vanquish Death itself, he travels to Isfahan in Persia to study medicine under the great Ibn Sina. Through countless ordeals and challenges, and making many sacrifices along the way, he struggles on unwaveringly. His unflagging quest for knowledge leads to the blossoming of friendship and true love.', '/zOnuvmY4vuabnkEZwQAXvErIaTE.jpg', '/jbTbTZhmZsKVWxk0436ymadWQBd.jpg', 'IOj-Pn5WJkw', '', '2018-11-01 18:55:46', '2018-11-01 18:55:46', 'movie'),
+(39, 5, 'Doctor Zhivago', 907, '1965-12-22', 'Doctor Zhivago is the filmed adapation of the Russian novel by Boris Pasternak from director David Lean that was an international success and today deemed a classic. Omar Sharif and Julie Christie play two protagonists who in fact love each other yet because of their current situation cannot find a way be together.', '/lP1Mn1sQ9FiSNovCyZonhKjjkRM.jpg', '/xkUEYuWlG3Mw9DqBlAGGvvsCzO.jpg', 'M1iQ5hQTR5s', '', '2018-11-01 18:56:26', '2018-11-01 18:56:26', 'movie'),
+(40, 5, 'Awakenings', 11005, '1990-12-04', 'Dr. Malcolm Sayer, a shy research physician, uses an experimental drug to \"awaken\" the catatonic victims of a rare disease. Leonard is the first patient to receive the controversial treatment. His awakening, filled with awe and enthusiasm, proves a rebirth for Sayer too, as the exuberant patient reveals life\'s simple but unutterably sweet pleasures to the introverted doctor.', '/6vkJhhd9h9QxMGHYQjVY1fY5XSI.jpg', '/xzNas1TCJh7S11nIfhZD7gImfWj.jpg', 'JAz-prw_W2A', '', '2018-11-01 18:57:25', '2018-11-01 18:57:25', 'movie'),
+(41, 5, 'The Doctor', 26142, '1991-07-24', 'Jack McKee is a doctor with it all: he\'s successful, he\'s rich, and he has no problems.... until he is diagnosed with throat cancer. Now that he has seen medicine, hospitals, and doctors from a patient\'s perspective, he realises that there is more to being a doctor than surgery and prescriptions.', '/o2zFxTXZf5UHxs5XqADK2wT9g14.jpg', '/5cJlGJMtM0XnxghwEPQ6st4OkG8.jpg', 'OIPv-pjABbk', '', '2018-11-01 18:57:48', '2018-11-01 18:57:48', 'movie'),
+(42, 5, 'Medicine Man', 9096, '1992-02-07', 'An eccentric scientist working for a large drug company is working on a research project in the Amazon jungle. He sends for a research assistant and a gas chromatograph because he\'s close to a cure for cancer. When the assistant turns out to be a \"mere woman,\" he rejects her help. Meanwhile the bulldozers get closer to the area in which they are conducting research, and they eventually learn to work together, and begin falling in love.', '/lQAvyFcppZhqbz5coICwfbgcylY.jpg', '/j8IDDOzTW3IUcwAUqDRWyFLnVIo.jpg', 'ZQs9NrHc7qo', '', '2018-11-01 18:58:08', '2018-11-01 18:58:08', 'movie'),
+(43, 5, 'Lorenzo\'s Oil', 2007, '1992-12-30', 'Lorenzo Odone was a normal child until the age of 7. After then, strange things began to happen to him: he would have blackouts, memory lapses, and other strange mental phemonenons. He is eventually diagnosed as suffering from ALD: an extremely rare incurable degenerative brain disorder. Frustrated at the failings of doctors and medicine in this area, the Odones begin to educate themselves', '/fd9sqSlkUZuG7iMBZiuRjlK3cN4.jpg', '/wnhNoFa2vxGFfxndVxm7uzZWj5o.jpg', 'CxkylRxJxh8', '', '2018-11-01 18:58:44', '2018-11-01 18:58:44', 'movie'),
+(44, 5, 'Outbreak', 6950, '1995-03-10', 'A deadly airborne virus finds its way into the USA and starts killing off people at an epidemic rate. Col Sam Daniels\' job is to stop the virus spreading from a small town, which must be quarantined, and to prevent an over reaction by the White House.', '/4KymNvlWR0XF0sqX2BWRd9Z3yXR.jpg', '/wrlZRyyOnD24KQzo3OVi4lWyqdF.jpg', 'AgZ5goJibn0', '', '2018-11-01 18:59:09', '2018-11-01 18:59:09', 'movie'),
+(45, 5, 'Wit', 26976, '2001-02-09', 'A renowned professor is forced to reassess her life when she is diagnosed with terminal ovarian cancer.', '/eQUEJjEmFDAgdVflKYyR58UoQy6.jpg', '/X2dwfq4hrACxwI0h85x3N5pa9Q.jpg', 'bROGmi93prk', '', '2018-11-01 18:59:39', '2018-11-01 18:59:39', 'movie'),
+(46, 5, 'Something the Lord Made', 20544, '2004-05-30', 'A dramatization of the relationship between heart surgery pioneers Alfred Blalock and Vivien Thomas.', '/xPlaalqwyApbZkKRLnOyLVxkp09.jpg', '/f4CBABsQ98cvQP0ZfC0Q9pLloux.jpg', '', '', '2018-11-01 19:00:08', '2018-11-01 19:00:08', 'movie'),
+(47, 6, 'The Raid', 94329, '2011-09-08', 'Deep in the heart of Jakarta\'s slums lies an impenetrable safe house for the world\'s most dangerous killers and gangsters. Until now, the run-down apartment block has been considered untouchable to even the bravest of police. Cloaked under the cover of pre-dawn darkness and silence, an elite swat team is tasked with raiding the safe house in order to take down the notorious drug lord that runs it.  But when a chance encounter with a spotter blows their cover and news of their assault reaches the drug lord, the building\'s lights are cut and all the exits blocked. Stranded on the sixth floor with no way out, the unit must fight their way through the city\'s worst to survive their mission. Starring Indonesian martial arts sensation Iko Uwais.', '/mfDGRp19BcZUfPIhdqzdQ2uGZrf.jpg', '/fCcWGyNgz4pmCdgqQsYVZfAgT1K.jpg', '6f6f_kfp1Z8', '<p>I love Iko Uwais movies.</p>', '2018-11-02 16:50:22', '2018-11-02 16:50:22', 'movie'),
+(48, 6, 'Ong Bak: Muay Thai Warrior', 9316, '2003-01-21', 'When the head of a statue sacred to a village is stolen, a young martial artist goes to the big city and finds himself taking on the underworld to retrieve it.', '/vQbKObXMIxBTuNYz8Ld0YJ8oc69.jpg', '/357wFlr9KaqWXqoE2HudCmsyvvt.jpg', 'nAYUv9wjV48', '<p style=\"text-align: left;\">Tony Jaa is amazing!</p>', '2018-11-02 16:51:43', '2018-11-02 16:51:43', 'movie'),
+(49, 6, 'Dragon', 70057, '2011-07-04', 'A sinful martial arts expert wants to start a new tranquil life, only to be hunted by a determined detective and his former master.', '/8Ef1HBcvguFFDobgxMs8V0ISbBl.jpg', '/uERR7SXiL3Qafuitf3levxXxf7I.jpg', 'fe6xIOCbcR8', '<p>If the movie has Donnie Yen, you must watch.</p>', '2018-11-02 16:53:01', '2018-11-02 16:53:01', 'movie'),
+(50, 6, 'Ip Man', 14756, '2008-12-12', 'A semi-biographical account of Yip Man, the first martial arts master to teach the Chinese martial art of Wing Chun. The film focuses on events surrounding Ip that took place in the city of Foshan between the 1930s to 1940s during the Second Sino-Japanese War. Directed by Wilson Yip, the film stars Donnie Yen in the lead role, and features fight choreography by Sammo Hung.', '/8knFfuqW289DJi2cpPl4RVTDkbo.jpg', '/lcRGF2RpurdvBiSQVocfzRrxV9u.jpg', 'YkHmYJmfuWg', '<p>Another one with Donnie.</p>', '2018-11-02 16:53:35', '2018-11-02 16:53:35', 'movie'),
+(51, 6, 'The Protector', 8982, '2005-08-11', 'In Bangkok, the young Kham was raised by his father in the jungle with elephants as members of their family. When his old elephant and the baby Kern are stolen by criminals, Kham finds that the animals were sent to Sidney. He travels to Australia, where he locates the baby elephant in a restaurant owned by the evil Madame Rose, the leader of an international Thai mafia. With the support of the efficient Thai sergeant Mark, who was involved in a conspiracy, Kham fights to rescue the animal from the mobsters.', '/wgipNtPvjzqqilVMKxZWIFKyGF5.jpg', '/iHxw595q8u34LKmVkdjn3cB0QVd.jpg', '8-XZf1a6_R4', '<p>Another one with Tony Jaa.</p>', '2018-11-02 16:55:44', '2018-11-02 16:55:44', 'movie'),
+(52, 7, 'The Green Mile', 497, '1999-12-10', 'A supernatural tale set on death row in a Southern prison, where gentle giant John Coffey possesses the mysterious power to heal people\'s ailments. When the cell block\'s head guard, Paul Edgecomb, recognizes Coffey\'s miraculous gift, he tries desperately to help stave off the condemned man\'s execution.', '/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg', '/Rlt20sEbOQKPVjia7lUilFm49W.jpg', 'ctRK-4Vt7dA', '', '2018-11-02 21:45:51', '2018-11-02 21:45:51', 'movie'),
+(53, 7, 'The Shawshank Redemption', 278, '1994-09-23', 'Framed in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope.', '/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg', '/j9XKiZrVeViAixVRzCta7h1VU9W.jpg', 'K_tLp7T6U1c', '<p>Amazing movie, my favorite.</p>', '2018-11-02 21:47:17', '2018-11-02 21:47:17', 'movie'),
+(54, 7, 'Escape from Alcatraz', 10734, '1979-06-22', 'Escape from Alcatraz tells the story of the only three men ever to escape from the infamous maximum security prison at Alcatraz. In 29 years, the seemingly impenetrable federal penitentiary, which housed Al Capone and \"Birdman\" Robert Stroud, was only broken once - by three men never heard of again.', '/lBAxIEywz3KfzXimn9qHBArLHU8.jpg', '/doJGjcWPpuGuDPJwCpCNnYUG9x4.jpg', 'j8c7vTZYVEw', '<p>Based on a true story, a very nice movie.</p>', '2018-11-02 21:50:30', '2018-11-02 22:00:35', 'movie'),
+(55, 7, 'Bad Boys', 13633, '1983-03-25', 'Mick O\'Brien is a young Chicago street thug torn between a life of petty crime and the love of his girlfriend. But when the heist of a local drug dealer goes tragically wrong Mick is sentenced to a brutal juvenile prison where violence is a rite of passage and respect is measured in vengeance.', '/jVrUYpKefOjEnjaJ5Vnlwz0MQKK.jpg', '/sKpsZxg2ocyqAtZFqWTOWzTi2Nw.jpg', 'RRILgwNJNkI', '', '2018-11-02 21:51:12', '2018-11-02 21:51:12', 'movie'),
+(56, 7, 'Lock Up', 9972, '1989-08-04', 'Frank Leone is nearing the end of his prison term for a relatively minor crime. Just before he is paroled, however, Warden Drumgoole takes charge. Drumgoole was assigned to a hell-hole prison after his administration was publicly humiliated by Leone, and has now arrived on the scene to ensure that Leone never sees the light of day.', '/wRWZDNzebz2a52GtdhN1bx3ujE7.jpg', '/dbRU41CkCOFji8g4Mp9pMNu7jrC.jpg', 'RWORyxCUJxI', '', '2018-11-02 21:51:45', '2018-11-02 21:51:45', 'movie'),
+(57, 7, 'Fortress', 12088, '1992-09-30', 'A futuristic prison movie. Protagonist and wife are nabbed at a future US emigration point with an illegal baby during population control. The resulting prison experience is the subject of the movie. The prison is a futuristic one run by a private corporation bent on mind control in various ways', '/evjpqWPUY4VpOdyLpeRfkGU8DiR.jpg', '/csGyWqK4dTAtSPpreU26TzoY9ua.jpg', '3U6oLx3xy8s', '', '2018-11-02 21:52:00', '2018-11-02 21:52:00', 'movie'),
+(58, 7, 'In the Name of the Father', 7984, '1993-12-12', 'A small time thief from Belfast, Gerry Conlon, is falsely implicated in the IRA bombing of a pub that kills several people while he is in London. He and his four friends are coerced by British police into confessing their guilt. Gerry\'s father and other relatives in London are also implicated in the crime. He spends fifteen years in prison with his father trying to prove his innocence.', '/22UfH59UppgMtDIMjD6DxhO8J2C.jpg', '/pBvKhZ0ZrVeu9Nwyr0BHd8emvN4.jpg', 'H0ff5KjZ7vM', '', '2018-11-02 21:52:16', '2018-11-02 21:52:16', 'movie'),
+(59, 7, 'Dead Man Walking', 687, '1995-12-29', 'A justice drama based on a true story about a man on death row who in his last days forms a strong relationship with a nun who teaches him forgiveness and gives him spirituality as she accompanies him to his execution.', '/jAuo0Buh8wSOrAnUoiwrJIuOs0q.jpg', '/f6WMgACY6VQnGpz9L4eQ3hkfcJE.jpg', 'pg-GMqPHIPQ', '<p>Another great prison movie with Sean Penn.</p>', '2018-11-02 21:53:20', '2018-11-02 21:53:20', 'movie'),
+(60, 7, 'American History X', 73, '1998-10-30', 'Derek Vineyard is paroled after serving 3 years in prison for killing two thugs who tried to break into/steal his truck. Through his brother, Danny Vineyard\'s narration, we learn that before going to prison, Derek was a skinhead and the leader of a violent white supremacist gang that committed acts of racial crime throughout L.A. and his actions greatly influenced Danny. Reformed and fresh out of prison, Derek severs contact with the gang and becomes determined to keep Danny from going down the same violent path as he did.', '/fXepRAYOx1qC3wju7XdDGx60775.jpg', '/i9A0UMFg1hI2kLyCCwnmSbpT2cd.jpg', 'JsPW6Fj3BUI', '<p>This is a Must-See movie. Edward\'s acting is just amazing!</p>', '2018-11-02 21:56:28', '2018-11-02 21:56:28', 'movie'),
+(61, 7, 'The Hurricane', 10400, '1999-09-17', 'The story of Rubin \"Hurricane\" Carter, a boxer wrongly imprisoned for murder, and the people who aided in his fight to prove his innocence.', '/6SoTMHbcZ6XItPiEfIe1WzeET3c.jpg', '/i8AGAKxZL5aXnDcXVOZK5JkkDhn.jpg', 'tsmszHWnO3k', '', '2018-11-02 21:56:52', '2018-11-02 21:56:52', 'movie'),
+(62, 7, 'Carandiru', 8440, '2003-03-21', 'Carandiru, a story based on real facts and on the book written by the doctor Drauzio Varella, starts when he decides to carry out an AIDS prevention program inside Latin America’s largest prison: the Casa de Detenção de São Paulo, Carandiru, the victim of one of the darkest days in Brazilian History, when the State of São Paulo’s Military Police, with the excuse for law enforcement, shot to death 111 people.', '/774rLMW6yspym6t5NMDfON20yL.jpg', '/izhdSskWmW3nD96nMZUIGoJNpa1.jpg', '', '', '2018-11-02 21:57:21', '2018-11-02 21:57:21', 'movie'),
+(63, 7, 'Law Abiding Citizen', 22803, '2009-10-15', 'A frustrated man decides to take justice into his own hands after a plea bargain sets one of his family\'s killers free. He targets not only the killer but also the district attorney and others involved in the deal.', '/p7zwLp8gCKyrNLCHP3RhmN5izHo.jpg', '/xFBmZefwrKNeuN7IOksPSdX5ETG.jpg', 'qsR8-zxV-3E', '', '2018-11-02 21:58:39', '2018-11-02 21:58:39', 'movie'),
+(64, 7, 'Escape Plan', 107846, '2013-10-09', 'Ray Breslin is the world\'s foremost authority on structural security. After analyzing every high security prison and learning a vast array of survival skills so he can design escape-proof prisons, his skills are put to the test. He\'s framed and incarcerated in a master prison he designed himself. He needs to escape and find the person who put him behind bars.', '/j3XZwBeWgoAbVmkW3JyOme79I2e.jpg', '/lDmAQexExnvfKAG8fvx04ro6Ly4.jpg', 'CI4EjV_x_PQ', '', '2018-11-02 21:58:46', '2018-11-02 21:58:46', 'movie'),
+(65, 8, 'The Meg', 345940, '2018-08-09', 'A deep sea submersible pilot revisits his past fears in the Mariana Trench, and accidentally unleashes the seventy foot ancestor of the Great White Shark believed to be extinct.', '/eyWICPcxOuTcDDDbTMOZawoOn8d.jpg', '/rH79sB6Nkx4cMW3JzsUy7wK0rhX.jpg', 'bsLk0NPRFAc', '', '2018-11-02 23:34:10', '2018-11-02 23:34:10', 'movie'),
+(66, 8, 'Jaws', 578, '1975-06-18', 'An insatiable great white shark terrorizes the townspeople of Amity Island, The police chief, an oceanographer and a grizzled shark hunter seek to destroy the bloodthirsty beast.', '/l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg', '/uTVuKo6OTGiead1ncsfH2klqYHC.jpg', 'U1fu_sA7XhE', '', '2018-11-02 23:34:36', '2018-11-02 23:34:36', 'movie'),
+(67, 8, 'The Shallows', 332567, '2016-06-24', 'When Nancy is surfing on a secluded beach, she finds herself on the feeding ground of a great white shark. Though she is stranded only 200 yards from shore, survival proves to be the ultimate test of wills, requiring all of Nancy\'s ingenuity, resourcefulness, and fortitude.', '/6vuxwCfBejPfUjMxrPgk0ANmVFq.jpg', '/lEkHdk4g0nAKtMcHBtSmC1ON3O1.jpg', 'EgdxIlSuB70', '', '2018-11-02 23:35:00', '2018-11-02 23:35:00', 'movie'),
+(68, 8, '47 Meters Down', 403119, '2017-05-25', 'Two sisters on Mexican vacation are trapped in a shark observation cage at the bottom of the ocean, with oxygen running low and great whites circling nearby, they have less than an hour of air left to figure out how to get to the surface.', '/2IgdRUTdHyoI3nFORcnnYEKOGIH.jpg', '/6j8B3BqTuNrpAJoa0JIc7nZzOUn.jpg', 'VNVZBg20APg', '', '2018-11-02 23:35:29', '2018-11-02 23:35:29', 'movie'),
+(69, 8, '12 Days of Terror', 153102, '2005-07-05', 'July of 1916 was a time of record heat, a polio epidemic, and a World War in Europe. But beachgoers in New Jersey are threatened by a even greater terror: a shark that has suddenly developed a taste for human flesh. Starting July 1st and lasting over a period of 12 days, the unidentified shark kills four people and seriously injures a fifth before the attacks stop, and threatens New Jersey\'s thriving tourist industry. Based on true events, and one of the inspirations behind Peter Benchley\'s Jaws.', '/fQ9BlupRLy7WTzgOjXrbmuW80zf.jpg', '/wrDKpBn5Gu3iKo8CLanoZxZYjS3.jpg', '', '', '2018-11-02 23:36:03', '2018-11-02 23:36:03', 'movie'),
+(70, 8, 'Open Water', 83, '2003-12-29', 'Two divers are left out at sea without a boat. There’s nothing but water for miles, unless they look at what’s underneath them...', '/hua2eluUhiLvKqwHFPV2aTiY8pp.jpg', '/50ZS8RwRDwioZtu2KAS6KfzEbDO.jpg', 'Z9q1qJi1nMs', '', '2018-11-02 23:36:18', '2018-11-02 23:36:18', 'movie'),
+(71, 8, 'The Reef', 49787, '2010-05-15', 'A great white shark hunts the crew of a capsized sailboat along the Great Barrier Reef.', '/gJqOW1UZTm9b50eHXTNzXvRlENm.jpg', '/iHxSRdZLYmS7dfwmS0sBP4z9nSC.jpg', '0UD2gbjB3vw', '', '2018-11-02 23:36:36', '2018-11-02 23:36:36', 'movie'),
+(72, 8, 'Dark Tide', 59963, '2012-03-28', 'A traumatized shark expert (Halle Berry) must battle her own fears to lead a thrill-seeking businessman on a dive into a dangerous section of water known as \"Shark Alley.\"', '/epv0vYwTaEYmEKTHyImO1WIPyM6.jpg', '/iAwM1z4CV6wsANvhw7OxEtwkkaU.jpg', '', '', '2018-11-02 23:36:56', '2018-11-02 23:36:56', 'movie'),
+(73, 8, 'Deep Blue Sea', 8914, '1999-07-28', 'On a remote former submarine refueling facility called Aquatica, a team of scientists are searching for a cure for Alzheimer\'s disease. Dr. Susan McAlester genetically engineers three Mako sharks, intending to increase their brain capacity so that they can harvest the tissue as a cure for Alzheimer\'s. Unfortunately, the increased brain capacity also makes the sharks smarter, faster, and more dangerous. Aquatica\'s financial backers are skeptical and nervous about the tests, and send a corporate executive to visit the facility.', '/r386y8YpePXoS7P4jHWZRTF36Zb.jpg', '/adGAeyRgc7jQyXaBFyQGWGCrdJo.jpg', 'gpdab_bi2HY', '', '2018-11-02 23:39:29', '2018-11-02 23:39:29', 'movie'),
+(74, 9, 'The Lincoln Lawyer', 50348, '2011-03-17', 'A lawyer conducts business from the back of his Lincoln town car while representing a high-profile client in Beverly Hills.', '/bTXtxFUyqQ6T9FRa3ajSdMtwnAj.jpg', '/zxN5XhQKDT5GwlpZo7yKxDAJMyQ.jpg', 'xU4ReVEemN0', '', '2018-11-03 13:49:46', '2018-11-03 13:49:46', 'movie'),
+(75, 9, 'Fracture', 6145, '2007-04-20', 'A husband is on trial for the attempted murder of his wife, in what is seemingly an open/shut case for the ambitious district attorney trying to put him away. However, there are surprises for both around every corner, and, as a suspenseful game of cat-and-mouse is played out, each must manipulate and outwit the other.', '/sl5QYze20MclzDLxLDqe3sEJdiW.jpg', '/rf5j1avHtvLkVnBLdGmqh1LbIN0.jpg', 'yAar1EYxloQ', '', '2018-11-03 13:50:00', '2018-11-03 13:50:00', 'movie'),
+(76, 9, 'Primal Fear', 1592, '1996-04-03', 'An arrogant, high-powered attorney takes on the case of a poor altar boy found running away from the scene of the grisly murder of the bishop who has taken him in. The case gets a lot more complex when the accused reveals that there may or may not have been a 3rd person in the room. The intensity builds when a surprise twist alters everyone\'s perception of the crime.', '/qJf2TzE8nRTFbFMPJNW6c8mI0KU.jpg', '/nUI0P1hoa63qaEtITeE2QJZno0d.jpg', 'PnmTi7hSjrA', '', '2018-11-03 13:50:14', '2018-11-03 13:50:14', 'movie'),
+(77, 9, 'A Time to Kill', 1645, '1996-07-24', 'A young lawyer defends a black man accused of murdering two men who raped his 10-year-old daughter, sparking a rebirth of the KKK.', '/1q2kU8NMGO446b0QAvVdY2v778x.jpg', '/eTRN3FFppNiXJo0GucyHMSryFjB.jpg', '7hfTnum9fVA', '', '2018-11-03 13:50:32', '2018-11-03 13:50:32', 'movie'),
+(78, 9, 'A Few Good Men', 881, '1992-12-11', 'When cocky military lawyer Lt. Daniel Kaffee and his co-counsel, Lt. Cmdr. JoAnne Galloway, are assigned to a murder case, they uncover a hazing ritual that could implicate high-ranking officials such as shady Col. Nathan Jessep.', '/WgWLwk55YaXFZdlMnPJTKlxGcz.jpg', '/86UvnqQsefvHfBX6F65PUQHjVPc.jpg', '2T2pyqrr8UM', '', '2018-11-03 13:51:00', '2018-11-03 13:51:00', 'movie'),
+(79, 9, 'To Kill a Mockingbird', 595, '1962-12-25', 'Scout Finch, 6, and her older brother Jem live in sleepy Maycomb, Alabama, spending much of their time with their friend Dill and spying on their reclusive and mysterious neighbor, Boo Radley. When Atticus, their widowed father and a respected lawyer, defends a black man named Tom Robinson against fabricated rape charges, the trial and tangent events expose the children to evils of racism and stereotyping.', '/gQg6sPYfNTUlf8wEtydzWl09RyR.jpg', '/eb8EqwtFWVoujlbU8CmaEYc1qE5.jpg', 'zPcH6joLZjg', '', '2018-11-03 13:51:25', '2018-11-03 13:51:25', 'movie'),
+(80, 9, 'Philadelphia', 9800, '1993-12-22', 'Two competing lawyers join forces to sue a prestigious law firm for AIDS discrimination. As their unlikely friendship develops their courage overcomes the prejudice and corruption of their powerful adversaries.', '/4Y4cwVV6qd6fwhlVfRHUXELEbpr.jpg', '/m386hpJuXyaNjbEBbM25di7nQPM.jpg', 'cl4B9AU45P4', '', '2018-11-03 13:51:39', '2018-11-03 13:51:39', 'movie'),
+(81, 9, 'Judgment at Nuremberg', 821, '1961-12-01', 'In 1947, four German judges who served on the bench during the Nazi regime face a military tribunal to answer charges of crimes against humanity. Chief Justice Haywood hears evidence and testimony not only from lead defendant Ernst Janning and his defense attorney Hans Rolfe, but also from the widow of a Nazi general, an idealistic U.S. Army captain and reluctant witness Irene Wallner.', '/iu7VMhBma5S94M3wh0fR8cmwgUf.jpg', '/37lz7mPo3AWV2BiaF7TA6ZWqL5u.jpg', 'RfOgZXIQ6fo', '', '2018-11-03 13:52:12', '2018-11-03 13:52:12', 'movie'),
+(82, 9, 'My Sister\'s Keeper', 10024, '2009-06-26', 'Sara and Brian live an idyllic life with their young son and daughter. But their family is rocked by sudden, heartbreaking news that forces them to make a difficult and unorthodox choice in order to save their baby girl\'s life. The parents\' desperate decision raises both ethical and moral questions and rips away at the foundation of their relationship. Their actions ultimately set off a court case that threatens to tear the family apart, while revealing surprising truths that challenge everyone\'s perceptions of love and loyalty and give new meaning to the definition of healing.', '/yuqhtwuFRE0ixkKsTE9IM0fr1wT.jpg', '/jmIEKbkqPbZPSwT6AGBxCvnkRZI.jpg', 'KGEDVTiI6E4', '', '2018-11-03 13:52:45', '2018-11-03 13:52:45', 'movie'),
+(83, 9, '12 Angry Men', 389, '1957-03-25', 'The defense and the prosecution have rested and the jury is filing into the jury room to decide if a young Spanish-American is guilty or innocent of murdering his father. What begins as an open and shut case soon becomes a mini-drama of each of the jurors\' prejudices and preconceptions about the trial, the accused, and each other.', '/3W0v956XxSG5xgm7LB6qu8ExYJ2.jpg', '/lH2Ga8OzjU1XlxJ73shOlPx6cRw.jpg', 'OvebOqneLIU', '', '2018-11-03 13:53:22', '2018-11-03 13:53:22', 'movie'),
+(84, 10, 'Death Proof', 1991, '2007-05-21', 'Austin\'s hottest DJ, Jungle Julia, sets out into the night to unwind with her two friends Shanna and Arlene. Covertly tracking their moves is Stuntman Mike, a scarred rebel leering from behind the wheel of his muscle car, revving just feet away.', '/nyQBcpxqS4im2akQlWG9Y1oeM2V.jpg', '/lnxiNlbStoBT4CDMqPAdprS5pwN.jpg', '7mICGcg5-pM', '', '2018-11-04 22:34:24', '2018-11-04 22:34:24', 'movie'),
+(85, 10, 'Kill Bill: Vol. 1', 24, '2003-10-10', 'An assassin is shot by her ruthless employer, Bill, and other members of their assassination circle – but she lives to plot her vengeance.', '/v7TaX8kXMXs5yFFGR41guUDNcnB.jpg', '/kkS8PKa8c134vXsj2fQkNqOaCXU.jpg', 'c_dNIXwrbzY', '', '2018-11-04 22:34:39', '2018-11-04 22:34:39', 'movie'),
+(86, 10, 'Jackie Brown', 184, '1997-12-24', 'Jackie Brown is a flight attendant who gets caught in the middle of smuggling cash into the country for her gunrunner boss. When the cops try to use Jackie to get to her boss, she hatches a plan—with help from a bail bondsman—to keep the money for herself. Based on Elmore Leonard\'s novel “Rum Punch”.', '/4XVPYOdMAizdNMSwS0SK3fPJcvR.jpg', '/lXnsC7wRDLccJR3Ju4nInvLiKO.jpg', 'G7HkBDNZV7s', '', '2018-11-04 22:35:21', '2018-11-04 22:35:21', 'movie'),
+(87, 10, 'Kill Bill: Vol. 2', 393, '2004-04-16', 'The Bride unwaveringly continues on her roaring rampage of revenge against the band of assassins who had tried to kill her and her unborn child. She visits each of her former associates one-by-one, checking off the victims on her Death List Five until there\'s nothing left to do … but kill Bill.', '/2yhg0mZQMhDyvUQ4rG1IZ4oIA8L.jpg', '/33WfP01Pu8SMuuHYnoJXMRCMtmI.jpg', 'WTt8cCIvGYI', '', '2018-11-04 22:35:55', '2018-11-04 22:35:55', 'movie'),
+(88, 10, 'The Hateful Eight', 273248, '2015-12-25', 'Bounty hunters seek shelter from a raging blizzard and get caught up in a plot of betrayal and deception.', '/fqe8JxDNO8B8QfOGTdjh6sPCdSC.jpg', '/sSvgNBeBNzAuKl8U8sP50ETJPgx.jpg', 'r2T9FhDR3zY', '', '2018-11-04 22:36:15', '2018-11-04 22:36:15', 'movie'),
+(89, 10, 'Reservoir Dogs', 500, '1992-09-02', 'A botched robbery indicates a police informant, and the pressure mounts in the aftermath at a warehouse. Crime begets violence as the survivors -- veteran Mr. White, newcomer Mr. Orange, psychopathic parolee Mr. Blonde, bickering weasel Mr. Pink and Nice Guy Eddie -- unravel.', '/tB2ITHg556e7aTV6cqQqVAXkdxN.jpg', '/fupyzBwFAn1PoeCXhp54bYVM2ER.jpg', 'GLPJSmUHZvU', '', '2018-11-04 22:36:40', '2018-11-04 22:36:40', 'movie'),
+(90, 10, 'Django Unchained', 68718, '2012-12-25', 'With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner.', '/5WJnxuw41sddupf8cwOxYftuvJG.jpg', '/qUcmEqnzIwlwZxSyTf3WliSfAjJ.jpg', 'nwlcUsTq4TM', '', '2018-11-04 22:36:52', '2018-11-04 22:36:52', 'movie'),
+(91, 10, 'Inglourious Basterds', 16869, '2009-08-18', 'In Nazi-occupied France during World War II, a group of Jewish-American soldiers known as \"The Basterds\" are chosen specifically to spread fear throughout the Third Reich by scalping and brutally killing Nazis. The Basterds, lead by Lt. Aldo Raine soon cross paths with a French-Jewish teenage girl who runs a movie theater in Paris which is targeted by the soldiers.', '/ai0LXkzVM3hMjDhvFdKMUemoBe.jpg', '/7nF6B9yCEq1ZCT82sGJVtNxOcl5.jpg', 'sE8hc4gVyGo', '', '2018-11-04 22:37:25', '2018-11-04 22:37:25', 'movie'),
+(92, 10, 'Pulp Fiction', 680, '1994-09-10', 'A burger-loving hit man, his philosophical partner, a drug-addled gangster\'s moll and a washed-up boxer converge in this sprawling, comedic crime caper. Their adventures unfurl in three stories that ingeniously trip back and forth in time.', '/dM2w364MScsjFf8pfMbaWUcWrR.jpg', '/4cDFJr4HnXN5AdPw4AKrmLlMWdO.jpg', 's7EdQ4FqbhY', '', '2018-11-04 22:37:35', '2018-11-04 22:37:35', 'movie'),
+(93, 11, '3:10 to Yuma', 5176, '2007-09-06', 'In Arizona in the late 1800s, infamous outlaw Ben Wade and his vicious gang of thieves and murderers have plagued the Southern Railroad. When Wade is captured, Civil War veteran Dan Evans, struggling to survive on his drought-plagued ranch, volunteers to deliver him alive to the \"3:10 to Yuma\", a train that will take the killer to trial.', '/9Nwkh0eQmkymEOR0ovAALtjSIZW.jpg', '/fOuig5rhqkrVVD1VsoL1jPz15hR.jpg', 'jX1m45CwvJ8', '', '2018-11-05 12:34:50', '2018-11-05 12:34:50', 'movie'),
+(94, 11, 'Django Unchained', 68718, '2012-12-25', 'With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner.', '/5WJnxuw41sddupf8cwOxYftuvJG.jpg', '/qUcmEqnzIwlwZxSyTf3WliSfAjJ.jpg', 'nwlcUsTq4TM', '', '2018-11-05 12:34:57', '2018-11-05 12:34:57', 'movie'),
+(95, 11, 'The Salvation', 266285, '2014-05-22', 'In 1870s America, a peaceful American settler kills his family\'s murderer which unleashes the fury of a notorious gang leader. His cowardly fellow townspeople then betray him, forcing him to hunt down the outlaws alone.', '/b8uBcz6CgXOUsZhf2Y4RLHCwk19.jpg', '/vNNWdSVML7sXSzf4N4BLgVVKNFu.jpg', 'tJNZKw5qAAs', '', '2018-11-05 12:35:36', '2018-11-05 12:35:36', 'movie'),
+(96, 11, 'Slow West', 223485, '2015-04-16', 'In the Old West, a 17-year-old Scottish boy teams up with a mysterious gunman to find the woman with whom he is infatuated.', '/uZ9dBBn0GaEw0YIBvQd01Io3pho.jpg', '/9qF6lhj6X0ImH4iWGZs1uspXJI0.jpg', 'pFfsTsdJfF8', '', '2018-11-05 12:55:07', '2018-11-05 12:55:07', 'movie'),
+(97, 11, 'Hell or High Water', 338766, '2016-08-12', 'A divorced dad and his ex-con brother resort to a desperate scheme in order to save their family\'s farm in West Texas.', '/6YOrNBdoXvT8aC5VPLkkN6t5z0V.jpg', '/5GbRKOQSY08U3SQXXcQAKEnL2rE.jpg', 'SEJuBrGzPZ4', '', '2018-11-05 12:55:22', '2018-11-05 12:55:22', 'movie'),
+(98, 11, 'The Homesman', 264656, '2014-05-18', 'When three women living on the edge of the American frontier are driven mad by harsh pioneer life, the task of saving them falls to the pious, independent-minded Mary Bee Cuddy. Transporting the women by covered wagon to Iowa, she soon realizes just how daunting the journey will be, and employs a low-life drifter, George Briggs, to join her. The unlikely pair and the three women head east, where a waiting minister and his wife have offered to take the women in. But the group first must traverse the harsh Nebraska Territories marked by stark beauty, psychological peril and constant threat.', '/wzOzeuWYIlRq7Eus1TWnHtYo304.jpg', '/c58oBT5z2QwRMvnUC9FMgYgDDdY.jpg', 'SAYQklUPLBI', '', '2018-11-05 12:55:37', '2018-11-05 12:55:37', 'movie'),
+(107, 11, 'The Hateful Eight', 273248, '2015-12-25', 'Bounty hunters seek shelter from a raging blizzard and get caught up in a plot of betrayal and deception.', '/fqe8JxDNO8B8QfOGTdjh6sPCdSC.jpg', '/sSvgNBeBNzAuKl8U8sP50ETJPgx.jpg', 'r2T9FhDR3zY', '', '2018-11-05 13:35:18', '2018-11-05 13:35:18', 'movie'),
+(108, 12, 'Taken', 8681, '2008-02-18', 'While vacationing with a friend in Paris, an American girl is kidnapped by a gang of human traffickers intent on selling her into forced prostitution. Working against the clock, her ex-spy father must pull out all the stops to save her. But with his best years possibly behind him, the job may be more than he can handle.', '/3zlffXmo7QpVBc17QIJWrRfasVr.jpg', '/d5vwBiuJI1a2hBcGjhsWhpmAkL7.jpg', 'CvUxdQ4q-Lg', '', '2018-11-06 12:50:21', '2018-11-06 12:50:21', 'movie'),
+(100, 11, 'Jane Got a Gun', 174751, '2015-12-31', 'After her outlaw husband returns home shot with eight bullets and barely alive, Jane reluctantly reaches out to an ex-lover who she hasn\'t seen in over ten years to help her defend her farm when the time comes that her husband\'s gang eventually tracks him down to finish the job.', '/nkIy7P21LL6kWgBI4YfGrHAkans.jpg', '/i2KqVXm5tury4fAGgzDryiIjHw6.jpg', 'WMW1pjzEhfY', '', '2018-11-05 12:56:04', '2018-11-05 12:56:04', 'movie'),
+(101, 11, 'True Grit', 44264, '2010-12-22', 'Following the murder of her father by hired hand Tom Chaney, 14-year-old farm girl Mattie Ross sets out to capture the killer. To aid her, she hires the toughest U.S. Marshal she can find, a man with \"true grit,\" Reuben J. \"Rooster\" Cogburn. Mattie insists on accompanying Cogburn, whose drinking, sloth, and generally reprobate character do not augment her faith in him. Against his wishes, she joins him in his trek into the Indian Nations in search of Chaney. They are joined by Texas Ranger LaBoeuf, who wants Chaney for his own purposes. The unlikely trio find danger and adventure on the journey, and each has his or her \"grit\" tested.', '/qc7vaF5fIeTllAykdP3wldlMyRh.jpg', '/wDPmggrApz7nxy4BAQk3rCLi3R6.jpg', 'unEO_p71cik', '', '2018-11-05 12:56:29', '2018-11-05 12:56:29', 'movie'),
+(102, 11, 'Bone Tomahawk', 294963, '2015-10-23', 'During a shootout in a saloon, Sheriff Hunt injures a suspicious stranger. One of the villagers takes care of him in prison. One day they both disappear – only the spear of a cannibal tribe is found. Hunt and a few of his men go in search of the prisoner and his nurse.', '/8A51Ur47D0CNJhmvQlbif0vzyqZ.jpg', '/eMWYoor3TroQyPw3lNsolnOGqnf.jpg', '0ZbwtHi-KSE', '', '2018-11-05 12:56:50', '2018-11-05 12:56:50', 'movie');
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(103, 11, 'Cowboys & Aliens', 49849, '2011-07-29', 'A stranger stumbles into the desert town of Absolution with no memory of his past and a futuristic shackle around his wrist. With the help of mysterious beauty Ella and the iron-fisted Colonel Dolarhyde, he finds himself leading an unlikely posse of cowboys, outlaws, and Apache warriors against a common enemy from beyond this world in an epic showdown for survival.', '/9uZsGCP4rvOHVGCpMpYq5gNCuNI.jpg', '/gTDwoJBCu7scwYQoykIlLNpkCes.jpg', 'vdy4eRKrf_8', '', '2018-11-05 12:57:04', '2018-11-05 12:57:04', 'movie'),
+(104, 11, 'The Duel', 333386, '2016-06-24', 'A Texas Ranger investigates a series of unexplained deaths in a town called Helena.', '/1CFvHVWBDMF3ZFysThCbrItM5ji.jpg', '/8jqhQIJWmIXYpedtEYP3weF3i9l.jpg', 'vInSRt_KYio', '', '2018-11-05 12:57:28', '2018-11-05 12:57:28', 'movie'),
+(105, 11, 'Appaloosa', 12690, '2008-09-12', 'Two friends hired to police a small town that is suffering under the rule of a rancher find their job complicated by the arrival of a young widow.', '/ar26XwTJz6BPFRricdNpMctyjB0.jpg', '/3CrUq0vBkV9ezv9nABstPVypKVE.jpg', 'h57n6R9pbU0', '', '2018-11-05 12:57:50', '2018-11-05 12:57:50', 'movie'),
+(106, 11, 'The Magnificent Seven', 333484, '2016-09-14', 'Seven gun men in the old west gradually come together to help a poor village against savage thieves.', '/cparcxTFuHdlSOP3MJOpN7Ec9NB.jpg', '/T3LrH6bnV74llVbFpQsCBrGaU9.jpg', 'q-RBA0xoaWU', '', '2018-11-05 12:58:06', '2018-11-05 12:58:06', 'movie'),
+(109, 12, 'Room', 264644, '2015-10-16', 'Jack is a young boy of 5 years old who has lived all his life in one room. He believes everything within it are the only real things in the world. But what will happen when his Ma suddenly tells him that there are other things outside of Room?', '/eqFckcHuFCT1FrzLOAvXBb4jHwq.jpg', '/6Fi9Ta7m0wdmve2B2XpDdysxAGd.jpg', 'E_Ci-pAL4eE', '', '2018-11-06 12:51:24', '2018-11-06 12:51:24', 'movie'),
+(110, 12, 'Misery', 1700, '1990-11-30', 'Novelist Paul Sheldon crashes his car on a snowy Colorado road. He is found by Annie Wilkes, the \"number one fan\" of Paul\'s heroine Misery Chastaine. Annie is also somewhat unstable, and Paul finds himself crippled, drugged and at her mercy.', '/s0Ot5zUmVF1jSN9WpBHRafvUPld.jpg', '/2PCMZhNMT1mNdhmg3O767ykczOe.jpg', '_axcdhxe_NU', '', '2018-11-06 12:52:20', '2018-11-06 12:58:02', 'movie'),
+(111, 12, 'Forgotten', 488623, '2017-11-29', 'When his abducted brother returns seemingly a different man with no memory of the past 19 days, Jin-seok chases after the truth behind the kidnapping.', '/nlI9QeP9n7vBmmi9KbnssPR10j0.jpg', '/2A1ENiXe1GjO6eBAqRenwn5PwHE.jpg', 'fh899UbMhOE', '', '2018-11-06 12:53:09', '2018-11-06 12:53:09', 'movie'),
+(112, 12, 'Prisoners', 146233, '2013-09-18', 'When Keller Dover\'s daughter and her friend go missing, he takes matters into his own hands as the police pursue multiple leads and the pressure mounts. But just how far will this desperate father go to protect his family?', '/yAhqW57pwMAsCgmZpM5zSIVQVTh.jpg', '/cLGKawjQ5tUJCuDyR0OnGYT4fyf.jpg', 'bpXfcTF6iVk', '', '2018-11-06 12:55:13', '2018-11-06 12:55:13', 'movie'),
+(113, 12, 'Changeling', 3580, '2008-01-30', 'Christine Collins is overjoyed when her kidnapped son is brought back home. But when Christine suspects that the boy returned to her isn\'t her child, the police captain has her committed to an asylum.', '/qtte2n6ygA1zVG5kLrjUGui28TJ.jpg', '/mYNXGr8HNS1TO7wrQVSywrlduk9.jpg', 'pHvNvYijtBU', '', '2018-11-06 12:55:26', '2018-11-06 12:55:26', 'movie'),
+(114, 12, 'The Call', 158011, '2013-03-14', 'Jordan Turner is an experienced 911 operator but when she makes an error in judgment and a call ends badly, Jordan is rattled and unsure if she can continue. But when teenager Casey Welson is abducted in the back of a man\'s car and calls 911, Jordan is the one called upon to use all of her experience, insights and quick thinking to help Casey escape, and not just to save her, but to make sure the man is brought to justice.', '/ekKVxnKeHEQiBznaEnj0VmK28bc.jpg', '/dQq32z4XmYIiK406tZhMhfxmnr.jpg', 'SzesOOwEI14', '', '2018-11-06 12:55:47', '2018-11-06 12:55:47', 'movie'),
+(115, 12, 'All the Money in the World', 446791, '2017-12-21', 'The story of the kidnapping of 16-year-old John Paul Getty III and the desperate attempt by his devoted mother to convince his billionaire grandfather Jean Paul Getty to pay the ransom.', '/ciDu0eo6HpZcvi1Hi9IoHsfggmC.jpg', '/j3gpAEqIXyFj54eA1d7WI93LFuf.jpg', 'KXHrCBkIxQQ', '', '2018-11-06 12:56:15', '2018-11-06 12:56:15', 'movie'),
+(116, 12, 'Man on Fire', 9509, '2004-04-23', 'Jaded ex-CIA operative John Creasy reluctantly accepts a job as the bodyguard for a 10-year-old girl in Mexico City. They clash at first, but eventually bond, and when she\'s kidnapped he\'s consumed by fury and will stop at nothing to save her life.', '/qAbRLPe8T7ehKzr1Tgo78T7ASrS.jpg', '/2cBmeSLCyLqkn6YIERKdRUToqsa.jpg', 'eDDh50B6kA4', '', '2018-11-06 12:56:37', '2018-11-06 12:56:37', 'movie'),
+(117, 12, 'Cellular', 9759, '2004-09-06', 'A young man receives an emergency phone call on his cell phone from an older woman. She claims to have been kidnapped – and the kidnappers have targeted her husband and child next.', '/wguhhHAHoh2ECwjf5oHRH0P9ial.jpg', '/xRr4nXdNPjP8sXlNdUH7ckfrqMB.jpg', '7DKQh59_yCo', '', '2018-11-06 12:56:59', '2018-11-06 12:56:59', 'movie'),
+(118, 12, 'Kiss the Girls', 9437, '1997-10-03', 'Forensic psychologist Alex Cross travels to North Carolina and teams with escaped kidnap victim Kate McTiernan to hunt down \"Casanova,\" a serial killer who abducts strong-willed women and forces them to submit to his demands. The trail leads to Los Angeles, where the duo discovers that the psychopath may not be working alone.', '/m9CyzlwbXhfUPooRIAcBoE63Frg.jpg', '/y319VH0gIFie6KEO5L4nHhxxQUw.jpg', 'JiHGk64-eNE', '', '2018-11-06 12:58:32', '2018-11-06 12:58:32', 'movie'),
+(119, 12, 'Along Came a Spider', 2043, '2001-04-06', 'When a teacher kidnaps a girl from a prestigious school, homicide detective, Alex Cross takes the case and teams up with young security agent, Jezzie Flannigan in hope of finding the girl and stopping the brutal psychopath. Every second counts as Alex and Jezzie attempt to track down the kidnapper before the spider claims another victim for its web.', '/1ZjDmPKMUtout8hR77qmK1llgls.jpg', '/3LRjM5M5WidHKlRQuSvqRwU2Fjr.jpg', 'kswRbwYqn3k', '', '2018-11-06 12:58:58', '2018-11-06 12:58:58', 'movie'),
+(120, 12, 'Ransom', 3595, '1996-11-08', 'When a rich man\'s son is kidnapped, he cooperates with the police at first but then tries a unique tactic against the criminals.', '/96pdw2qcx4g25vZLywNi4XRQVqm.jpg', '/t8tle4irdNoZpcHERJ6v9TXFJq0.jpg', 'mebIhXK8srA', '', '2018-11-06 12:59:14', '2018-11-06 12:59:14', 'movie'),
+(121, 12, 'Proof of Life', 11983, '2000-12-08', 'Alice hires a professional negotiator to obtain the release of her engineer husband, who has been kidnapped by anti-government guerrillas in South America.', '/ole3u0jx0AuNxrtHRIQOTzBgDBl.jpg', '/xJsn2nVpcR0bw4svqOFzK0rP7yt.jpg', 'BLH0JjhBe8g', '', '2018-11-06 12:59:57', '2018-11-06 12:59:57', 'movie'),
+(122, 13, 'The Silence of the Lambs', 274, '1991-02-01', 'Clarice Starling is a top student at the FBI\'s training academy. Jack Crawford wants Clarice to interview Dr. Hannibal Lecter, a brilliant psychiatrist who is also a violent psychopath, serving life behind bars for various acts of murder and cannibalism. Crawford believes that Lecter may have insight into a case and that Starling, as an attractive young woman, may be just the bait to draw him out.', '/qjAyTj2BSth1EQ89vNfo0JYVPFN.jpg', '/pzmrKXQgL7GEZvigD6W1bUEzXJN.jpg', '8xWbc_kFus4', '<p>Anthony Hopkin\'s performance is amazing!</p>', '2018-11-07 20:35:52', '2018-11-07 20:35:52', 'movie'),
+(123, 13, 'Se7en', 807, '1995-09-22', 'Two homicide detectives are on a desperate hunt for a serial killer whose crimes are based on the \"seven deadly sins\" in this dark and haunting film that takes viewers from the tortured remains of one victim to the next. The seasoned Det. Sommerset researches each sin in an effort to get inside the killer\'s mind, while his novice partner, Mills, scoffs at his efforts to unravel the case.', '/8zw8IL4zEPjkh8Aysdcd0FwGMb0.jpg', '/A0WKbRIojF9DUWG4XLCmg5JK6I5.jpg', 'SpKbZ_3zlb0', '<p>Brad Pitt and Kevin Spacey are awesome in this plot.</p>', '2018-11-07 20:38:08', '2018-11-07 20:38:08', 'movie'),
+(124, 13, 'Zodiac', 1949, '2007-03-02', 'The true story of the investigation of the \"Zodiac Killer\", a serial killer who terrified the San Francisco Bay Area, taunting police with his ciphers and letters.  The case becomes an obsession for four men as their lives and careers are built and destroyed by the endless trail of clues.', '/kIW7N2bKV42OWk1kkMeq5ewZQVh.jpg', '/jP2htGBHE7vKq4MLeC75UeC0sZH.jpg', 'dJ0oNfjzx4k', '<p>This one is based on true events. Nice movie.</p>', '2018-11-07 20:39:07', '2018-11-07 20:39:07', 'movie'),
+(125, 13, 'Monster', 504, '2003-12-24', 'An emotionally scarred highway drifter shoots a sadistic trick who rapes her, and ultimately becomes America\'s first female serial killer.', '/aevmNtJCNG4ZlfEeEGZ79frMUes.jpg', '/awQwyN5Qau8HsBfCi1hI7nmFPOa.jpg', 'jWtHKU4sATI', '<p>Another one based on true events. Charlize Theron is amazing! Won the Oscar for this role.</p>', '2018-11-07 20:42:43', '2018-11-07 20:44:26', 'movie'),
+(126, 13, 'The Bone Collector', 9481, '1999-11-04', 'Rookie cop, Amelia Donaghy reluctantly teams with Lincoln Rhyme – formerly the department\'s top homicide detective but now paralyzed as a result of a spinal injury – to catch a grisly serial killer dubbed \'The Bone Collector\'. The murderer\'s special signature is to leave tantalizing clues based on the grim remains of his crimes.', '/dCTuPRukbDs3mOSx9SD0PCMRd2g.jpg', '/7pMLwK6AFO5BSBzeKTXmiPodUrp.jpg', 'w4z4Xsp-bos', '<p>Great script. I love this movie.</p>', '2018-11-07 20:43:52', '2018-11-07 20:43:52', 'movie'),
+(127, 13, 'Henry: Portrait of a Serial Killer', 10692, '1986-09-24', 'Henry likes to kill people, in different ways each time. Henry shares an apartment with Otis. When Otis\' sister comes to stay, we see both sides of Henry: \"the guy next door\" and the serial killer.', '/jE9bDB7v7lMED5PWpPMsmc3SzlI.jpg', '/9ZYJvlx2nzoi2Q4O11wuDHvTZQe.jpg', 'IU3P6WXzvXU', '<p>Controversial film when it was made.</p>', '2018-11-07 20:47:20', '2018-11-07 20:47:20', 'movie'),
+(128, 13, 'Dahmer', 25853, '2002-06-21', 'On February 15, 1992 in Milwaukee, Wisconsin, Jeffrey Lionel Dahmer, one of the world\'s most infamous serial killers, was convicted of 15 counts of murder and sentenced to 937 years in federal prison. This movie is based on events from his life. Certain characters and events are fictional.', '/puwSViyVgtB5is1BEITb6mO6ROp.jpg', '/qLoTj2r2dyubmSpPmmyLvllqnGj.jpg', 'kf0bhz5CUC8', '<p>Based on real-life serial killer Jeffrey Dahmer. Extremely well acted.</p>', '2018-11-07 20:48:49', '2018-11-07 20:59:38', 'movie'),
+(129, 13, 'Dear Mr. Gacy', 51512, '2010-05-10', 'A chronicle of the interaction between college student Jason Moss and the object of his obsession, serial killer John Wayne Gacy.', '/qUJZFNkWmNUxWpJBPVvoUsp5Sx8.jpg', '/cPkKDkieNcJDdGJmseB3GuCGGEG.jpg', 'wZ_ERGZdqn4', '<p>Well acted and frightening.</p>', '2018-11-07 20:52:58', '2018-11-07 21:00:34', 'movie'),
+(130, 13, 'Child 44', 181283, '2015-03-15', 'Set in Stalin-era Soviet Union, a disgraced MGB agent is dispatched to investigate a series of child murders -- a case that begins to connect with the very top of party leadership.', '/nzXwfnBcsmREzHlem6fkStN1RUH.jpg', '/A2WK7mdiKHaxgE4hRyKuDIM4KGg.jpg', 'Uia6y9SRsj4', '<p>Extraordinary Movie.</p>', '2018-11-07 20:54:47', '2018-11-07 20:54:47', 'movie'),
+(131, 13, 'Summer of Sam', 10279, '1999-07-02', 'Spike Lee\'s take on the \"Son of Sam\" murders in New York City during the summer of 1977 centering on the residents of an Italian-American South Bronx neighborhood who live in fear and distrust of one another.', '/fERQTWukzEsufDh5Yu4a0NnKAig.jpg', '/1ShlNNtyjbqg0kB8bPiiHXnYkys.jpg', '0a-E4Q9CHSk', '<p>This is one of Spike Lee\'s greatest films.</p>', '2018-11-07 20:56:46', '2018-11-07 20:56:46', 'movie'),
+(132, 14, 'Alpha', 399360, '2018-08-17', 'After a hunting expedition goes awry, a young caveman struggles against the elements to find his way home.', '/afdZAIcAQscziqVtsEoh2PwsYTW.jpg', '/nKMeTdm72LQ756Eq20uTjF1zDXu.jpg', 'uIxnTi4GmCo', '', '2018-11-09 12:02:49', '2018-11-09 12:02:49', 'movie'),
+(133, 14, '10,000 BC', 7840, '2008-02-22', 'A prehistoric epic that follows a young mammoth hunter\'s journey through uncharted territory to secure the future of his tribe.', '/rnGR3EHkL4ryhQd50XBrtRrV8nq.jpg', '/11ssxHGdYFKiRcfsC84ar8HcSYX.jpg', 'xPTVv60hLjc', '', '2018-11-09 12:03:00', '2018-11-09 12:03:00', 'movie'),
+(134, 14, 'The Croods', 49519, '2013-03-20', 'The Croods is a prehistoric comedy adventure that follows the world\'s first family as they embark on a journey of a lifetime when the cave that has always shielded them from danger is destroyed. Traveling across a spectacular landscape, the Croods discover an incredible new world filled with fantastic creatures -- and their outlook is changed forever.', '/eHi3Nbgh6Cs2KiIyEMF4Ig4CdjX.jpg', '/vg2hf8eAZhULxtQRS87CbrH2WMQ.jpg', '4fVCKy69zUY', '', '2018-11-09 12:03:26', '2018-11-09 12:03:26', 'movie'),
+(135, 14, 'Early Man', 387592, '2018-01-26', 'Dug, along with his sidekick Hognob, unite a cavemen tribe to save their hidden valley from being spoiled and, all together as a team, to face the menace of a mysterious and mighty enemy, on the turf of an ancient and sacred sport.', '/ugw07fJIZMVrrIGeN1MO7Xecj5h.jpg', '/9m71RMP45mg599xtKPyjicyHn1a.jpg', 'GC5FIWUFfUY', '', '2018-11-09 12:04:17', '2018-11-09 12:04:17', 'movie'),
+(136, 14, 'The Good Dinosaur', 105864, '2015-11-14', 'An epic journey into the world of dinosaurs where an Apatosaurus named Arlo makes an unlikely human friend.', '/2ZckiMTfSkCep2JTtZbr73tnQbN.jpg', '/pDuD96Fz0ZZXf9buEvRu1UQsmFT.jpg', '8lsIrASLD-Q', '', '2018-11-09 12:05:04', '2018-11-09 12:05:04', 'movie'),
+(137, 14, 'Ice Age', 425, '2002-03-10', 'With the impending ice age almost upon them, a mismatched trio of prehistoric critters – Manny the woolly mammoth, Diego the saber-toothed tiger and Sid the giant sloth – find an orphaned infant and decide to return it to its human parents. Along the way, the unlikely allies become friends but, when enemies attack, their quest takes on far nobler aims.', '/zpaQwR0YViPd83bx1e559QyZ35i.jpg', '/oDqbewoFuIEWA7UWurole6MzDGn.jpg', 'CZShn0PZiYU', '', '2018-11-09 12:05:31', '2018-11-09 12:05:31', 'movie'),
+(138, 14, 'Quest for Fire', 62204, '1981-12-15', 'A colossal adventure odyssey that turns back the hands of time to the very beginning of man\'s existence. 80,000 years ago, when man roamed the earth, he was exposed to the many harsh elements of nature. Against the perilous atmosphere of rugged terrain, rival tribes and savage beasts, Quest for Fire examines a peaceful tribe\'s search for that all important element fire, and the knowledge to create it. Focusing on human dream as well as realistic insights into pre-historic man, the constant struggle for survival is vividly recreated in this sensational production.', '/p81jT5YVj0zNZiQoDe9eBZvw5Rc.jpg', '/gpI5ll8eKo9vx4hwnziOr5VeEhK.jpg', '2pcGGKtPpSE', '', '2018-11-09 12:07:40', '2018-11-09 12:07:40', 'movie'),
+(139, 14, 'Dinosaur', 10567, '2000-05-19', 'An orphaned dinosaur raised by lemurs joins an arduous trek to a sancturary after a meteorite shower destroys his family home.', '/rSje3FS7ycJSglowlngjsvDt7vO.jpg', '/LT2796bodQIvIV50KcyrsIkq6r.jpg', 'JuEeYemi-74', '', '2018-11-09 12:09:03', '2018-11-09 12:09:03', 'movie'),
+(140, 14, 'Caveman', 18905, '1981-04-17', 'In this comedy, Atouk becomes leader of the misfit cavemen. Disgraced and cast out of his tribe for lusting after Lana, the mate of tribe\'s head muscle man, Atouk stumbles along gathering other misfits and learning a bit about the world outside of his cave. Eventually he and friends Lar, and Tala learn the secrets of fire, cooked meat, and how to defend themselves from the brutal, yet very stupid', '/5AxK9qo0rOWJuf1T2LwI9MZMR2k.jpg', '/vjdT25yBLCGfbARiPJNTUp7j5ED.jpg', 'u58TKioxsVs', '', '2018-11-09 12:09:31', '2018-11-09 12:09:31', 'movie'),
+(141, 14, 'Jurassic Park', 329, '1993-06-11', 'A wealthy entrepreneur secretly creates a theme park featuring living dinosaurs drawn from prehistoric DNA. Before opening day, he invites a team of experts and his two eager grandchildren to experience the park and help calm anxious investors. However, the park is anything but amusing as the security systems go off-line and the dinosaurs escape.', '/c414cDeQ9b6qLPLeKmiJuLDUREJ.jpg', '/8LZ0r7r2SdJIApRvGo2k6CXHq8x.jpg', 'QWBKEmWWL38', '', '2018-11-09 12:10:47', '2018-11-09 12:10:47', 'movie'),
+(142, 14, 'Ao: The Last Hunter', 56623, '2010-01-29', 'When his clan, including his wife and baby girl Néa, are massacred, Ao, a desperate Neandertal man, decides to leave the North country where he has been living for the South where he was born. His aim is to join his twin brother, from whom he was separated when he was nine. On his long and adventurous way home, he meets Aki, a Homo Sapiens woman...', '/djThnkzzM37ZwyVQsIivGs07bFh.jpg', '/xf0SUnV3JlrtSgVQXzevB7QYOzA.jpg', 'GjxnclWlFKQ', '', '2018-11-09 12:12:25', '2018-11-09 12:12:25', 'movie'),
+(143, 15, 'Apocalypto', 1579, '2006-12-07', 'Set in the Mayan civilization, when a man\'s idyllic presence is brutally disrupted by a violent invading force, he is taken on a perilous journey to a world ruled by fear and oppression where a harrowing end awaits him. Through a twist of fate and spurred by the power of his love for his woman and his family he will make a desperate break to return home and to ultimately save his way of life.', '/5BTFXR96hcBzmJvd9FwNayV79Xu.jpg', '/2zLULpdiHDWV8Zf5jJ5uOITbxhC.jpg', 'ngWBddVNVZs', '', '2018-11-09 17:59:55', '2018-11-09 17:59:55', 'movie'),
+(144, 15, 'Troy', 652, '2004-05-03', 'In year 1250 B.C. during the late Bronze age, two emerging nations begin to clash. Paris, the Trojan prince, convinces Helen, Queen of Sparta, to leave her husband Menelaus, and sail with him back to Troy. After Menelaus finds out that his wife was taken by the Trojans, he asks his brother Agamemnom to help him get her back. Agamemnon sees this as an opportunity for power. So they set off with 1,000 ships holding 50,000 Greeks to Troy. With the help of Achilles, the Greeks are able to fight the never before defeated Trojans.', '/edMlij7nw2NMla32xskDnzMCFBM.jpg', '/lIyNUZbIeEwWpaWXAO5gnciB8Dq.jpg', 'enJYNuWBJ9g', '', '2018-11-09 18:00:06', '2018-11-09 18:00:06', 'movie'),
+(145, 15, 'Braveheart', 197, '1995-05-24', 'Enraged at the slaughter of Murron, his new bride and childhood love, Scottish warrior William Wallace slays a platoon of the local English lord\'s soldiers. This leads the village to revolt and, eventually, the entire country to rise up against English rule.', '/2qAgGeYdLjelOEqjW9FYvPHpplC.jpg', '/7A3uAcB6KAScHcFw0giptE1mhAZ.jpg', 'nMft5QDOHek', '', '2018-11-09 18:00:23', '2018-11-09 18:00:23', 'movie'),
+(146, 15, 'The Last Samurai', 616, '2003-12-05', 'Nathan Algren is an American hired to instruct the Japanese army in the ways of modern warfare, which finds him learning to respect the samurai and the honorable principles that rule them. Pressed to destroy the samurai\'s way of life in the name of modernization and open trade, Algren decides to become an ultimate warrior himself and to fight for their right to exist.', '/sLv5pXysIz7QbtKFJy85d5yxv2W.jpg', '/cQ6oBTUkkl26Ndmpte2wYEdACBu.jpg', 'kJ27kgmhI6Q', '', '2018-11-09 18:00:35', '2018-11-09 18:00:35', 'movie'),
+(147, 15, '300', 1271, '2006-12-09', 'Based on Frank Miller\'s graphic novel, \"300\" is very loosely based the 480 B.C. Battle of Thermopylae, where the King of Sparta led his army against the advancing Persians; the battle is said to have inspired all of Greece to band together against the Persians, and helped usher in the world\'s first democracy.', '/bYR8O1H1ZlME7Dm9ysfTYZnRDpw.jpg', '/oHOTQkTYgDuoCYMaBEzuB9DqguX.jpg', 'UrIbxk7idYA', '', '2018-11-09 18:00:55', '2018-11-09 18:00:55', 'movie'),
+(148, 15, 'Gladiator', 98, '2000-05-01', 'In the year 180, the death of emperor Marcus Aurelius throws the Roman Empire into chaos.  Maximus is one of the Roman army\'s most capable and trusted generals and a key advisor to the emperor.  As Marcus\' devious son Commodus ascends to the throne, Maximus is set to be executed.  He escapes, but is captured by slave traders.  Renamed Spaniard and forced to become a gladiator, Maximus must battle to the death with other men for the amusement of paying audiences.', '/6WBIzCgmDCYrqh64yDREGeDk9d3.jpg', '/5vZw7ltCKI0JiOYTtRxaIC3DX0e.jpg', 'owK1qxDselE', '', '2018-11-09 18:01:21', '2018-11-09 18:01:21', 'movie'),
+(149, 15, 'Kingdom of Heaven', 1495, '2005-05-03', 'After his wife dies, a blacksmith named Balian is thrust into royalty, political intrigue and bloody holy wars during the Crusades.', '/aB4urkgTxBURJMUkd0kceDD7FUM.jpg', '/kxRYuGjccUCR1M0ZuG1TbzkMb7Y.jpg', '-oO6pCRe3pM', '', '2018-11-09 18:01:37', '2018-11-09 18:01:37', 'movie'),
+(150, 15, 'The 13th Warrior', 1911, '1999-08-13', 'In AD 922, Arab courtier, Ahmad Ibn Fadlan accompanies a party of Vikings to the barbaric North to combat a terror that slaughters Vikings and devours their flesh.', '/ooR8S0O0ZgxK2OBnT1GWHrr9w92.jpg', '/mrjQsj4BtLtHj6Qcvp7n9XxdDnx.jpg', 'TgZYiBCAnME', '', '2018-11-09 18:02:02', '2018-11-09 18:02:02', 'movie'),
+(151, 15, 'Mongol: The Rise of Genghis Khan', 12246, '2007-09-20', 'The story recounts the early life of Genghis Khan, a slave who went on to conquer half the world in the 11th century.', '/8dlyyuwSJtS0VOLM9xi7SA7xbfU.jpg', '/5obFIKalO5tgbEdet1eI2JgP0JB.jpg', 'Hr_PNoCZXg4', '', '2018-11-09 18:02:20', '2018-11-09 18:02:20', 'movie'),
+(152, 15, 'Spartacus', 967, '1960-10-06', 'The rebellious Thracian Spartacus, born and raised a slave, is sold to Gladiator trainer Batiatus. After weeks of being trained to kill for the arena, Spartacus turns on his owners and leads the other slaves in rebellion. As the rebels move from town to town, their numbers swell as escaped slaves join their ranks. Under the leadership of Spartacus, they make their way to southern Italy, where they will cross the sea and return to their homes.', '/hpICDCTdMIpcqEeNa0k3rcedw2B.jpg', '/aheSIG4h3JNxWeDvdb1NxKzgjaM.jpg', 'OCoA4qYsXkw', '', '2018-11-09 18:02:38', '2018-11-09 18:02:38', 'movie'),
+(153, 16, 'Erin Brockovich', 462, '2000-03-17', 'A twice-divorced mother of three who sees an injustice, takes on the bad guy and wins -- with a little help from her push-up bra. Erin goes to work for an attorney and comes across medical records describing illnesses clustered in one nearby town. She starts investigating and soon exposes a monumental cover-up.', '/if90sXZkI4aaxdlhxKejpniT9ff.jpg', '/vfGCgrmvmP4hTEWDRO3uRBcMqlR.jpg', 'keZXGaDvK2s', '', '2018-11-10 10:01:10', '2018-11-10 10:01:10', 'movie'),
+(154, 16, 'Wonder Woman', 297762, '2017-05-30', 'An Amazon princess comes to the world of Man in the grips of the First World War to confront the forces of evil and bring an end to human conflict.', '/imekS7f1OuHyUP2LAiTEM0zBzUz.jpg', '/6iUNJZymJBMXXriQyFZfLAKnjO6.jpg', '1Q8fG0TtVAY', '', '2018-11-10 10:01:23', '2018-11-10 10:01:23', 'movie'),
+(155, 16, 'Thelma & Louise', 1541, '1991-05-24', 'Whilst on a short weekend getaway, Louise shoots a man who had tried to rape Thelma. Due to the incriminating circumstances, they make a run for it and thus a cross country chase ensues for the two fugitives. Along the way, both women rediscover the strength of their friendship and surprising aspects of their personalities and self-strengths in the trying times.', '/pnzuLoE52EiTfjfqRex2uTkH7LB.jpg', '/9X0Ebv8wWOH7OlWmJOc5iucqkBm.jpg', '2iBFmKlO4BY', '', '2018-11-10 10:01:36', '2018-11-10 10:01:36', 'movie'),
+(156, 16, 'Frida', 1360, '2002-08-29', '\"Frida\" chronicles the life Frida Kahlo shared unflinchingly and openly with Diego Rivera, as the young couple took the art world by storm. From her complex and enduring relationship with her mentor and husband to her illicit and controversial affair with Leon Trotsky, to her provocative and romantic entanglements with women, Frida Kahlo lived a bold and uncompromising life as a political, artistic, and sexual revolutionary', '/zwkLXyeAKYGX6iKJemLlSSPmC22.jpg', '/iLpWNh7ur2sEJIX7NgbiJgdmdjJ.jpg', 'uOUzQYqba4Y', '', '2018-11-10 10:01:56', '2018-11-10 10:01:56', 'movie'),
+(157, 16, 'Sicario', 273481, '2015-09-17', 'An idealistic FBI agent is enlisted by a government task force to aid in the escalating war against drugs at the border area between the U.S. and Mexico.', '/p2SdfGmQRaw8xhFbexlHL7srMM8.jpg', '/nkSW9TqN9PHOkiej1D3SnmOhmCl.jpg', 'ymx2jrknr3I', '', '2018-11-10 10:02:15', '2018-11-10 10:02:15', 'movie'),
+(158, 16, 'Gravity', 49047, '2013-10-03', 'Dr. Ryan Stone, a brilliant medical engineer on her first Shuttle mission, with veteran astronaut Matt Kowalsky in command of his last flight before retiring. But on a seemingly routine spacewalk, disaster strikes. The Shuttle is destroyed, leaving Stone and Kowalsky completely alone-tethered to nothing but each other and spiraling out into the blackness of space. The deafening silence tells them they have lost any link to Earth and any chance for rescue. As fear turns to panic, every gulp of air eats away at what little oxygen is left. But the only way home may be to go further out into the terrifying expanse of space.', '/uPxtxhB2Fy9ihVqtBtNGHmknJqV.jpg', '/9aoWzwOwy9NLuSk9LkBwwrBdPYM.jpg', 'PyGTEOuVyGQ', '', '2018-11-10 10:02:28', '2018-11-10 10:02:28', 'movie'),
+(159, 16, 'Cold Mountain', 2289, '2003-12-24', 'In this classic story of love and devotion set against the backdrop of the American Civil War, a wounded Confederate soldier named W.P. Inman deserts his unit and travels across the South, aiming to return to his young wife, Ada, who he left behind to tend their farm. As Inman makes his perilous journey home, Ada struggles to keep their home intact with the assistance of Ruby, a mysterious drifter sent to help her by a kindly neighbor.', '/4da24dJQZSGep4FJ2U9jU9G8qJr.jpg', '/tLDljWDR3Rz3zrtxHGWlVQI8UCI.jpg', 'Rq7ecfLUtZI', '', '2018-11-10 10:03:43', '2018-11-10 10:03:43', 'movie'),
+(160, 16, 'Amélie', 194, '2001-04-25', 'At a tiny Parisian café, the adorable yet painfully shy Amélie (Audrey Tautou) accidentally discovers a gift for helping others. Soon Amelie is spending her days as a matchmaker, guardian angel, and all-around do-gooder. But when she bumps into a handsome stranger, will she find the courage to become the star of her very own love story?', '/f0uorE7K7ggHfr8r7pUTOHWkOlE.jpg', '/nxhfenC1jb5EcTI5GYxqnjYZMId.jpg', 'HUECWi5pX7o', '', '2018-11-10 10:04:09', '2018-11-10 10:04:09', 'movie'),
+(161, 16, 'The Devil Wears Prada', 350, '2006-06-30', 'The Devil Wears Prada is about a young journalist who moves to New York to work in the fashion industry. Her boss however is extremely demanding and cruel and won’t let her succeed if she doesn’t fit into the high class elegant look of their magazine when all she really wants to be a good journalist.', '/8unCRm0LeiO0fM6skWAZy3ZfXR1.jpg', '/adGGzfXNmu0iLgiPAW9Ghd138f7.jpg', 'jSeXR0gQHQI', '', '2018-11-10 10:04:37', '2018-11-10 10:04:37', 'movie'),
+(162, 16, 'A Cry in the Dark', 35119, '1988-11-11', 'Based on the true story of Lindy Chamberlain: During a camping trip to Ayers Rock in outback Australia, she claims she witnessed a dingo taking her baby daughter, Azaria, from the family tent. Azaria\'s body is never found. After investigations and two public inquests, she is charged with murder. The case attracts a lot of attention, turning it into a media sideshow.', '/1ApBw8LkItTf5CIUCdqwtJxFlce.jpg', '/kG0D480IXCMsaFwu0ySFCXT1HIl.jpg', 'NLEDeJteQak', '', '2018-11-10 10:06:51', '2018-11-10 10:06:51', 'movie'),
+(163, 16, 'The Accused', 10868, '1988-10-14', 'After a young woman suffers a brutal rape in a bar one night, a prosecutor assists in bringing the perpetrators to justice, including the ones who encouraged and cheered on the attack.', '/pnVcMHjcNCJ7u3pokJGAXVpJT7D.jpg', '/vHTe93OxRobmzaH2AkPGwWiyTGz.jpg', 'zDujtATPuBk', '', '2018-11-10 10:07:33', '2018-11-10 10:07:33', 'movie'),
+(164, 16, 'The Queen', 1165, '2006-09-15', 'The Queen is an intimate behind the scenes glimpse at the interaction between HM Elizabeth II and Prime Minister Tony Blair during their struggle, following the death of Diana, to reach a compromise between what was a private tragedy for the Royal family and the public\'s demand for an overt display of mourning.', '/Ai8tz9c7Homb9mLg8baGhX1ABkR.jpg', '/m6zxiA1kHaOExw4a5wBx6Ylc6ZS.jpg', 'BIvESE9A_gc', '', '2018-11-10 10:08:28', '2018-11-10 10:08:28', 'movie'),
+(165, 16, 'The Iron Lady', 71688, '2011-12-30', 'A look at the life of Margaret Thatcher, the former Prime Minister of the United Kingdom, with a focus on the price she paid for power.', '/e67tal4u66eFz8yGnJGTO5FYRxY.jpg', '/dfM5XwQcw36HAnKhowEh5776MJl.jpg', 'IKPltuiEVJ8', '', '2018-11-10 10:09:31', '2018-11-10 10:09:31', 'movie'),
+(166, 16, 'Mermaids', 4587, '1990-12-14', 'Fifteen-year-old Charlotte Flax is tired of her wacky mom moving their family to a different town any time she feels it is necessary. When they move to a small Massachusetts town and Mrs. Flax begins dating a shopkeeper, Charlotte and her 9-year-old sister, Kate, hope that they can finally settle down. But when Charlotte\'s attraction to an older man gets in the way, the family must learn to accept each other for who they truly are.', '/1VufMcp0euY2LpmKiVv8xnbB9Om.jpg', '/nCaQAFG3dLWNx19RzORZoAJ8QFW.jpg', 'oC2Om-kO4Pk', '', '2018-11-10 10:10:04', '2018-11-10 10:10:04', 'movie'),
+(167, 16, 'The River Wild', 8987, '1994-09-30', 'While on a family vacation,  rafting expert Gail takes on a pair of armed killers while navigating a spectacularly violent river.', '/8NFAQxZud5Kisw1sd9WxfBG54.jpg', '/p3AEFdhqbqK9ujNUw6ajfLKkfMQ.jpg', 'WbGD81wUgC0', '', '2018-11-10 10:11:03', '2018-11-10 10:11:03', 'movie'),
+(168, 16, 'Still Alice', 284293, '2014-12-05', 'Alice Howland, happily married with three grown children, is a renowned linguistics professor who starts to forget words. When she receives a devastating diagnosis, Alice and her family find their bonds tested.', '/4n7T0G6kNLszUyfqKAboesNTm55.jpg', '/yxr7oOXdb1rO9SjZiRa8K3ClCZf.jpg', '1cpDFHcWGak', '', '2018-11-10 10:14:36', '2018-11-10 10:14:36', 'movie'),
+(169, 17, 'Cowboys & Aliens', 49849, '2011-07-29', 'A stranger stumbles into the desert town of Absolution with no memory of his past and a futuristic shackle around his wrist. With the help of mysterious beauty Ella and the iron-fisted Colonel Dolarhyde, he finds himself leading an unlikely posse of cowboys, outlaws, and Apache warriors against a common enemy from beyond this world in an epic showdown for survival.', '/9uZsGCP4rvOHVGCpMpYq5gNCuNI.jpg', '/gTDwoJBCu7scwYQoykIlLNpkCes.jpg', 'vdy4eRKrf_8', '', '2018-11-12 17:45:04', '2018-11-12 17:45:04', 'movie'),
+(170, 17, 'Battle: Los Angeles', 44943, '2011-03-08', 'The Earth is attacked by unknown forces. As people everywhere watch the world\'s great cities fall, Los Angeles becomes the last stand for mankind in a battle no one expected. It\'s up to a Marine staff sergeant and his new platoon to draw a line in the sand as they take on an enemy unlike any they\'ve ever encountered before.', '/c7rrF2Cx2d52DFfHsMDgWA4ApTB.jpg', '/eBcjJY0o7GErxmm8SYpslvtjRyM.jpg', 'Yt7ofokzn04', '', '2018-11-12 17:45:44', '2018-11-12 17:45:44', 'movie'),
+(171, 17, 'The Arrival', 10547, '1996-05-31', 'Zane Ziminski is an astrophysicist who receives a message that seems to have extraterrestrial origins. Eerily soon after his discovery, Zane is fired. He then embarks on a search to determine the origins of the transmission that leads him into a Hitchcockian labyrinth of paranoia and intrigue.', '/7K7NExClVGDQMaHzj7gwx4mcJ40.jpg', '/23pRq9wOcOtzqNNy0cg6RoqxLzy.jpg', 'GOc01_Ty1eQ', '', '2018-11-12 17:46:19', '2018-11-12 17:46:19', 'movie'),
+(172, 17, 'Independence Day', 602, '1996-06-25', 'On July 2, a giant alien mothership enters orbit around Earth and deploys several dozen saucer-shaped \'destroyer\' spacecraft that quickly lay waste to major cities around the planet. On July 3, the United States conducts a coordinated counterattack that fails. On July 4, a plan is devised to gain access to the interior of the alien mothership in space, in order to plant a nuclear missile.', '/bqLlWZJdhrS0knfEJRkquW7L8z2.jpg', '/4E2xKGrU2qcqUE2S3Nl27hwZdqy.jpg', 'yeMYbwCk91g', '', '2018-11-12 17:46:33', '2018-11-12 17:46:33', 'movie'),
+(173, 17, 'The Thing', 1091, '1982-06-25', 'Scientists in the Antarctic are confronted by a shape-shifting alien that assumes the appearance of the people it kills.', '/s5fH3GqFcHbi2F0NSBSh4KRNTc0.jpg', '/7mdGrxp3ZL2OqNSrQ5LoYySi5MH.jpg', 'p35JDJLa9ec', '<p>Amazing film, my favorite.</p>', '2018-11-12 17:47:04', '2018-11-12 18:22:17', 'movie'),
+(174, 17, 'War of the Worlds', 74, '2005-06-28', 'Ray Ferrier is a divorced dockworker and less-than-perfect father. Soon after his ex-wife and her new husband drop of his teenage son and young daughter for a rare weekend visit, a strange and powerful lightning storm touches down.', '/xXMM9KY2eq1SDOQif9zO91YOBA8.jpg', '/AssNSBTmiYXpseW659qNw3ngTC0.jpg', 'msxe3yJPfyY', '', '2018-11-12 17:47:40', '2018-11-12 17:47:40', 'movie'),
+(175, 17, 'Cloverfield', 7191, '2008-01-15', 'Five young New Yorkers throw their friend a going-away party the night that a monster the size of a skyscraper descends upon the city. Told from the point of view of their video camera, the film is a document of their attempt to survive the most surreal, horrifying event of their lives.', '/qIegUGJqyMMCRjkKV1s7A9MqdJ8.jpg', '/6kVVfNT0auG6fU5SFQ1zbayNWUC.jpg', 'IvNkGm8mxiM', '', '2018-11-12 17:48:04', '2018-11-12 17:48:04', 'movie'),
+(176, 17, 'The Faculty', 9276, '1998-12-25', 'When some very creepy things start happening around school, the kids at Herrington High make a chilling discovery that confirms their worst suspicions: their teachers really are from another planet! As mind-controlling parasites rapidly begin spreading from the faculty to the students\' bodies, it\'s ultimately up to the few who are left – an unlikely collection of loners, leaders, nerds and jocks – to save the world from alien domination.', '/5Yk0Dh3OWYQOgjUObRgsfJ7U95.jpg', '/xuHuW4XhghQpVJSIna7JBb60bva.jpg', 'GDruXnBOzP0', '', '2018-11-12 17:48:25', '2018-11-12 17:48:25', 'movie'),
+(177, 17, 'District 9', 17654, '2009-08-05', 'Thirty years ago, aliens arrive on Earth. Not to conquer or give aid, but to find refuge from their dying planet. Separated from humans in a South African area called District 9, the aliens are managed by Multi-National United, which is unconcerned with the aliens\' welfare but will do anything to master their advanced technology. When a company field agent contracts a mysterious virus that begins to alter his DNA, there is only one place he can hide: District 9.', '/axFmCRNQsW6Bto8XuJKo08MPPV5.jpg', '/yosGyMJ2CkavMSGx6PhcZO6kCAV.jpg', 'TChY6NIxqgQ', '', '2018-11-12 17:49:31', '2018-11-12 17:49:31', 'movie'),
+(178, 17, 'Battleship', 44833, '2012-04-11', 'When mankind beams a radio signal into space, a reply comes from ‘Planet G’, in the form of several alien crafts that splash down in the waters off Hawaii. Lieutenant Alex Hopper is a weapons officer assigned to the USS John Paul Jones, part of an international naval coalition which becomes the world\'s last hope for survival as they engage the hostile alien force of unimaginable strength. While taking on the invaders, Hopper must also try to live up to the potential his brother, and his fiancée\'s father, Admiral Shane, expect of him.', '/7hN6WtMepoMZyeHZU2DM21cEj3z.jpg', '/rLhO767vwqRfUBmJOqvEmt5myIF.jpg', 'cp3646Zf8rg', '', '2018-11-12 17:49:46', '2018-11-12 17:49:46', 'movie'),
+(179, 17, 'Pandorum', 19898, '2009-09-08', 'Two crew members wake up on an abandoned spacecraft with no idea who they are, how long they\'ve been asleep, or what their mission is. The two soon discover they\'re actually not alone – and the reality of their situation is more horrifying than they could have imagined.', '/qFd7dNvV1neXBV5OZdU5jOhdDZ6.jpg', '/srxnkz09MEB2ow59FnC7VHQIaAQ.jpg', '9q42L4XNVhQ', '<pre id=\"tw-target-text\" class=\"tw-data-text tw-ta tw-text-small\" dir=\"ltr\" style=\"max-height: 999999px; border: none; padding: 0px 0.14em 0px 0px; position: relative; margin-top: 0px; margin-bottom: 0px; resize: none; font-family: inherit; overflow: hidden; width: 345px; white-space: pre-wrap; overflow-wrap: break-word; color: #212121; height: 40px; font-size: 16px !important; line-height: 20px !important;\" data-placeholder=\"Tradu&ccedil;&atilde;o\" data-fulltext=\"\"><span lang=\"en\" style=\"max-height: 999999px;\">The story of this movie does not happen on earth, but it could not be left out.</span></pre>', '2018-11-12 17:49:57', '2018-11-12 18:20:08', 'movie'),
+(180, 17, 'Alien', 348, '1979-05-25', 'During its return to the earth, commercial spaceship Nostromo intercepts a distress signal from a distant planet. When a three-member team of the crew discovers a chamber containing thousands of eggs on the planet, a creature inside one of the eggs attacks an explorer. The entire crew is unaware of the impending nightmare set to descend upon them when the alien parasite planted inside its unfortunate host is birthed.', '/2h00HrZs89SL3tXB4nbkiM7BKHs.jpg', '/dfNrZ82poQ8blHWJreIv6JZQ9JA.jpg', '097uj1HjkbM', '<p>It isn\'t on earth but still is human vs aliens.</p>', '2018-11-12 17:50:07', '2018-11-12 18:23:22', 'movie'),
+(181, 17, 'Predator', 106, '1987-06-12', 'Dutch and his group of commandos are hired by the CIA to rescue downed airmen from guerillas in a Central American jungle. The mission goes well but as they return they find that something is hunting them. Nearly invisible, it blends in with the forest, taking trophies from the bodies of its victims as it goes along. Occasionally seeing through its eyes, the audience sees it is an intelligent alien hunter, hunting them for sport, killing them off one at a time.', '/p6fhq04t75yCfE0kSTNZGQvWuQ1.jpg', '/ib247UzpzFwZp5XW2RZtwSHqLf0.jpg', 'K9AT3tQGbIk', '', '2018-11-12 17:50:19', '2018-11-12 17:50:19', 'movie'),
+(182, 17, 'Men in Black', 607, '1997-07-02', 'After a police chase with an otherworldly being, a New York City cop is recruited as an agent in a top-secret organization established to monitor and police alien activity on Earth: the Men in Black. Agent Kay and new recruit Agent Jay find themselves in the middle of a deadly plot by an intergalactic terrorist who has arrived on Earth to assassinate two ambassadors from opposing galaxies.', '/f24UVKq3UiQWLqGWdqjwkzgB8j8.jpg', '/agCihVGrXk3hmmwMIgsn2ao1eEa.jpg', 'uCJHn-ZFH54', '', '2018-11-12 17:50:59', '2018-11-12 17:50:59', 'movie'),
+(183, 17, 'Pacific Rim', 68726, '2013-07-11', 'When legions of monstrous creatures, known as Kaiju, started rising from the sea, a war began that would take millions of lives and consume humanity\'s resources for years on end. To combat the giant Kaiju, a special type of weapon was devised: massive robots, called Jaegers, which are controlled simultaneously by two pilots whose minds are locked in a neural bridge. But even the Jaegers are proving nearly defenseless in the face of the relentless Kaiju. On the verge of defeat, the forces defending mankind have no choice but to turn to two unlikely heroes—a washed-up former pilot (Charlie Hunnam) and an untested trainee (Rinko Kikuchi)—who are teamed to drive a legendary but seemingly obsolete Jaeger from the past. Together, they stand as mankind\'s last hope against the mounting apocalypse.', '/xzT2FOoXEFkdI3Himpa0bgUZlCE.jpg', '/iB0RsWVoOXzicPi2Yy5xmTYMbho.jpg', 'zA92Rw6kNWw', '', '2018-11-12 17:51:58', '2018-11-12 17:51:58', 'movie'),
+(184, 17, 'The Day the Earth Stood Still', 10200, '2008-12-10', 'A representative of an alien race that went through drastic evolution to survive its own climate change, Klaatu comes to Earth to assess whether humanity can prevent the environmental damage they have inflicted on their own planet. When barred from speaking to the United Nations, he decides humankind shall be exterminated so the planet can survive.', '/7fNFk4EAGbuRFqrSJprgXEIX5Za.jpg', '/bfRgom0djZB8z7qbtjM542j3xrT.jpg', 'lgeuvDiS1_M', '', '2018-11-12 17:52:10', '2018-11-12 17:52:10', 'movie'),
+(185, 17, 'The Thing', 60935, '2011-10-12', 'When paleontologist Kate Lloyd travels to an isolated outpost in Antarctica for the expedition of a lifetime, she joins an international team that unearths a remarkable discovery. Their elation quickly turns to fear as they realize that their experiment has freed a mysterious being from its frozen prison. Paranoia spreads like an epidemic as a creature that can mimic anything it touches will pit human against human as it tries to survive and flourish in this spine-tingling thriller.', '/a2Cme25fHcSdIQ2wW6aWmE4owUI.jpg', '/9pguay2WdWNORzgxQuOmxPVf7Z3.jpg', 'JIdw2B6zipc', '', '2018-11-12 17:57:24', '2018-11-12 17:57:24', 'movie'),
+(186, 18, 'Get Out', 419430, '2017-02-24', 'Chris and his girlfriend Rose go upstate to visit her parents for the weekend. At first, Chris reads the family\'s overly accommodating behavior as nervous attempts to deal with their daughter\'s interracial relationship, but as the weekend progresses, a series of increasingly disturbing discoveries lead him to a truth that he never could have imagined.', '/1SwAVYpuLj8KsHxllTF8Dt9dSSX.jpg', '/5OlAmzEUaO0A12cM7g5g420w4d7.jpg', 'xnGTjx-AVdc', '', '2018-11-12 22:29:53', '2018-11-12 22:29:53', 'movie'),
+(187, 18, 'BlacKkKlansman', 487558, '2018-07-30', 'Ron Stallworth, an African-American police officer from Colorado, successfully manages to infiltrate the local Ku Klux Klan and become the head of the local chapter.', '/8jxqAvSDoneSKRczaK8v9X5gqBp.jpg', '/gMVdhfQ7q9DFHhDkehrququjGPd.jpg', 'pFc6I0rgmgY', '', '2018-11-12 22:30:31', '2018-11-12 22:30:31', 'movie'),
+(188, 18, 'Django Unchained', 68718, '2012-12-25', 'With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner.', '/5WJnxuw41sddupf8cwOxYftuvJG.jpg', '/qUcmEqnzIwlwZxSyTf3WliSfAjJ.jpg', 'nwlcUsTq4TM', '', '2018-11-12 22:30:52', '2018-11-12 22:30:52', 'movie'),
+(189, 18, 'Selma', 273895, '2014-12-25', '\"Selma,\" as in Alabama, the place where segregation in the South was at its worst, leading to a march that ended in violence, forcing a famous statement by President Lyndon B. Johnson that ultimately led to the signing of the Civil Rights Act.', '/xj1H3dpEHhouyJNB1lfpkKf9fXX.jpg', '/dMKslph3Qw0tPvCHjwSvIdivf0V.jpg', 'x6t7vVTxaic', '', '2018-11-12 22:31:09', '2018-11-12 22:31:09', 'movie'),
+(190, 18, 'The Help', 50014, '2011-08-09', 'Aibileen Clark is a middle-aged African-American maid who has spent her life raising white children and has recently lost her only son; Minny Jackson is an African-American maid who has often offended her employers despite her family\'s struggles with money and her desperate need for jobs; and Eugenia \"Skeeter\" Phelan is a young white woman who has recently moved back home after graduating college to find out her childhood maid has mysteriously disappeared. These three stories intertwine to explain how life in Jackson, Mississippi revolves around \"the help\"; yet they are always kept at a certain distance because of racial lines.', '/6u85CuvnbrzWMhKbGk4Bm5RnO3V.jpg', '/dskiB6nk4VA9pmw20L9oN7I4tkO.jpg', 'l0dWCXCjX9o', '', '2018-11-12 22:31:32', '2018-11-12 22:31:32', 'movie'),
+(191, 18, 'The Butler', 132363, '2013-08-16', 'A look at the life of Cecil Gaines who served eight presidents as the White House\'s head butler from 1952 to 1986, and had a unique front-row seat as political and racial history was made.', '/hUjEYTN5NuK8kYRQxngS7itpBQC.jpg', '/zZggWJSG18wPIOrZOgV5LI12LMi.jpg', 'eZ4xDTz8Avc', '', '2018-11-12 22:32:11', '2018-11-12 22:32:11', 'movie'),
+(192, 18, '12 Years a Slave', 76203, '2013-10-18', 'In the pre-Civil War United States, Solomon Northup, a free black man from upstate New York, is abducted and sold into slavery. Facing cruelty as well as unexpected kindnesses Solomon struggles not only to stay alive, but to retain his dignity. In the twelfth year of his unforgettable odyssey, Solomon’s chance meeting with a Canadian abolitionist will forever alter his life.', '/kb3X943WMIJYVg4SOAyK0pmWL5D.jpg', '/xnRPoFI7wzOYviw3PmoG94X2Lnc.jpg', 'z02Ie8wKKRg', '', '2018-11-12 22:32:26', '2018-11-12 22:32:26', 'movie'),
+(193, 18, 'Do the Right Thing', 925, '1989-06-14', 'On the hottest day of the year on a street in the Bedford-Stuyvesant section of Brooklyn, everyone\'s hate and bigotry smolders and builds until it explodes into violence.', '/63rmSDPahrH7C1gEFYzRuIBAN9W.jpg', '/tVAP7T247u84trqj31ET639LD1Y.jpg', 'rAQSa0963T8', '', '2018-11-12 22:32:55', '2018-11-12 22:32:55', 'movie'),
+(194, 18, 'To Kill a Mockingbird', 595, '1962-12-25', 'Scout Finch, 6, and her older brother Jem live in sleepy Maycomb, Alabama, spending much of their time with their friend Dill and spying on their reclusive and mysterious neighbor, Boo Radley. When Atticus, their widowed father and a respected lawyer, defends a black man named Tom Robinson against fabricated rape charges, the trial and tangent events expose the children to evils of racism and stereotyping.', '/gQg6sPYfNTUlf8wEtydzWl09RyR.jpg', '/eb8EqwtFWVoujlbU8CmaEYc1qE5.jpg', 'zPcH6joLZjg', '', '2018-11-12 22:33:25', '2018-11-12 22:33:25', 'movie'),
+(195, 18, 'Ray', 1677, '2004-10-29', 'Born on a sharecropping plantation in Northern Florida, Ray Charles went blind at seven. Inspired by a fiercely independent mom who insisted he make his own way, He found his calling and his gift behind a piano keyboard. Touring across the Southern musical circuit, the soulful singer gained a reputation and then exploded with worldwide fame when he pioneered couping gospel and country together.', '/fPDsBL0MdegEvyPhim9b5srHOqG.jpg', '/lcVQocaLf4wf5Inmwj7TtrPRnPp.jpg', 'X1rJvSF3l6k', '', '2018-11-12 22:33:40', '2018-11-12 22:33:40', 'movie'),
+(196, 18, 'The Color Purple', 873, '1985-12-18', 'An epic tale spanning forty years in the life of Celie, an African-American woman living in the South who survives incredible abuse and bigotry.  After Celie\'s abusive father marries her off to the equally debasing \"Mister\" Albert Johnson, things go from bad to worse, leaving Celie to find companionship anywhere she can.  She perseveres, holding on to her dream of one day being reunited with her sister in Africa. Based on the novel by Alice Walker.', '/2a50LyRInWGLWq3u3DeGBQnvBHR.jpg', '/mGzHgeXhGSRVMfwq0oo7VAltiZH.jpg', 'd83NnlL83mc', '', '2018-11-12 22:34:14', '2018-11-12 22:34:14', 'movie'),
+(197, 18, 'Glory', 9665, '1989-12-15', 'Robert Gould Shaw leads the US Civil War\'s first all-black volunteer company, fighting prejudices of both his own Union army and the Confederates.', '/6pDBbYmR9iqg3IF8lgyY9pWFiqT.jpg', '/sqnYSuxXa0noQmz0VC6kNIBYIyj.jpg', '0hVrYRqeT5M', '', '2018-11-12 22:34:40', '2018-11-12 22:34:40', 'movie'),
+(198, 18, 'Driving Miss Daisy', 403, '1989-12-13', 'The story of an old Jewish widow named Daisy Werthan and her relationship with her black chauffeur Hoke. From an initial mere work relationship grew in 25 years a strong friendship between the two very different characters in a time when those types of relationships where shunned upon. Oscar winning tragic comedy with a star-studded cast and based on a play of the same name by Alfred Uhry.', '/pSybZBTSHOrPhDjFThDE9YEhCgT.jpg', '/uBuMVTfwFKhSUOHM94tSFIZM4lm.jpg', 'pKRj7QCIXnY', '', '2018-11-12 22:35:19', '2018-11-12 22:35:19', 'movie'),
+(199, 18, 'American History X', 73, '1998-10-30', 'Derek Vineyard is paroled after serving 3 years in prison for killing two thugs who tried to break into/steal his truck. Through his brother, Danny Vineyard\'s narration, we learn that before going to prison, Derek was a skinhead and the leader of a violent white supremacist gang that committed acts of racial crime throughout L.A. and his actions greatly influenced Danny. Reformed and fresh out of prison, Derek severs contact with the gang and becomes determined to keep Danny from going down the same violent path as he did.', '/fXepRAYOx1qC3wju7XdDGx60775.jpg', '/i9A0UMFg1hI2kLyCCwnmSbpT2cd.jpg', 'JsPW6Fj3BUI', '', '2018-11-12 22:35:31', '2018-11-12 22:35:31', 'movie'),
+(200, 18, 'The Green Mile', 497, '1999-12-10', 'A supernatural tale set on death row in a Southern prison, where gentle giant John Coffey possesses the mysterious power to heal people\'s ailments. When the cell block\'s head guard, Paul Edgecomb, recognizes Coffey\'s miraculous gift, he tries desperately to help stave off the condemned man\'s execution.', '/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg', '/Rlt20sEbOQKPVjia7lUilFm49W.jpg', 'ctRK-4Vt7dA', '', '2018-11-12 22:35:43', '2018-11-12 22:35:43', 'movie'),
+(201, 18, 'Amistad', 11831, '1997-12-03', 'In 1839, the slave ship Amistad set sail from Cuba to America. During the long trip, Cinque leads the slaves in an unprecedented uprising. They are then held prisoner in Connecticut, and their release becomes the subject of heated debate. Freed slave Theodore Joadson wants Cinque and the others exonerated and recruits property lawyer Roger Baldwin to help his case. Eventually, John Quincy Adams also becomes an ally.', '/lgoCht4up4SBgK9Clz7GDBBYDx2.jpg', '/ee0pEVnpzyDj4xdtIkfGN0FgL5y.jpg', 'BJFDOvGMD0U', '', '2018-11-12 22:36:07', '2018-11-12 22:36:07', 'movie');
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(202, 18, 'A Time to Kill', 1645, '1996-07-24', 'A young lawyer defends a black man accused of murdering two men who raped his 10-year-old daughter, sparking a rebirth of the KKK.', '/1q2kU8NMGO446b0QAvVdY2v778x.jpg', '/eTRN3FFppNiXJo0GucyHMSryFjB.jpg', '7hfTnum9fVA', '', '2018-11-12 22:36:28', '2018-11-12 22:36:28', 'movie'),
+(203, 18, 'Fruitvale Station', 157354, '2013-07-25', 'The true story of Oscar, a 22-year-old Bay Area resident, who crosses paths with friends, enemies, family, and strangers on the last day of 2008.', '/zwPYTHFCgWYHRW1OoxE23dxZZRX.jpg', '/v8qyFyJUsvpNVOtizr2ZfQVfJ9C.jpg', 'CxUG-FjefDk', '', '2018-11-12 22:36:40', '2018-11-12 22:36:40', 'movie'),
+(204, 18, 'Mississippi Burning', 1632, '1988-12-08', 'Two FBI agents investigating the murder of civil rights workers during the 60s seek to breach the conspiracy of silence in a small Southern town where segregation divides black and white. The younger agent trained in FBI school runs up against the small town ways of his, former Sheriff, partner.', '/uSukdUQwx0l4rRuMXNqugR1tu4n.jpg', '/4ypwob4uxh0q1osOFq2Wh7zdopT.jpg', '987lXKJqHbY', '', '2018-11-12 22:37:00', '2018-11-12 22:37:00', 'movie'),
+(205, 18, 'Malcolm X', 1883, '1992-11-18', 'A tribute to the controversial black activist and leader of the struggle for black liberation. He hit bottom during his imprisonment in the \'50s, he became a Black Muslim and then a leader in the Nation of Islam. His assassination in 1965 left a legacy of self-determination and racial pride.', '/jDQ2iBJuiimvYqk9orA2YaigBmW.jpg', '/pret3gob7522ekpXJD85BE5Fs74.jpg', 'LbKs766Tr88', '', '2018-11-12 22:37:24', '2018-11-12 22:37:24', 'movie'),
+(206, 18, 'Bamboozled', 24664, '2000-10-06', 'TV producer Pierre Delacroix becomes frustrated when network brass reject his sitcom idea. Hoping to get fired, Delacroix pitches the worst idea he can think of: a 21st century minstrel show. The network not only airs it, but it becomes a smash hit.', '/oSeJZaz8CBlufJj3s33jKnQENUU.jpg', '/uSPOydK9mDMjcHJxW3MQZ9ALurx.jpg', 'aPBmOEpviOg', '', '2018-11-12 22:38:22', '2018-11-12 22:38:22', 'movie'),
+(207, 19, 'The Revenant', 281957, '2015-12-25', 'In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling.', '/oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg', '/kiWvoV78Cc3fUwkOHKzyBgVdrDD.jpg', 'QRfj1VCg16Y', '', '2018-11-16 22:21:16', '2018-11-16 22:21:16', 'movie'),
+(208, 19, 'Inception', 27205, '2010-07-15', 'Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person\'s idea into a target\'s subconscious.', '/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg', '/s2bT29y0ngXxxu2IA8AOzzXTRhd.jpg', 'xitHF0IPJSQ', '', '2018-11-16 22:21:26', '2018-11-16 22:21:26', 'movie'),
+(209, 19, 'The Aviator', 2567, '2004-12-17', 'A biopic depicting the life of filmmaker and aviation pioneer Howard Hughes from 1927 to 1947, during which time he became a successful film producer and an aviation magnate, while simultaneously growing more unstable due to severe obsessive-compulsive disorder.', '/3MKBQgIHI5DPVNvryiTesskS5mf.jpg', '/uYusKBIK023fGZm5QycSpcfYbR4.jpg', 'FebPJlmgldE', '', '2018-11-16 22:21:37', '2018-11-16 22:21:37', 'movie'),
+(210, 19, 'The Wolf of Wall Street', 106646, '2013-12-25', 'A New York stockbroker refuses to cooperate in a large securities fraud case involving corruption on Wall Street, corporate banking world and mob infiltration. Based on Jordan Belfort\'s autobiography.', '/vK1o5rZGqxyovfIhZyMELhk03wO.jpg', '/rP36Rx5RQh0rmH2ynEIaG8DxbV2.jpg', 'FzehIddnaWU', '', '2018-11-16 22:21:50', '2018-11-16 22:21:50', 'movie'),
+(211, 19, 'Catch Me If You Can', 640, '2002-12-25', 'A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.', '/MywWCQGJNUr5kivAQ7eseCG7rm.jpg', '/ei0BdAPDALPp21OEZqknG43WOmO.jpg', '71rDQ7z4eFg', '', '2018-11-16 22:22:06', '2018-11-16 22:22:06', 'movie'),
+(212, 19, 'Django Unchained', 68718, '2012-12-25', 'With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner.', '/5WJnxuw41sddupf8cwOxYftuvJG.jpg', '/qUcmEqnzIwlwZxSyTf3WliSfAjJ.jpg', 'nwlcUsTq4TM', '', '2018-11-16 22:22:35', '2018-11-16 22:22:35', 'movie'),
+(213, 19, 'Gangs of New York', 3131, '2002-12-14', 'It\'s 1863. America was born in the streets. Amsterdam Vallon returns to the Five Points of America to seek vengeance against the psychotic gangland kingpin, Bill the Butcher, who murdered his father years earlier. With an eager pickpocket by his side and a whole new army, Vallon fights his way to seek vengeance on the Butcher and restore peace in the area.', '/ytKo2tLvKUd9Kbs0poXSQh6ft7d.jpg', '/a2Aj5ksEo2HOUH3FbGyZCtaJM4C.jpg', 'x5YmI2PW9R8', '', '2018-11-16 22:22:55', '2018-11-16 22:22:55', 'movie'),
+(214, 19, 'Blood Diamond', 1372, '2006-12-07', 'An ex-mercenary turned smuggler. A Mende fisherman. Amid the explosive civil war overtaking 1999 Sierra Leone, these men join for two desperate missions: recovering a rare pink diamond of immense value and rescuing the fisherman\'s son conscripted as a child soldier into the brutal rebel forces ripping a swath of torture and bloodshed countrywide.', '/wRamTzV6udKaMXrspxqOuo02zk0.jpg', '/46y6EvnDveRFwtztyHVS0y2DipU.jpg', 'YG_a8lw512A', '', '2018-11-16 22:23:05', '2018-11-16 22:23:05', 'movie'),
+(215, 19, 'The Man in the Iron Mask', 9313, '1998-03-12', 'Years have passed since the Three Musketeers, Aramis, Athos and Porthos, have fought together with their friend, D\'Artagnan. But with the tyrannical King Louis using his power to wreak havoc in the kingdom while his twin brother, Philippe, remains imprisoned, the Musketeers reunite to abduct Louis and replace him with Philippe.', '/mNbLk9qdBMnzBFWBrjy3Nuw9Ovi.jpg', '/c8znzyczeHuSe2xP0HyQ0sLUsDD.jpg', 'yAEQafvL6nQ', '', '2018-11-16 22:23:53', '2018-11-16 22:23:53', 'movie'),
+(216, 19, 'The Basketball Diaries', 10474, '1995-04-21', 'Film adaptation of street tough Jim Carroll\'s epistle about his kaleidoscopic free fall into the harrowing world of drug addiction.', '/8BkedYL5LdpkyHc7JtuohMr8a9N.jpg', '/k66qUqJM7H2AXr7Iz94J3mQXigy.jpg', 'W5eVnwe6Pxs', '', '2018-11-16 22:24:13', '2018-11-16 22:24:13', 'movie'),
+(217, 19, 'What\'s Eating Gilbert Grape', 1587, '1993-12-17', 'Gilbert has to care for his brother Arnie and his obese mother, which gets in the way when love walks into his life.', '/jQLoOPwNxyILwDbdhn9DsfQz0Sg.jpg', '/8VyW7cJxsdnIfptbPjGCIX1StUe.jpg', 'wpSGFets1oM', '', '2018-11-16 22:24:22', '2018-11-16 22:24:22', 'movie'),
+(218, 19, 'The Departed', 1422, '2006-10-05', 'To take down South Boston\'s Irish Mafia, the police send in one of their own to infiltrate the underworld, not realizing the syndicate has done likewise. While an undercover cop curries favor with the mob kingpin, a career criminal rises through the police ranks. But both sides soon discover there\'s a mole among them.', '/tGLO9zw5ZtCeyyEWgbYGgsFxC6i.jpg', '/8Od5zV7Q7zNOX0y9tyNgpTmoiGA.jpg', 'iojhqm0JTW4', '', '2018-11-16 22:25:04', '2018-11-16 22:25:04', 'movie'),
+(219, 19, 'Titanic', 597, '1997-11-18', '84 years later, a 101-year-old woman named Rose DeWitt Bukater tells the story to her granddaughter Lizzy Calvert, Brock Lovett, Lewis Bodine, Bobby Buell and Anatoly Mikailavich on the Keldysh about her life set in April 10th 1912, on a ship called Titanic when young Rose boards the departing ship with the upper-class passengers and her mother, Ruth DeWitt Bukater, and her fiancé, Caledon Hockley. Meanwhile, a drifter and artist named Jack Dawson and his best friend Fabrizio De Rossi win third-class tickets to the ship in a game. And she explains the whole story from departure until the death of Titanic on its first and last voyage April 15th, 1912 at 2:20 in the morning.', '/kHXEpyfl6zqn8a6YuozZUujufXf.jpg', '/vFUI5obFtx4IdhP6k8Om5ezHTrk.jpg', 'CHekzSiZjrY', '', '2018-11-16 22:25:31', '2018-11-16 22:25:31', 'movie'),
+(220, 20, 'The Equalizer', 156022, '2014-09-24', 'McCall believes he has put his mysterious past behind him and dedicated himself to beginning a new, quiet life. But when he meets Teri, a young girl under the control of ultra-violent Russian gangsters, he can’t stand idly by – he has to help her. Armed with hidden skills that allow him to serve vengeance against anyone who would brutalize the helpless, McCall comes out of his self-imposed retirement and finds his desire for justice reawakened. If someone has a problem, if the odds are stacked against them, if they have nowhere else to turn, McCall will help. He is The Equalizer.', '/2eQfjqlvPAxd9aLDs8DvsKLnfed.jpg', '/hEJ52KqwOmyRpcihs10h7xOwN7e.jpg', 'qNggvk8QtaY', '', '2018-11-18 18:01:28', '2018-11-18 18:01:28', 'movie'),
+(221, 20, 'The Equalizer 2', 345887, '2018-07-19', 'Robert McCall, who serves an unflinching justice for the exploited and oppressed, embarks on a relentless, globe-trotting quest for vengeance when a long-time girl friend is murdered.', '/cQvc9N6JiMVKqol3wcYrGshsIdZ.jpg', '/z7noaCJ4KtmhwHw7QcNtnMMo4Qy.jpg', 'HyNJ3UrGk_I', '', '2018-11-18 18:01:41', '2018-11-18 18:01:41', 'movie'),
+(222, 20, 'Man on Fire', 9509, '2004-04-23', 'Jaded ex-CIA operative John Creasy reluctantly accepts a job as the bodyguard for a 10-year-old girl in Mexico City. They clash at first, but eventually bond, and when she\'s kidnapped he\'s consumed by fury and will stop at nothing to save her life.', '/qAbRLPe8T7ehKzr1Tgo78T7ASrS.jpg', '/2cBmeSLCyLqkn6YIERKdRUToqsa.jpg', 'eDDh50B6kA4', '', '2018-11-18 18:01:54', '2018-11-18 18:01:54', 'movie'),
+(223, 20, 'The Book of Eli', 20504, '2010-01-11', 'A post-apocalyptic tale, in which a lone man fights his way across America in order to protect a sacred book that holds the secrets to saving humankind.', '/qL3FnEug9DyBcaBXVb0oT3DJMJu.jpg', '/yT91We6RqDDfM4q7RX1QTHaq5q4.jpg', 'yAQcwKY0Dik', '', '2018-11-18 18:02:10', '2018-11-18 18:02:10', 'movie'),
+(224, 20, 'Flight', 87502, '2012-11-02', 'Commercial airline pilot Whip Whitaker has a problem with drugs and alcohol, though so far he\'s managed to complete his flights safely. His luck runs out when a disastrous mechanical malfunction sends his plane hurtling toward the ground. Whip pulls off a miraculous crash-landing that results in only six lives lost. Shaken to the core, Whip vows to get sober -- but when the crash investigation exposes his addiction, he finds himself in an even worse situation.', '/8XEbkjgorAm9xk15mF63jqJ4ByV.jpg', '/yogIqTNfrDIybDQTGPDawi409PD.jpg', 'WmjawuFvDu4', '', '2018-11-18 18:03:19', '2018-11-18 18:03:19', 'movie'),
+(225, 20, 'The Bone Collector', 9481, '1999-11-04', 'Rookie cop, Amelia Donaghy reluctantly teams with Lincoln Rhyme – formerly the department\'s top homicide detective but now paralyzed as a result of a spinal injury – to catch a grisly serial killer dubbed \'The Bone Collector\'. The murderer\'s special signature is to leave tantalizing clues based on the grim remains of his crimes.', '/dCTuPRukbDs3mOSx9SD0PCMRd2g.jpg', '/7pMLwK6AFO5BSBzeKTXmiPodUrp.jpg', 'w4z4Xsp-bos', '', '2018-11-18 18:03:30', '2018-11-18 18:03:30', 'movie'),
+(226, 20, 'Philadelphia', 9800, '1993-12-22', 'Two competing lawyers join forces to sue a prestigious law firm for AIDS discrimination. As their unlikely friendship develops their courage overcomes the prejudice and corruption of their powerful adversaries.', '/4Y4cwVV6qd6fwhlVfRHUXELEbpr.jpg', '/m386hpJuXyaNjbEBbM25di7nQPM.jpg', 'cl4B9AU45P4', '', '2018-11-18 18:03:51', '2018-11-18 18:03:51', 'movie'),
+(227, 20, 'Training Day', 2034, '2001-10-05', 'On his first day on the job as a narcotics officer, a rookie cop works with a rogue detective who isn\'t what he appears.', '/sDT2biSB7wzBJdXq9o3ldr7VfvY.jpg', '/A1S9fBzc4Wepc6onnCd9eVR2FLp.jpg', 'gKTVQPOH8ZA', '', '2018-11-18 18:05:39', '2018-11-18 18:05:39', 'movie'),
+(228, 20, 'Remember the Titans', 10637, '2000-09-29', 'After leading his football team to 15 winning seasons, coach Bill Yoast is demoted and replaced by Herman Boone – tough, opinionated and as different from the beloved Yoast as he could be. The two men learn to overcome their differences and turn a group of hostile young men into champions.', '/iI12IRzif2VjTkQJRDQw3WyWKdS.jpg', '/2c5rkSPvdLfB0uzuHUtJiZ1sIC8.jpg', 'nPhu9XsRl4M', '', '2018-11-18 18:07:07', '2018-11-18 18:07:07', 'movie'),
+(229, 20, 'John Q', 8470, '2002-02-15', 'John Quincy Archibald is a father and husband whose son is diagnosed with an enlarged heart and then finds out he cannot receive a transplant because HMO insurance will not cover it. Therefore, he decides to take a hospital full of patients hostage until the hospital puts his son\'s name on the donor\'s list.', '/4jX2XxZbpMy2rGSigoIaFAbhOez.jpg', '/yU5KUTk653SgITAIVxBS6WEyTQx.jpg', '-yE7XSLJVWM', '', '2018-11-18 18:07:45', '2018-11-18 18:07:45', 'movie'),
+(230, 20, 'The Hurricane', 10400, '1999-09-17', 'The story of Rubin \"Hurricane\" Carter, a boxer wrongly imprisoned for murder, and the people who aided in his fight to prove his innocence.', '/6SoTMHbcZ6XItPiEfIe1WzeET3c.jpg', '/i8AGAKxZL5aXnDcXVOZK5JkkDhn.jpg', 'tsmszHWnO3k', '', '2018-11-18 18:08:45', '2018-11-18 18:08:45', 'movie'),
+(231, 20, 'Unstoppable', 44048, '2010-11-04', 'A runaway train, transporting deadly, toxic chemicals, is barreling down on Stanton, Pennsylvania, and only two men can stop it: a veteran engineer and a young conductor. Thousands of lives hang in the balance as these ordinary heroes attempt to chase down one million tons of hurtling steel and prevent an epic disaster.', '/b2uI9tSssC4D7vCgdES6IZJXuCs.jpg', '/pddDWflAgEUex06MOjfRmAl9ZWq.jpg', 'JM-0Ywc7wNY', '', '2018-11-18 18:10:08', '2018-11-18 18:10:08', 'movie'),
+(232, 20, 'Glory', 9665, '1989-12-15', 'Robert Gould Shaw leads the US Civil War\'s first all-black volunteer company, fighting prejudices of both his own Union army and the Confederates.', '/6pDBbYmR9iqg3IF8lgyY9pWFiqT.jpg', '/sqnYSuxXa0noQmz0VC6kNIBYIyj.jpg', '0hVrYRqeT5M', '', '2018-11-18 18:12:04', '2018-11-18 18:12:04', 'movie'),
+(233, 20, 'A Soldier\'s Story', 26522, '1984-09-14', 'In the towm of Tynen, Louisiana, a black Master Sergeant is found shot to death just outside the local Army Base. A military lawyer, also a black man, is sent from Washington to conduct an investigation. Facing an uncooperative chain of command and fearful black troops, Captain Davenport must battle with deceipt and prejudice in order to find out exactly who really did kill Sergeant Waters.', '/x7aHIC6TguRhwAI0k7OPLhI86lW.jpg', '/jbfU9W10YXx0elibqNfH0iOTmmK.jpg', 'pwrR_zIVFa8', '', '2018-11-18 18:12:40', '2018-11-18 18:12:40', 'movie'),
+(234, 21, 'Riphagen The Untouchable', 400387, '2016-09-22', 'The true story about the biggest warcriminal from Holland during world war II, Andries \"Al Capone\" Riphagen.', '/i8VKy2dhezT9V8IDUIbeGtlUaVV.jpg', '/weaVoeok7SMSob9RCmFQnNaRQ6s.jpg', '', '', '2018-11-19 10:57:27', '2018-11-19 11:31:13', 'movie'),
+(235, 21, 'A Bag of Marbles', 398924, '2017-01-18', 'In occupied France, Maurice and Joseph, two young Jewish brothers left to their own devices demonstrate an incredible amount of cleverness, courage, and ingenuity to escape the enemy invasion and to try to reunite their family once again.', '/57C8wLEoeJ9vVqZarsfx54YEWxS.jpg', '/tPjbpTt4S1q7uTSXWscHq7gmd2u.jpg', 'vIPluU4V03o', '', '2018-11-19 10:58:57', '2018-11-19 11:31:03', 'movie'),
+(236, 21, 'Enemy at the Gates', 853, '2001-03-14', 'Enemy at the Gates is a war film from Jean-Jacques Annaud from 2001 that takes place during the battle of Stalingard in World War II between the Russians and the Germans.', '/9cSoNnB31hGY2mL78VT8mAbz6nR.jpg', '/hHYp1YdJIu75Zr8F5IeQatlrex1.jpg', 'xqwlIaOyBSA', '', '2018-11-19 10:59:38', '2018-11-19 10:59:38', 'movie'),
+(237, 21, 'Dunkirk', 374720, '2017-07-19', 'The story of the miraculous evacuation of Allied soldiers from Belgium, Britain, Canada and France, who were cut off and surrounded by the German army from the beaches and harbour of Dunkirk between May 26th and June 4th 1940 during World War II.', '/ebSnODDg9lbsMIaWg2uAbjn7TO5.jpg', '/fudEG1VUWuOqleXv6NwCExK0VLy.jpg', 'F-eMt3SrfFU', '', '2018-11-19 11:00:59', '2018-11-19 11:00:59', 'movie'),
+(238, 21, 'Allied', 369885, '2016-11-17', 'In 1942, an intelligence officer in North Africa encounters a female French Resistance fighter on a deadly mission behind enemy lines. When they reunite in London, their relationship is tested by the pressures of war.', '/nzXzLFTnd0Zb3ExfhOxlQgizgSu.jpg', '/tC0tVH5KQhCwMlddnyA3iWOSuBA.jpg', '0f1_fbdB6RQ', '', '2018-11-19 11:03:08', '2018-11-19 11:03:08', 'movie'),
+(239, 21, 'The Pianist', 423, '2002-09-24', 'The true story of pianist Wladyslaw Szpilman\'s experiences in Warsaw during the Nazi occupation. When the Jews of the city find themselves forced into a ghetto, Szpilman finds work playing in a café; and when his family is deported in 1942, he stays behind, works for a while as a laborer, and eventually goes into hiding in the ruins of the war-torn city.', '/iunmxWkOi7Vk17Ob3G2HwwjgHsr.jpg', '/xUR95VFV1UTyzS1C8Lj06hi2n2M.jpg', 'u_jE7-6Uv7E', '', '2018-11-19 11:03:22', '2018-11-19 11:03:22', 'movie'),
+(240, 21, 'Schindler\'s List', 424, '1993-12-15', 'The true story of how businessman Oskar Schindler saved over a thousand Jewish lives from the Nazis while they worked as slaves in his factory during World War II.', '/yPisjyLweCl1tbgwgtzBCNCBle.jpg', '/cTNYRUTXkBgPH3wP3kmPUB5U6dA.jpg', 'bJcLRFWxRno', '', '2018-11-19 11:03:39', '2018-11-19 11:03:39', 'movie'),
+(241, 21, 'Downfall', 613, '2004-09-08', 'In April of 1945, Germany stands at the brink of defeat with the Russian Army closing in from the east and the Allied Expeditionary Force attacking from the west. In Berlin, capital of the Third Reich, Adolf Hitler proclaims that Germany will still achieve victory and orders his generals and advisers to fight to the last man. When the end finally does come, and Hitler lies dead by his own hand, what is left of his military must find a way to end the killing that is the Battle of Berlin, and lay down their arms in surrender.', '/2QmpblYvUThzBQ4ArdT1Kp43DZi.jpg', '/d3AmCJXvsP818di5KcCj4fNi36.jpg', 'Bp1RXmM1-60', '', '2018-11-19 11:04:36', '2018-11-19 11:04:36', 'movie'),
+(242, 21, 'Flags of Our Fathers', 3683, '2006-10-18', 'There were five Marines and one Navy Corpsman photographed raising the U.S. flag on Mt. Suribachi by Joe Rosenthal on February 23, 1945. This is the story of three of the six surviving servicemen – John \'Doc\' Bradley, Pvt. Rene Gagnon and Pvt. Ira Hayes, who fought in the battle to take Iwo Jima from the Japanese.', '/4tbKYa8vZSsTCHKca9D6rS4NJ08.jpg', '/Zl6NIsHLunLAOS4sMoKQwSPDiI.jpg', 'uKuym66LIr4', '', '2018-11-19 11:05:08', '2018-11-19 11:05:08', 'movie'),
+(243, 21, 'Hacksaw Ridge', 324786, '2016-10-07', 'WWII American Army Medic Desmond T. Doss, who served during the Battle of Okinawa, refuses to kill people and becomes the first Conscientious Objector in American history to receive the Congressional Medal of Honor.', '/bndiUFfJxNd2fYx8XO610L9a07m.jpg', '/zBK4QZONMQXhcgaJv1YYTdCW7q9.jpg', 's2-1hz1juBI', '', '2018-11-19 11:06:05', '2018-11-19 11:06:05', 'movie'),
+(244, 21, 'Stalingrad', 11101, '1993-01-21', '\"Stalingrad\" follows the progress of a German Platoon through the brutal fighting of the Battle of Stalingrad. After having half their number wiped out and after being placed under the command of a sadistic Captain, the Lieutenant of the platoon leads his men to desert. The men of the platoon attempt to escape from the city which is now surrounded by the Soviet Army.', '/hmk6RDLpScF7lpHYRuJvwRSug18.jpg', '/aR7CYaB6h6rioF9SdBOsU4jDr7G.jpg', '3usU25Z9ICE', '', '2018-11-19 11:06:59', '2018-11-19 11:06:59', 'movie'),
+(245, 21, 'Valkyrie', 2253, '2008-12-25', 'Wounded in Africa during World War II, Nazi Col. Claus von Stauffenberg returns to his native Germany and joins the Resistance in a daring plan to create a shadow government and assassinate Adolf Hitler. When events unfold so that he becomes a central player, he finds himself tasked with both leading the coup and personally killing the Führer.', '/54GgkO63zZyJJb5Fk2CKvNIoUvr.jpg', '/ptNcTh2bewqzcV2qVpjDgsh6pTs.jpg', 'FHtCaVtryiE', '', '2018-11-19 11:23:42', '2018-11-19 11:23:42', 'movie'),
+(246, 21, 'The Zookeeper\'s Wife', 289222, '2017-03-31', 'The account of keepers of the Warsaw Zoo, Jan and Antonina Zabinski, who helped save hundreds of people and animals during the Nazi invasion.', '/50KGpMiIvSkF4WHOgp0gM6r6sMU.jpg', '/rE6W3KHdIuTdgRDLOOOMR3gfGgc.jpg', 'rJNFeHHGGN4', '', '2018-11-19 11:24:24', '2018-11-19 11:24:24', 'movie'),
+(247, 21, 'USS Indianapolis: Men of Courage', 340945, '2016-09-22', 'The harrowing true story of the crew of the USS Indianapolis, who were stranded in the Philippine Sea for five days after delivering the atomic weapons that would eventually end WWII. As they awaited rescue, they endured extreme thirst, hunger, and relentless shark attacks.', '/kLzOqLE3JyarkaRrtlDBLt8Orlx.jpg', '/g3vLSV74I8X9RVdd9rZpfTPTCp8.jpg', 'F7ebO2n8A6w', '', '2018-11-19 11:27:25', '2018-11-19 11:27:25', 'movie'),
+(248, 22, 'The Sinner', 39852, '2017-08-02', 'A young mother kills in a fit of unexplainable rage a seemingly stranger. An inquisitive detective obsesses over the case, attempting to get to the bottom of the true motive behind the act.', '/oxFlfbCuDmgIDEsi0JRfaGeKgQ7.jpg', '/cvGZ42YsWHcdIa3rXGuoMqU2xSw.jpg', 'ZEfnpFuzxnE', '<p>I love the atmosphere of this tv show. Amazing performance by Bill Pullman.</p>', '2018-11-21 09:24:25', '2018-11-21 09:24:25', 'tv'),
+(249, 22, 'Atypical', 71578, '2017-08-11', 'Sam, an 18-year-old on the autism spectrum, takes a funny, yet painful, journey of self-discovery for love and independence and upends his family.', '/kNif3eZAjQ7qU3Ol9E7zo0kjPMo.jpg', '/dRPYFF5vVbg2JxYiUO0da9wHZGO.jpg', 'ieHh4U-QYwU', '<p>This one is a very interesting drama.</p>', '2018-11-21 09:25:30', '2018-11-23 13:57:28', 'tv'),
+(250, 22, 'Marvel\'s Daredevil', 61889, '2015-04-10', 'Lawyer-by-day Matt Murdock uses his heightened senses from being blinded as a young boy to fight crime at night on the streets of Hell’s Kitchen as Daredevil.', '/wVadC1BT2w3hDh5Vq0J0LFFTrLP.jpg', '/dpNeXLEnuKzAvbNwveJhNEiQvXZ.jpg', 'jAy6NJ_D5vU', '<p>If you enjoy comics and superhero movies, Daredevil is a must watch.</p>', '2018-11-21 09:27:02', '2018-11-21 09:27:02', 'tv'),
+(251, 22, 'The Haunting of Hill House', 72844, '2018-10-12', 'The Crains, a fractured family, confront haunting memories of their old home and the terrifying events that drove them from it.', '/38PkhBGRQtmVx2drvPik3F42qHO.jpg', '/dQF17lG4OZ3pC4QD9iNjaMS96gO.jpg', 'G9OzG53VwIk', '<p>I love this kind of horror, if you like this genre, definitely worth watch.</p>', '2018-11-21 09:28:52', '2018-11-21 09:28:52', 'tv'),
+(252, 22, 'Manhunt: Unabomber', 72597, '2017-08-01', 'Follow Jim Fitzgerald, the FBI agent who tracked down Ted Kaczynksi, aka the “Unabomber,” and brought him to justice through his expertise in profiling and linguistics.', '/gmSOPIOenH39XHEdtfPwgi2lWNj.jpg', '/z2ZmYbhk0McewduBFtCqkmcZoqT.jpg', 'GF8RLY-3wJk', '<p>Manhunt is based on true events. Great script, is just incredible.</p>', '2018-11-21 09:31:25', '2018-11-21 09:37:08', 'tv'),
+(253, 22, 'Big Mouth', 74204, '2017-09-29', 'Teenage friends find their lives upended by the wonders and horrors of puberty in this edgy comedy from real-life pals Nick Kroll and Andrew Goldberg.', '/1Zio9w1tAd3r5Gu4d9AzTSx2hnT.jpg', '/4xc75eFi1uDHZ1WtKN4BW9jPpsn.jpg', 'oTC7wQMHHEA', '<p>This cartoon is hilarious. Also, isn\'t for kids, proceed with caution... lol :).</p>', '2018-11-21 09:33:30', '2018-11-22 23:34:20', 'tv'),
+(254, 22, 'Ozark', 69740, '2017-07-21', 'A financial adviser drags his family from Chicago to the Missouri Ozarks, where he must launder $500 million in five years to appease a drug boss.', '/pCGyPVrI9Fzw6rE1Pvi4BIXF6ET.jpg', '/eLluMqJUIBRo0M5AP6ckLcSyeSb.jpg', '5hAXVqrljbs', '<p>If you liked Narcos, you will certainly like Ozark. Incredible script about money laundering.</p>', '2018-11-21 09:35:57', '2018-11-21 09:35:57', 'tv'),
+(255, 22, 'Mindhunter', 67744, '2017-10-13', 'An agent in the FBI\'s Elite Serial Crime Unit develops profiling techniques as he pursues notorious serial killers and rapists.', '/r7RIwuceOaDP4KTmU1EFeDniRq4.jpg', '/a906PH7CDmSOdS7kmnAgdWk5mhv.jpg', '407GVB88b60', '<p>This one is about the beginning of the comprehension around the serial killer mind. Very interesting.</p>', '2018-11-21 09:39:40', '2018-11-21 09:39:40', 'tv'),
+(256, 22, 'Stranger Things', 66732, '2016-07-15', 'When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.', '/lXS60geme1LlEob5Wgvj3KilClA.jpg', '/56v2KjBlU4XaOv9rVYEQypROD7P.jpg', 'XWxyRG_tckY', '<p>In Stranger Things everything is so nostalgic, if you born in 80\'s definitely gonna like it.</p>', '2018-11-21 09:42:55', '2018-11-21 09:42:55', 'tv'),
+(257, 22, '13 Reasons Why', 66788, '2017-03-31', 'After a teenage girl\'s perplexing suicide, a classmate receives a series of tapes that unravel the mystery of her tragic choice.', '/gpULvrgvq1Qidu8EpWevrRUfVhw.jpg', '/sZb21d6EWKAEKZ9GrLQeMwX4cWN.jpg', '3zeeVE6-aZ4', '<p>13 reasons why is about a delicate matter. I really liked.</p>', '2018-11-21 09:50:01', '2018-11-21 09:50:01', 'tv'),
+(258, 23, 'Incredibles 2', 260513, '2018-06-14', 'Elastigirl springs into action to save the day, while Mr. Incredible faces his greatest challenge yet – taking care of the problems of his three children.', '/x1txcDXkcM65gl7w20PwYSxAYah.jpg', '/mabuNsGJgRuCTuGqjFkWe1xdu19.jpg', 'ZJDMWVZta3M', '', '2018-11-22 16:50:37', '2018-11-22 16:50:37', 'movie'),
+(259, 23, 'Sherlock Gnomes', 370567, '2018-03-15', 'Garden gnomes, Gnomeo & Juliet, recruit renown detective, Sherlock Gnomes, to investigate the mysterious disappearance of other garden ornaments.', '/wqnzpJR3PwS4doVkAkt9seSEpoX.jpg', '/a8yYZd7vECN3myX8dJiXOlN2bgf.jpg', 'UtbiOl506ms', '', '2018-11-22 16:50:57', '2018-11-22 16:50:57', 'movie'),
+(260, 23, 'Peter Rabbit', 381719, '2018-02-07', 'Peter Rabbit\'s feud with Mr. McGregor escalates to greater heights than ever before as they rival for the affections of the warm-hearted animal lover who lives next door.', '/2yjSvEDuM3rLDng40erLsWkQRfn.jpg', '/e9dVo1OXZL6sWinc9uIS0Foo4QG.jpg', '7Pa_Weidt08', '', '2018-11-22 16:51:16', '2018-11-22 16:51:16', 'movie'),
+(261, 23, 'Ralph Breaks the Internet', 404368, '2018-11-20', 'Taking place six years following the events of the first film, the story will center on Ralph\'s adventures in the Internet data space when a Wi-Fi router gets plugged into the arcade as he must find a replacement part to fix Sugar Rush.', '/m110vLaDDOCca4hfOcS5mK5cDke.jpg', '/ivhK1NjnFji6lD5dkAThSzd3Mgq.jpg', '_BcYBFC6zfY', '', '2018-11-22 16:51:39', '2018-11-22 16:51:39', 'movie'),
+(262, 23, 'Isle of Dogs', 399174, '2018-03-23', 'In the future, an outbreak of canine flu leads the mayor of a Japanese city to banish all dogs to an island that\'s a garbage dump. The outcasts must soon embark on an epic journey when a 12-year-old boy arrives on the island to find his beloved pet.', '/rSluCePdXXtNiQeE6Na5yRGamhL.jpg', '/5YtXsLG9ncjjFyGZjoeV31CGf01.jpg', 'dt__kig8PVU', '', '2018-11-22 16:51:58', '2018-11-22 16:51:58', 'movie'),
+(263, 23, 'Early Man', 387592, '2018-01-26', 'Dug, along with his sidekick Hognob, unite a cavemen tribe to save their hidden valley from being spoiled and, all together as a team, to face the menace of a mysterious and mighty enemy, on the turf of an ancient and sacred sport.', '/hXukFwTKOe7izDsf3ZOdeYikRxF.jpg', '/9m71RMP45mg599xtKPyjicyHn1a.jpg', 'GC5FIWUFfUY', '', '2018-11-22 16:52:09', '2018-11-22 16:52:09', 'movie'),
+(264, 23, 'Smallfoot', 446894, '2018-09-20', 'A bright young yeti finds something he thought didn\'t exist—a human. News of this “smallfoot” throws the simple yeti community into an uproar over what else might be out there in the big world beyond their snowy village.', '/4nKoB6wMVXfsYgRZK5lHZ5VMQ6J.jpg', '/7t88SoT3Dd8DhGnQuVoSbMNUl3W.jpg', '34cHO5_LX9g', '', '2018-11-22 16:52:27', '2018-11-22 16:52:27', 'movie'),
+(265, 23, 'The Grinch', 360920, '2018-11-08', 'The Grinch hatches a scheme to ruin Christmas when the residents of Whoville plan their annual holiday celebration.', '/rWQVj6Z8kPdsbt7XPjVBCltxq90.jpg', '/zRDkmww7Bu11wiz2g86RxSreiY4.jpg', '2mNMvz85NG8', '', '2018-11-22 16:52:49', '2018-11-22 16:52:49', 'movie'),
+(266, 23, 'Hotel Transylvania 3: Summer Vacation', 400155, '2018-06-28', 'Dracula, Mavis, Johnny and the rest of the Drac Pack take a vacation on a luxury Monster Cruise Ship, where Dracula falls in love with the ship’s captain, Ericka, who’s secretly a descendant of Abraham Van Helsing, the notorious monster slayer.', '/gjAFM4xhA5vyLxxKMz38ujlUfDL.jpg', '/m03jul0YdVEOFXEQVUv6pOVQYGL.jpg', 'Ku52zNnft8k', '', '2018-11-22 16:53:00', '2018-11-22 16:53:00', 'movie'),
+(268, 23, 'Spider-Man: Into the Spider-Verse', 324857, '2018-12-07', 'Miles Morales is juggling his life between being a high school student and being Spider-Man. However, when Wilson \"Kingpin\" Fisk uses a super collider, another Spider-Man from another dimension, Peter Parker, accidentally winds up in Miles\' dimension. As Peter trains Miles to become a better Spider-Man, they are soon joined by four other Spider-Men from across the \"Spider-Verse\". As all these clashing dimensions start to tear Brooklyn apart, Miles must help the others stop Fisk and return everyone to their own dimensions.', '/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg', '/9Gdb6tz1yTXvmP7p4gJjD6Aq848.jpg', 'g4Hbz2jLxvQ', '', '2018-11-22 22:34:14', '2018-11-22 22:34:14', 'movie'),
+(269, 24, 'Ladder 49', 11128, '2004-10-01', 'Under the watchful eye of his mentor, Captain Mike Kennedy, probationary firefighter Jack Morrison matures into a seasoned veteran at a Baltimore fire station. However, Jack has reached a crossroads  as the sacrifices he\'s made have put him in harm\'s way innumerable times and significantly impacted his relationship with his wife and kids.', '/opgPMSdkXsTOB5W169VlivKyaZQ.jpg', '/zWGxpPFVvnhwKgrqVzflZOdjdkr.jpg', 'jpU7gzT6CdM', '', '2018-11-25 10:24:28', '2018-11-25 10:24:28', 'movie'),
+(270, 24, 'Crash Landing: The Rescue of Flight 232', 127361, '1992-02-24', 'Authentic drama of United Airlines flight 232 from Denver to Chicago. The DC-10 crashed during an emergency landing at Sioux City Gateway Airport on July 19, 1989. 184 people survived, partly thanks to the ground rescue workers who had 40 minutes to prepare for the event', '/kXhiErtLrL9u8CAxvjrtRuaPbcz.jpg', '/fIBhxjKw4mFAAP5QokNxX1kT9Oj.jpg', '', '', '2018-11-25 10:26:04', '2018-11-25 10:26:04', 'movie'),
+(271, 24, 'Backdraft', 2924, '1991-05-24', 'They say a blast of flames can take a life ... and hide a secret. But now firemen brothers Brian and Stephen McCaffrey are battling each other over past slights while trying to stop an arsonist with a diabolical agenda from torching Chicago.', '/3E2puQrspfkGC6XuxGdB9ghXPtY.jpg', '/iosYFI66bhoB5uC27qvIejrEvJu.jpg', 'DlXcUyFjNgA', '', '2018-11-25 10:26:31', '2018-11-25 10:26:31', 'movie'),
+(272, 24, 'Hellfighters', 32726, '1968-11-27', 'The adventures of oil well fire specialist Chance Buckman (based on real-life Red Adair), who extinguishes massive fires in oil fields around the world.', '/jlms997fM9PrG9YoD2p2UIORQYG.jpg', '/czSndRLgQZjTCupTgejnJ8x48Zs.jpg', '', '', '2018-11-25 10:26:48', '2018-11-25 10:26:48', 'movie'),
+(273, 24, 'Only the Brave', 395991, '2017-09-22', 'Members of the Granite Mountain Hotshots battle deadly wildfires to save an Arizona town.', '/rwJVB0muOMhkI5pTt9wwr4XCMBY.jpg', '/8wI0M7HDHhDsoxMCkcAVUx7O6DX.jpg', 'DSHk_BHQxp0', '', '2018-11-25 10:27:15', '2018-11-25 10:27:15', 'movie'),
+(274, 24, 'The Towering Inferno', 5919, '1974-12-14', 'At the opening party of a colossal—but poorly constructed—office building, a massive fire breaks out, threatening to destroy the tower and everyone in it.', '/atGCmFz8L5KmmVmP4kFcrS1vCyd.jpg', '/jHYj6T5OHhMIgEy0gPm9IDv4vA4.jpg', 'zsRnQQpklPM', '', '2018-11-25 10:27:28', '2018-11-25 10:27:28', 'movie'),
+(275, 24, 'As the Light Goes Out', 247954, '2014-01-02', 'The bond of brotherhood is always stronger when you can be pitched into a life and death situation at any time and the only thing that gets you through the inferno is the trust that your brother will have your back. The firefighters of Hong Kong’s Pillar Point division who are expecting a quiet night to see off their retiring chief find their faith in each other stretched to the limits when a small fire at a liquor warehouse threatens to plunge the whole of Hong kong into darkness if it spreads to a nearby power plant supplying natural gas. Politics, rivalry, and suspicion all come into play when dubious decisions are made, warnings are ignored and colleagues start to fall. Can the Pillar Point brotherhood survive the night, if not the fire, with their trust in each other intact?', '/alGs2LXRrO3uBqh541fwLpuSa3D.jpg', '/c8vpZXQ0SN3j0eBmuKpXmn1MuhA.jpg', 'f6s2OfQKay8', '', '2018-11-25 10:28:51', '2018-11-25 10:28:51', 'movie'),
+(276, 24, 'The Tower', 154030, '2012-12-25', 'On Christmas Eve at Tower Sky, an ultra-luxurious building complex, a White Christmas party is held to dazzle its equally high-end tenants and VIP guests. Dae-ho, the manager of the building and single father, is forced to cancel plans with his daughter Hana to work the event. His Christmas is saved when Yoon-hee, the food mall manager with a secret crush on Dae-ho, offers to babysit Hana during the party. Meanwhile, Young-ki the legendary fire chief of Yoido Station has finally promised his first holiday date night to his long suffering wife. The party is in full swing with the spectacular sight of two helicopters flying overhead just to spray snow on the partygoers and make everything perfect. When unthinkable disaster strikes, Dae-ho and Young-ki must summon all their strength and courage to save the lives of thousands but at what cost to themselves and their loved ones?', '/c968ZIK5O2mECYwP6waZkQYMIft.jpg', '/7mYGrnsqbP0FVCmbEEWHK3zNVrr.jpg', 'rKwuzez_CuA', '', '2018-11-25 10:30:17', '2018-11-25 10:30:17', 'movie'),
+(277, 24, 'World Trade Center', 1852, '2006-08-09', 'On September, 11th 2001, after the terrorist attack to the World Trade Center, the building collapses over the rescue team from the Port Authority Police Department. Will Jimeno and his sergeant John McLoughlin are found alive trapped under the wreckage while the rescue teams fight to save them.', '/hYbKIxMGqm0YaxGBYW52NbkYNAx.jpg', '/wcyLZBgMlUXi4CQ8IVAO31rqNih.jpg', 'kU738srDJRY', '', '2018-11-25 10:30:37', '2018-11-25 10:30:37', 'movie'),
+(278, 24, 'Firestorm', 41417, '1998-01-08', 'Firefighter Jesse Graves has to save ornithologist Jennifer and other people caught in a forest fire, which was set up by the lawyer of convicted killer Earl Shaye, who escaped from the prison with several of his inmates posing as firefighters to recover $37,000,000 in stashed loot.', '/joAzHTg4xoz56zQ7AntfTYENuAD.jpg', '/7zuhxXoQhBBOjrXmyz2zrkgn7tG.jpg', 'cUGbdOQZm18', '', '2018-11-25 10:32:49', '2018-11-25 10:32:49', 'movie'),
+(279, 25, 'Ray', 1677, '2004-10-29', 'Born on a sharecropping plantation in Northern Florida, Ray Charles went blind at seven. Inspired by a fiercely independent mom who insisted he make his own way, He found his calling and his gift behind a piano keyboard. Touring across the Southern musical circuit, the soulful singer gained a reputation and then exploded with worldwide fame when he pioneered couping gospel and country together.', '/fPDsBL0MdegEvyPhim9b5srHOqG.jpg', '/lcVQocaLf4wf5Inmwj7TtrPRnPp.jpg', 'X1rJvSF3l6k', '', '2018-11-25 10:53:46', '2018-11-25 10:53:46', 'movie'),
+(280, 25, 'Evita', 8818, '1996-12-14', 'The hit musical based on the life of Evita Duarte, a B-movie Argentinian actress who eventually became the wife of Argentinian president and dictator Juan Perón, and the most beloved and hated woman in Argentina.', '/7uYGJTxaeCtek6afNLPCuYCyiV4.jpg', '/rbg7BXQJtJ1nSmbIiyoU7ODIsXf.jpg', 'RTf4sS3O6p8', '', '2018-11-25 10:54:25', '2018-11-25 10:54:25', 'movie'),
+(281, 25, 'Selena', 16052, '1997-03-21', 'In this biographical drama, Selena Quintanilla is born into a musical Mexican-American family in Texas. Her father, Abraham, realizes that his young daughter is talented and begins performing with her at small venues. She finds success and falls for her guitarist, Chris Perez, who draws the ire of her father. Seeking mainstream stardom, Selena begins recording an English-language album which, tragically, she would never complete.', '/bmaj1ATO4s0SeRCUMuQ40fm0ulH.jpg', '/pgrVE26f9pvOPWEUjFbQojDPGgi.jpg', '14gyU53hMJk', '', '2018-11-25 10:54:33', '2018-11-25 10:54:33', 'movie'),
+(282, 25, 'La Bamba', 16620, '1987-07-24', 'Biographical story of the rise from nowhere of singer Ritchie Valens whose life was cut short by a plane crash.', '/cjgXvTixDiUsQbfwrxoT1m0kr2E.jpg', '/pz5VnRmUeGO6jJ1WxEtZoUq3Qth.jpg', 'I7QX5SJ6q4I', '', '2018-11-25 10:54:46', '2018-11-25 10:54:46', 'movie'),
+(283, 25, 'Elis', 360139, '2016-11-24', 'The film tells the story of the energetic and pulsating singer Elis Regina since her arrival in Rio de Janeiro with 19 years until her tragic and early death. Despite all the difficulties, success comes fulminant and the life of Elis Regina gained national and international recognition. Young woman of humble origin becomes one of the biggest music artists and is undoubtedly considered today the greatest Brazilian singer of all time.', '/wOLuaWMkxntA9LY374cKcQEj2PW.jpg', '/rWp2HN2dCATRrLFV5t2KSc3XE7Y.jpg', '', '', '2018-11-25 10:54:57', '2018-11-25 10:54:57', 'movie'),
+(284, 25, 'We\'re So Young', 191034, '2013-05-03', 'The young Renato Russo has no time to lose: dreams of being a rock star. But it\'s still early. He needs to study, teach English, reassure parents, enjoy the class, heal pain of love and especially who pack touch your band. Abortion Electric to Keith Urban, \"We\'re So Young\" presents the first chords of myth Renato Russo and the class of the Rock Brasilia, creators of such hits as \"What Country Is This,\" \"Generation Coca-Cola\", \"Eduardo and Monica\" and many other songs that mark and become fans generation after generation, starting the path that will make the biggest band in the Rock and Brazil Renato Russo spokesman urban youth of the whole country.', '/bDAnBkJXa9CyDMZ8B9YsNCBdEYy.jpg', '/uPKnNFHONQcNYQuJ0u4qliRqG5R.jpg', '', '', '2018-11-25 10:55:12', '2018-11-25 10:55:12', 'movie'),
+(285, 25, 'Cazuza: Time Doesn\'t Stop', 59474, '2004-06-11', 'Inspired by the moving and brave book “Só as Mães São Felizes”, by Lucinha Araújo, Cazuza\'s mother, the film covers a little more than 10 years of the singer’s crazy and brief life – from the beginning of his career in the Circo Voador venue, in 1981, to the huge success and the apotheosis of his shows with the Barão Vermelho band, his solo career, his relations with his parents, friends, lovers and passions, and the courage he had to face his final years, with HIV, until his death, in 1990.', '/d7ausRHc90YOiUGUKQBD2RW3nx0.jpg', '/t4w11ehWCiu8x2noCC5A9cAvdoS.jpg', '', '', '2018-11-25 10:55:42', '2018-11-25 10:55:42', 'movie'),
+(286, 25, 'The Soloist', 17332, '2009-04-24', 'A Los Angeles journalist befriends a homeless Juilliard-trained musician, while looking for a new article for the paper.', '/ehxoDpnELNAJACoS9ENUuR0ffGY.jpg', '/rpNpe7fF2gmpe4up9Ao4rgDlOX.jpg', 'UOEV5feqVjo', '', '2018-11-25 10:55:55', '2018-11-25 10:55:55', 'movie'),
+(287, 25, 'La Vie en Rose', 1407, '2007-02-08', 'A swirling, impressionistic portrait of an artist who regretted nothing, writer-director Olivier Dahan\'s La Vie en Rose stars Marion Cotillard in a blazing performance as the legendary French icon Edith Piaf. From the mean streets of the Belleville district of Paris to the dazzling limelight of New York\'s most famous concert halls, Piaf\'s life was a constant battle to sing and survive, to live and love. Raised in her grandmother\'s brothel, Piaf was discovered in 1935 by nightclub owner Louis Leplee (Gerard Depardieu), who persuaded her to sing despite her extreme nervousness. Piaf became one of France\'s immortal icons, her voice one of the indelible signatures of the 20th Century.', '/xJMbQkNKt85ZSIh4HucDwENL8dq.jpg', '/qtNKkgb5mz2lETwhVUInK8KhMug.jpg', 'uzEJ7NV_g98', '', '2018-11-25 10:56:10', '2018-11-25 10:56:10', 'movie'),
+(288, 25, 'Amadeus', 279, '1984-10-26', 'The incredible story of genius musician Wolfgang Amadeus Mozart, told in flashback by his peer and secret rival, Antonio Salieri—now confined to an insane asylum.', '/flnoqdC38mbaulAeptjynOFO7yi.jpg', '/sHsPEij3nojL34xcnaLdnuKEfmH.jpg', '0F8_qdd8iho', '', '2018-11-25 10:56:21', '2018-11-25 10:56:21', 'movie'),
+(289, 25, 'Notorious', 14410, '2009-01-16', 'NOTORIOUS is the story of Christopher Wallace. Through raw talent and sheer determination, Wallace transforms himself from Brooklyn street hustler (once selling crack to pregnant women) to one of the greatest rappers of all time; THE NOTORIOUS B.I.G. Follow his meteoric rise to fame and his refusal to succumb to expectations - redefining our notion of \"The American Dream.\"', '/lfKALQovRf46vVC12Rnl0mSRPyu.jpg', '/xBug003nu97sBYaHzXox2PVR6Mw.jpg', 'kDDv6pAbN_U', '', '2018-11-25 10:56:39', '2018-11-25 10:56:39', 'movie'),
+(290, 25, 'Get Rich or Die Tryin\'', 10060, '2005-11-09', 'A tale of an inner city drug dealer who turns away from crime to pursue his passion, rap music.', '/wKeSnhQfdwrycHorc9OPQ5KxVxJ.jpg', '/pAHa892SfUcANURmhrx4SCkx3jR.jpg', 'HJL2hh3jtoE', '', '2018-11-25 10:56:54', '2018-11-25 10:56:54', 'movie'),
+(291, 25, 'Tupac: Resurrection', 21525, '2003-01-23', 'Home movies, photographs, and recited poetry illustrate the life of Tupac Shakur, one of the most beloved, revolutionary, and volatile hip-hop MCs of all time.', '/e8HGKa3xN35yVsBEHfvVS8ywiPb.jpg', '/1TunSAn9eEu2tNe1xZajRLP8zxI.jpg', '', '', '2018-11-25 10:57:07', '2018-11-25 10:57:07', 'movie'),
+(292, 25, '8 Mile', 65, '2002-11-08', 'The setting is Detroit in 1995. The city is divided by 8 Mile, a road that splits the town in half along racial lines. A young white rapper, Jimmy \"B-Rabbit\" Smith Jr. summons strength within himself to cross over these arbitrary boundaries to fulfill his dream of success in hip hop. With his pal Future and the three one third in place, all he has to do is not choke.', '/dXzTrKwpbLpCqn8O70FUUhNbYQT.jpg', '/v8mJvyNO86mcmY00FlxxRcOoDJy.jpg', 'idBm6OKzkAE', '', '2018-11-25 10:57:18', '2018-11-25 10:57:18', 'movie'),
+(293, 25, 'I\'m Not There.', 3902, '2007-10-01', 'Six actors portray six personas of music legend Bob Dylan in scenes depicting various stages of his life, chronicling his rise from unknown folksinger to international icon and revealing how Dylan constantly reinvented himself.', '/gwMjlA6R86hgPkUInaxXalPJKkw.jpg', '/kJlPpQy2Zx3s8ETyIpkp4Rkzzng.jpg', 'gJzPSPkWTrM', '', '2018-11-25 10:58:14', '2018-11-25 10:58:14', 'movie'),
+(294, 25, 'Walk the Line', 69, '2005-09-13', 'A chronicle of country music legend Johnny Cash\'s life, from his early days on an Arkansas cotton farm to his rise to fame with Sun Records in Memphis, where he recorded alongside Elvis Presley, Jerry Lee Lewis and Carl Perkins.', '/wdxL3Zyh3O5MIbmsSiZEevJAjtQ.jpg', '/oT79THuFrcBzrhlf4fiCddwZBCQ.jpg', 'pbQ22zWPYbw', '', '2018-11-25 10:58:26', '2018-11-25 10:58:26', 'movie'),
+(295, 25, 'Sweet Dreams', 42045, '1985-10-02', 'Lange stunningly portrays Patsy Cline, the velvet-voiced country singer who died in a tragic plane crash.', '/bguhQWpe69PivtZ2AyIYrHkFebW.jpg', '/db0tQH4SYqK1XbksVRYV5khYkIa.jpg', '', '', '2018-11-25 10:58:39', '2018-11-25 10:58:39', 'movie'),
+(296, 25, 'Coal Miner\'s Daughter', 16769, '1980-03-07', 'Biography of Loretta Lynn, a country and western singer that came from poverty to fame.', '/jfQNY4pvwesAASfJMvW8JGWBFaj.jpg', '/6D70zd2GVuDbVaRB9sDqDOrSy6V.jpg', 'UFPqPSQoZFE', '', '2018-11-25 10:59:03', '2018-11-25 10:59:03', 'movie'),
+(297, 25, 'Bessie', 330544, '2015-05-16', 'The story of legendary blues performer, Bessie Smith, who rose to fame during the 1920s and \'30s.', '/iIeUU85jVIQc9B07eXw6SATAEWz.jpg', '/4YEvjoGA6XlKn8be477vJXFeGID.jpg', 'P-tynW1jqzk', '', '2018-11-25 10:59:22', '2018-11-25 10:59:22', 'movie'),
+(298, 25, 'Get on Up', 239566, '2014-08-01', 'A chronicle of James Brown\'s rise from extreme poverty to become one of the most influential musicians in history.', '/n1jw04rLk8YRVEJ9D6gQWIiDtfi.jpg', '/uXY6UyQZGjnkyKfI5CUjZee58bv.jpg', '', '', '2018-11-25 10:59:33', '2018-11-25 10:59:33', 'movie'),
+(299, 25, 'Searching for Sugar Man', 84334, '2012-06-30', 'Two South Africans set out to discover what happened to their unlikely musical hero, the mysterious 1970s rock \'n\' roller, Rodriguez. The film won Best Documentary at the 85th Academy Awards.', '/7Jr5J3pdgEnQymHNge20XUM3YlV.jpg', '/yxqXznxXmrw2x8qqraXJf1RJG7B.jpg', 'tDw7OqVBT-w', '', '2018-11-25 10:59:51', '2018-11-25 10:59:51', 'movie'),
+(300, 25, 'Gainsbourg: A Heroic Life', 31900, '2010-01-20', 'A glimpse at the life of French singer Serge Gainsbourg, from growing up in 1940s Nazi-occupied Paris through his successful song-writing years in the 1960s to his death in 1991 at the age of 62.', '/psrukBNrMfE00ibI2G1D4eV0oYS.jpg', '/3pZj7AHo8YvWb1TRhD8tdTwc7Dh.jpg', 'zojRyGQP4x8', '', '2018-11-25 11:00:12', '2018-11-25 11:00:12', 'movie'),
+(301, 25, 'Why Do Fools Fall In Love', 46702, '1998-08-28', 'In the mid-80s, three women (each with an attorney) arrive at the office of New York entertainment manager, Morris Levy. One is an L.A. singer, formerly of the Platters; one is a petty thief from Philly; one teaches school in a small Georgia town. Each claims to be the widow of long-dead doo-wop singer-songwriter Frankie Lyman, and each wants years of royalties due to his estate, money Levy has never shared. During an ensuing civil trial, flashbacks tell the story of each one\'s life with Lyman, a boyish, high-pitched, dynamic performer, lost to heroin. Slowly, the three wives establish their own bond.', '/nZ7UYOQ50C38wdWqOcNxCxZ6GB1.jpg', '/6cPgOFDXaJD2Xj4jwMzK3sfJw8A.jpg', 'lIlWN0Dxvfw', '', '2018-11-25 11:00:34', '2018-11-25 11:00:34', 'movie'),
+(302, 25, 'Bird', 24679, '1988-07-01', 'Saxophone player Charlie Parker comes to New York in 1940. He is quickly noticed for his remarkable way of playing. He becomes a drug addict but his loving wife Chan tries to help him.', '/eXpMYDwSOEFev8YoiKAykVtBhfD.jpg', '/bb4Uwg0fuWAj54oC6dtpsTHcAJS.jpg', 'fS0M-GjgEi8', '', '2018-11-25 11:00:49', '2018-11-25 11:00:49', 'movie'),
+(303, 25, 'Lady Sings the Blues', 23148, '1972-10-12', 'Chronicles the rise and fall of legendary blues singer Billie Holiday. Her late childhood, stint as a prostitute, early tours, marriages and drug addiction are featured.', '/po8UTdSAW6DbGeeXl5IFkJwtdtY.jpg', '/1StQgMhAgnnSEQ3yGs63AcdgFdz.jpg', 'LLMlK7-_wjA', '', '2018-11-25 11:01:03', '2018-11-25 11:01:03', 'movie'),
+(304, 25, 'Jersey Boys', 209451, '2014-06-05', 'From director Clint Eastwood comes the big-screen version of the Tony Award-winning musical Jersey Boys. The film tells the story of four young men from the wrong side of the tracks in New Jersey who came together to form the iconic 1960s rock group The Four Seasons. The story of their trials and triumphs are accompanied by the songs that influenced a generation, including “Sherry,” “Big Girls Don’t Cry,” “Walk Like a Man,” “Rag Doll,” and many more.', '/eauqByydTE8zx74Hd4CSE5mCw3u.jpg', '/zLYEkkGA5jY8eJ6Nrdf9c8hYvbs.jpg', 'tL2iILHUsG0', '', '2018-11-25 11:01:17', '2018-11-25 11:01:17', 'movie'),
+(305, 25, 'The Runaways', 27586, '2010-03-19', 'Joan Jett and Cherie Currie, two rebellious teenagers from Southern California, become the frontwomen for the Runaways -- the now-legendary group that paved the way for future generations of female rockers. Under the Svengalilike influence of impresario Kim Fowley, the band becomes a huge success.', '/rC8PTdRj1Ij4Baz3jWCCgCV6JeX.jpg', '/ykgdO6R63On0qgbGVKHg3U8YgTm.jpg', 'OTpdXKocacQ', '', '2018-11-25 11:01:59', '2018-11-25 11:01:59', 'movie'),
+(306, 25, 'Nowhere Boy', 33511, '2009-12-25', 'The drama tells the story of Lennon\'s teenage years and the start of his journey to becoming a successful musician. The story also examines the impact on his early life and personality of the two dominant females in his childhood', '/ugtbLOgClY6nrgF2mfqh2I6ls6i.jpg', '/lLvwj5f0QawDr7vRiPC2QqU3Kld.jpg', '', '', '2018-11-25 11:02:11', '2018-11-25 11:02:11', 'movie'),
+(307, 25, 'Control', 5708, '2007-09-26', 'Control is the biography of Joy Division lead singer Ian Curtis, taking his story from schoolboy days of 1973 to his suicide on the eve of the band\'s first American tour in 1980.', '/rBw5I19naBSjVm3oKeExBaNbb0L.jpg', '/4m8AMtlHbdlAz6udaQlgzPw0gaP.jpg', '7c2_B_cWK_M', '', '2018-11-25 11:02:23', '2018-11-25 11:02:23', 'movie'),
+(308, 25, 'Beyond the Sea', 6478, '2004-11-16', 'Based on the life and career of legendary entertainer, Bobby Darin, the biopic moves back and forth between his childhood and adulthood, to tell the tale of his remarkable life. Kevin Spacey did his own singing for Beyond the Sea, recreating Bobby Darin\'s vocal style with uncanny accuracy.', '/wIewPJNyyTIMI5rQzcElc23jenW.jpg', '/nTPbEEeR1yqBN2mEcXgZ9FfHP4.jpg', 'CUkEXzkxItM', '', '2018-11-25 11:02:41', '2018-11-25 11:02:41', 'movie');
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(309, 25, 'What\'s Love Got to Do with It', 15765, '1993-06-09', 'A film about the singer Tina Turner and how she rose to stardom with her abusive husband Ike Turner and how she gained the courage to break free.', '/9LfzAGZBOUKBnqdpkJcf4TJA4Ad.jpg', '/qPJ8zEgvLGQzEWjin7YeBOdA8ev.jpg', 'Nbzbd2wUGao', '', '2018-11-25 11:02:56', '2018-11-25 11:02:56', 'movie'),
+(310, 25, 'The Doors', 10537, '1991-03-01', 'The story of the famous and influential 1960\'s rock band and its lead singer and composer, Jim Morrison.', '/9CkFrWAkg23YynYd2uJLyWznMZZ.jpg', '/1rv5sW6Qs2YK2iOzIgwH3SJPIl1.jpg', '1_LPEynddOo', '', '2018-11-25 11:03:06', '2018-11-25 11:03:06', 'movie'),
+(311, 25, 'Great Balls of Fire!', 11465, '1989-06-30', 'The story of Jerry Lee Lewis, arguably the greatest and certainly one of the wildest musicians of the 1950s. His arrogance, remarkable talent, and unconventional lifestyle often brought him into conflict with others in the industry, and even earned him the scorn and condemnation of the public.', '/zx7HLHsov2mTFtMKaEIxChYjALs.jpg', '/sMs3PITc2UefWGr3dQMq4znMHsf.jpg', 'u9aobri6wyg', '', '2018-11-25 11:03:20', '2018-11-25 11:03:20', 'movie'),
+(312, 25, 'Sid & Nancy', 14924, '1986-11-07', 'Following their breakout success in England, flagship punk rock band the Sex Pistols venture out on their first U.S. tour. Temperamental bassist Sid Vicious takes his troubled girlfriend, Nancy Spungen, along for the ride. Along the way, the couple\'s turbulent relationship strains the patience of bandmate Johnny Rotten and manager Malcolm McLaren, while plunging Sid and Nancy into the depths of drug addiction and co-dependency.', '/wHzCbMCfipDJ38GW5IyBTWDflMz.jpg', '/sS8G9j1DigsG2ZoWoOGIZgxgjXr.jpg', 'hZp3meyWVm0', '', '2018-11-25 11:03:30', '2018-11-25 11:03:30', 'movie'),
+(313, 26, 'Interview with the Vampire', 628, '1994-11-11', 'A vampire relates his epic life story of love, betrayal, loneliness, and dark hunger to an over-curious reporter.', '/hldXwwViSfHJS0kIJr07KBGmHJI.jpg', '/GRyynLqafMrLFMHqvfGdUweavA.jpg', 'HBTObecD93s', '', '2018-11-25 13:58:01', '2018-11-25 13:58:01', 'movie'),
+(314, 26, 'The Lost Boys', 1547, '1987-07-31', 'A mother and her two teenage sons move to a seemingly nice and quiet small coastal California town yet soon find out that it\'s overrun by bike gangs and vampires. A couple of teenage friends take it upon themselves to hunt down the vampires that they suspect of a few mysterious murders and restore peace and calm to their town.', '/evo7oiay9qDUzY510VhrB3YzyJs.jpg', '/3wMkHCnwG2PdNeFkfou8vTY2g5b.jpg', 'hsv_NQFbQzo', '', '2018-11-25 13:58:24', '2018-11-25 13:58:24', 'movie'),
+(315, 26, 'Let Me In', 41402, '2010-10-01', 'A bullied young boy befriends a young female vampire who lives in secrecy with her guardian.  A remake of the movie “Let The Right One In” which was an adaptation of a book.', '/90Y8RVSlOnWsG8PO6evI4ycXItg.jpg', '/uLhpV983X2BLSpnfzwASZWmgEUL.jpg', '', '', '2018-11-25 13:58:46', '2018-11-25 13:58:46', 'movie'),
+(316, 26, 'Dracula', 6114, '1992-11-13', 'When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harker—the spitting image of Dracula\'s long-dead wife, Elisabeta—obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.', '/ioHxm3D3JdSXR61LRhcVb8KdZOz.jpg', '/x4RwLFKvVm5X6zkrKRLBUkDIwuq.jpg', 'fgFPIh5mvNc', '', '2018-11-25 13:59:08', '2018-11-25 13:59:08', 'movie'),
+(317, 26, 'Blade', 36647, '1998-08-21', 'When Blade\'s mother was bitten by a vampire during pregnancy, she did not know that she gave her son a special gift while dying: All the good vampire attributes in combination with the best human skills. Blade and his mentor Whistler battle an evil vampire rebel (Deacon Frost) who plans to take over the outdated vampire council, capture Blade and resurrect voracious blood god La Magra.', '/r0RQ9ZOEZglLOeYDNJTehVTRoR6.jpg', '/dGnDGHD5vmaRow4BzAiuJaGwIz3.jpg', 'kaU2A7KyOu4', '', '2018-11-25 13:59:29', '2018-11-25 13:59:29', 'movie'),
+(318, 26, 'Near Dark', 11879, '1987-10-02', 'A mid-western farm boy reluctantly becomes a member of the undead when a girl he meets turns out to be part of a band of southern vampires who roam the highways in stolen cars.', '/saRst8v7T8uJTjmd64VOCx1JoQ4.jpg', '/zdERdnOPBWBdkozRhVEaemueQXw.jpg', '-WPxTWDEtAg', '', '2018-11-25 14:00:04', '2018-11-25 14:00:04', 'movie'),
+(319, 26, 'Vampires', 9945, '1998-04-15', 'The church enlists a team of vampire-hunters to hunt down and destroy a group of vampires searching for an ancient relic that will allow them to exist in sunlight.', '/qHGawU64MeGvtU86s6V0MA7MqFV.jpg', '/rFCx9xDNgywf1A5hsBbic0C0ihd.jpg', '', '', '2018-11-25 14:00:22', '2018-11-25 14:00:22', 'movie'),
+(320, 26, 'Shadow of the Vampire', 10873, '2000-05-15', 'Director F.W. Murnau (John Malkovich) makes a Faustian pact with a vampire (Willem Dafoe) to get him to star in his 1922 film \"Nosferatu.\"', '/cff7lGek3gJ4fh68547ki9PA6cq.jpg', '/rx57XEVo0BS7WpANdrJzWt7uXOl.jpg', '', '', '2018-11-25 14:01:21', '2018-11-25 14:01:21', 'movie'),
+(321, 26, 'Underworld', 277, '2003-09-19', 'Vampires and werewolves have waged a nocturnal war against each other for centuries. But all bets are off when a female vampire warrior named Selene, who\'s famous for her strength and werewolf-hunting prowess, becomes smitten with a peace-loving male werewolf, Michael, who wants to end the war.', '/rdkxl5iXdpVU188cL1LLG3sy6z4.jpg', '/cPhRPAJWK8BuuJqqf6PztzvOlnZ.jpg', 'mn4O3iQ8B_s', '', '2018-11-25 14:01:33', '2018-11-25 14:01:33', 'movie'),
+(322, 26, 'From Dusk Till Dawn', 755, '1996-01-19', 'Seth Gecko and his younger brother Richard are on the run after a bloody bank robbery in Texas. They escape across the border into Mexico and will be home-free the next morning, when they pay off the local kingpin. They just have to survive \'from dusk till dawn\' at the rendezvous point, which turns out to be a Hell of a strip joint.', '/ce0d4kM5KxT4x1Oq8JkSuNYevri.jpg', '/3kPTAFgx2BftDOexBe41k8kqSRD.jpg', 'jNuIn4T-CLk', '', '2018-11-25 14:02:05', '2018-11-25 14:02:05', 'movie'),
+(323, 26, 'Fright Night', 11797, '1985-08-02', 'Nobody believes teenager Charley Brewster when he discovers that his suave new neighbor, Jerry Dandrige, is a vampire. So when the bloodsucker starts stalking Charley, he turns to has-been actor Peter Vincent, famed for portraying a ghoul hunter. Unfortunately for the would-be vampire slayers, Dandrige has set his sights on Charley\'s girlfriend.', '/jE0YbuFlmaZUWeVTyYNpzYXjIbn.jpg', '/v4wzMG8phQyPVlKTMUNt1i33GM5.jpg', 'yfuIcuezkUw', '', '2018-11-25 14:02:58', '2018-11-25 14:02:58', 'movie'),
+(324, 26, '30 Days of Night', 4513, '2007-10-17', 'This is the story of an isolated Alaskan town that is plunged into darkness for a month each year when the sun sinks below the horizon. As the last rays of light fade, the town is attacked by a bloodthirsty gang of vampires bent on an uninterrupted orgy of destruction. Only the small town\'s husband-and-wife Sheriff team stand between the survivors and certain destruction.', '/utaOrixJukf5HrlMjmHrRhA7DKk.jpg', '/tQMOtPKmW6665wyGe5pddQgvqbl.jpg', 'zXYO19Ig5hc', '', '2018-11-25 14:03:21', '2018-11-25 14:03:21', 'movie'),
+(325, 26, 'Only Lovers Left Alive', 152603, '2013-12-12', 'A depressed musician reunites with his lover in the desolate streets of Detroit. Though their romance has endured several centuries, it is tested by the arrival of her capricious and unpredictable younger sister.', '/AfIr2ZUwAW3E5qBPfrJGDyKufAl.jpg', '/5qoIoGjYm5APqRVTNwhG6JbbfPN.jpg', 'ycOKvWrwYFo', '', '2018-11-25 14:04:56', '2018-11-25 14:04:56', 'movie'),
+(326, 26, 'Daybreakers', 19901, '2009-09-11', 'In the year 2019, a plague has transformed almost every human into vampires. Faced with a dwindling blood supply, the fractured dominant race plots their survival; meanwhile, a researcher works with a covert band of vampires on a way to save humankind.', '/ilicCtkHIBb90PvTfXMeSeJ7b0o.jpg', '/jjTK7kQS0LBU8GNZlUvlRK0dR1h.jpg', 'CtiLjvVwvY4', '', '2018-11-25 14:05:19', '2018-11-25 14:05:19', 'movie'),
+(327, 26, 'What We Do in the Shadows', 246741, '2014-06-19', 'Vampire housemates try to cope with the complexities of modern life and show a newly turned hipster some of the perks of being undead.', '/4bqqrtzY9vVQeEcqyqWfTJWmpD9.jpg', '/aj0WJXC0Cu172qifgkEpyLXlDEt.jpg', 'Cv568AzZ-i8', '', '2018-11-25 14:05:41', '2018-11-25 14:05:41', 'movie'),
+(328, 26, 'Byzantium', 102780, '2012-09-09', 'Two mysterious women seek refuge in a run-down coastal resort. Clara meets lonely Noel, who provides shelter in his deserted guesthouse, Byzantium. Schoolgirl Eleanor befriends Frank and tells him their lethal secret. They were born 200 years ago and survive on human blood. As knowledge of their secret spreads, their past catches up on them with deathly consequence.', '/pSnlpdh27luQ6GcchSkPomZ5fyr.jpg', '/7ujUCqM0aFZfKqpZN4O5Zh2Q4ei.jpg', '_zu2cW7AhO8', '', '2018-11-25 14:05:59', '2018-11-25 14:05:59', 'movie'),
+(329, 26, 'Queen of the Damned', 11979, '2002-02-10', 'Lestat de Lioncourt is awakened from his slumber. Bored with his existence, he has now become this generation\'s new Rock God. While in the course of time, another has arisen, Akasha, the Queen of the Vampires and the Dammed. He wants immortal fame, his fellow vampires want him eternally dead for his betrayal, and the Queen wants him for her King. Who will be the first to reach him? Who shall win?', '/jSNMRMPkXUqcqWm0xUPUviRfWfF.jpg', '/eR8BDUyk439EdcAW0EExG9tPRMI.jpg', '2Gu9HtN05sc', '', '2018-11-25 14:06:33', '2018-11-25 14:06:33', 'movie'),
+(330, 26, 'Abraham Lincoln: Vampire Hunter', 72331, '2012-06-20', 'President Lincoln\'s mother is killed by a supernatural creature, which fuels his passion to crush vampires and their slave-owning helpers.', '/lHcaLiPDDrLmJAL2MTlMzgM2s2x.jpg', '/6dJgvOSLD6DKYqd29HsC10Cjyii.jpg', 'MmexgVvm4o8', '', '2018-11-25 14:07:09', '2018-11-25 14:07:09', 'movie'),
+(331, 26, 'Dracula Untold', 49017, '2014-10-01', 'Vlad Tepes is a great hero, but when he learns the Sultan is preparing for battle and needs to form an army of 1,000 boys, including Vlad\'s son, he vows to find a way to protect his family. Vlad turns to dark forces in order to get the power to destroy his enemies and agrees to go from hero to monster as he\'s turned into the mythological vampire Dracula.', '/4oy4e0DP6LRwRszfx8NY8EYBj8V.jpg', '/gy5ItoprIPOT7Z1c2YhNhart39l.jpg', 'm6wXYp-AMgs', '', '2018-11-25 14:07:39', '2018-11-25 14:07:39', 'movie'),
+(332, 26, 'Priest', 38321, '2011-05-05', 'In an alternate world, humanity and vampires have warred for centuries. After the last Vampire War, the veteran Warrior Priest lives in obscurity with other humans inside one of the Church\'s walled cities. When the Priest\'s niece is kidnapped by vampires, the Priest breaks his vows to hunt them down. He is accompanied by the niece\'s boyfriend, who is a wasteland sheriff, and a former Warrior Priestess.', '/pE28BDqICBPe3FgphsYSxtH6FcZ.jpg', '/7pCsrkl7yPNFU7wIuWy52wdAFQs.jpg', 'K8lvOWt-jp4', '', '2018-11-25 14:08:03', '2018-11-25 14:08:03', 'movie'),
+(333, 26, 'Van Helsing', 7131, '2004-05-05', 'Famed monster slayer Gabriel Van Helsing is dispatched to Transylvania to assist the last of the Valerious bloodline in defeating Count Dracula. Anna Valerious reveals that Dracula has formed an unholy alliance with Dr. Frankenstein\'s monster and is hell-bent on exacting a centuries-old curse on her family.', '/s2OPT5CZsZBQYAIlO9Mv4AimHvV.jpg', '/sib4pGrwKQUbFRyHlhXv03HXoHj.jpg', 'MgEbcDuFANY', '', '2018-11-25 14:09:30', '2018-11-25 14:09:30', 'movie'),
+(334, 26, 'Dracula 2000', 10577, '2000-12-22', 'In the millenium version of this classic Gothic horror we find Abraham Van Helsing, who has tangled with Count Dracula in the past, working as an English antiques dealer. Simon is a vampire hunter in training under his apprenticeship.', '/6YF56U91zP1mQvle83KA1A7CPop.jpg', '/99Z7mNsixJJTn10tHLCtu6XcY6E.jpg', 'py_sPdBmstA', '', '2018-11-25 14:09:43', '2018-11-25 14:09:43', 'movie'),
+(335, 26, 'Nosferatu', 653, '1922-03-15', 'Vampire Count Orlok is interested in a new residence and in his real estate agent’s young wife. F. W. Murnau’s unauthorized adaptation of Bram Stoker’s “Dracula.”', '/12sAvvSRW7VQyXxYRsTJKB7Gtts.jpg', '/awK6eXK5vH47qyuDiXLkF5MEwrn.jpg', '', '', '2018-11-25 14:11:05', '2018-11-25 14:11:05', 'movie'),
+(336, 27, 'WarGames', 860, '1983-06-03', 'High School student David Lightman (Matthew Broderick) has a talent for hacking. But while trying to hack into a computer system to play unreleased video games, he unwittingly taps into the Defense Department\'s war computer and initiates a confrontation of global proportions! Together with his girlfriend (Ally Sheedy) and a wizardly computer genius (John Wood), David must race against time to outwit his opponent...and prevent a nuclear Armageddon.', '/rQocmooj7bFKS2vZfzWBB5O12eR.jpg', '/AkwLeC0Q8GIkYJ6ZI0tc0118AY6.jpg', 'hbqMuvnx5MU', '', '2018-11-25 21:21:38', '2018-11-25 21:21:38', 'movie'),
+(337, 27, 'Hackers', 10428, '1995-09-14', 'Along with his new friends, a teenager who was arrested by the US Secret Service and banned from using a computer for writing a computer virus discovers a plot by a nefarious hacker, but they must use their computer skills to find the evidence while being pursued by the Secret Service and the evil computer genius behind the virus.', '/hNjxJbejPHSmKVidHQ9ZHaC0Z7r.jpg', '/pxxJtHZB6peCwC1H5cbq25VXJ8b.jpg', 'Ql1uLyuWra8', '', '2018-11-25 21:21:49', '2018-11-25 21:21:49', 'movie'),
+(338, 27, 'Swordfish', 9705, '2001-06-07', 'Rogue agent Gabriel Shear is determined to get his mitts on $9 billion stashed in a secret Drug Enforcement Administration account. He wants the cash to fight terrorism, but lacks the computer skills necessary to hack into the government mainframe. Enter Stanley Jobson, a n\'er-do-well encryption expert who can log into anything.', '/uJdI3eau8BHgTsrUbAeccnKn0ez.jpg', '/9iUG3L5pJjfIJBaaCOl1ucdAM4e.jpg', 'yxK0r2ORG9Y', '', '2018-11-25 21:22:00', '2018-11-25 21:22:00', 'movie'),
+(339, 27, 'The Net', 1642, '1995-07-28', 'Angela Bennett is a freelance software engineer who lives in a world of computer technology. When a cyber friend asks Bennett to debug a new game, she inadvertently becomes involved in a conspiracy that will soon turn her life upside down. While on vacation in Mexico, her purse is stolen. She soon finds that people and events may not be what they seem as she becomes the target of an assassination. Her vacation is ruined.  She gets a new passport at the U.S. Embassy in Mexico but it has the wrong name, Ruth Marx. When she returns to the U.S. to sort things out, she discovers that Ruth Marx has an unsavory past and a lengthy  police record. To make matters worse, another person has assumed her real identity ...', '/gKDNaAFzT21cSVeKQop7d1uhoSp.jpg', '/uBqa8nPu3HUtfSHtWqo7VhYG0Uc.jpg', '46qKHq7REI4', '', '2018-11-25 21:22:10', '2018-11-25 21:22:10', 'movie'),
+(340, 27, 'Algorithm', 281826, '2014-07-19', 'A freelance computer hacker discovers a mysterious government computer program. He breaks into the program and is thrust into a revolution.', '/wM2vAc9rq4dLc5nFZFMdbB7jmLj.jpg', '/iabEjkJlJjoHDSZSolZ60Lw2X5Y.jpg', '', '', '2018-11-25 21:23:13', '2018-11-25 21:23:13', 'movie'),
+(341, 27, 'Takedown', 10429, '2000-03-15', 'Kevin Mitnick is quite possibly the best hacker in the world. Hunting for more and more information, seeking more and more cyber-trophies every day, he constantly looks for bigger challenges. When he breaks into the computer of a security expert and an ex-hacker, he finds one - and much more than that...', '/kFmddFjNzO7ZKWAYjQTVOUHqpum.jpg', '/5jdWPZpfOJ9gBr07ntIdA2IHs1Q.jpg', '2Kdpiaqx7KI', '', '2018-11-25 21:23:40', '2018-11-25 21:23:40', 'movie'),
+(342, 27, 'Blackhat', 201088, '2015-01-13', 'A man is released from prison to help American and Chinese authorities pursue a mysterious cyber criminal. The dangerous search leads them from Chicago to Hong Kong.', '/sW3VEsulmxMlOmQwm0h7H7lZROi.jpg', '/biw5Nn85iBZZd8GWYO9XXH56VK2.jpg', 'qlA-12MkXOQ', '', '2018-11-25 21:23:58', '2018-11-25 21:23:58', 'movie'),
+(343, 27, 'The Fifth Estate', 162903, '2013-10-11', 'A look at the relationship between WikiLeaks founder Julian Assange and his early supporter and eventual colleague Daniel Domscheit-Berg, and how the website\'s growth and influence led to an irreparable rift between the two friends.', '/uIMI7d9DXe8uc5KzXnMFdmmEnNC.jpg', '/1V0SLzEHNDJvkKSUgtGBEnXF4qK.jpg', 'ZT1wb8_tcYU', '', '2018-11-25 21:24:46', '2018-11-25 21:24:46', 'movie'),
+(344, 27, 'Snowden', 302401, '2016-09-15', 'CIA employee Edward Snowden leaks thousands of classified documents to the press.', '/mWOotrG1MMKP9iCy2uPepbu27jk.jpg', '/qzGFm7uF1HExPUAcAPwC3Hzk5WR.jpg', 'TcXPpVzwczs', '', '2018-11-25 21:24:59', '2018-11-25 21:24:59', 'movie'),
+(345, 27, 'The Matrix', 603, '1999-03-30', 'Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.', '/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg', '/7u3pxc0K1wx32IleAkLv78MKgrw.jpg', 'm8e-FF8MsqU', '', '2018-11-25 21:26:44', '2018-11-25 21:26:44', 'movie'),
+(346, 27, 'Untraceable', 8090, '2008-01-22', 'Special Agent Jennifer Marsh (Diane Lane) works in an elite division of the FBI dedicated to fighting cybercrime. She thinks she has seen it all, until a particularly sadistic criminal arises on the Internet. This tech-savvy killer posts live feeds of his crimes on his website; the more hits the site gets, the faster the victim dies. Marsh and her team must find the elusive killer before time runs out.', '/ySUwDRDEn01lKIMPQorpFCMLWqE.jpg', '/eXuIPt9I1xuaVddlgzEQRC2EMnJ.jpg', 'oIqnESZW0qc', '', '2018-11-25 21:27:29', '2018-11-25 21:27:29', 'movie'),
+(347, 27, 'The Girl with the Dragon Tattoo', 15472, '2009-02-27', 'Swedish thriller based on Stieg Larsson\'s novel about a male journalist and a young female hacker. In the opening of the movie, Mikael Blomkvist, a middle-aged publisher for the magazine Millennium, loses a libel case brought by corrupt Swedish industrialist Hans-Erik Wennerström. Nevertheless, he is hired by Henrik Vanger in order to solve a cold case, the disappearance of Vanger\'s niece', '/9pRod9YBfBwC0tPfMijhYSdSlwU.jpg', '/7ajX2OJsBecgDDOYfk9VXYfhMIy.jpg', 'JlF-hk3IJQE', '', '2018-11-25 21:29:29', '2018-11-25 21:29:29', 'movie'),
+(348, 27, '23', 1557, '1998-07-02', 'The movie\'s plot is based on the true story of a group of young computer hackers from Hannover, Germany. In the late 1980s the orphaned Karl Koch invests his heritage in a flat and a home computer. At first he dials up to bulletin boards to discuss conspiracy theories inspired by his favorite novel, R.A. Wilson\'s \"Illuminatus\", but soon he and his friend David start breaking into government and military computers. Pepe, one of Karl\'s rather criminal acquaintances senses that there is money in computer cracking - he travels to east Berlin and tries to contact the KGB.', '/iKO6A0yqmoS8Gk0dQo8d9zIYLhV.jpg', '/dbcgovXN099zROFpBQk5d0vJXj6.jpg', '', '', '2018-11-25 21:30:17', '2018-11-25 21:30:17', 'movie'),
+(349, 27, 'Sneakers', 2322, '1992-09-09', 'When shadowy U.S. intelligence agents blackmail a reformed computer hacker and his eccentric team of security experts into stealing a code-breaking \'black box\' from a Soviet-funded genius, they uncover a bigger conspiracy. Now, he and his \'sneakers\' must save themselves and the world economy by retrieving the box from their blackmailers.', '/pAGKtPF8nMiJq4lsINOYJWvMS2D.jpg', '/hFqWEjLA0eMxCf6hZKWaikJV4S6.jpg', 'rbJpx_6fYgE', '', '2018-11-25 21:31:15', '2018-11-25 21:31:15', 'movie'),
+(350, 27, 'Live Free or Die Hard', 1571, '2007-06-20', 'John McClane is back and badder than ever, and this time he\'s working for Homeland Security. He calls on the services of a young hacker in his bid to stop a ring of Internet terrorists intent on taking control of America\'s computer infrastructure.', '/pHWgbaXiQD2nmex7u8Xv6XmhaZS.jpg', '/74J904knbahSF7csIEfmRtmdi0t.jpg', 'Sv8Uh2Usldo', '', '2018-11-25 21:31:53', '2018-11-25 21:31:53', 'movie'),
+(351, 27, 'Code 2600', 97972, '2011-12-30', 'CODE 2600 documents the rise of the Information Technology Age as told through the events and people who helped build and manipulate it.', '/bZW8QfPR1ISDRanOW27YLUIEHlO.jpg', '/jSy0n9ohn5z7fxcpDFfUcPuNsSz.jpg', 'gXwIYrsW9Bk', '', '2018-11-25 21:32:30', '2018-11-25 21:32:30', 'movie'),
+(352, 27, 'Freedom Downtime', 9901, '2001-01-01', 'A feature length documentary about the Free Kevin movement and the hacker world.', '/wgnfo0pNRLEjw4bCcLXV2lxdlRl.jpg', '/ntXzf5qOkL0rNbdFSoodExrkLmO.jpg', '', '', '2018-11-25 21:33:00', '2018-11-25 21:33:00', 'movie'),
+(353, 27, 'Underground: The Julian Assange Story', 136698, '2012-10-07', 'Julian Assange is one of the most significant figures of the twenty first century. But before he was famous, before WikiLeaks, before the internet even existed, he was a teenage computer hacker in Melbourne. This is his story.  In 1989, known as ‘Mendax’, Assange and two friends formed a group called the ‘International Subversives’. Using early home computers and defining themselves as ‘white hat hackers’ - those who look but don’t steal – they broke into some of the world’s most powerful and secretive organisations. They were young, brilliant, and in the eyes of the US Government, a major threat to national security.', '/kvmqb9VFr7Zx5SmvNANE9sBof2I.jpg', '/ytQbqmabr4UXKGCDre3v1ofj9wM.jpg', 'xAoUZQP-CRg', '', '2018-11-25 21:33:26', '2018-11-25 21:33:26', 'movie'),
+(354, 28, 'Beasts of No Nation', 283587, '2015-09-11', 'A drama based on the experiences of Agu, a child soldier fighting in the civil war of an unnamed African country. Follows the journey of a young boy, Agu, who is forced to join a group of soldiers in a fictional West African country. While Agu fears his commander and many of the men around him, his fledgling childhood has been brutally shattered by the war raging through his country, and he is at first torn between conflicting revulsion and fascination Depicts the mechanics of war and does not shy away from explicit, visceral detail, and paints a complex, difficult picture of Agu as a child soldier.', '/geb6DKAnaRf0PFRlqm8i02G6JBv.jpg', '/17zo8xzwqwr7pqCZt1ABaAAakTv.jpg', 'oRsaclO0VbU', '', '2018-11-28 22:42:15', '2018-11-28 22:42:15', 'movie'),
+(355, 28, 'Gerald\'s Game', 343674, '2017-09-19', 'When her husband\'s sex game goes wrong, Jessie (who is handcuffed to a bed in a remote lake house) faces warped visions, dark secrets and a dire choice.', '/32dippiypDdaKv7XFEfUlQ7kPup.jpg', '/t9HChjSJi8B1PXSVh5Ec3pcDsAM.jpg', 'twbGU2CqqQU', '', '2018-11-28 22:43:19', '2018-11-28 22:43:19', 'movie'),
+(356, 28, 'Okja', 387426, '2017-06-28', 'A young girl named Mija risks everything to prevent a powerful, multi-national company from kidnapping her best friend - a massive animal named Okja.', '/pHlRr2MfjK77VIIAO7p0R4jhsJI.jpg', '/1ycTOys6bzvt0XPnzSv8qYfrD0V.jpg', 'AjCebKn4iic', '', '2018-11-28 22:43:42', '2018-11-28 22:43:42', 'movie'),
+(357, 28, 'First They Killed My Father', 433247, '2017-02-18', 'A 5-year-old girl embarks on a harrowing quest for survival amid the sudden rise and terrifying reign of the Khmer Rouge in Cambodia.', '/uT5eZhZVdNnkVl8xysTDixBAMnd.jpg', '/4hEp8ZAycjitk7UOX0VpfSFnwRU.jpg', 'Ty34ABLXur8', '', '2018-11-28 22:44:22', '2018-11-28 22:44:22', 'movie'),
+(358, 28, 'I Don\'t Feel at Home in This World Anymore', 425591, '2017-01-19', 'When a depressed woman is burglarized, she finds a new sense of purpose by tracking down the thieves alongside her obnoxious neighbor. But they soon find themselves dangerously out of their depth against a pack of degenerate criminals.', '/1stdUlXBc3nxqhdWvZ6wWWEbCQW.jpg', '/8pXUXMe1LFXvpPFb5CaObacDN9J.jpg', 'a891D5_bGY4', '', '2018-11-28 22:45:13', '2018-11-28 22:45:13', 'movie'),
+(359, 28, 'Private Life', 458342, '2018-10-05', 'Richard and Rachel, a couple in the throes of infertility, try to maintain their marriage as they descend deeper and deeper into the insular world of assisted reproduction and domestic adoption.', '/aONxuWhj1cedsGVMcx7pVL6yeuY.jpg', '/onla4mvIdCD6luYTAMcLHizBAop.jpg', 'J1orjA9Z8g4', '', '2018-11-28 22:45:50', '2018-11-28 22:45:50', 'movie'),
+(360, 28, 'Spectral', 324670, '2016-12-01', 'A special-ops team is dispatched to fight supernatural being that have taken over a European city.', '/oXV2ayQYUQfHwpuMdWnZF0Geng5.jpg', '/2sIGAiY1y5cEuYMrlB0PRhhw9Z5.jpg', 'rmC3ZhIHHi4', '', '2018-11-28 22:47:29', '2018-11-28 22:47:29', 'movie'),
+(361, 28, 'The Siege of Jadotville', 334517, '2016-09-19', 'Irish Commandant Pat Quinlan leads a stand off with troops against French and Belgian Mercenaries in the Congo during in the early 1960s.', '/9r21jawIp226dlQ8dLzwSBrRDNY.jpg', '/lwIVCU2LozEIVaGRZs4CMTdk4wc.jpg', 'rHNtzyXvyLc', '', '2018-11-28 22:47:46', '2018-11-28 22:47:46', 'movie'),
+(362, 28, 'ARQ', 410199, '2016-09-16', 'Two old friends living in a dystopic future become trapped in a mysterious time loop — one that may have something to do with an ongoing battle between an omnipotent corporation and a ragtag band of rebels.', '/39jyxfevRRuLGbh88F5eIzRtOeo.jpg', '/iq9kN0XfaGs603FOl16ahQNjOrV.jpg', 'JY0DGLrd9GY', '', '2018-11-28 22:48:06', '2018-11-28 22:48:06', 'movie'),
+(363, 28, 'To the Bone', 401104, '2017-01-22', 'A young woman dealing with anorexia meets an unconventional doctor who challenges her to face her condition and embrace life.', '/rgPysl0uMpxllv43r4udHuRAhn4.jpg', '/en6RCcsjVPeuWBjIwne6eogHhrz.jpg', '705yRfs6Dbs', '', '2018-11-28 22:49:36', '2018-11-28 22:49:36', 'movie'),
+(364, 28, 'The Fundamentals of Caring', 318121, '2016-06-16', 'Having suffered a tragedy, Ben becomes a caregiver to earn money. His first client, Trevor, is a hilarious 18-year-old with muscular dystrophy. One paralyzed emotionally, one paralyzed physically, Ben and Trevor hit the road on a trip into the western states. The folks they collect along the way will help them test their skills for surviving outside their calculated existence. Together, they come to understand the importance of hope and the necessity of true friendship.', '/yLnbPJcd4nZeK9QQZro4GIDftyY.jpg', '/qcn1FM0WnRuIadbQkk58Xksl67l.jpg', 'BSXn-lIs4Y0', '', '2018-11-28 22:50:23', '2018-11-28 22:50:23', 'movie'),
+(365, 28, 'Cargo', 425972, '2017-10-06', 'After being infected in the wake of a violent pandemic and with only 48 hours to live, a father struggles to find a new home for his baby daughter.', '/cdPSUck4tBRvRu6DFk6XciDrssn.jpg', '/tiIpajUBpLMNWMEzpjRBxo0jCbD.jpg', 'u5qZOqrPr_A', '', '2018-11-28 22:50:54', '2018-11-28 22:50:54', 'movie'),
+(366, 28, '1922', 452507, '2017-10-20', 'A simple yet proud rancher conspires to murder his wife for financial gain, convincing his teenage son to participate.', '/q4FQOiSRhTLWulHl5Vpg37FMArH.jpg', '/3uwyXMZN93PRkShUxvLrufwVAc2.jpg', '3E_fT0aTsjI', '', '2018-11-28 22:51:08', '2018-11-28 22:51:08', 'movie'),
+(367, 28, 'Annihilation', 300668, '2018-02-22', 'A biologist signs up for a dangerous, secret expedition into a mysterious zone where the laws of nature don\'t apply.', '/4ld6ymkR5PehIUgl5fIMqs8JsqF.jpg', '/5zfVNTrkhMu673zma6qhFzG01ig.jpg', 'lHG6I6Ec4yA', '', '2018-11-28 22:52:04', '2018-11-28 22:52:04', 'movie'),
+(368, 28, 'Bright', 400106, '2017-12-22', 'In an alternate present-day where magical creatures live among us, two L.A. cops become embroiled in a prophesied turf battle.', '/whkT53Sv2vKAUiknQ13pqcWaPXB.jpg', '/b09HLFIifMNljI7NI9CJgm2gN1Y.jpg', '6EZCBSsBxko', '', '2018-11-28 22:52:22', '2018-11-28 22:52:22', 'movie'),
+(369, 28, 'Extinction', 429415, '2018-07-27', 'A chief mechanic at a factory, haunted by apocalyptic nightmares, becomes a hero when Earth is invaded by a mysterious army bent on destruction.', '/qjnNdjrZIdi7d316SjjkgEjJRSg.jpg', '/mPNGcX1j5SFeDETkvcJA9POaNx8.jpg', '-ePDPGXkvlw', '', '2018-11-28 22:53:03', '2018-11-28 22:53:03', 'movie'),
+(370, 29, 'The Last Samurai', 616, '2003-12-05', 'Nathan Algren is an American hired to instruct the Japanese army in the ways of modern warfare, which finds him learning to respect the samurai and the honorable principles that rule them. Pressed to destroy the samurai\'s way of life in the name of modernization and open trade, Algren decides to become an ultimate warrior himself and to fight for their right to exist.', '/sLv5pXysIz7QbtKFJy85d5yxv2W.jpg', '/cQ6oBTUkkl26Ndmpte2wYEdACBu.jpg', 'kJ27kgmhI6Q', '', '2018-11-30 22:29:36', '2018-11-30 22:29:36', 'movie'),
+(371, 29, '47 Ronin', 64686, '2013-12-06', 'Based on the original 1941 movie from Japan, and from ancient Japan’s most enduring tale, the epic 3D fantasy-adventure 47 Ronin is born.  Keanu Reeves leads the cast as Kai, an outcast who joins Oishi (Hiroyuki Sanada), the leader of the 47 outcast samurai.  Together they seek vengeance upon the treacherous overlord who killed their master and banished their kind.  To restore honor to their homeland, the warriors embark upon a quest that challenges them with a series of trials that would destroy ordinary warriors.', '/pUH46wa0n4zXZytpriSaoNUXai4.jpg', '/slQkkaBHH1K915HtuN89iu0xqOv.jpg', 'DEoDulGTElE', '', '2018-11-30 22:29:48', '2018-11-30 22:29:48', 'movie'),
+(372, 29, 'Rurouni Kenshin', 127533, '2012-08-25', 'Former legendary assassin Kenshin Himura has now become a wandering samurai. Offering aid & protecting those in need as atonement for his past deeds. During this time Kenshin Himura comes across and aides Kaoru Kamiya (Emi Takei). Her father opened the Kamiya Kasshin-ryu, a kendo school located in Tokyo and Kaoru is now an instructor there. Kaoru then invites Kenshin to stay at her dojo. Their relationship develops further, but Kenshin is still haunted by his violent past...', '/rmBUaljPj6SJVArR68fHl41oJU4.jpg', '/6cf1HWR2KF68zTwYIlcOscStMHn.jpg', 'lc_JmcRxdx8', '', '2018-11-30 22:30:02', '2018-11-30 22:30:02', 'movie'),
+(373, 29, 'Seven Samurai', 346, '1954-04-26', 'A samurai answers a village\'s request for protection after he falls on hard times. The town needs protection from bandits, so the samurai gathers six others to help him teach the people how to defend themselves, and the villagers provide the soldiers with food. A giant battle occurs when 40 bandits attack the village.', '/v6xrz4fr92KY1oNC3HsEvrsvR1n.jpg', '/61vLiK96sbXeHpQiMxI4CuqBA3z.jpg', 'h1JziA0nNkQ', '<p>Amazing!</p>', '2018-11-30 22:30:43', '2018-11-30 22:30:43', 'movie'),
+(374, 29, 'The Hidden Blade', 34019, '2004-10-30', 'Set in 19th Century Japan a young samurai who finds himself in love with a farm girl leaves his home to begin a new life. He has to take stock of his new life when he is put to the test and ordered to kill a traitor who just happens to be his dearest friend.', '/fHEBemVj3I67EQiDo4KlC5UkDAv.jpg', '/vP6UXgOktc8ghfopbugtCfRjKQD.jpg', 'Da0KvKm6hP0', '', '2018-11-30 22:31:18', '2018-11-30 22:31:18', 'movie'),
+(375, 29, 'Harakiri', 14537, '1962-09-15', 'Aging samurai Hanshiro Tsugumo arrives at the home of Kageyu Saito and asks to commit a ritual suicide on the property, which Saito thinks is a ploy to gain pity and a job. Saito tells Tsugumo of another samurai, Motome Chijiiwa, who threatened suicide as a stratagem, only to be forced to follow through on the task. When Tsugumo reveals that Chijiiwa was his son-in-law, the disclosure sets off a fierce conflict.', '/5konZnIbcAxZjP616Cz5o9bKEfW.jpg', '/pz9fxHyGiiNLZ21bccAtwrMAH7f.jpg', '', '', '2018-11-30 22:31:54', '2018-11-30 22:31:54', 'movie'),
+(376, 29, 'Yojimbo', 11878, '1961-04-25', 'A nameless ronin, or samurai with no master, enters a small village in feudal Japan where two rival businessmen are struggling for control of the local gambling trade. Taking the name Sanjuro Kuwabatake, the ronin convinces both silk merchant Tazaemon and sake merchant Tokuemon to hire him as a personal bodyguard, then artfully sets in motion a full-scale gang war between the two ambitious and unscrupulous men.', '/tN7kYPjRhDolpui9sc9Eq9n5b2O.jpg', '/7geWAyhcmjcMQWcZA5lrS7Le8cG.jpg', 'y_1iT_GmHTE', '', '2018-11-30 22:32:07', '2018-11-30 22:32:07', 'movie'),
+(377, 29, 'Sanjuro', 11712, '1962-01-01', 'Toshiro Mifune swaggers and snarls to brilliant comic effect in Kurosawa\'s tightly paced, beautifully composed \"Sanjuro.\" In this companion piece and sequel to \"Yojimbo,\" jaded samurai Sanjuro helps an idealistic group of young warriors weed out their clan\'s evil influences, and in the process turns their image of a proper samurai on its ear.', '/zW47oIH3bc3ggmmmzTvKqM4Fqjk.jpg', '/7g5v2zXedkwiFqDlWqcoRUUQYD6.jpg', 'ZHIRcbAMFHo', '', '2018-11-30 22:32:29', '2018-11-30 22:32:29', 'movie'),
+(378, 29, 'Ran', 11645, '1985-06-01', 'With Ran, legendary director Akira Kurosawa reimagines Shakespeare\'s King Lear as a singular historical epic set in sixteenth-century Japan. Majestic in scope, the film is Kurosawa\'s late-life masterpiece, a profound examination of the folly of war and the crumbling of one family under the weight of betrayal, greed, and the insatiable thirst for power.', '/dwYUbrcQAyshW22yoUTzWwwC67b.jpg', '/3QWR9tyxLtCz7xANh7nyIxYPISp.jpg', 'AbbfDntoRRk', '', '2018-11-30 22:32:40', '2018-11-30 22:32:40', 'movie'),
+(379, 29, 'The Twilight Samurai', 12496, '2002-11-02', 'Seibei Iguchi leads a difficult life as a low ranking samurai at the turn of the nineteenth century. A widower with a meager income, Seibei struggles to take care of his two daughters and senile mother. New prospects seem to open up when the beautiful Tomoe, a childhood friend, comes back into he and his daughters\' life, but as the Japanese feudal system unravels, Seibei is still bound by the code of honor of the samurai and by his own sense of social precedence. How can he find a way to do what is best for those he loves?', '/3cWsPgrwxEpTbJMCRXcWpxWgW11.jpg', '/sHhRLxifxYPmft1yLh8iIO9z00H.jpg', 'op4KVD-9p2Q', '', '2018-11-30 22:33:06', '2018-11-30 22:33:06', 'movie'),
+(380, 29, '13 Assassins', 58857, '2010-09-09', 'A bravado period action film set at the end of Japan\'s feudal era in which a group of unemployed samurai are enlisted to bring down a sadistic lord and prevent him from ascending to the throne and plunging the country into a war-torn future.', '/7Vr1c98X9JaKW6K95Xm6KBqiqDg.jpg', '/3XNpANIIv8O49oTD31suUdhINHH.jpg', 'NgPC74-Tde8', '', '2018-11-30 22:33:34', '2018-11-30 22:33:34', 'movie'),
+(381, 29, 'Zatoichi', 246, '2003-09-06', 'Zatôichi is a 19th century blind nomad who makes his living as a gambler and masseur. However, behind this humble facade, he is a master swordsman gifted with a lightning-fast draw and breathtaking precision. While wandering, Zatôichi discovers a remote mountain village at the mercy of Ginzo, a ruthless gang-leader. Ginzo disposes of anyone who gets in his way, especially after hiring the mighty samurai ronin, Hattori, as a bodyguard. After a raucous night of gambling in town, Zatôichi encounters a pair of geishas--as dangerous as they are beautiful--who\'ve come to avenge their parents\' murder. As the paths of these and other colorful characters intertwine, Ginzo\'s henchmen are soon after Zatôichi. With his legendary cane sword at his side, the stage is set for a riveting showdown.', '/xNFaRG30R3IiVFMgX8X8kAFGxCP.jpg', '/qvtzzhdr8ne2eb6lMaoCeXWye09.jpg', 'ZuqwMQTc8cE', '', '2018-11-30 22:34:15', '2018-11-30 22:34:15', 'movie'),
+(382, 29, 'Hara-Kiri: Death of a Samurai', 85836, '2011-10-15', 'An tale of revenge, honor and disgrace, centering on a poverty-stricken samurai who discovers the fate of his ronin son-in-law, setting in motion a tense showdown of vengeance against the house of a feudal lord.', '/rqIqSoxbsVTfcr6CgTtSpzJBkYt.jpg', '/aLNfGwTGl5jpQFN7QGqIgFBi9dd.jpg', 'R-sp6Xw0jJU', '', '2018-12-01 08:49:54', '2018-12-01 08:49:54', 'movie'),
+(383, 30, 'Ninja Assassin', 22832, '2009-09-29', 'Ninja Assassin follows Raizo, one of the deadliest assassins in the world. Taken from the streets as a child, he was transformed into a trained killer by the Ozunu Clan, a secret society whose very existence is considered a myth. But haunted by the merciless execution of his friend by the Clan, Raizo breaks free from them and vanishes. Now he waits, preparing to exact his revenge.', '/k0Nu7HuUdnjfeNPR6YSY0PDH2et.jpg', '/kmKZVgUPqf9v4c0UitSZlDM3RPv.jpg', 'NhYH26KTNbQ', '', '2018-12-02 22:55:26', '2018-12-02 22:55:26', 'movie'),
+(384, 30, 'Ninja', 25602, '2009-10-22', 'A westerner named Casey, studying Ninjutsu in Japan, is asked by the Sensei to return to New York to protect the legendary Yoroi Bitsu, an armored chest that contains the weapons of the last Koga Ninja.', '/nCbSXS8ffN2diuHH0mYJlVXpGhs.jpg', '/eybHrWUbxOJx5yYrQzIHcclxbDa.jpg', 'zTOMS-zaXXU', '', '2018-12-02 22:55:55', '2018-12-02 22:55:55', 'movie'),
+(385, 30, 'Ninja: Shadow of a Tear', 180894, '2013-12-27', 'Fight everyone and trust no one: it\'s the code of survival practiced by martial-arts master Casey Bowman after his life of domestic bliss is shattered by a savage act of violence. Vowing revenge, the fearless American stealthily tracks the killer from Osaka to Bangkok to Rangoon with the help of a wise and crafty sensei. His only clues: a series of victims whose necks bear the distinctive mark of strangulation by barbed wire. Fighting to avenge as well as to survive, Casey must sharpen his razor-like responses and take his battle skills to the next level, even using deep meditation to fake his own death. His target: the sinister drug lord Goro, who is flooding the streets with deadly meth cooked at his remote jungle factory. To prepare for his ultimate confrontation, Casey must finally become an invisible warrior worthy of the name Ninja. But just when his prey is cornered, an unexpected twist shows Casey that his battle is only beginning: he truly can trust no one.', '/k5uuo4mvWHb80ePDZylN2xvcz7h.jpg', '/qkhjHfXxZKD317GeifrepN9YJSt.jpg', 'RnddBOTuedc', '', '2018-12-02 22:56:11', '2018-12-02 22:56:11', 'movie'),
+(386, 30, 'Ninja in the Dragon\'s Den', 18813, '1982-06-23', 'Two rival warriors, a Japanese and a Chinese, are forced to work together after their master has been killed by a mighty enemy.', '/qPXU5mGS66G49VLqTTOkyRpf0pS.jpg', '/gQaaQrBrLUIGD4GKwP48Texr4Ba.jpg', 'RmgggbpqYQs', '', '2018-12-02 22:56:57', '2018-12-02 22:56:57', 'movie'),
+(387, 30, 'Shinobi: Heart Under Blade', 10116, '2005-09-17', 'Even though Gennosuke and Oboro are from rival ninja villages, they are secretly in love. At an annual conference with the Lord, it is dictated that a competition--a fight to the death--will take place between the five best shinobi from each village. Gennosuke and Oboro\'s love is made even more impossible when they each got picked as the leader of the five to represent their respective villages.', '/lKtLvF4Pj0zTMDvVvoidt3VDMf.jpg', '/g2cVmFG11sVVVhVQfrDeHWeqZ5E.jpg', '', '', '2018-12-02 22:57:47', '2018-12-02 22:57:47', 'movie'),
+(388, 30, 'Batman Begins', 272, '2005-06-10', 'Driven by tragedy, billionaire Bruce Wayne dedicates his life to uncovering and defeating the corruption that plagues his home, Gotham City.  Unable to work within the system, he instead creates a new identity, a symbol of fear for the criminal underworld - The Batman.', '/dr6x4GyyegBWtinPBzipY02J2lV.jpg', '/65JWXDCAfwHhJKnDwRnEgVB411X.jpg', 'bkU7Cl2SSvI', '', '2018-12-02 22:58:11', '2018-12-02 22:58:11', 'movie'),
+(389, 30, 'Revenge of the Ninja', 17386, '1983-09-07', 'After his family is killed in Japan by ninjas, Cho and his son Kane come to America to start a new life. He opens a doll shop but is unwittingly importing heroin in the dolls. When he finds out that his friend has betrayed him, Cho must prepare for the ultimate battle he has ever been involved in.', '/hhVQongUUKCSwZG0RqVIRKVnYVE.jpg', '/hfle11Mu8akVALMsMyUwN4y39Bp.jpg', 'X-U17ajlzbY', '', '2018-12-02 22:58:41', '2018-12-02 22:58:41', 'movie'),
+(390, 30, 'The Wolverine', 76170, '2013-07-23', 'Wolverine faces his ultimate nemesis - and tests of his physical, emotional, and mortal limits - in a life-changing voyage to modern-day Japan.', '/iTST6DcLhfufWYUKCOskkusaYUq.jpg', '/oFyaTmJ5ZPPl16uB4Ry9pWKvtDc.jpg', 'u1VCP3O8wG0', '', '2018-12-02 22:59:14', '2018-12-02 22:59:14', 'movie'),
+(391, 30, 'G.I. Joe: Retaliation', 72559, '2013-03-26', 'Framed for crimes against the country, the G.I. Joe team is terminated by Presidential order. This forces the G.I. Joes into not only fighting their mortal enemy Cobra; they are forced to contend with threats from within the government that jeopardize their very existence.', '/iFWxbu2LLtfaWv6D1TSrY11huTe.jpg', '/b9OVFl48ZV2oTLzACSwBpNrCUhJ.jpg', 'bz24m8jAMHM', '', '2018-12-02 22:59:26', '2018-12-02 22:59:26', 'movie'),
+(392, 30, 'The Super Ninja', 252819, '1984-06-01', 'John, a police officer is framed and drugs are found in his home.  He is arrested and brutally interrogated.  Using his skills as a ninja, he escapes and uncover a plot to steal his girlfriend\'s father\'s life work.  He travels to China to face the 5 Element Ninjas and rescue his girlfriend.', '/ebwJFNeVmbhTeqyr0nXp0kkEPtd.jpg', '/dGvTEEJJzshWVLEEMZqZYpzhec1.jpg', '', '', '2018-12-02 23:00:09', '2018-12-02 23:00:09', 'movie'),
+(393, 30, 'Azumi', 5889, '2003-05-10', 'In war-torn Japan, the Tokugawa Shogun, desperate to restore peace to his people, orders the assassination of the hostile warlords. A beautiful young woman is raised from birth with nine other orphans, to become an assassin. Her name is Azumi, the ultimate assassin.', '/3pnMViIDP6whWXnTBq7ibQipSyS.jpg', '/jsdhOguOrCm5TGLo8dtWn03fm0m.jpg', '', '', '2018-12-02 23:00:43', '2018-12-02 23:00:43', 'movie'),
+(394, 30, 'Ninja Terminator', 40027, '1985-01-01', 'Three martial-arts students search for the Golden Ninja Warrior, a statue reputed to have magic powers. Ninja mayhem by Godfrey Ho intercut with multiple scenes from Stafferyui Bulcheonggaek', '/5YkYpKxTQVq4gna3qTztwwwo8YF.jpg', '/vKxXCxrOJp0e3kS4J84RO7JKe6x.jpg', '', '', '2018-12-02 23:01:34', '2018-12-02 23:01:34', 'movie'),
+(395, 31, 'Bell, Book and Candle', 2006, '1958-12-25', 'A modern-day witch likes her neighbor but despises his fiancee, so she enchants him to love her instead... only to fall in love with him for real.', '/efVJYzeOWAE3z4Usu16RCSheYav.jpg', '/FLa6tHBr4P4DLQhQecDtXslPTY.jpg', '6VCjBc3PBWA', '', '2018-12-05 21:52:37', '2018-12-05 21:52:37', 'movie'),
+(396, 31, 'Black Sunday', 27632, '1960-08-11', 'A vengeful witch and her fiendish servant return from the grave and begin a bloody campaign to possess the body of the witch\'s beautiful look-alike descendant. Only the girl\'s brother and a handsome doctor stand in her way.', '/rYsXRKUOdQW8xSy5heWzaO7N4nL.jpg', '/g7utu84ZPvQtbVpml5cuRH7hjfQ.jpg', '1Q5nV12AgVc', '', '2018-12-05 21:52:57', '2018-12-05 21:52:57', 'movie'),
+(397, 31, 'The Blair Witch Project', 2667, '1999-07-14', 'In October of 1994 three student filmmakers disappeared in the woods near Burkittsville, Maryland, while shooting a documentary. A year later their footage was found.', '/hyaOKmxuF8YJKHqWlwpiZU5QsAr.jpg', '/rEUhIQZCk9ZAhyEyRFG0wPLYdXn.jpg', 'a_Hw4bAUj8A', '', '2018-12-05 21:53:15', '2018-12-05 21:53:15', 'movie'),
+(398, 31, 'The Craft', 9100, '1996-05-03', 'A Catholic school newcomer falls in with a clique of teen witches who wield their powers against all who dare to cross them -- be they teachers, rivals or meddlesome parents.', '/5QoAIazIjidUcnD4Vggvmvg42NW.jpg', '/doMoN3efVN4NefceDtLVY8879fR.jpg', 'DoM4OXQVCcE', '', '2018-12-05 21:53:28', '2018-12-05 21:53:28', 'movie'),
+(399, 31, 'Eve\'s Bayou', 45153, '1997-09-07', 'The story is set in 1962 Louisiana. The big Batiste family is headed by charming doctor Louis. Though he is married to beautiful Roz, he has a weakness for attractive women patients. One day Louis is flirting with married and sexy Metty Mereaux, not knowing that he is observed by his youngest idealistic daughter Eve, who is there by accident. Eve can not forget the incident which is traumatic for her naiveté, and shares a secret with older sister Cisely. Lies start to roll...', '/33yTPcGSv7eo3FVlb7XKACHl1M8.jpg', '/vbLMYao94i4BbVDSBXsuVOC7g2L.jpg', 'TbtdDKf3zAU', '', '2018-12-05 21:53:44', '2018-12-05 21:53:44', 'movie'),
+(400, 31, 'Hocus Pocus', 10439, '1993-07-16', 'After 300 years of slumber, three sister witches are accidentally resurrected in Salem on Halloween night, and it us up to three kids and their newfound feline friend to put an end to the witches\' reign of terror once and for all.', '/4boIuVTbEYv9pynSj99jK5EezfA.jpg', '/tFNHw6u2UQ3jW1xuciD0mQmcLZn.jpg', 'Oryofd_T-ng', '', '2018-12-05 21:53:58', '2018-12-05 21:53:58', 'movie'),
+(401, 31, 'Kiki\'s Delivery Service', 16859, '1989-07-29', 'A young witch, on her mandatory year of independent life, finds fitting into a new community difficult while she supports herself by running an air courier service.', '/f0QzflRlwX5dhEnzPqoVOsCt5Cy.jpg', '/VVaW8V7lwNXRQQ58AOVu3xZlPj.jpg', '4bG17OYs-GA', '', '2018-12-05 21:54:21', '2018-12-05 21:54:21', 'movie'),
+(402, 31, 'The Love Witch', 374052, '2016-11-11', 'Elaine, a beautiful young witch, is determined to find a man to love her. In her gothic Victorian apartment she makes spells and potions, and then picks up men and seduces them. However her spells work too well, and she ends up with a string of hapless victims. When she finally meets the man of her dreams, her desperation to be loved will drive her to the brink of insanity and murder.', '/jDKJ3yHiia0IR1uzIIIL7kUvwhu.jpg', '/59OpzZAUlxtWIDiIj7Cxo3yTXd5.jpg', 'vXOmzA56E40', '', '2018-12-05 21:54:35', '2018-12-05 21:54:35', 'movie'),
+(403, 31, 'Practical Magic', 6435, '1998-10-16', 'Sally and Gillian Owens, born into a magical family, have mostly avoided witchcraft themselves. But when Gillian\'s vicious boyfriend, Jimmy Angelov, dies unexpectedly, the Owens sisters give themselves a crash course in hard magic. With policeman Gary Hallet growing suspicious, the girls struggle to resurrect Angelov -- and unwittingly inject his corpse with an evil spirit that threatens to end their family line.', '/AwmToSgf2IL3aHv0QRVsR5KvChv.jpg', '/2csru6TjDXExFgx5OXxJmRHujVs.jpg', 'R7uixLkpjPs', '', '2018-12-05 21:54:50', '2018-12-05 21:54:50', 'movie'),
+(404, 31, 'Rosemary\'s Baby', 805, '1968-06-12', 'A young couple moves into an infamous New York apartment building to start a family. Things become frightening as Rosemary begins to suspect her unborn baby isn’t safe around their strange neighbors.', '/kqA1pt9ovovArgJZi2Lu4Unf6He.jpg', '/3THF7D3uPqhV6k7iKsr2EyjqVPK.jpg', 'NoXLXMbOgiU', '', '2018-12-05 21:55:11', '2018-12-05 21:55:11', 'movie'),
+(405, 31, 'Suspiria', 11906, '1977-02-01', 'From the moment she arrives in Freiberg, Germany, to attend the prestigious Tanz Academy, American ballet-dancer Suzy Bannion senses that something horribly evil lurks within the walls of the age-old institution.', '/ccMPzxtnr5WcHaiwIN4P7mXoJzo.jpg', '/i8lyb818XNNGaXiL6qHSxVNodKy.jpg', 'GCJkJ2c4E0Y', '', '2018-12-05 21:55:25', '2018-12-05 21:55:25', 'movie'),
+(406, 31, 'The Witch', 310131, '2016-02-19', 'In 1630s New England, William and Katherine lead a devout Christian life with five children, homesteading on the edge of an impassable wilderness, exiled from their settlement when William defies the local church. When their newborn son vanishes and crops mysteriously fail, the family turns on one another.', '/l6NobtvA1FMhtV2HH20spDGr1wl.jpg', '/k06hljqysdm9cvHGZk6Meiv81e6.jpg', 'TIkW4StMAPE', '', '2018-12-05 21:55:38', '2018-12-05 21:55:38', 'movie'),
+(407, 31, 'The Witches', 10166, '1990-05-25', 'A young boy named Luke and his grandmother go on vacation only to discover their hotel is hosting an international witch convention, where the Grand High Witch is unveiling her master plan to turn all children into mice. Will Luke fall victim to the witches\' plot before he can stop them?', '/kke639pfyxMNy8LekWSBVHbljeO.jpg', '/p9RUiryRT3nGrHZcgEidFRSpQXP.jpg', 'lVXF-3Hk5rg', '', '2018-12-05 21:55:55', '2018-12-05 21:55:55', 'movie'),
+(408, 31, 'The Witches of Eastwick', 6069, '1987-06-12', 'Three single women in a picturesque village have their wishes granted - at a cost - when a mysterious and flamboyant man arrives in their lives.', '/xWgLpOuX8PRCpVRQEddb4rMknmx.jpg', '/gghNIsyNPX0JtrB3CSxoEJIGOOd.jpg', 'mLs1y_KSTKk', '', '2018-12-05 21:56:12', '2018-12-05 21:56:12', 'movie'),
+(409, 31, 'The Wizard of Oz', 630, '1939-08-15', 'Young Dorothy finds herself in a magical world where she makes friends with a lion, a scarecrow and a tin man as they make their way along the yellow brick road to talk with the Wizard and ask for the things they miss most in their lives. The Wicked Witch of the West is the only thing that could stop them.', '/tKEHoKPZv3af0Pn3poaOLHOJ6NM.jpg', '/pU2hNUkFAiq6HC8vUhnpRVcvH4G.jpg', 'Uqfj0Rq1QuI', '', '2018-12-05 21:56:40', '2018-12-05 21:56:40', 'movie'),
+(410, 32, 'The Butterfly Effect', 1954, '2004-01-22', 'A young man struggles to access sublimated childhood memories. He finds a technique that allows him to travel back into the past, to occupy his childhood body and change history. However, he soon finds that every change he makes has unexpected consequences.', '/3PAQy3CyNNJPES772OFMx47lFEE.jpg', '/zXTUrm0BIrrZn3nEhybg0hlY275.jpg', 'B8_dgqfPXFg', '<p>I love this movie!</p>', '2018-12-08 08:29:30', '2018-12-08 08:29:30', 'movie'),
+(411, 32, 'Predestination', 206487, '2014-08-28', 'Predestination chronicles the life of a Temporal Agent sent on an intricate series of time-travel journeys designed to prevent future killers from committing their crimes. Now, on his final assignment, the Agent must stop the one criminal that has eluded him throughout time and prevent a devastating attack in which thousands of lives will be lost.', '/kDdUtDsGMQ3OYwoBtEQyJIGPz4V.jpg', '/1G44M3SNVcVBZer0I5ogQBUnVCz.jpg', 'NfFO_ebkuKU', '', '2018-12-08 08:30:00', '2018-12-08 08:30:00', 'movie');
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(412, 32, '13 Going on 30', 10096, '2004-04-13', 'After total humiliation at her thirteenth birthday party, Jenna Rink wants to just hide until she\'s thirty. With a little magic, her wish is granted, but it turns out that being thirty isn\'t as always as awesome as she thought it would be!', '/t0c3qxcKSaO4iBYVAzIeyPbC8I1.jpg', '/1sJoLA3bjKvblPh7GR9URBWZsDO.jpg', 'PFUk-qUbfW4', '', '2018-12-08 08:30:15', '2018-12-08 08:30:15', 'movie'),
+(413, 32, 'Midnight in Paris', 59436, '2011-05-11', 'A romantic comedy about a family traveling to the French capital for business. The party includes a young engaged couple forced to confront the illusion that a life different from their own is better.', '/xxSopLYATHXSepXcEaBh9Gazv6p.jpg', '/7sIDEHnw51k7Him2fEtA70I1OBw.jpg', 'FAfR8omt-CY', '', '2018-12-08 08:31:03', '2018-12-08 08:31:03', 'movie'),
+(414, 32, 'About Time', 122906, '2013-08-16', 'The night after another unsatisfactory New Year party, Tim\'s father tells his son that the men in his family have always had the ability to travel through time. Tim can\'t change history, but he can change what happens and has happened in his own life – so he decides to make his world a better place... by getting a girlfriend. Sadly, that turns out not to be as easy as he thinks.', '/zSuh8dGwqpsWR7ccvYbfxbSZ37o.jpg', '/oNBv90rLY76ifEExrFHdJgLzBQG.jpg', '7OIFdWk83no', '', '2018-12-08 08:31:20', '2018-12-08 08:31:20', 'movie'),
+(415, 32, 'X-Men: Days of Future Past', 127585, '2014-05-15', 'The ultimate X-Men ensemble fights a war for the survival of the species across two time periods as they join forces with their younger selves in an epic battle that must change the past – to save our future.', '/pb1IURTkK5rImP9ZV83lxJO2us7.jpg', '/5LBcSLHAtEIIgvNkA2dPmYH5wR7.jpg', '7tByfJVtcDg', '', '2018-12-08 08:31:37', '2018-12-08 08:31:37', 'movie'),
+(416, 32, 'Harry Potter and the Prisoner of Azkaban', 673, '2004-05-31', 'Harry, Ron and Hermione return to Hogwarts for another magic-filled year. Harry comes face to face with danger yet again, this time in the form of escaped convict, Sirius Black—and turns to sympathetic Professor Lupin for help.', '/jUFjMoLh8T2CWzHUSjKCojI5SHu.jpg', '/wUpBH6RIH4uOiWoPjj8MKUemu9F.jpg', 'R69laoH02xg', '', '2018-12-08 08:31:55', '2018-12-08 08:31:55', 'movie'),
+(417, 32, 'Source Code', 45612, '2011-03-30', 'Decorated soldier Captain Colter Stevens wakes up in the body of an unknown man, discovering he\'s involved in a mission to find the bomber of a Chicago commuter train. He learns he\'s part of a top-secret experimental program that enables him to experience the final 8 minutes of another person\'s life. Colter re-lives the train incident over and over again, gathering more clues each time. But can he discover who is responsible for the attack before the next one happens?', '/cpl7R5d3qwWvykRRSxdhQ0htstU.jpg', '/x8cIgtcVi9DVrlPuvlsvc43dik9.jpg', 'NkTrG-gpIzE', '<p>Marvelous!</p>', '2018-12-08 08:32:24', '2018-12-08 08:32:24', 'movie'),
+(418, 32, 'Looper', 59967, '2012-09-26', 'In the futuristic action thriller Looper, time travel will be invented but it will be illegal and only available on the black market. When the mob wants to get rid of someone, they will send their target 30 years into the past where a looper, a hired gun, like Joe is waiting to mop up. Joe is getting rich and life is good until the day the mob decides to close the loop, sending back Joe\'s future self for assassination.', '/sNjL6SqErDBE8OUZlrDLkexfsCj.jpg', '/vuHG8VlYnvw4gUKtS7GY5kZol69.jpg', '0uIWGOKW5OM', '', '2018-12-08 08:32:44', '2018-12-08 08:32:44', 'movie'),
+(419, 32, 'Project Almanac', 227719, '2015-01-28', 'A group of teens discover secret plans of a time machine, and construct one. However, things start to get out of control.', '/cMzjoLBYulLCdmIKEdHeyZODzXf.jpg', '/xniiaYVNR4y9Bv0Sdc6hx3MOGyW.jpg', '8Yih-CxTWsw', '', '2018-12-08 08:33:07', '2018-12-08 08:33:07', 'movie'),
+(420, 32, 'Terminator 2: Judgment Day', 280, '1991-07-03', 'Nearly 10 years have passed since Sarah Connor was targeted for termination by a cyborg from the future. Now her son, John, the future leader of the resistance, is the target for a newer, more deadly terminator. Once again, the resistance has managed to send a protector back to attempt to save John and his mother Sarah.', '/2y4dmgWYRMYXdD1UyJVcn2HSd1D.jpg', '/d9AqtruwS8nljKjL5aYzM42hQJr.jpg', 'lwSysg9o7wE', '', '2018-12-08 08:33:56', '2018-12-08 08:33:56', 'movie'),
+(421, 32, 'Hot Tub Time Machine', 23048, '2010-03-26', 'A malfunctioning time machine at a ski resort takes a man back to 1986 with his two friends and nephew, where they must relive a fateful night and not change anything to make sure the nephew is born.', '/zERxFAXiQdPAfsumIIcBFH8fOVt.jpg', '/i4xX5YUHUfNvlHt65DPDXQgJT7m.jpg', 'HszVQgs4e_c', '', '2018-12-08 08:34:23', '2018-12-08 08:34:23', 'movie'),
+(422, 32, 'Back to the Future', 105, '1985-07-03', 'Eighties teenager Marty McFly is accidentally sent back in time to 1955, inadvertently disrupting his parents\' first meeting and attracting his mother\'s romantic interest. Marty must repair the damage to history by rekindling his parents\' romance and - with the help of his eccentric inventor friend Doc Brown - return to 1985.', '/pTpxQB1N0waaSc3OSn0e9oc8kx9.jpg', '/x4N74cycZvKu5k3KDERJay4ajR3.jpg', 'qvsgGtivCgs', '', '2018-12-08 08:34:54', '2018-12-08 08:34:54', 'movie'),
+(423, 32, 'Twelve Monkeys', 63, '1995-12-29', 'In the year 2035, convict James Cole reluctantly volunteers to be sent back in time to discover the origin of a deadly virus that wiped out nearly all of the earth\'s population and forced the survivors into underground communities. But when Cole is mistakenly sent to 1990 instead of 1996, he\'s arrested and locked up in a mental hospital. There he meets psychiatrist Dr. Kathryn Railly, and patient Jeffrey Goines, the son of a famous virus expert, who may hold the key to the mysterious rogue group, the Army of the 12 Monkeys, thought to be responsible for unleashing the killer disease.', '/6Sj9wDu3YugthXsU0Vry5XFAZGg.jpg', '/6KXbhaxkgExC5EdDqAzRinhmoZ8.jpg', '15s4Y9ffW_o', '', '2018-12-08 08:35:06', '2018-12-08 08:35:06', 'movie'),
+(424, 32, 'The Jacket', 9667, '2005-03-04', 'A military veteran goes on a journey into the future, where he can foresee his death and is left with questions that could save his life and those he loves.', '/ts5hSSpgHEcPFpdfk6gmLLgx5k4.jpg', '/4y4jpkHGh10QPNWy1iClCUgF8rX.jpg', 'rCxQ83Pg1Ko', '', '2018-12-08 08:35:30', '2018-12-08 08:35:30', 'movie'),
+(425, 32, 'The Time Machine', 2135, '2002-03-04', 'Hoping to alter the events of the past, a 19th century inventor instead travels 800,000 years into the future, where he finds mankind divided into two warring races.', '/3OzdAcb0ajibR4xvVTH6WkBTYWY.jpg', '/mlSxz8GS2hodfRAtC9D1dRjvmhe.jpg', '90T7iLuzFgg', '', '2018-12-08 08:35:56', '2018-12-08 08:35:56', 'movie'),
+(426, 32, 'Groundhog Day', 137, '1993-02-11', 'A narcissistic TV weatherman, along with his attractive-but-distant producer and mawkish cameraman, is sent to report on Groundhog Day in the small town of Punxsutawney, where he finds himself repeating the same day over and over.', '/vXjVd0Vu0MXRZnga7wEnHIIhO5B.jpg', '/8mX6FV59T2dSeln4Vc3KLM133aZ.jpg', 'tSVeDx9fk60', '', '2018-12-08 08:36:18', '2018-12-08 08:36:18', 'movie'),
+(427, 32, 'Men in Black 3', 41154, '2012-05-23', 'Agents J and K are back...in time. J has seen some inexplicable things in his 15 years with the Men in Black, but nothing, not even aliens, perplexes him as much as his wry, reticent partner. But when K\'s life and the fate of the planet are put at stake, Agent J will have to travel back in time to put things right. J discovers that there are secrets to the universe that K never told him - secrets that will reveal themselves as he teams up with the young Agent K to save his partner, the agency, and the future of humankind.', '/l9hrvXyGq19f6jPRZhSVRibTMwW.jpg', '/mhokitPCejvcZb0r3SHURZDp7OO.jpg', 'IyaFEBI_L24', '', '2018-12-08 08:37:20', '2018-12-08 08:37:20', 'movie'),
+(428, 32, 'Timecop', 8831, '1994-09-15', 'An officer for a security agency that regulates time travel, must fend for his life against a shady politician who has a tie to his past.', '/q2ENMsGRUmoglHKPyOQe2fdy1cb.jpg', '/3iDik1VJkpZbmUNNOKHlWKu3or4.jpg', 'WuujAfDRSfc', '', '2018-12-08 08:37:30', '2018-12-08 08:37:30', 'movie'),
+(429, 32, 'Frequency', 10559, '2000-04-28', 'When a rare phenomenon gives police officer John Sullivan the chance to speak to his father, 30 years in the past, he takes the opportunity to prevent his dad\'s tragic death.  After his actions inadvertently give rise to a series of brutal murders he and his father must find a way to fix the consequences of altering time.', '/n0QAAZmIaPPIShVkk8eiKwfGV9.jpg', '/vPfmHdjbms87scKIhmzg9QGRfSc.jpg', 'i6VQxn6HK_c', '', '2018-12-08 08:37:48', '2018-12-08 08:37:48', 'movie'),
+(430, 32, 'Donnie Darko', 141, '2001-01-18', 'After narrowly escaping a bizarre accident, a troubled teenager is plagued by visions of a large bunny rabbit that manipulates him to commit a series of crimes.', '/nmb4QhCRmdfNP6rgb81yUFgI83l.jpg', '/lh79qx9sEkRZvtTHHmHSUUwYZLN.jpg', 'bzLn8sYeM9o', '', '2018-12-08 08:38:32', '2018-12-08 08:38:32', 'movie'),
+(431, 32, 'Arrival', 329865, '2016-11-10', 'Taking place after alien crafts land around the world, an expert linguist is recruited by the military to determine whether they come in peace or are a threat.', '/hLudzvGfpi6JlwUnsNhXwKKg4j.jpg', '/yIZ1xendyqKvY3FGeeUYUd5X9Mm.jpg', 'gwqSi_ToNPs', '', '2018-12-08 08:39:47', '2018-12-08 08:39:47', 'movie'),
+(432, 32, 'Interstellar', 157336, '2014-11-05', 'Interstellar chronicles the adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.', '/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg', '/xu9zaAevzQ5nnrsXN6JcahLnG4i.jpg', '2LqzF5WauAw', '', '2018-12-08 08:39:59', '2018-12-08 08:39:59', 'movie'),
+(433, 33, 'Love Actually', 508, '2003-09-07', 'Follows seemingly unrelated people as their lives begin to intertwine while they fall in – and out – of love. Affections languish and develop as Christmas draws near.', '/kfX8Ctin3fSZbdnjh6CXSNZUOVP.jpg', '/nnfORNm5LclB9zxN3TqDKFTGOvT.jpg', 'H9Z3_ifFheQ', '', '2018-12-09 09:08:23', '2018-12-09 09:08:23', 'movie'),
+(434, 33, 'Elf', 10719, '2003-10-09', 'When young Buddy falls into Santa\'s gift sack on Christmas Eve, he\'s transported back to the North Pole and raised as a toy-making elf by Santa\'s helpers. But as he grows into adulthood, he can\'t shake the nagging feeling that he doesn\'t belong. Buddy vows to visit Manhattan and find his real dad, a workaholic publisher.', '/9jChHqqcpe0zHNTqkNqWZkwkgil.jpg', '/jRzrQ7Thcjpetr0n8B6w980eZet.jpg', 'LMPyILBePfI', '', '2018-12-09 09:08:41', '2018-12-09 09:08:41', 'movie'),
+(435, 33, 'Home Alone', 771, '1990-11-09', 'Eight-year-old Kevin McCallister makes the most of the situation after his family unwittingly leaves him behind when they go on Christmas vacation. But when a pair of bungling burglars set their sights on Kevin\'s house, the plucky kid stands ready to defend his territory. By planting booby traps galore, adorably mischievous Kevin stands his ground as his frantic mother attempts to race home before Christmas Day.', '/5Lo3sWuvbO4AnrAHYBgB5U1Opqd.jpg', '/vUyDnfk7DHaozfl1cXFh6PzbUW4.jpg', '0iNmVVlmmv8', '', '2018-12-09 09:09:03', '2018-12-09 09:09:03', 'movie'),
+(444, 33, 'Home Alone 2: Lost in New York', 772, '1992-11-19', 'Instead of flying to Florida with his folks, Kevin ends up alone in New York, where he gets a hotel room with his dad\'s credit card—despite problems from a clerk and meddling bellboy. But when Kevin runs into his old nemeses, the Wet Bandits, he\'s determined to foil their plans to rob a toy store on Christmas eve.', '/ezGcLFTvwR64I3Z7RqHnXRFet4r.jpg', '/dS1EMlZK8Axj5wrgRpWGLOb85KN.jpg', 'k0kJieJ1k6k', '', '2018-12-09 09:16:36', '2018-12-09 09:22:08', 'movie'),
+(437, 33, 'How the Grinch Stole Christmas', 8871, '2000-11-17', 'Inside a snowflake exists the magical land of Whoville. In Whoville, live the Whos, an almost mutated sort of Munchkin-like people. All the Whos love Christmas, yet just outside of their beloved Whoville lives the Grinch. The Grinch is a nasty creature that hates Christmas, and plots to steal it away from the Whos, whom he equally abhors. Yet a small child, Cindy Lou Who, decides to try befriending the Grinch.', '/vQfgNHbcIWS2j3AAAzLOtPUGVmB.jpg', '/xi6Q3gyfxbdVkHIqwyR4bk7b7GM.jpg', 'myTaigPrbsg', '', '2018-12-09 09:09:27', '2018-12-09 09:09:27', 'movie'),
+(438, 33, 'The Polar Express', 5255, '2004-11-10', 'When a doubting young boy takes an extraordinary train ride to the North Pole, he embarks on a journey of self-discovery that shows him that the wonder of life never fades for those who believe.', '/2NETsNUxcfBdKtq3W5YbT9O03Ak.jpg', '/AcXCaPRB037DZoZZ2cJzRSxrNBP.jpg', 'F8_GUrqe5tc', '', '2018-12-09 09:09:55', '2018-12-09 09:09:55', 'movie'),
+(439, 33, 'A Christmas Carol', 17979, '2009-11-04', 'Miser Ebenezer Scrooge is awakened on Christmas Eve by spirits who reveal to him his own miserable existence, what opportunities he wasted in his youth, his current cruelties, and the dire fate that awaits him if he does not change his ways. Scrooge is faced with his own story of growing bitterness and meanness, and must decide what his own future will hold: death or redemption.', '/jeOCcjUAcSYleVwhsaKEPT4CYwF.jpg', '/GtwSStViUdhKGf0d7tCkR7alKV.jpg', 'VZ3lr3urgDU', '', '2018-12-09 09:10:44', '2018-12-09 09:10:44', 'movie'),
+(440, 33, 'Jingle All the Way', 9279, '1996-11-15', 'Meet Howard Langston, a salesman for a mattress company is constantly busy at his job, and he also constantly disappoints his son, after he misses his son\'s karate exposition, his son tells Howard that he wants for Christmas is an action figure of his son\'s television hero, he tries hard to to make it up to him. Unfortunately for Howard, it is Christmas Eve, and every store is sold out of Turbo Man, now Howard must travel all over town and compete with everybody else to find a Turbo Man action figure.', '/aaVkNhUONnkSv5ijPjq7pEmmWyE.jpg', '/9SNO9BglZJgGTMOB5K4NVgecgX1.jpg', 'JuPc9QJcGJs', '', '2018-12-09 09:11:14', '2018-12-09 09:11:14', 'movie'),
+(441, 33, 'Daddy\'s Home 2', 419680, '2017-11-09', 'Brad and Dusty must deal with their intrusive fathers during the holidays.', '/rF2IoKL0IFmumEXQFUuB8LajTYP.jpg', '/jRi6AKMPLnMtsFtWY0FUXZOlnVb.jpg', 'huaGQdrkrK0', '', '2018-12-09 09:14:08', '2018-12-09 09:14:08', 'movie'),
+(442, 33, 'Bad Santa', 10147, '2003-11-26', 'A miserable conman and his partner pose as Santa and his Little Helper to rob department stores on Christmas Eve. But they run into problems when the conman befriends a troubled kid, and the security boss discovers the plot.', '/103KNOz11U4iojwW6F1rOKKZIDp.jpg', '/xZKE444VlbDzyJhLOybfunAmvFz.jpg', 'xQvaoRScND4', '', '2018-12-09 09:14:34', '2018-12-09 09:14:34', 'movie'),
+(443, 33, 'The Christmas Chronicles', 527435, '2018-11-22', 'Siblings Kate and Teddy try to prove Santa Claus is real, but when they accidentally cause his sleigh to crash, they have to save Christmas.', '/5Il2EMSF2KecrUKZPuen6BZmaCP.jpg', '/vUbWBVHngojXOu1kBgH6xFkZZTA.jpg', 'V0xv99h17QE', '', '2018-12-09 09:15:26', '2018-12-09 09:15:26', 'movie'),
+(453, 33, 'The Santa Clause', 11395, '1994-11-10', 'Scott Calvin is an ordinary man, who accidentally causes Santa Claus to fall from his roof on Christmas Eve and is knocked unconscious. When he and his young son finish Santa\'s trip and deliveries, they go to the North Pole, where Scott learns he must become the new Santa and convince those he loves that he is indeed, Father Christmas.', '/hrZjAYAF1o37k4Qb442c4yxwVLw.jpg', '/rcQZmnhcb6P4mkgJAHnCYp3c1gp.jpg', 'Bx8FX7etF_8', '', '2018-12-09 09:22:23', '2018-12-09 09:22:23', 'movie'),
+(445, 33, 'The Man Who Invented Christmas', 450322, '2017-11-22', 'In 1843, Dickens was a literary rock star, but struggling financially after the slow sales of his previous novel, Martin Chuzzlewit. Seized with the vision of a story that would fire the hearts of humanity, Dickens pitched his publishers A Christmas Carol, but they passed. Desperate, Dickens declared he would publish it himself. Slipping into the world of his novel, he spent the next six weeks laughing and arguing with his characters, acting out scenes like a madman on the streets of London for hours on end.  With a powerful performance from Dan Stevens, THE MAN WHO INVENTED CHRISTMAS is a film for all ages about the most iconic Christmas story ever written and the genius behind it. The film also stars Christopher Plummer (The Sound of Music) as Ebenezer Scrooge and Jonathan Pryce (Game of Thrones) as John Dickens.', '/qRkzRue5rTzB6PESXBJCKqROOXC.jpg', '/hOssG1gSPiFdemIiu9Rt3sh5vyl.jpg', 'nx3ctBjG6yI', '', '2018-12-09 09:17:07', '2018-12-09 09:17:07', 'movie'),
+(446, 33, 'Edward Scissorhands', 162, '1990-12-05', 'A small suburban town receives a visit from a castaway unfinished science experiment named Edward.', '/kgLTB53HinftRRwhft7yrUOclDC.jpg', '/jSL39cn3irkniMXthexHksr0ksA.jpg', 'M94yyfWy-KI', '', '2018-12-09 09:17:46', '2018-12-09 09:17:46', 'movie'),
+(447, 33, 'The Nightmare Before Christmas', 9479, '1993-10-09', 'Tired of scaring humans every October 31 with the same old bag of tricks, Jack Skellington, the spindly king of Halloween Town, kidnaps Santa Claus and plans to deliver shrunken heads and other ghoulish gifts to children on Christmas morning. But as Christmas approaches, Jack\'s rag-doll girlfriend, Sally, tries to foil his misguided plans.', '/6oxkO1VgKCq74fNILKAg6t2dVEt.jpg', '/8MzrNA4WMwgKnGzOzqFZpa9gEhm.jpg', '8qrB9I3DM80', '', '2018-12-09 09:18:14', '2018-12-09 09:18:14', 'movie'),
+(448, 33, 'It\'s a Wonderful Life', 1585, '1946-12-20', 'A holiday favourite for generations...  George Bailey has spent his entire life giving to the people of Bedford Falls.  All that prevents rich skinflint Mr. Potter from taking over the entire town is George\'s modest building and loan company.  But on Christmas Eve the business\'s $8,000 is lost and George\'s troubles begin.', '/rgj6QjdyCeDrO9KGt1kusGyhvb2.jpg', '/nMomMy1sD3SN2QsKop3zBXCJfDJ.jpg', 'uhq9Ke8M25M', '', '2018-12-09 09:19:08', '2018-12-09 09:19:08', 'movie'),
+(449, 33, 'Miracle on 34th Street', 11881, '1947-10-01', 'Kris Kringle, seemingly the embodiment of Santa Claus, is asked to portray the jolly old fellow at Macy\'s following his performance in the Thanksgiving Day parade. His portrayal is so complete that many begin to question if he truly is Santa Claus, while others question his sanity.', '/h8kkqroLwxvAHxWGIStEZaNd4wr.jpg', '/i90947b0zLbH1P4qjAxqiQdRfiZ.jpg', 'kUwyGo6PQzY', '', '2018-12-09 09:19:26', '2018-12-09 09:19:26', 'movie'),
+(450, 33, 'Planes, Trains and Automobiles', 2609, '1987-11-26', 'A man must struggle to travel home for Thanksgiving, with an obnoxious slob of a shower ring salesman his only companion.', '/3RSucVsX96Ste8WDJfZP1hbNGqQ.jpg', '/w8wOF8n52L3npxj3cBYejoc2Zkj.jpg', 'VWGqGHMO294', '', '2018-12-09 09:20:46', '2018-12-09 09:20:46', 'movie'),
+(451, 33, 'A Christmas Story', 850, '1983-11-18', 'The comic mishaps and adventures of a young boy named Ralph, trying to convince his parents, teachers, and Santa that a Red Ryder B.B. gun really is the perfect Christmas gift for the 1940s.', '/1dSFarRSXwMjFODxPTwyaiNZotF.jpg', '/wok0YepwQfBAPsrttFq0W6HXT2g.jpg', 'uvMLfSQrHKE', '', '2018-12-09 09:21:05', '2018-12-09 09:21:05', 'movie'),
+(452, 33, 'A Charlie Brown Christmas', 13187, '1965-12-09', 'When Charlie Brown complains about the overwhelming materialism that he sees amongst everyone during the Christmas season, Lucy suggests that he become director of the school Christmas pageant. Charlie Brown accepts, but is a frustrating struggle. When an attempt to restore the proper spirit with a forlorn little fir Christmas tree fails, he needs Linus\' help to learn the meaning of Christmas.', '/3Bn0tc1BsheZwUQtvl10wTgQ16J.jpg', '/rtPtwVTo4RqumivX2zspSk8GyCy.jpg', '8J4x8OIkDL8', '', '2018-12-09 09:21:24', '2018-12-09 09:21:24', 'movie'),
+(454, 33, 'Four Christmases', 12193, '2008-11-26', 'Brad and Kate have made something of an art form out of avoiding their families during the holidays, but this year their foolproof plan is about go bust -- big time. Stuck at the city airport after all departing flights are canceled, the couple is embarrassed to see their ruse exposed to the world by an overzealous television reporter. Now, Brad and Kate are left with precious little choice other than to swallow their pride and suffer the rounds.', '/ybEq3gB5lxPwLRwpbZhAwRyziQx.jpg', '/cmJxsKrIwTr3b3sQaQFby2eVIAz.jpg', 'P8nzbUR9dgI', '', '2018-12-09 09:22:51', '2018-12-09 09:22:51', 'movie'),
+(455, 33, 'The Holiday', 1581, '2006-12-08', 'Two women, one (Cameron Diaz) from America and one (Kate Winslet) from Britain, swap homes at Christmastime after bad breakups with their boyfriends. Each woman finds romance with a local man (Jude Law, Jack Black) but realizes that the imminent return home may end the relationship.', '/ixNtpuq8OVp4IckgzkSJIflFDkw.jpg', '/9TP7FGdo9ppnuXX3DbB9RtzYKkh.jpg', 'G0p8Su3bdHc', '', '2018-12-09 09:23:28', '2018-12-09 09:23:28', 'movie'),
+(456, 34, 'Cast Away', 8358, '2000-12-22', 'Chuck, a top international manager for FedEx, and Kelly, a Ph.D. student, are in love and heading towards marriage. Then Chuck\'s plane to Malaysia ditches at sea during a terrible storm. He\'s the only survivor, and he washes up on a tiny island with nothing but some flotsam and jetsam from the aircraft\'s cargo.', '/w515BrZvczKIxbHurG6HIiYYrba.jpg', '/frbW3kQXhVZPhceuQa1EqwZPXQr.jpg', '4olwbrY2kwE', '', '2018-12-09 11:54:58', '2018-12-09 11:54:58', 'movie'),
+(457, 34, 'The Grey', 75174, '2012-01-26', 'An oil drilling team struggles to survive after a plane crash strands them in the wilds of Alaska. Hunting them is a pack of wolves that sees them as intruders.', '/bwN4x9RTLtDUDvaOWg4yvOBU38I.jpg', '/888jtZz0mWfANiml4Pfe9567o3X.jpg', 'Hfb0-U0ydj8', '', '2018-12-09 11:55:14', '2018-12-09 11:55:14', 'movie'),
+(458, 34, 'Kon-Tiki', 70667, '2012-08-24', 'The true story about legendary explorer Thor Heyerdahl and his epic crossing of the Pacific on a balsa wood raft in 1947, in an effort to prove it was possible for South Americans to settle in Polynesia in pre-Columbian times.', '/7geys2i6OGoj72iZu6VxtUoJNcM.jpg', '/eG1m1euq0VxP35utiodSHYkI9XD.jpg', 'e4DZ7svBw7I', '', '2018-12-09 11:55:36', '2018-12-09 11:55:36', 'movie'),
+(459, 34, 'Rescue Dawn', 9952, '2006-09-09', 'A US Fighter pilot\'s epic struggle of survival after being shot down on a mission over Laos during the Vietnam War.', '/sNQ1drGljoZ0PpCJoKYtIDiNQ61.jpg', '/bj1ZF5vj23N8pFIGlG2f7IPTtpf.jpg', 'B2jIKkxSsBg', '', '2018-12-09 11:55:57', '2018-12-09 11:55:57', 'movie'),
+(460, 34, 'Unbroken', 227306, '2014-12-25', 'A chronicle of the life of Louis Zamperini, an Olympic runner who was taken prisoner by Japanese forces during World War II.', '/1un8i8UtCjSCnY3OfdxtB5kDRvF.jpg', '/7xGaD7eDFTUK49VaCOusXf3Tqvg.jpg', 'kk1M_HwmFMM', '', '2018-12-09 11:56:12', '2018-12-09 11:56:12', 'movie'),
+(461, 34, 'Lone Survivor', 193756, '2013-12-24', 'Four Navy SEALs on a covert mission to neutralize a high-level al-Qaeda operative must make an impossible moral decision in the mountains of Afghanistan that leads them into an enemy ambush. As they confront unthinkable odds, the SEALs must find reserves of strength and resilience to fight to the finish.', '/8ST6iVp3fkUSbUpXRAc2Q96YQRk.jpg', '/pPFbXcONHBntJIAsEn8TaIPPCpZ.jpg', 'yoLFk4JK_RM', '', '2018-12-09 11:56:24', '2018-12-09 11:56:24', 'movie'),
+(462, 34, 'No Escape', 192141, '2015-08-26', 'In their new overseas home, an American family soon finds themselves caught in the middle of a coup, and they frantically look for a safe escape in an environment where foreigners are being immediately executed.', '/jIXZEvL4dmgkjyhD5JUDeOaASKB.jpg', '/l97RWqhhZnrCjb2xQ5ZCGveQkq1.jpg', 'VFpK71yBv1s', '', '2018-12-09 11:56:39', '2018-12-09 11:56:39', 'movie'),
+(463, 34, 'Everest', 253412, '2015-09-10', 'Inspired by the incredible events surrounding a treacherous attempt to reach the summit of the world\'s highest mountain, \"Everest\" documents the awe-inspiring journey of two different expeditions challenged beyond their limits by one of the fiercest snowstorms ever encountered by mankind. Their mettle tested by the harshest of elements found on the planet, the climbers will face nearly impossible obstacles as a lifelong obsession becomes a breathtaking struggle for survival.', '/t3ELL46AnqjS9djz1vEVh4MpKv0.jpg', '/xdLTJSjRU2c001amJwj3yNtsp1i.jpg', 'IRVJwH3hBd0', '', '2018-12-09 11:56:51', '2018-12-09 11:56:51', 'movie'),
+(464, 34, 'The Martian', 286217, '2015-09-30', 'During a manned mission to Mars, Astronaut Mark Watney is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded and alone on the hostile planet. With only meager supplies, he must draw upon his ingenuity, wit and spirit to subsist and find a way to signal to Earth that he is alive.', '/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg', '/sy3e2e4JwdAtd2oZGA2uUilZe8j.jpg', 'Ue4PCI0NamI', '', '2018-12-09 11:57:08', '2018-12-09 11:57:08', 'movie'),
+(465, 34, '12 Years a Slave', 76203, '2013-10-18', 'In the pre-Civil War United States, Solomon Northup, a free black man from upstate New York, is abducted and sold into slavery. Facing cruelty as well as unexpected kindnesses Solomon struggles not only to stay alive, but to retain his dignity. In the twelfth year of his unforgettable odyssey, Solomon’s chance meeting with a Canadian abolitionist will forever alter his life.', '/kb3X943WMIJYVg4SOAyK0pmWL5D.jpg', '/xnRPoFI7wzOYviw3PmoG94X2Lnc.jpg', 'z02Ie8wKKRg', '', '2018-12-09 11:57:20', '2018-12-09 11:57:20', 'movie'),
+(466, 34, 'The Road', 20766, '2009-11-25', 'A father and his son walk alone through burned America. Nothing moves in the ravaged landscape save the ash on the wind and water. It is cold enough to crack stones, and, when the snow falls it is gray. The sky is dark. Their destination is the warmer south, although they don\'t know what, if anything, awaits them there.', '/nzw8YGJhWC2scIrXJmyQMy5iw6v.jpg', '/pUNlJ6jzDsgUvPjJeFfsyyOSZJx.jpg', '8CwJHxEQ0WA', '', '2018-12-09 11:58:03', '2018-12-09 11:58:03', 'movie'),
+(467, 34, 'I Am Legend', 6479, '2007-12-14', 'Robert Neville is a scientist who was unable to stop the spread of the terrible virus that was incurable and man-made. Immune, Neville is now the last human survivor in what is left of New York City and perhaps the world. For three years, Neville has faithfully sent out daily radio messages, desperate to find any other survivors who might be out there. But he is not alone.', '/6OA0I8hhW9zftWoCYxJAzXW9UIN.jpg', '/u6Qg7TH7Oh1IFWCQSRr4htFFt0A.jpg', 'sFNPNT_4Qww', '', '2018-12-09 11:58:15', '2018-12-09 11:58:15', 'movie'),
+(468, 34, 'Flight of the Phoenix', 11866, '2004-12-17', 'When an Amacor oil rig in the Gobi Desert of Mongolia proves unproductive, Captain Frank Towns and copilot \"A.J.\" are sent to shut the operation down. However, on their way to Beijing, a major dust storm forces them to ditch their C-119 Flying Boxcar in an uncharted area of the desert.', '/g1wvC9RyapnPQBgKcFJ3FChPEeC.jpg', '/fpS0JNCrqwfF0jWEV0gXjVJjsiA.jpg', 'bANHr1Qc-7k', '', '2018-12-09 11:58:32', '2018-12-09 11:58:32', 'movie'),
+(469, 34, 'The 33', 293646, '2015-08-06', 'Based on a true story about the collapse at the mine in San Jose, Chile that  left 33 miners isolated underground for 69 days.', '/6QkKCZCfFQ91jjRZgHndiE2npmw.jpg', '/3bCuHw1NA4FFwESs1vJCk8gHi3O.jpg', 'hOoIBOYqHyw', '', '2018-12-09 11:58:46', '2018-12-09 11:58:46', 'movie'),
+(470, 34, '127 Hours', 44115, '2010-11-05', 'The true story of mountain climber Aron Ralston\'s remarkable adventure to save himself after a fallen boulder crashes on his arm and traps him in an isolated canyon in Utah.', '/c6Nu7UjhGCQtV16WXabqOQfikK6.jpg', '/eHUoB8NbvrvKp7KQMNgvc7yLpzM.jpg', 'Ba1IhHAqLgw', '', '2018-12-09 11:59:06', '2018-12-09 11:59:06', 'movie'),
+(471, 34, 'The Revenant', 281957, '2015-12-25', 'In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling.', '/oXUWEc5i3wYyFnL1Ycu8ppxxPvs.jpg', '/8jNiQwGgAL5R2xwAcJTGWOZn3Mm.jpg', 'QRfj1VCg16Y', '', '2018-12-09 11:59:29', '2018-12-09 11:59:29', 'movie'),
+(472, 34, 'All Is Lost', 152747, '2013-10-18', 'During a solo voyage in the Indian Ocean, a veteran mariner awakes to find his vessel taking on water after a collision with a stray shipping container. With his radio and navigation equipment disabled, he sails unknowingly into a violent storm and barely escapes with his life. With any luck, the ocean currents may carry him into a shipping lane -- but, with supplies dwindling and the sharks circling, the sailor is forced to face his own mortality.', '/5TiKyU8iiHy1HiVNAmtEqYErKom.jpg', '/ygQQHmscHQWmJ2uQzXdxLE9Yszz.jpg', 'dPv7kzQs59A', '', '2018-12-09 11:59:45', '2018-12-09 11:59:45', 'movie'),
+(473, 34, 'The Shallows', 332567, '2016-06-24', 'When Nancy is surfing on a secluded beach, she finds herself on the feeding ground of a great white shark. Though she is stranded only 200 yards from shore, survival proves to be the ultimate test of wills, requiring all of Nancy\'s ingenuity, resourcefulness, and fortitude.', '/6vuxwCfBejPfUjMxrPgk0ANmVFq.jpg', '/lEkHdk4g0nAKtMcHBtSmC1ON3O1.jpg', 'EgdxIlSuB70', '', '2018-12-09 12:00:02', '2018-12-09 12:00:02', 'movie'),
+(474, 34, 'Jungle', 390062, '2017-10-14', 'In 1981, an enthusiastic young adventurer follows his dreams into the Bolivian Amazon jungle with two friends and a guide with a mysterious past. Their journey quickly turns into a terrifying ordeal as the darkest elements of human nature and the deadliest threats of the wilderness lead to an all-out fight for survival.', '/tDgxknTVwrScxpCYyGUjXSn5NRk.jpg', '/tav8VVa6H6KooK5rFhAG2jT5ZNx.jpg', 'ADjYDl1RCGs', '', '2018-12-09 12:00:13', '2018-12-09 12:00:13', 'movie'),
+(475, 34, 'The Impossible', 80278, '2012-09-09', 'In December 2004, close-knit family Maria, Henry and their three sons begin their winter vacation in Thailand. But the day after Christmas, the idyllic holiday turns into an incomprehensible nightmare when a terrifying roar rises from the depths of the sea, followed by a wall of black water that devours everything in its path. Though Maria and her family face their darkest hour, unexpected displays of kindness and courage ameliorate their terror.', '/sEx5mrVvVyyJHICMGe55KaUzEgt.jpg', '/r6LI3kLwRUMiyoo5HofgOIlnNCI.jpg', 'Bgw394ZKsis', '', '2018-12-09 12:00:35', '2018-12-09 12:00:35', 'movie'),
+(476, 34, 'In the Heart of the Sea', 205775, '2015-11-20', 'In the winter of 1820, the New England whaling ship Essex was assaulted by something no one could believe: a whale of mammoth size and will, and an almost human sense of vengeance.  The real-life maritime disaster would inspire Herman Melville’s Moby Dick.  But that told only half the story.  “Heart of the Sea” reveals the encounter’s harrowing aftermath, as the ship’s surviving crew is pushed to their limits and forced to do the unthinkable to stay alive.  Braving storms, starvation, panic and despair, the men will call into question their deepest beliefs, from the value of their lives to the morality of their trade, as their captain searches for direction on the open sea and his first mate still seeks to bring the great whale down.', '/zVmWh0Zfg4UhbvdGI8LQrn1lQZJ.jpg', '/41vanBJhYWuACVHvX7rk2Jmqbb4.jpg', '8L4KvJv_O-c', '', '2018-12-09 12:00:54', '2018-12-09 12:00:54', 'movie'),
+(477, 34, 'The Mountain Between Us', 290512, '2017-10-05', 'Stranded after a tragic plane crash, two strangers must forge a connection to survive the extreme elements of a remote snow covered mountain. When they realize help is not coming, they embark on a perilous journey across the wilderness.', '/3XNfYTW4XGscI81nXMSWGsQ8cpu.jpg', '/p7mUT8Usu1kNlfd1ugk6FwKejlo.jpg', 'zK8taXdfSI4', '', '2018-12-09 12:01:09', '2018-12-09 12:01:09', 'movie'),
+(478, 34, 'Sully', 363676, '2016-09-07', 'On 15 January 2009, the world witnessed the \'Miracle on the Hudson\' when Captain \'Sully\' Sullenberger glided his disabled plane onto the frigid waters of the Hudson River, saving the lives of all 155 aboard. However, even as Sully was being heralded by the public and the media for his unprecedented feat of aviation skill, an investigation was unfolding that threatened to destroy his reputation and career.', '/h6O5OE3ueRVdCc7V7cwTiQocI7D.jpg', '/vC9H1ZVdXi1KjH4aPfGB54mvDNh.jpg', 'mjKEXxO2KNE', '', '2018-12-09 12:01:24', '2018-12-09 12:01:24', 'movie'),
+(479, 34, 'The Finest Hours', 300673, '2016-01-25', 'The Coast Guard makes a daring rescue attempt off the coast of Cape Cod after a pair of oil tankers are destroyed during a blizzard in 1952.', '/5vfRMplGxOzMiJu0FGFCA1ic44Q.jpg', '/a6VvlnIRTJTPUnyf1tIV9kEJO27.jpg', 'BQmllwTKtqU', '', '2018-12-09 12:01:38', '2018-12-09 12:01:38', 'movie'),
+(480, 34, 'The Pianist', 423, '2002-09-24', 'The true story of pianist Wladyslaw Szpilman\'s experiences in Warsaw during the Nazi occupation. When the Jews of the city find themselves forced into a ghetto, Szpilman finds work playing in a café; and when his family is deported in 1942, he stays behind, works for a while as a laborer, and eventually goes into hiding in the ruins of the war-torn city.', '/iunmxWkOi7Vk17Ob3G2HwwjgHsr.jpg', '/xUR95VFV1UTyzS1C8Lj06hi2n2M.jpg', 'u_jE7-6Uv7E', '', '2018-12-09 12:02:06', '2018-12-09 12:02:06', 'movie'),
+(481, 34, 'USS Indianapolis: Men of Courage', 340945, '2016-09-22', 'The harrowing true story of the crew of the USS Indianapolis, who were stranded in the Philippine Sea for five days after delivering the atomic weapons that would eventually end WWII. As they awaited rescue, they endured extreme thirst, hunger, and relentless shark attacks.', '/kLzOqLE3JyarkaRrtlDBLt8Orlx.jpg', '/g3vLSV74I8X9RVdd9rZpfTPTCp8.jpg', 'F7ebO2n8A6w', '', '2018-12-09 12:03:04', '2018-12-09 12:03:04', 'movie'),
+(482, 34, 'The Hunger Games', 70160, '2012-03-12', 'Every year in the ruins of what was once North America, the nation of Panem forces each of its twelve districts to send a teenage boy and girl to compete in the Hunger Games.  Part twisted entertainment, part government intimidation tactic, the Hunger Games are a nationally televised event in which “Tributes” must fight with one another until one survivor remains.  Pitted against highly-trained Tributes who have prepared for these Games their entire lives, Katniss is forced to rely upon her sharp instincts as well as the mentorship of drunken former victor Haymitch Abernathy.  If she’s ever to return home to District 12, Katniss must make impossible choices in the arena that weigh survival against humanity and life against love. The world will be watching.', '/iLJdwmzrHFjFwI5lvYAT1gcpRuA.jpg', '/1LTLrl06uII4w2BTpnQnmWwrKi.jpg', 'mfmrPu43DF8', '', '2018-12-09 12:03:32', '2018-12-09 12:03:32', 'movie'),
+(483, 35, 'Scarface', 111, '1983-12-08', 'After getting a green card in exchange for assassinating a Cuban government official, Tony Montana stakes a claim on the drug trade in Miami. Viciously murdering anyone who stands in his way, Tony eventually becomes the biggest drug lord in the state, controlling nearly all the cocaine that comes through Miami. But increased pressure from the police, wars with Colombian drug cartels and his own drug-fueled paranoia serve to fuel the flames of his eventual downfall.', '/zr2p353wrd6j3wjLgDT4TcaestB.jpg', '/51fjuzYoJKvGW43j32nBpWW6Tm1.jpg', 'Psb9j-GBKM0', '', '2018-12-13 20:15:58', '2018-12-13 20:15:58', 'movie'),
+(484, 35, 'Blow', 4133, '2001-04-04', 'A boy named George Jung grows up in a struggling family in the 1950\'s. His mother nags at her husband as he is trying to make a living for the family. It is finally revealed that George\'s father cannot make a living and the family goes bankrupt. George does not want the same thing to happen to him, and his friend Tuna, in the 1960\'s, suggests that he deal marijuana. He is a big hit in California in the 1960\'s, yet he goes to jail, where he finds out about the wonders of cocaine. As a result, when released, he gets rich by bringing cocaine to America. However, he soon pays the price.', '/yCLLbZzAa7jreGus7pvjZmL0bj7.jpg', '/lVlzUCVxMZCMnZxwauBK92jBS2b.jpg', 'q8lGHQn_n9Y', '', '2018-12-13 20:16:13', '2018-12-13 20:16:13', 'movie'),
+(485, 35, 'GoodFellas', 769, '1990-09-12', 'The true story of Henry Hill, a half-Irish, half-Sicilian Brooklyn kid who is adopted by neighbourhood gangsters at an early age and climbs the ranks of a Mafia family under the guidance of Jimmy Conway.', '/hAPeXBdGDGmXRPj4OZZ0poH65Iu.jpg', '/sw7mordbZxgITU877yTpZCud90M.jpg', 'rW2bWAcsPCk', '', '2018-12-13 20:16:28', '2018-12-13 20:16:28', 'movie'),
+(486, 35, 'Pulp Fiction', 680, '1994-09-10', 'A burger-loving hit man, his philosophical partner, a drug-addled gangster\'s moll and a washed-up boxer converge in this sprawling, comedic crime caper. Their adventures unfurl in three stories that ingeniously trip back and forth in time.', '/dM2w364MScsjFf8pfMbaWUcWrR.jpg', '/4cDFJr4HnXN5AdPw4AKrmLlMWdO.jpg', 's7EdQ4FqbhY', '', '2018-12-13 20:16:42', '2018-12-13 20:16:42', 'movie'),
+(487, 35, 'Trainspotting', 627, '1996-02-23', 'Mark Renton, deeply immersed in the Edinburgh drug scene, tries to clean up and get out, despite the allure of the drugs and influence of friends.', '/p1O3eFsdb0GEIYu87xlwV7P4jM1.jpg', '/Aw0z8bUhGljT0ots6udf1MTLEMi.jpg', 'uOz5Qm2EHQE', '', '2018-12-13 20:16:59', '2018-12-13 20:16:59', 'movie'),
+(488, 35, 'Traffic', 1900, '2000-12-27', 'An exploration of the United States of America\'s war on drugs from multiple perspectives. For the new head of the Office of National Drug Control Policy, the war becomes personal when he discovers his well-educated daughter is abusing cocaine within their comfortable suburban home. In Mexico, a flawed, but noble policeman agrees to testify against a powerful general in league with a cartel, and in San Diego, a drug kingpin\'s sheltered trophy wife must learn her husband\'s ruthless business after he is arrested, endangering her luxurious lifestyle.', '/9qPLd5hdXIlrAyknVWK38eZyUMo.jpg', '/ivAC8eZkzKoTf8EWQh7pkFD0AGS.jpg', 'g3Du7F7htXc', '', '2018-12-13 20:17:20', '2018-12-13 20:17:20', 'movie'),
+(489, 35, 'Candy', 4441, '2006-05-25', 'A poet falls in love with an art student, who gravitates to his bohemian lifestyle -- and his love of heroin. Hooked as much on one another as they are on the drug, their relationship alternates between states of oblivion, self-destruction, and despair.', '/1Q3iqanrk8qjl3orfDbd0rk4XV3.jpg', '/hYb0puliq3KpkaYzt6Ft2T3zhL.jpg', '', '', '2018-12-13 20:17:53', '2018-12-13 20:17:53', 'movie'),
+(490, 35, 'Training Day', 2034, '2001-10-05', 'On his first day on the job as a narcotics officer, a rookie cop works with a rogue detective who isn\'t what he appears.', '/sDT2biSB7wzBJdXq9o3ldr7VfvY.jpg', '/A1S9fBzc4Wepc6onnCd9eVR2FLp.jpg', 'gKTVQPOH8ZA', '', '2018-12-13 20:18:12', '2018-12-13 20:18:12', 'movie'),
+(491, 35, 'Christiane F.', 9589, '1981-04-01', 'This movie portrays the drug scene in Berlin in the 70s, following tape recordings of Christiane F. 14 years old Christiane lives with her mother and little sister in a typical multi-storey apartment building in Berlin. She\'s fascinated by the \'Sound\', a new disco with most modern equipment. Although she\'s legally too young, she asks a friend to take her. There she meets Detlef, who\'s in a clique where everybody\'s on drugs. Step by step she gets drawn deeper into the scene.', '/sM989XlpNVK8ITU8sGa1I4Fw1in.jpg', '/kM9WjPv4LmKwa3lYwfrehnI5eWi.jpg', 'kgAfjw3Op5Q', '', '2018-12-13 20:18:42', '2018-12-13 20:18:42', 'movie'),
+(492, 35, 'Limitless', 51876, '2011-03-08', 'A paranoia-fueled action thriller about an unsuccessful writer whose life is transformed by a top-secret \"smart drug\" that allows him to use 100% of his brain and become a perfect version of himself. His enhanced abilities soon attract shadowy forces that threaten his new life in this darkly comic and provocative film.', '/bQfOFEeXxi51ijQrbQY9qvMtYhZ.jpg', '/9ISArgiVBdNLASKmvflRDMOYYMj.jpg', '6d1Uc68wt3c', '', '2018-12-13 20:19:12', '2018-12-13 20:19:12', 'movie'),
+(493, 35, 'Lucy', 240832, '2014-07-25', 'A woman, accidentally caught in a dark deal, turns the tables on her captors and transforms into a merciless warrior evolved beyond human logic.', '/rwn876MeqienhOVSSjtUPnwxn0Z.jpg', '/eCgIoGvfNXrbSiQGqQHccuHjQHm.jpg', 'l7zAV_MDC68', '', '2018-12-13 20:19:26', '2018-12-13 20:19:26', 'movie'),
+(494, 35, 'City of God', 598, '2002-02-05', 'Cidade de Deus is a shantytown that started during the 1960s and became one of Rio de Janeiro’s most dangerous places in the beginning of the 1980s. To tell the story of this place, the movie describes the life of various characters, all seen by the point of view of the narrator, Buscapé. Buscapé was raised in a very violent environment. Despite the feeling that all odds were against him, he finds out that life can be seen with other eyes...', '/gCqnQaq8T4CfioP9uETLx9iMJF4.jpg', '/k4BAPrE5WkNLvpsPsiMfu8W4Zyi.jpg', 'ioUE_5wpg_E', '', '2018-12-13 20:19:53', '2018-12-13 20:19:53', 'movie'),
+(495, 35, 'American Gangster', 15257, '2006-11-28', '\"American Gangster\" chronicles the life and times of some of Black America’s most notorious crime figures. The show will explore without glorifying, and investigate without celebrating these criminal-minded men and women. Each episode will blend news footage, photographs and interviews in a compelling, magazine-style format.', '/m79l4ne70oFh9TzlvlfI9dh2LUy.jpg', '/zMBUNWTsqeAN3BVfVVtAMLnvqa1.jpg', '', '', '2018-12-13 20:20:16', '2018-12-13 20:20:16', 'tv'),
+(496, 35, 'Carlito\'s Way', 6075, '1993-11-10', 'A Puerto-Rican ex-con, just released from prison, pledges to stay away from drugs and violence despite the pressure around him and lead on to a better life outside of NYC.', '/tGPqPHuOCbyFxwllrYgKkPDu9xB.jpg', '/96SWzd50N2HavBkg07QLEcievZh.jpg', '0yehgqPtG3Y', '', '2018-12-13 20:20:40', '2018-12-13 20:20:40', 'movie'),
+(497, 35, 'Up in Smoke', 11455, '1978-01-01', 'An unemployed pot-smoking slacker and amateur drummer, Anthony Stoner ditches his strict parents and hits the road, eventually meeting kindred spirit Pedro de Pacas. While the drug-ingesting duo is soon arrested for possession of marijuana, Anthony and Pedro get released on a technicality, allowing them to continue their many misadventures and ultimately compete in a rock band contest, where they perform the raucous tune \"Earache My Eye.\"', '/cBbgz13sfqRMgu2neJYKAJ0xmx5.jpg', '/5e9CnlFmvIt2qo2SLETZ1Qcuh9G.jpg', 'k2pXxHW1DHs', '', '2018-12-13 20:21:12', '2018-12-13 20:21:12', 'movie'),
+(498, 35, 'The Infiltrator', 325789, '2016-07-13', 'A U.S Customs official uncovers a massive money laundering scheme involving Pablo Escobar.', '/zHN3LMXJ0mMJIlKMdaWbVzocbFR.jpg', '/9cdINmfQk21ZaCUDfZMmf3D9jiY.jpg', '7cnUI_ryp2w', '', '2018-12-13 20:22:41', '2018-12-13 20:22:41', 'movie'),
+(499, 36, 'Creed', 312221, '2015-11-25', 'The former World Heavyweight Champion Rocky Balboa serves as a trainer and mentor to Adonis Johnson, the son of his late friend and former rival Apollo Creed.', '/hKzhV274pkZBSpXfCjUyzbyYKLl.jpg', '/fs2yhdSCzMVlNECrN84WuCkgXov.jpg', 'Uv554B7YHk4', '', '2018-12-18 20:14:29', '2018-12-18 20:14:29', 'movie'),
+(500, 36, 'Creed II', 480530, '2018-11-20', 'Follows Adonis Creed\'s life inside and outside of the ring as he deals with new found fame, issues with his family, and his continuing quest to become a champion.', '/v3QyboWRoA4O9RbcsqH8tJMe8EB.jpg', '/8yqLPNwNCtpOPc3XkOlkSMnghzw.jpg', 'cPNVNqn4T9I', '', '2018-12-18 20:14:39', '2018-12-18 20:14:39', 'movie'),
+(501, 36, 'Hands of Stone', 184341, '2016-08-26', 'The legendary Roberto Duran and his equally legendary trainer Ray Arcel change each other\'s lives.', '/vPnuhguhrt1FVIaeo8CVMEarzl8.jpg', '/wweNPWBO4S2isIU7kgu1j4mmyMB.jpg', '1W1L0WnVnjY', '', '2018-12-18 20:14:55', '2018-12-18 20:14:55', 'movie'),
+(502, 36, 'Rocky', 1366, '1976-11-21', 'When world heavyweight boxing champion, Apollo Creed wants to give an unknown fighter a shot at the title as a publicity stunt, his handlers choose palooka Rocky Balboa, an uneducated collector for a Philadelphia loan shark. Rocky teams up with trainer  Mickey Goldmill to make the most of this once in a lifetime break.', '/9TUR3s1PMJHwDRbpm7PWQ0S7IRy.jpg', '/2kkyt0FLROrXt41IgSdE7goCFNQ.jpg', '3VUblDwa648', '', '2018-12-18 20:15:09', '2018-12-18 20:15:09', 'movie'),
+(503, 36, 'Rocky II', 1367, '1979-06-15', 'After Rocky goes the distance with champ Apollo Creed, both try to put the fight behind them and move on. Rocky settles down with Adrian but can\'t put his life together outside the ring, while Creed seeks a rematch to restore his reputation. Soon enough, the \"Master of Disaster\" and the \"Italian Stallion\" are set on a collision course for a climactic battle that is brutal and unforgettable.', '/fqJH7mI4dFANRay8qdJoGa7fK1k.jpg', '/xx9DyVNmehDJPrYGsy9AJgYzAtd.jpg', 'pVYs3xeVuW0', '', '2018-12-18 20:15:21', '2018-12-18 20:15:21', 'movie'),
+(504, 36, 'Rocky III', 1371, '1982-05-28', 'Now the world champion, Rocky Balboa is living in luxury and only fighting opponents who pose no threat to him in the ring, until Clubber Lang challenges him to a bout. After taking a pounding from Lang, the humbled champ turns to former bitter rival Apollo Creed for a rematch with Lang.', '/ns55NGqTDEEjcI9z2a9htA2cFtG.jpg', '/6qYptQG2ynJANbyjjYOt4fpHfxF.jpg', 'gbRDCWKqvEc', '', '2018-12-18 20:15:32', '2018-12-18 20:15:32', 'movie'),
+(505, 36, 'Rocky IV', 1374, '1985-11-21', 'After iron man Drago, a highly intimidating 6-foot-5, 261-pound Soviet athlete, kills Apollo Creed in an exhibition match, Rocky comes to the heart of Russia for 15 pile-driving boxing rounds of revenge.', '/jmvpwgW5M2kduR9zB0q8qGFC4zM.jpg', '/uvbjTLZSxGehXWDo1ENyVuBrYie.jpg', 'bN-SShi58cI', '', '2018-12-18 20:15:59', '2018-12-18 20:15:59', 'movie'),
+(506, 36, 'Rocky V', 1375, '1990-10-18', 'A lifetime of taking shots has ended Rocky’s career, and a crooked accountant has left him broke. Inspired by the memory of his trainer, however, Rocky finds glory in training and takes on an up-and-coming boxer.', '/5P2RiuLt31mWyb6duww8qlAhs6G.jpg', '/dr5pdEDOdCvelCQqP32UZubiSgE.jpg', 'C2_k8p3RQx4', '', '2018-12-18 20:16:09', '2018-12-18 20:16:09', 'movie'),
+(507, 36, 'Rocky Balboa', 1246, '2006-12-20', 'When he loses a highly publicized virtual boxing match to ex-champ Rocky Balboa, reigning heavyweight titleholder, Mason Dixon retaliates by challenging Rocky to a nationally televised, 10-round exhibition bout. To the surprise of his son and friends, Rocky agrees to come out of retirement and face an opponent who\'s faster, stronger and thirty years his junior.', '/n82AAPWnAafDAZjxkYK2rAPwk4A.jpg', '/gcFhaI5IrKxvMs4TtvlHbYE4b0.jpg', '8tab8fK2_3w', '', '2018-12-18 20:16:46', '2018-12-18 20:16:46', 'movie'),
+(508, 36, 'Raging Bull', 1578, '1980-11-14', 'When Jake LaMotta steps into a boxing ring and obliterates his opponent, he\'s a prizefighter. But when he treats his family and friends the same way, he\'s a ticking time bomb, ready to go off at any moment. Though LaMotta wants his family\'s love, something always seems to come between them. Perhaps it\'s his violent bouts of paranoia and jealousy. This kind of rage helped make him a champ, but in real life, he winds up in the ring alone.', '/3cgzzWsUOBlNjmA5m4qs9BGkezC.jpg', '/yt88nEyDJLN8gOg1FTvCcXCM672.jpg', 'YiVOwxsa4OM', '', '2018-12-18 20:17:08', '2018-12-18 20:17:08', 'movie'),
+(509, 36, 'Million Dollar Baby', 70, '2004-12-15', 'Despondent over a painful estrangement from his daughter, trainer Frankie Dunn isn\'t prepared for boxer Maggie Fitzgerald to enter his life. But Maggie\'s determined to go pro and to convince Dunn and his cohort to help her.', '/h4VZKi2Jt4VoBYJmtC4c3bO8KqM.jpg', '/7nGW4MhYQ7sJfp482XkrgqPYQ2S.jpg', '5_RsHRmIRBY', '', '2018-12-18 20:17:41', '2018-12-18 20:17:41', 'movie'),
+(510, 36, 'The Fighter', 45317, '2010-12-17', 'The Fighter, is a drama about boxer \"Irish\" Micky Ward\'s unlikely road to the world light welterweight title. His Rocky-like rise was shepherded by half-brother Dicky, a boxer-turned-trainer who rebounded in life after nearly being KO\'d by drugs and crime.', '/ytGIpdxYyvXwch5QILfquSTMA9f.jpg', '/43fnzmOMO5zOUFH3EzyuwSh87IS.jpg', 'LRIZ4mCi5Ps', '', '2018-12-18 20:18:02', '2018-12-18 20:18:02', 'movie'),
+(511, 36, 'Ali', 8489, '2001-12-11', 'In 1964, a brash, new pro boxer, fresh from his Olympic gold medal victory, explodes onto the scene: Cassius Clay. Bold and outspoken, he cuts an entirely new image for African Americans in sport with his proud public self-confidence and his unapologetic belief that he is the greatest boxer of all time. Yet at the top of his game, both Ali\'s personal and professional lives face the ultimate test.', '/gCGoMZXGdU7DY8xgKYle6dJGksT.jpg', '/2IbajWDoPV6cjBjXhMpDvMsG4jZ.jpg', '4HooryZXjcE', '', '2018-12-18 20:18:27', '2018-12-18 20:18:27', 'movie'),
+(512, 36, 'Undisputed', 15070, '2002-08-23', 'Monroe Hutchens is the heavyweight champion of Sweetwater, a maximum security prison. He was convicted to a life sentence due to a passionate crime. Iceman Chambers is the heavyweight champion, who lost his title due to a rape conviction to ten years in Sweetwater. WHen these two giants collide in the same prison, they fight against each other disputing who is the real champion.', '/dhBQvKYMayM61M7kHOk35IfpE8K.jpg', '/hxBroLYYRiuDlTPp7JlcwfzXXZe.jpg', 'qX_hOeC9Pj8', '', '2018-12-18 20:18:53', '2018-12-18 20:18:53', 'movie');
+INSERT INTO `recommendation_items` (`id`, `recommendation_id`, `name`, `tmdb_id`, `year`, `overview`, `poster`, `backdrop`, `trailer`, `commentary`, `created_at`, `updated_at`, `media_type`) VALUES
+(513, 36, 'Cinderella Man', 921, '2005-06-02', 'The true story of boxer, Jim Braddock who, in the 1920’s after his retirement, has a surprise comeback in order to get him and his family out of a socially poor state.', '/xZhumK43Z6jmwCWglh7uHcpkqdb.jpg', '/ozvvHdadtBYpExCwAjsNPSjV6hT.jpg', 'DlbHzcH4VJY', '', '2018-12-18 20:19:20', '2018-12-18 20:19:20', 'movie'),
+(514, 36, 'Southpaw', 307081, '2015-06-15', 'Billy \"The Great\" Hope, the reigning junior middleweight boxing champion, has an impressive career, a loving wife and daughter, and a lavish lifestyle. However, when tragedy strikes, Billy hits rock bottom, losing his family, his house and his manager. He soon finds an unlikely savior in Tick Willis, a former fighter who trains the city\'s toughest amateur boxers. With his future on the line, Hope fights to reclaim the trust of those he loves the most.', '/50d0XQQETSyg3bwBXhC7K33pKgc.jpg', '/tTt1cdEEkKMJ1R4VBTe5vbE3bWO.jpg', 'Mh2ebPxhoLs', '', '2018-12-18 20:20:04', '2018-12-18 20:20:04', 'movie'),
+(515, 36, 'The Boxer', 16992, '1997-12-31', 'Nineteen-year-old Danny Flynn is imprisoned for his involvement with the I.R.A. in Belfast. He leaves behind his family and his sixteen-year-old girlfriend, Maggie Hamill. Fourteen years later, Danny is released from prison and returns to his old working class neighborhood to resume his life as a boxer.', '/7DO6VWE6RITEkK33FTvDinDdfno.jpg', '/bWZA7cVAFXR2GTl0YUXPHEP6vrK.jpg', 'UlcM-1Rm9Eo', '', '2018-12-18 20:20:23', '2018-12-18 20:20:23', 'movie'),
+(516, 36, 'Resurrecting the Champ', 13074, '2007-06-14', 'Up-and-coming sports reporter rescues a homeless man (\"Champ\") only to discover that he is, in fact, a boxing legend believed to have passed away. What begins as an opportunity to resurrect Champ\'s story and escape the shadow of his father\'s success becomes a personal journey as the ambitious reporter reexamines his own life and his relationship with his family.', '/18epMloEUD83jCNQDHr8dRTaM8U.jpg', '/10mxOPp5fqGgjvVT4xsTedH78G3.jpg', 'FoxJBA7EGtw', '', '2018-12-18 20:20:56', '2018-12-18 20:20:56', 'movie'),
+(517, 36, 'Bleed for This', 332979, '2016-11-04', 'The inspirational story of World Champion Boxer Vinny Pazienza, who after a near fatal car crash, which left him not knowing if he\'d ever walk again, made one of sports most incredible comebacks.', '/2mfT0WQ98TVWnSsVStHJEBgQi8p.jpg', '/tJ9fIg4DDE3Zgjjio4ySlRxWcrn.jpg', '0yfWnRKXRac', '', '2018-12-18 20:21:48', '2018-12-18 20:21:48', 'movie'),
+(518, 37, 'Space Jam', 2300, '1996-11-15', 'In a desperate attempt to win a basketball match and earn their freedom, the Looney Tunes seek the aid of retired basketball champion, Michael Jordan.', '/xI9AwhOWtsbFlS8tYD2PXa80p7u.jpg', '/kBTdPNTAzagAY6UiwY957KCDGuu.jpg', 'wYbXWzef1RM', '', '2018-12-26 21:43:47', '2018-12-26 21:43:47', 'movie'),
+(519, 37, 'Coach Carter', 7214, '2005-01-14', 'Based on a true story, in which Richmond High School head basketball coach Ken Carter made headlines in 1999 for benching his undefeated team due to poor academic results.', '/8c6BeOIrDStz2aiPceYdI5sd9pL.jpg', '/qgmcpz4ZyDxtAOTvqN6oIpBez7d.jpg', 'nOFhHEepF4s', '', '2018-12-26 21:43:57', '2018-12-26 21:43:57', 'movie'),
+(520, 37, 'White Men Can\'t Jump', 10158, '1992-03-26', 'Billy Hoyle and Sidney Deane are an unlikely pair of basketball hustlers. They team up to con their way across the courts of Los Angeles, playing a game that\'s fast dangerous - and funny.', '/1wEHR5yxIya9HUCFHVcntTx6q91.jpg', '/qXeK9s0YvYdCUQsHPIUPDtJHXHR.jpg', 'g4aNy-3n1GU', '', '2018-12-26 21:44:27', '2018-12-26 21:44:27', 'movie'),
+(521, 37, 'Finding Forrester', 711, '2000-12-21', 'Gus Van Sant tells the story of a young African American man named Jamal who confronts his talents while living on the streets of the Bronx. He accidentally runs into an old writer named Forrester who discovers his passion for writing. With help from his new mentor Jamal receives a scholarship to a private school.', '/heHi6n68fDiQoUc7SMletM9Adjz.jpg', '/ihEhIKWqVUCWvtvGf7u7IKUMdfm.jpg', '8QGCBH_2Dck', '', '2018-12-26 21:45:26', '2018-12-26 21:45:26', 'movie'),
+(522, 37, 'Glory Road', 9918, '2006-01-13', 'In 1966, Texas Western coach Don Haskins led the first all-black starting line-up for a college basketball team to the NCAA national championship.', '/bGRSV5tStxDNPRLCewnOeeiZzrY.jpg', '/cQof2H4FtEuzHOInFZd7ivYoByd.jpg', 'uEd69QSBI0s', '', '2018-12-26 21:45:46', '2018-12-26 21:45:46', 'movie'),
+(523, 37, 'Hoosiers', 5693, '1986-11-14', 'High school basketball is king in small-town Indiana, and the 1954 Hickory Huskers are all hope and no talent. But their new coach -- abrasive, unlikable Norman Dale -- whips the team into shape ... while also inciting controversy.', '/bwOXCbCyYKnw7zmbtPkSJa7jS6G.jpg', '/hdEmvJqqt6SEWhDWcVtAc13EQ9h.jpg', 'xB1M9iv3LOE', '', '2018-12-26 21:45:59', '2018-12-26 21:45:59', 'movie'),
+(524, 37, 'Blue Chips', 19819, '1994-02-18', 'Pete Bell, a college basketball coach is under a lot of pressure. His team aren\'t winning and he cannot attract new players. The stars of the future are secretly being paid by boosters. This practice is forbidden in the college game, but Pete is desperate and has pressures from all around.', '/cvx18ZmiM4MT6IwaIn864scnoMU.jpg', '/wAWLrrdGLCJBXE7Bdi9j5hQA91q.jpg', '3FC5zdcct9s', '', '2018-12-26 21:46:26', '2018-12-26 21:46:26', 'movie'),
+(525, 37, 'He Got Game', 9469, '1998-05-01', 'A basketball player\'s father must try to convince him to go to a college so he can get a shorter sentence.', '/kd8hRaysUQOz7AvSorZDJHuihcJ.jpg', '/1bm55fptJb2MusLsMoAr3hmQSyO.jpg', 'njLUPZr4DeU', '', '2018-12-26 21:46:37', '2018-12-26 21:46:37', 'movie'),
+(526, 37, 'Love & Basketball', 14736, '2000-04-21', 'A young African-American couple navigates the tricky paths of romance and athletics in this drama. Quincy McCall (Omar Epps) and Monica Wright (Sanaa Lathan) grew up in the same neighborhood and have known each other since childhood. As they grow into adulthood, they fall in love, but they also share another all-consuming passion: basketball. They\'ve followed the game all their lives and have no small amount of talent on the court. As Quincy and Monica struggle to make their relationship work, they follow separate career paths though high school and college basketball and, they hope, into stardom in big-league professional ball.', '/zNZWNX19FZ5QyedprVM0ldsXFiP.jpg', '/hap5kZXyaDX0ISOhE5so1SCunXg.jpg', 'Ur83i6_BjbE', '', '2018-12-26 21:46:50', '2018-12-26 21:46:50', 'movie'),
+(527, 37, 'Rebound: The Legend of Earl \'The Goat\' Manigault', 29804, '1996-01-01', 'A dramatization of the life of Earl \'The Goat\' Manigault (Don Cheadle), with a lot of factual based occurrences. A reformed junkie returns from prison to clean up his act and devote the rest of his life to the young kids of Harlem. 1996 was the 25th anniversary of the first tournament named after him.', '/lGRd4Radzli1KXfh9uJXbJqwogI.jpg', '/nd8M5TQy2udlFKEpHvRo0rOMoSy.jpg', 'uOAKDKAfieU', '', '2018-12-26 21:48:41', '2018-12-26 21:48:41', 'movie'),
+(528, 37, 'Teen Wolf', 11824, '1985-08-23', 'When a shy teenager\'s new-found powers help him score at basketball - and with the popular girls - he has some pretty hairy decisions to make.', '/3TKJbKNpHvRP8YVnwbgfok41AAC.jpg', '/kKzJg9y0DtUTn3CGktEj4Y55ZGm.jpg', 'P6htehZchW0', '', '2018-12-26 21:49:08', '2018-12-26 21:49:08', 'movie'),
+(529, 37, 'Uncle Drew', 474335, '2018-06-27', 'Uncle Drew recruits a squad of older basketball players to return to the court to compete in a tournament.', '/cDjAlFbpvjuxH4gFD02fqlyk6qL.jpg', '/xv2UTn6bU0wwmMW8D8ZnAx7SWNX.jpg', '9H2SSvQ8ihA', '', '2018-12-26 21:49:59', '2018-12-26 21:49:59', 'movie'),
+(530, 37, 'Cornbread, Earl and Me', 37754, '1975-05-21', 'The unintentional shooting by police of a star basketball player has profound personal, political and community repercussions in this acclaimed adaptation of the novel Hog Butcher by Ronald Fair. This was one of the more thoughtful urban dramas produced at the height of the \"blaxploitation\" craze. Also released under the title Hit the Open Man, it features the screen debut of Laurence Fishburne, who was barely a teenager at the time.', '/nd59ctXEuyZZ4uqi11MFjVCVFPk.jpg', '/m8ioVFJ3mgH346Y2E00KrTXsZQv.jpg', 'YUGHOnVoWLk', '', '2018-12-26 21:50:39', '2018-12-26 21:50:39', 'movie'),
+(531, 37, 'Like Mike', 21972, '2002-07-03', 'Calvin and his friends, who all live in an orphanage, find old shoes with the faded letters MJ connected to a powerline. One stormy night, they go to get the shoes when Calvin and the shoes are struck by lightning. Calvin now has unbelievable basketball powers and has the chance to play for the NBA.', '/yIn9czY4rii0s0vnA2CvyMopCpZ.jpg', '/lvqVwV5YNz0lqpKLemdxn7OIP0n.jpg', 'HTHJyw1UsLM', '', '2018-12-26 21:51:02', '2018-12-26 21:51:02', 'movie'),
+(532, 37, 'The Sixth Man', 36807, '1997-03-28', 'Antoine and Kenny Tyler are NCAA college basketball players, and Antoine is the star. Suddenly Antoine dies of heart attack and Kenny has to fill his shoes as leader of team. Some time later, Antoine returns as a ghost and helps Kenny in game and in life, but Kenny changes in the process and doesn\'t quite like it.', '/jJIoI6r8oYkgzllp85nXVW8cEDR.jpg', '/2223beT7PTGlBPC8NDDAGyrWomA.jpg', '', '', '2018-12-26 21:51:53', '2018-12-26 21:51:53', 'movie');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `recommendations`
+-- Estrutura da tabela `recommendation_item_source`
 --
 
-DROP TABLE IF EXISTS `recommendations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `recommendations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` tinyint(4) NOT NULL,
-  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `poster` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `backdrop` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` tinyint(4) NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `recommendations_user_id_foreign` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `recommendation_item_source` (
+  `recommendation_item_id` int(10) UNSIGNED NOT NULL,
+  `source_id` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `recommendations`
+-- Extraindo dados da tabela `recommendation_item_source`
 --
 
-LOCK TABLES `recommendations` WRITE;
-/*!40000 ALTER TABLE `recommendations` DISABLE KEYS */;
-INSERT INTO `recommendations` VALUES (1,1,'The Best War Movies',0,'<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>','IjqIzzMninQmok','pOiiUyTZmlLznq',0,'2019-01-06 02:28:23','2019-01-06 02:28:23'),(2,1,'The Best Romance Movies',2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','pOiiUyTZmlLznq','IjqIzzMninQmok',1,'2019-01-06 02:28:37','2019-01-06 02:36:23');
-/*!40000 ALTER TABLE `recommendations` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `recommendation_item_source` (`recommendation_item_id`, `source_id`) VALUES
+(29, 12),
+(29, 1),
+(27, 12),
+(27, 1),
+(28, 12),
+(28, 1),
+(1, 11),
+(2, 11),
+(3, 11),
+(4, 11),
+(8, 11),
+(9, 11),
+(10, 11),
+(11, 11),
+(12, 11),
+(13, 11),
+(14, 11),
+(15, 11),
+(16, 11),
+(17, 11),
+(27, 11),
+(28, 11),
+(29, 11),
+(30, 11),
+(31, 11),
+(32, 11),
+(33, 11),
+(34, 11),
+(35, 12),
+(35, 1),
+(35, 11),
+(36, 18),
+(36, 1),
+(34, 18),
+(18, 1),
+(18, 11),
+(19, 1),
+(19, 11),
+(20, 1),
+(20, 11),
+(21, 1),
+(21, 11),
+(22, 1),
+(22, 11),
+(23, 1),
+(23, 11),
+(24, 19),
+(24, 11),
+(25, 14),
+(25, 11),
+(26, 3),
+(37, 11),
+(38, 11),
+(38, 1),
+(39, 11),
+(40, 11),
+(41, 11),
+(42, 11),
+(43, 11),
+(43, 1),
+(44, 11),
+(45, 11),
+(46, 11),
+(47, 11),
+(48, 11),
+(49, 11),
+(50, 11),
+(51, 11),
+(52, 11),
+(53, 11),
+(54, 11),
+(55, 11),
+(56, 11),
+(57, 11),
+(58, 11),
+(59, 11),
+(60, 11),
+(61, 11),
+(62, 11),
+(63, 11),
+(64, 11),
+(65, 11),
+(66, 11),
+(67, 11),
+(68, 11),
+(69, 11),
+(70, 11),
+(71, 11),
+(72, 11),
+(73, 11),
+(74, 11),
+(75, 11),
+(76, 11),
+(77, 11),
+(78, 11),
+(79, 11),
+(80, 11),
+(81, 11),
+(82, 11),
+(83, 11),
+(84, 11),
+(85, 11),
+(86, 11),
+(87, 11),
+(88, 11),
+(89, 11),
+(90, 11),
+(91, 11),
+(92, 11),
+(93, 11),
+(94, 11),
+(95, 11),
+(96, 11),
+(97, 11),
+(98, 11),
+(99, 11),
+(100, 11),
+(101, 11),
+(102, 11),
+(103, 11),
+(104, 11),
+(105, 11),
+(106, 11),
+(107, 11),
+(108, 11),
+(109, 11),
+(110, 11),
+(111, 11),
+(112, 11),
+(113, 11),
+(114, 11),
+(115, 11),
+(116, 11),
+(117, 11),
+(118, 11),
+(119, 11),
+(120, 11),
+(121, 11),
+(122, 11),
+(123, 11),
+(124, 11),
+(125, 11),
+(126, 11),
+(127, 11),
+(128, 11),
+(129, 11),
+(130, 11),
+(131, 11),
+(132, 11),
+(133, 11),
+(134, 11),
+(135, 11),
+(136, 11),
+(137, 11),
+(138, 11),
+(139, 11),
+(140, 11),
+(141, 11),
+(142, 11),
+(143, 11),
+(144, 11),
+(145, 11),
+(146, 11),
+(147, 11),
+(148, 11),
+(149, 11),
+(150, 11),
+(151, 11),
+(152, 11),
+(153, 11),
+(154, 11),
+(155, 11),
+(156, 11),
+(157, 11),
+(158, 11),
+(159, 11),
+(160, 11),
+(161, 11),
+(162, 11),
+(163, 11),
+(164, 11),
+(165, 11),
+(166, 11),
+(167, 11),
+(168, 11),
+(169, 11),
+(170, 11),
+(171, 11),
+(172, 11),
+(173, 11),
+(174, 11),
+(175, 11),
+(176, 11),
+(177, 11),
+(178, 11),
+(179, 11),
+(180, 11),
+(181, 11),
+(182, 11),
+(183, 11),
+(184, 11),
+(185, 11),
+(186, 11),
+(188, 11),
+(189, 11),
+(190, 11),
+(191, 11),
+(192, 11),
+(193, 11),
+(194, 11),
+(195, 11),
+(196, 11),
+(197, 11),
+(198, 11),
+(199, 11),
+(200, 11),
+(201, 11),
+(202, 11),
+(203, 11),
+(204, 11),
+(205, 11),
+(206, 11),
+(207, 11),
+(208, 11),
+(209, 11),
+(210, 11),
+(211, 11),
+(212, 11),
+(213, 11),
+(214, 11),
+(215, 11),
+(216, 11),
+(217, 11),
+(218, 11),
+(219, 11),
+(220, 11),
+(221, 11),
+(222, 11),
+(223, 11),
+(224, 11),
+(225, 11),
+(226, 11),
+(227, 11),
+(228, 11),
+(229, 11),
+(230, 11),
+(231, 11),
+(232, 11),
+(233, 11),
+(234, 11),
+(235, 11),
+(236, 11),
+(237, 11),
+(238, 11),
+(239, 11),
+(240, 11),
+(241, 11),
+(242, 11),
+(243, 11),
+(244, 11),
+(245, 11),
+(246, 11),
+(247, 11),
+(248, 23),
+(248, 1),
+(248, 11),
+(249, 1),
+(249, 11),
+(250, 1),
+(250, 11),
+(251, 1),
+(251, 11),
+(252, 1),
+(252, 11),
+(253, 1),
+(253, 11),
+(254, 1),
+(254, 11),
+(255, 1),
+(255, 11),
+(256, 1),
+(256, 11),
+(257, 1),
+(257, 11),
+(258, 11),
+(259, 11),
+(260, 11),
+(262, 11),
+(263, 11),
+(264, 11),
+(265, 11),
+(266, 11),
+(267, 11),
+(269, 11),
+(270, 11),
+(271, 11),
+(272, 11),
+(273, 11),
+(274, 11),
+(275, 11),
+(276, 11),
+(277, 11),
+(278, 11),
+(279, 11),
+(280, 11),
+(281, 11),
+(282, 11),
+(283, 11),
+(284, 11),
+(285, 11),
+(286, 11),
+(287, 11),
+(288, 11),
+(289, 11),
+(290, 11),
+(291, 11),
+(292, 11),
+(293, 11),
+(294, 11),
+(295, 11),
+(296, 11),
+(297, 11),
+(298, 11),
+(299, 11),
+(300, 11),
+(301, 11),
+(302, 11),
+(303, 11),
+(304, 11),
+(305, 11),
+(306, 11),
+(307, 11),
+(308, 11),
+(309, 11),
+(310, 11),
+(311, 11),
+(312, 11),
+(313, 11),
+(314, 11),
+(315, 11),
+(316, 11),
+(317, 11),
+(318, 11),
+(319, 11),
+(320, 11),
+(321, 11),
+(322, 11),
+(323, 11),
+(324, 11),
+(325, 11),
+(326, 11),
+(327, 11),
+(328, 11),
+(329, 11),
+(330, 11),
+(331, 11),
+(332, 11),
+(333, 11),
+(334, 11),
+(335, 11),
+(336, 11),
+(337, 11),
+(338, 11),
+(339, 11),
+(340, 11),
+(341, 11),
+(342, 11),
+(343, 11),
+(344, 11),
+(345, 11),
+(346, 11),
+(347, 11),
+(348, 11),
+(349, 11),
+(350, 11),
+(351, 11),
+(352, 11),
+(353, 11),
+(354, 1),
+(354, 11),
+(355, 1),
+(355, 11),
+(356, 1),
+(356, 11),
+(357, 1),
+(357, 11),
+(358, 1),
+(358, 11),
+(359, 1),
+(359, 11),
+(360, 1),
+(360, 11),
+(361, 1),
+(361, 11),
+(362, 1),
+(362, 11),
+(363, 1),
+(363, 11),
+(364, 1),
+(364, 11),
+(365, 1),
+(365, 11),
+(366, 1),
+(366, 11),
+(367, 1),
+(367, 11),
+(368, 1),
+(368, 11),
+(369, 1),
+(369, 11),
+(370, 11),
+(371, 11),
+(372, 11),
+(373, 11),
+(374, 11),
+(375, 11),
+(376, 11),
+(377, 11),
+(378, 11),
+(379, 11),
+(380, 11),
+(381, 11),
+(382, 11),
+(383, 11),
+(384, 11),
+(385, 11),
+(386, 11),
+(387, 11),
+(388, 11),
+(389, 11),
+(390, 11),
+(391, 11),
+(392, 11),
+(393, 11),
+(394, 11),
+(395, 11),
+(396, 11),
+(397, 11),
+(398, 11),
+(399, 11),
+(400, 11),
+(401, 11),
+(402, 11),
+(403, 11),
+(404, 11),
+(405, 11),
+(406, 11),
+(407, 11),
+(408, 11),
+(409, 11),
+(410, 11),
+(411, 11),
+(412, 11),
+(413, 11),
+(414, 11),
+(415, 11),
+(416, 11),
+(417, 11),
+(418, 11),
+(419, 11),
+(420, 11),
+(421, 11),
+(422, 11),
+(423, 11),
+(424, 11),
+(425, 11),
+(426, 11),
+(427, 11),
+(428, 11),
+(429, 11),
+(430, 11),
+(431, 11),
+(432, 11),
+(433, 11),
+(434, 11),
+(435, 11),
+(436, 11),
+(437, 11),
+(438, 11),
+(439, 11),
+(440, 11),
+(441, 11),
+(442, 11),
+(443, 1),
+(444, 11),
+(445, 11),
+(446, 11),
+(447, 11),
+(448, 11),
+(449, 11),
+(450, 11),
+(451, 11),
+(452, 11),
+(453, 11),
+(454, 11),
+(455, 11),
+(456, 11),
+(457, 11),
+(458, 11),
+(459, 11),
+(460, 11),
+(461, 11),
+(462, 11),
+(463, 11),
+(464, 11),
+(465, 11),
+(466, 11),
+(467, 11),
+(468, 11),
+(469, 11),
+(470, 11),
+(471, 11),
+(472, 11),
+(473, 11),
+(474, 11),
+(475, 11),
+(476, 11),
+(477, 11),
+(478, 11),
+(479, 11),
+(480, 11),
+(481, 11),
+(482, 11),
+(483, 11),
+(484, 11),
+(485, 11),
+(486, 11),
+(487, 11),
+(488, 11),
+(489, 11),
+(490, 11),
+(491, 11),
+(492, 11),
+(493, 11),
+(494, 11),
+(495, 11),
+(496, 11),
+(497, 11),
+(498, 11),
+(499, 11),
+(507, 11),
+(501, 11),
+(502, 11),
+(503, 11),
+(504, 11),
+(505, 11),
+(506, 11),
+(508, 11),
+(509, 11),
+(510, 11),
+(511, 11),
+(512, 11),
+(513, 11),
+(514, 11),
+(515, 11),
+(516, 11),
+(517, 11),
+(518, 11),
+(519, 11),
+(520, 11),
+(521, 11),
+(522, 11),
+(523, 11),
+(524, 11),
+(525, 11),
+(526, 11),
+(527, 11),
+(528, 11),
+(529, 11),
+(530, 11),
+(531, 11),
+(532, 11);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `sources`
+-- Estrutura da tabela `sources`
 --
 
-DROP TABLE IF EXISTS `sources`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sources` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sources_name_unique` (`name`)
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sources`
+-- Extraindo dados da tabela `sources`
 --
 
-LOCK TABLES `sources` WRITE;
-/*!40000 ALTER TABLE `sources` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sources` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `sources` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Netflix', '2018-10-31 01:31:16', '2018-10-31 01:31:16'),
+(2, 'Prime Video', '2018-10-31 01:31:19', '2018-10-31 01:31:19'),
+(3, 'Hulu', '2018-10-31 01:31:22', '2018-10-31 01:31:22'),
+(4, 'NET NOW', '2018-10-31 01:31:25', '2018-10-31 01:31:25'),
+(5, 'Globo Play', '2018-10-31 01:31:27', '2018-10-31 01:31:27'),
+(6, 'iTunes Store', '2018-10-31 01:31:33', '2018-10-31 01:31:33'),
+(7, 'Play Store', '2018-10-31 01:31:35', '2018-10-31 01:31:35'),
+(8, 'YouTube', '2018-10-31 01:31:39', '2018-10-31 01:31:39'),
+(9, 'Crackle', '2018-10-31 01:31:42', '2018-10-31 01:31:42'),
+(10, 'Crunchyroll', '2018-10-31 01:32:05', '2018-10-31 01:32:05'),
+(11, 'DVD & Blu-Ray', '2018-10-31 01:32:23', '2018-10-31 01:32:23'),
+(12, 'CW', '2018-11-01 13:07:01', '2018-11-01 13:07:01'),
+(13, 'Fox', '2018-11-01 13:07:03', '2018-11-01 13:07:03'),
+(14, 'ABC', '2018-11-01 13:07:05', '2018-11-01 13:07:05'),
+(15, 'CBS', '2018-11-01 13:07:08', '2018-11-01 13:07:08'),
+(16, 'NBC', '2018-11-01 13:07:14', '2018-11-01 13:07:14'),
+(17, 'HBO', '2018-11-01 13:07:17', '2018-11-01 13:07:17'),
+(18, 'Warner', '2018-11-01 18:02:52', '2018-11-01 18:02:52'),
+(19, 'FX', '2018-11-01 18:07:22', '2018-11-01 18:07:22'),
+(20, 'Sony', '2018-11-01 18:08:58', '2018-11-01 18:08:58'),
+(23, 'USA Network', '2018-11-21 09:23:32', '2018-11-21 09:23:32');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Estrutura da tabela `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `api_token` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `users_email_unique` (`email`),
-  UNIQUE KEY `users_api_token_unique` (`api_token`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
+-- Extraindo dados da tabela `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Cyro Dubeux','xorycx@gmail.com','$2a$10$wxM3yhUhTgjs2MDmB7KA0uzXzliyHjtb6htrQlEx6Kjw3iDLagUjW','aa0f3579-c1ed-4377-867d-e5a11c45f76f','2019-01-02 00:00:00','2019-01-06 22:08:23'),(2,'John Doe','johndoe@admin.com','$2a$10$3KT68mNEtKHo4tI6hdXOQO/AbbVkH3iax2yGjM1ZN84iPKH7Noeca','bc409c91-1e0c-41e9-8837-eb04329aae75','2019-01-06 21:49:00','2019-01-06 21:49:00');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `api_token`, `created_at`, `updated_at`) VALUES
+(1, 'Cyro Dubeux', 'xorycx@gmail.com', '$2a$10$wxM3yhUhTgjs2MDmB7KA0uzXzliyHjtb6htrQlEx6Kjw3iDLagUjW', 'bb9b6ed1-8688-44f4-9f35-f75e62ef83f1', '2018-10-31 01:15:38', '2018-10-31 01:15:38');
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `genres`
+--
+ALTER TABLE `genres`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `genres_name_unique` (`name`);
+
+--
+-- Indexes for table `genre_recommendation`
+--
+ALTER TABLE `genre_recommendation`
+  ADD KEY `genre_recommendation_recommendation_id_foreign` (`recommendation_id`),
+  ADD KEY `genre_recommendation_genre_id_foreign` (`genre_id`);
+
+--
+-- Indexes for table `keywords`
+--
+ALTER TABLE `keywords`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `keywords_name_unique` (`name`);
+
+--
+-- Indexes for table `keyword_recommendation`
+--
+ALTER TABLE `keyword_recommendation`
+  ADD KEY `keyword_recommendation_recommendation_id_foreign` (`recommendation_id`),
+  ADD KEY `keyword_recommendation_keyword_id_foreign` (`keyword_id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recommendations`
+--
+ALTER TABLE `recommendations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `recommendations_user_id_foreign` (`user_id`);
+
+--
+-- Indexes for table `recommendation_items`
+--
+ALTER TABLE `recommendation_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `recommendation_items_recommendation_id_foreign` (`recommendation_id`);
+
+--
+-- Indexes for table `recommendation_item_source`
+--
+ALTER TABLE `recommendation_item_source`
+  ADD KEY `recommendation_item_source_recommendation_item_id_foreign` (`recommendation_item_id`),
+  ADD KEY `recommendation_item_source_source_id_foreign` (`source_id`);
+
+--
+-- Indexes for table `sources`
+--
+ALTER TABLE `sources`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `sources_name_unique` (`name`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`),
+  ADD UNIQUE KEY `users_api_token_unique` (`api_token`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `genres`
+--
+ALTER TABLE `genres`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `keywords`
+--
+ALTER TABLE `keywords`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `recommendations`
+--
+ALTER TABLE `recommendations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT for table `recommendation_items`
+--
+ALTER TABLE `recommendation_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=533;
+
+--
+-- AUTO_INCREMENT for table `sources`
+--
+ALTER TABLE `sources`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2019-01-06 19:13:16
