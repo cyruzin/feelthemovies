@@ -12,3 +12,5 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=api_feelthemovies
+    command: >
+      bash -c "docker exec -ti api-mysql bash && mysql && use api_feelthemovies; && select * from genres; && quit; && exit"
