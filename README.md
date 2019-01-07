@@ -1,10 +1,12 @@
-# Feel the Movies
+<p align="center"><img src="./assets/img/logo.png" width="350"></p>
 
 [![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
 
 This is my first Golang project, so probably there's a lot to improve. Any kind of help is welcome. I did my best researching the best practices, the best folder structuration and all that I could find. In the future, I pretend to bump this project to the version 2.0 using advanced concepts, like design patterns.
+
+
 
 ## Installation
 
