@@ -17,9 +17,6 @@ func getGenres(w http.ResponseWriter, r *http.Request) {
 
 	g, err := db.GetGenres()
 
-	json.NewEncoder(w).Encode("Logando....")
-	json.NewEncoder(w).Encode(g)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

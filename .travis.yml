@@ -7,7 +7,7 @@ go:
 
 services:
  - docker
- 
+
 #env:
 #- DOCKER_COMPOSE_VERSION=1.23.2
 
@@ -20,6 +20,7 @@ before_install:
   - sudo service mysql stop
   - docker-compose up -d
   - docker ps
+  - docker exec -ti api-mysql /usr/bin/mysql < ./docker-entrypoint-initdb.d/api_feelthemovies.sql api_feelthemovies
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 

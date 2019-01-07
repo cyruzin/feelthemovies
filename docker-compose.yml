@@ -6,7 +6,7 @@ services:
     image: mysql:5.7
     container_name: api-mysql
     volumes:
-    - ./db:/docker-entrypoint-initdb.d
+    - ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql
     ports: 
       - 3306:3306
     environment:
