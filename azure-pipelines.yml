@@ -40,9 +40,6 @@ steps:
     dockerComposeCommand: 'up -d'
 
 - script: |
-    service mysql stop
-
-- script: |
     go version
     go get -v -t -d ./...
     if [ -f Gopkg.toml ]; then
