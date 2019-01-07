@@ -6,18 +6,21 @@ This is the new API repository for Feel the Movies. Written in Go, totally open 
 
 This is my first Golang project, so probably there's a lot to improve. Any kind of help is welcome. I did my best researching the best practices, the best folder structuration and all that I could find. In the future, I pretend to bump this project to the version 2.0 using advanced concepts, like design patterns.
 
-
-
 ## Installation
 
-- Create a database on your MySQL and import the .sql file that are inside of "db" folder.
-- Rename the file ".env.example" to ".env" and set your database configuration.
-- Inside the folder "api" there's a Insomnia's schema that I created to help with the tests. Download it and import it.
+Make sure that you have Docker installed and then run the following commands:
+
+```sh
+$ docker compose up -d
+$ go get -t -v ./... 
+```
 
 That's it! Go to folder "cmd/feelthemovies" and run the command:
+
 ```sh
 $ go run main.go
 ```
+
 ### Tests 
 
 As soon as I finish coding, I'll start the tests :).

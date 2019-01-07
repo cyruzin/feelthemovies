@@ -16,7 +16,6 @@ git:
   depth: 1
 
 # Docker / Overalls config
-
 before_install:
   - sudo service mysql stop
   - sudo apt-get update
@@ -34,10 +33,10 @@ before_install:
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
-# Overalls / Test scripts !
+# Overalls / Test scripts 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
-  - go test -v ./...-count=1
+  - go test -v ./... -count=1
 
 # Do not notify
 notifications:
