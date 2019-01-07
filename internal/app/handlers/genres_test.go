@@ -50,7 +50,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 
-	var newGenre = []byte(`{"name":"NewGenreTest1"}`)
+	var newGenre = []byte(`{"name":"NewGenreTest2"}`)
 
 	req, err := http.NewRequest("POST", "/v1/genre", bytes.NewBuffer(newGenre))
 
@@ -99,7 +99,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 }
 
 func TestDeleteGenreSuccess(t *testing.T) {
-	req, err := http.NewRequest("DELETE", "/v1/genre/1", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/7", nil)
 
 	if err != nil {
 		log.Println(err)

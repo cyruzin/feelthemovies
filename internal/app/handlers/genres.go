@@ -143,10 +143,6 @@ func deleteGenre(w http.ResponseWriter, r *http.Request) {
 
 	d, err := db.DeleteGenre(id)
 
-	data, _ := db.GetGenres()
-	log.Println(data)
-	log.Println(err)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
