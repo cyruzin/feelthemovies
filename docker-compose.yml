@@ -8,7 +8,7 @@ services:
     volumes:
     - ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql
     ports: 
-      - 3306:3306
+      - 3307:3306
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=api_feelthemovies
