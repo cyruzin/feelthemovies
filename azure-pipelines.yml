@@ -42,10 +42,12 @@ steps:
 - script: |
     go version
     go get -v -t -d ./...
+    go get github.com/mattn/goveralls 
     if [ -f Gopkg.toml ]; then
         curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         dep ensure
     fi
+    $GOPATH/bin/goveralls -service=travis-ci
     go test -v ./...
   workingDirectory: '$(modulePath)'
   displayName: 'Run tests'
