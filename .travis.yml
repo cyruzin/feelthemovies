@@ -2,7 +2,7 @@
 sudo: false
 
 # SO
-dist: trusty
+dist: xenial
 
 # Language
 language: go
@@ -13,6 +13,11 @@ go:
 
 services:
  - docker
+
+addons:
+  apt:
+    packages:
+      - docker-ce
 
 # Build only the latest commit
 git:

@@ -50,3 +50,7 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Run tests'
 
+- script: go build -v .
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build'
+
