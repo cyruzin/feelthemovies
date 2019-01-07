@@ -5,9 +5,8 @@ services:
   mysql:
     image: mysql:5.7
     container_name: api-mysql
-    command: bash -c "mysql -e 'select * from genres' api_feelthemovies;"
     volumes:
-    - ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql
+    - ./db:/docker-entrypoint-initdb.d
     ports: 
       - 3306:3306
     environment:
