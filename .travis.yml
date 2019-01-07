@@ -29,7 +29,7 @@ before_install:
  # - sudo mv docker-compose /usr/local/bin
  # - docker-compose --version
  # - docker-compose up -d
-  - docker run --name api-mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=true -e MYSQL_DATABASE=api_feelthemovies -d mysql:5.7 
+  - docker run --name api-mysql -p 3306:3306 -v ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql -e MYSQL_ALLOW_EMPTY_PASSWORD=true -e MYSQL_DATABASE=api_feelthemovies -d mysql:5.7 
   - docker exec -i api-mysql mysql api_feelthemovies < ./db/api_feelthemovies.sql
   - docker ps -a
   - go get -t -v ./...  
