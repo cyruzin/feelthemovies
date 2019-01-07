@@ -29,8 +29,8 @@ before_install:
  # - sudo mv docker-compose /usr/local/bin
  # - docker-compose --version
  # - docker-compose up -d
-  - docker run --name apimysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=true MYSQL_DATABASE=api_feelthemovies -d mysql:5.7 
-  - docker exec -i apimysql mysql api_feelthemovies < ./db/api_feelthemovies.sql
+  - docker run --name api-mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=true -e MYSQL_DATABASE=api_feelthemovies -d mysql:5.7 
+  - docker exec -i api-mysql mysql api_feelthemovies < ./db/api_feelthemovies.sql
   - docker ps -a
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
