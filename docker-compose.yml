@@ -6,9 +6,13 @@ services:
     image: mariadb:10.3
     container_name: api-mysql
     volumes:
+    - container-volume:/var/lib/mysql
     - ./db/api_feelthemovies.sql:/docker-entrypoint-initdb.d/api_feelthemoviesl.sql
     ports: 
       - 3306:3306
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=api_feelthemovies
+      
+volumes:
+  container-volume:
