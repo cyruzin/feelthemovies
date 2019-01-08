@@ -8,8 +8,8 @@ import (
 	"testing"
 )
 
-func TestGetRecommendationItemsSuccess(t *testing.T) {
-	req, err := http.NewRequest("GET", "/v1/recommendation_items/1", nil)
+func TestGetRecommendationsSuccess(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendations", nil)
 
 	if err != nil {
 		log.Println(err)
@@ -17,7 +17,7 @@ func TestGetRecommendationItemsSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/recommendation_items/{id}", getRecommendationItems).Methods("GET")
+	r.HandleFunc("/v1/recommendations", getRecommendations).Methods("GET")
 
 	r.ServeHTTP(rr, req)
 
@@ -25,8 +25,8 @@ func TestGetRecommendationItemsSuccess(t *testing.T) {
 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
 	}
 }
-func TestGetRecommendationItemSuccess(t *testing.T) {
-	req, err := http.NewRequest("GET", "/v1/recommendation_item/1", nil)
+func TestGetRecommendationSuccess(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendation/1", nil)
 
 	if err != nil {
 		log.Println(err)
@@ -34,7 +34,7 @@ func TestGetRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/recommendation_item/{id}", getRecommendationItem).Methods("GET")
+	r.HandleFunc("/v1/recommendation/{id}", getRecommendation).Methods("GET")
 
 	r.ServeHTTP(rr, req)
 
@@ -43,11 +43,11 @@ func TestGetRecommendationItemSuccess(t *testing.T) {
 	}
 }
 
-func TestCreateRecommendationItemFail(t *testing.T) {
+func TestCreateRecommendationFail(t *testing.T) {
 
-	var recItem = []byte(`{"name":"Teste"}`)
+	var recItem = []byte(`{"title":"Teste"}`)
 
-	req, err := http.NewRequest("POST", "/v1/recommendation_item", bytes.NewBuffer(recItem))
+	req, err := http.NewRequest("POST", "/v1/recommendation", bytes.NewBuffer(recItem))
 
 	if err != nil {
 		log.Println(err)
@@ -55,7 +55,7 @@ func TestCreateRecommendationItemFail(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/recommendation_item", createRecommendationItem).Methods("POST")
+	r.HandleFunc("/v1/recommendation", createRecommendation).Methods("POST")
 
 	r.ServeHTTP(rr, req)
 
@@ -64,11 +64,11 @@ func TestCreateRecommendationItemFail(t *testing.T) {
 	}
 }
 
-func TestUpdateRecommendationItemFail(t *testing.T) {
+func TestUpdateRecommendationFail(t *testing.T) {
 
-	var recItem = []byte(`{"name":"Teste"}`)
+	var recItem = []byte(`{"title":"Teste"}`)
 
-	req, err := http.NewRequest("PUT", "/v1/recommendation_item/1", bytes.NewBuffer(recItem))
+	req, err := http.NewRequest("PUT", "/v1/recommendation/1", bytes.NewBuffer(recItem))
 
 	if err != nil {
 		log.Println(err)
@@ -76,7 +76,7 @@ func TestUpdateRecommendationItemFail(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/recommendation_item/{id}", updateRecommendationItem).Methods("PUT")
+	r.HandleFunc("/v1/recommendation/{id}", updateRecommendation).Methods("PUT")
 
 	r.ServeHTTP(rr, req)
 
@@ -85,8 +85,8 @@ func TestUpdateRecommendationItemFail(t *testing.T) {
 	}
 }
 
-func TestDeleteRecommendationItemSuccess(t *testing.T) {
-	req, err := http.NewRequest("DELETE", "/v1/recommendation_item/7", nil)
+func TestDeleteRecommendationSuccess(t *testing.T) {
+	req, err := http.NewRequest("DELETE", "/v1/recommendation/7", nil)
 
 	if err != nil {
 		log.Println(err)
@@ -94,7 +94,7 @@ func TestDeleteRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/recommendation_item/{id}", deleteRecommendationItem).Methods("DELETE")
+	r.HandleFunc("/v1/recommendation/{id}", deleteRecommendation).Methods("DELETE")
 
 	r.ServeHTTP(rr, req)
 
