@@ -1,6 +1,6 @@
 <p align="center"><img src="./assets/img/logo.png" width="350"></p>
 
-[![Build Status](https://dev.azure.com/cyrofarias/feelthemovies/_apis/build/status/cyruzin.feelthemovies?branchName=master)](https://dev.azure.com/cyrofarias/feelthemovies/_build/latest?definitionId=1?branchName=master) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master&service=github)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://dev.azure.com/cyrofarias/feelthemovies/_apis/build/status/cyruzin.feelthemovies?branchName=master)](https://dev.azure.com/cyrofarias/feelthemovies/_build/latest?definitionId=1?branchName=master) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
 
