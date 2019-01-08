@@ -31,6 +31,7 @@ before_install:
 
 # Overalls / Test scripts
 script:
+  - wait 20
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./... -race
 

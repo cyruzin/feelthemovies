@@ -104,6 +104,7 @@ func TestUpdateRecommendation(t *testing.T) {
 	}
 
 	upRec := &model.Recommendation{
+		UserID:    1,
 		Title:     "Aquaman",
 		Type:      1,
 		Body:      "The new Aquaman movie",
@@ -117,7 +118,7 @@ func TestUpdateRecommendation(t *testing.T) {
 	err = validate.Struct(upRec)
 
 	if err != nil {
-		t.Errorf("CreateRecommendation - Validation - error: %s", err)
+		t.Errorf("UpdateRecommendation - Validation - error: %s", err)
 	}
 
 	rec, err := db.UpdateRecommendation(2, upRec)
