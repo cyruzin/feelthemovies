@@ -14,24 +14,25 @@ go:
 services:
  - docker
 
-addons:
-  apt:
-    packages:
-      - docker-ce
-
 # Build only the latest commit
 git:
   depth: 1
 
-# Docker / Overalls config
+# Go dependencies / Overalls dependency
 before_install:
-  - docker-compose up -d
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls 
 
+# Disable services enabled by default
+before_script:
+  - sudo /etc/init.d/mysql stop
+  - sudo /etc/init.d/postgresql stop
+
 # Overalls / Test scripts
 script:
-  - sleep 20
+  - docker-compose up -d
+  - sleep 25
+  - docker ps
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./... -race
 
