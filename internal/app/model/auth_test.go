@@ -17,6 +17,14 @@ func TestCheckApiTokenModel(t *testing.T) {
 	if !check {
 		t.Errorf("CheckApiToken error: %s", err)
 	}
+
+	data, err := helper.ToJSON(check)
+
+	if err != nil {
+		t.Errorf("CheckApiToken - ToJSON - error: %s", err)
+	}
+
+	t.Log(data)
 }
 
 func TestAuthenticateModel(t *testing.T) {

@@ -30,6 +30,25 @@ func TestGetRecommendationsSuccess(t *testing.T) {
 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
 	}
 }
+
+func TestGetRecommendationsPagination(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendations?page=2", nil)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	r.HandleFunc("/v1/recommendations", getRecommendations).Methods("GET")
+
+	r.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
+
 func TestGetRecommendationSuccess(t *testing.T) {
 	req, err := http.NewRequest("GET", "/v1/recommendation/1", nil)
 
@@ -80,6 +99,26 @@ func TestCreateRecommendation(t *testing.T) {
 	keywords[rec.ID] = []int{1, 2}
 	genres[rec.ID] = []int{3, 5}
 
+	eK, err := helper.IsEmpty(keywords)
+
+	if err != nil {
+		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
+	}
+
+	if eK {
+		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
+	}
+
+	eG, err := helper.IsEmpty(genres)
+
+	if err != nil {
+		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
+	}
+
+	if eG {
+		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
+	}
+
 	_, err = helper.Attach(keywords, "keyword_recommendation", db.DB)
 
 	if err != nil {
@@ -91,6 +130,23 @@ func TestCreateRecommendation(t *testing.T) {
 	if err != nil {
 		t.Errorf("CreateRecommendation - Attach - error: %s", err)
 	}
+
+	data, err := helper.ToJSON(rec)
+
+	if err != nil {
+		t.Errorf("CreateRecommendation - ToJSON - error: %s", err)
+	}
+
+	t.Log(data)
+
+	data, err = helper.ToJSONIndent(rec)
+
+	if err != nil {
+		t.Errorf("CreateRecommendation - ToJSONIndent - error: %s", err)
+	}
+
+	t.Log(data)
+
 }
 
 func TestUpdateRecommendation(t *testing.T) {
@@ -133,17 +189,54 @@ func TestUpdateRecommendation(t *testing.T) {
 	keywords[rec.ID] = []int{1, 2}
 	genres[rec.ID] = []int{3, 5}
 
-	_, err = helper.Attach(keywords, "keyword_recommendation", db.DB)
+	eK, err := helper.IsEmpty(keywords)
 
 	if err != nil {
-		t.Errorf("UpdateRecommendation - Attach - error: %s", err)
+		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
 	}
 
-	_, err = helper.Attach(genres, "genre_recommendation", db.DB)
+	if eK {
+		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
+	}
+
+	eG, err := helper.IsEmpty(genres)
 
 	if err != nil {
-		t.Errorf("UpdateRecommendation - Attach - error: %s", err)
+		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
 	}
+
+	if eG {
+		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
+	}
+
+	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
+
+	if err != nil {
+		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
+	}
+
+	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
+
+	if err != nil {
+		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
+	}
+
+	data, err := helper.ToJSON(rec)
+
+	if err != nil {
+		t.Errorf("UpdateRecommendation - ToJSON - error: %s", err)
+	}
+
+	t.Log(data)
+
+	data, err = helper.ToJSONIndent(rec)
+
+	if err != nil {
+		t.Errorf("UpdateRecommendation - ToJSONIndent - error: %s", err)
+	}
+
+	t.Log(data)
+
 }
 
 func TestCreateRecommendationFail(t *testing.T) {
