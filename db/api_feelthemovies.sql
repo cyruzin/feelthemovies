@@ -30,6 +30,8 @@ SET time_zone = "+00:00";
 
 CREATE DATABASE api_feelthemovies;
 
+USE api_feelthemovies;
+
 CREATE TABLE `genres` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
