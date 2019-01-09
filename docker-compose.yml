@@ -3,7 +3,7 @@ version: "3.3"
 services: 
 
   mysql:
-    image: maria-db:10.3
+    image: mariadb:10.0.37-xenial
     container_name: api-mysql
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
