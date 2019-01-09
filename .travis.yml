@@ -31,8 +31,9 @@ before_script:
 # Overalls / Test scripts
 script:
   - docker-compose up -d
-  - sleep 25
+  - sleep 40
   - docker ps
+  - docker inspect -f '{{.State.Health.Status}}' \ api-mysql
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./... -race
 
