@@ -19,18 +19,19 @@ git:
   depth: 1
 
 # Go dependencies / Overalls dependency
-before_install:
-  - go get -t -v ./...  
-  - go get github.com/mattn/goveralls 
+#before_install:
+ 
 
 # Disable services enabled by default
 before_script:
   - sudo /etc/init.d/mysql stop
   - sudo /etc/init.d/postgresql stop
+  - docker-compose up -d
+  - go get -t -v ./...  
+  - go get github.com/mattn/goveralls 
 
 # Overalls / Test scripts
 script:
-  - docker-compose up -d
   - sleep 40
   - docker ps
   - docker inspect -f '{{.State.Health.Status}}' \ api-mysql
