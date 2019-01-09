@@ -27,7 +27,7 @@ steps:
   displayName: 'Set up the Go workspace'
 
 
-- script: service mysql stop
+- script: sudo service mysql stop
   displayName: Disable Mysql
 
 # Docker Compose
