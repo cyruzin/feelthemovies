@@ -40,6 +40,11 @@ steps:
     dockerComposeCommand: 'up -d'
 
 - script: |
+    go get github.com/mattn/goveralls
+    cd $(GOPATH)/src/github.com/$(build.repository.name)
+    goveralls -repotoken 8brFtxmkYjNGO4v6gJQJcq811S4QIXFip0AeN 
+
+- script: |
     go version
     go get -v -t -d ./...
     if [ -f Gopkg.toml ]; then
