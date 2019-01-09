@@ -26,7 +26,7 @@ before_install:
 
 script:
   - docker-compose up -d
-  - go get -t -v ./...  
+  - go get -v -t -d ./... 
   - go get github.com/mattn/goveralls  
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./... -race
