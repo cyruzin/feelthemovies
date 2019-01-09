@@ -41,14 +41,11 @@ steps:
 
 - script: |
     go version
-    go get github.com/mattn/goveralls
     go get -v -t -d ./...
     if [ -f Gopkg.toml ]; then
         curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         dep ensure
     fi
-    cd $(GOPATH)/src/github.com/$(build.repository.name)
-    goveralls -repotoken 8brFtxmkYjNGO4v6gJQJcq811S4QIXFip0AeN 
     go test -v ./... -race
   workingDirectory: '$(modulePath)'
   displayName: 'Run tests'
