@@ -22,9 +22,8 @@ git:
   depth: 1
 
 before_script:
-  - mysql -u root -e 'CREATE DATABASE api_feethemovies;'
-  - mysql -u root api_feethemovies < db/api_feelthemovies.sql
-  - sleep 25
+  - mysql -u root -e 'CREATE DATABASE api_feelthemovies;'
+  - mysql -u root api_feelthemovies < db/api_feelthemovies.sql
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls  
 script:
