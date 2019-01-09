@@ -11,7 +11,7 @@ This is my first Golang project, so probably there's a lot to improve. Any kind 
 Make sure that you have Docker installed and then run the following commands:
 
 ```sh
-$ docker compose up -d
+$ docker-compose up -d
 $ go get -t -v ./... 
 ```
 
@@ -23,8 +23,19 @@ $ go run main.go
 
 ### Tests 
 
-As soon as I finish coding, I'll start the tests :).
+70% covered :)
 
+To test locally, run:
+
+```sh
+$ go test -v ./... -race
+```
+If you want to test more than one time, run:
+
+
+```sh
+$ docker-compose down && docker-compose up -d && sleep 10 && go test -v ./... -race
+```
 ### Packages
 
 These are the packages that helped me build this project:
