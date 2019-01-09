@@ -185,9 +185,12 @@ func TestUpdateRecommendation(t *testing.T) {
 
 	keywords := make(map[int64][]int)
 	genres := make(map[int64][]int)
+	emptyKeywords := make(map[int64][]int)
+	emptyArr := []int{}
 
 	keywords[rec.ID] = []int{1, 2}
 	genres[rec.ID] = []int{3, 5}
+	emptyKeywords[rec.ID] = emptyArr
 
 	eK, err := helper.IsEmpty(keywords)
 
@@ -221,6 +224,12 @@ func TestUpdateRecommendation(t *testing.T) {
 		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
 	}
 
+	_, err = helper.Sync(emptyKeywords, "keyword_recommendation", "recommendation_id", db.DB)
+
+	if err != nil {
+		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
+	}
+
 	data, err := helper.ToJSON(rec)
 
 	if err != nil {
@@ -236,7 +245,6 @@ func TestUpdateRecommendation(t *testing.T) {
 	}
 
 	t.Log(data)
-
 }
 
 func TestCreateRecommendationFail(t *testing.T) {
