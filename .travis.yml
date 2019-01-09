@@ -13,6 +13,8 @@ git:
 
 before_script:
   - docker-compose up -d
+  - docker-compose exec -d mysql /.entrypoint.sh
+  - sleep 10
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls  
 script:
