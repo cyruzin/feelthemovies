@@ -1,41 +1,27 @@
-# Sudo option
 sudo: false
 
-# SO
 dist: xenial
 
-# Language
 language: go
 
-# Golang versions
 go:
   - 1.11.x
 
 services:
- - docker
+ - mysql
 
-# Build only the latest commit
 git:
   depth: 1
 
-# Go dependencies / Overalls dependency
-#before_install:
- 
-
-# Disable services enabled by default
 before_script:
-  - sudo /etc/init.d/mysql stop
-  - sudo /etc/init.d/postgresql stop
-  - docker-compose up -d
+  - mysql -u root -e 'CREATE DATABASE api_feethemovies;'
+  - mysql -u root api_feethemovies < db/api_feelthemovies.sql
   - sleep 25
   - go get -t -v ./...  
-  - go get github.com/mattn/goveralls 
-
-# Overalls / Test scripts
+  - go get github.com/mattn/goveralls  
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
   - go test -v ./... -race
 
-# Do not notify
 notifications:
   email: false
