@@ -1,29 +1,18 @@
-sudo: required
-
 language: go
 
 go:
   - 1.11.x
 
-dist: trusty
+dist: xenial
 
 services:
- - mysql
-
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-      - mysql-client
+ - docker
 
 git:
   depth: 1
 
 before_script:
-  - mysql -u root -e 'CREATE DATABASE api_feelthemovies;'
-  - mysql -u root api_feelthemovies < db/api_feelthemovies.sql
+  - docker-compose up -d
   - go get -t -v ./...  
   - go get github.com/mattn/goveralls  
 script:

@@ -26,10 +26,6 @@ steps:
     echo '##vso[task.prependpath]$(GOROOT)/bin'
   displayName: 'Set up the Go workspace'
 
-
-- script: sudo service mysql stop
-  displayName: Disable Mysql
-
 # Docker Compose
 # Build, push or run multi-container Docker applications. Task can be used with Docker or Azure Container registry.
 - task: DockerCompose@0
