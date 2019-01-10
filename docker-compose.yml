@@ -10,4 +10,5 @@ services:
     ports: 
       - 3306:3306
     environment:
+      - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=Password12!
