@@ -1,27 +1,33 @@
-version: 1.0.0.{build}
 
-platform: x64
+# version format
+version: "{build}"
 
-branches:
-  only:
-    - master
+# Operating system (build VM template)
+os: Windows Server 2012 R2
 
-clone_folder: c:\gopath\src\github.com\account\myproject
+clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
 
+# environment variables
 environment:
   GOPATH: c:\gopath
 
+# scripts that run after cloning repository
 install:
-  - echo %PATH%
-  - echo %GOPATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
   - go version
   - go env
+  - go get -v -t -d ./...
 
+# to run your custom scripts instead of automatic MSBuild
 build_script:
-  - go build -o buildOutput\myapp -i .
-   - ps: .\build.ps1
+  - go vet ./...
+  - gofmt -s -l .
+  - deadcode
+  - ineffassign .
+  - go test -v ./... -race
 
-artifacts:
-  - path: buildOutput/myapp
-    name: binary
+# to disable automatic tests
+test: off
+
+# to disable deployment
+deploy: off
