@@ -11,7 +11,7 @@ clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
 environment:
   GOPATH: c:\gopath
   MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
-  MYSQL_PORT: 3307
+  MYSQL_PORT: 3306
 
 services:
  - mysql
@@ -20,15 +20,17 @@ services:
 install:
   - set PATH=%MYSQL_PATH%\bin;%PATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
-  - mysql < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
+  - "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
   - go version
   - go env
   - go get -v -t -d ./...
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - go vet ./...
-  - go test -v ./... -race
+  - cmd: |-
+      "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < .ci\server\init.sql
+      "go vet ./..."
+      "go test -v ./... -race"
 
 # to disable automatic tests
 test: off
