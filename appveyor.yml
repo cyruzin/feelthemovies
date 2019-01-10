@@ -1,0 +1,23 @@
+build: off
+clone_folder: /usr/go/src/github.com/$username/$project
+environment:
+  GOPATH: /usr/go/
+stack: go 1.10
+version: 1.0.{build}
+image: Ubuntu1804
+init:
+- cmd: mysql < db/api_feelthemovies.sql
+services: mysql
+build:
+  verbosity: minimal
+before_test:
+  - go vet ./...
+test_script:
+- cmd: >-
+    go version
+        go get -v -t -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+        go test -v ./... -race
