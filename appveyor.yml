@@ -5,7 +5,7 @@ version: "{build}"
 # Operating system (build VM template)
 os: Windows Server 2012 R2
 
-image: Previous Visual Studio 2017
+#image: Previous Visual Studio 2017
 
 clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
 
@@ -15,6 +15,10 @@ environment:
     GOPATH: c:\gopath
     MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
     MYSQL_PORT: 3306
+    CODECOV_TOKEN:
+      secure: XZHmiBGe720nDsV+5bhsbFoIZY9bsTXSPiu5/TfdCUDAyEQmSlO9CGfA9bUUrJ3d
+    COVERALLS_TOKEN:
+      secure: 1hL3hHA2Q+na6UeLIfwku6f6EQAeu/nPEqgdelc7hVBB8IOq1dF+IEet+pWqhes0
    
 services:
  - mysql
@@ -34,6 +38,10 @@ build_script:
       "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
   - go vet ./...
   - go test -v ./... -race
+  - ps: |-
+      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      bash codecov.sh -f "coverage.xml" -t %CODECOV_TOKEN
 
 # to disable automatic tests
 test: off
