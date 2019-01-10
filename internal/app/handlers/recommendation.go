@@ -175,7 +175,6 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		Body:      reqRec.Body,
 		Poster:    reqRec.Poster,
 		Backdrop:  reqRec.Backdrop,
-		Status:    reqRec.Status,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

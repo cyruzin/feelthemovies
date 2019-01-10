@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -9,8 +10,6 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func TestGetRecommendationsSuccess(t *testing.T) {
@@ -69,7 +68,13 @@ func TestGetRecommendationSuccess(t *testing.T) {
 
 func TestCreateRecommendation(t *testing.T) {
 
-	newRec := &model.Recommendation{
+	var reqRec struct {
+		*model.Recommendation
+		Genres   []int `json:"genres"`
+		Keywords []int `json:"keywords"`
+	}
+
+	recItem := &model.Recommendation{
 		UserID:    1,
 		Title:     "Aquaman",
 		Type:      1,
@@ -80,86 +85,43 @@ func TestCreateRecommendation(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 
-	validate = validator.New()
-	err = validate.Struct(newRec)
+	reqRec.Recommendation = recItem
+	reqRec.Genres = []int{3, 5}
+	reqRec.Keywords = []int{1, 2}
+
+	ri, err := json.Marshal(reqRec)
 
 	if err != nil {
-		t.Errorf("CreateRecommendation - Validation - error: %s", err)
+		t.Error(err)
 	}
 
-	rec, err := db.CreateRecommendation(newRec)
+	req, err := http.NewRequest("POST", "/v1/recommendation", bytes.NewBuffer(ri))
 
 	if err != nil {
-		t.Errorf("CreateRecommendation error: %s", err)
+		t.Error(err)
 	}
 
-	keywords := make(map[int64][]int)
-	genres := make(map[int64][]int)
+	rr := httptest.NewRecorder()
 
-	keywords[rec.ID] = []int{1, 2}
-	genres[rec.ID] = []int{3, 5}
+	r.HandleFunc("/v1/recommendation", createRecommendation).Methods("POST")
 
-	eK, err := helper.IsEmpty(keywords)
+	r.ServeHTTP(rr, req)
 
-	if err != nil {
-		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
+	if status := rr.Code; status != http.StatusCreated {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusCreated, status)
 	}
-
-	if eK {
-		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	eG, err := helper.IsEmpty(genres)
-
-	if err != nil {
-		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	if eG {
-		t.Errorf("CreateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	_, err = helper.Attach(keywords, "keyword_recommendation", db.DB)
-
-	if err != nil {
-		t.Errorf("CreateRecommendation - Attach - error: %s", err)
-	}
-
-	_, err = helper.Attach(genres, "genre_recommendation", db.DB)
-
-	if err != nil {
-		t.Errorf("CreateRecommendation - Attach - error: %s", err)
-	}
-
-	data, err := helper.ToJSON(rec)
-
-	if err != nil {
-		t.Errorf("CreateRecommendation - ToJSON - error: %s", err)
-	}
-
-	t.Log(data)
-
-	data, err = helper.ToJSONIndent(rec)
-
-	if err != nil {
-		t.Errorf("CreateRecommendation - ToJSONIndent - error: %s", err)
-	}
-
-	t.Log(data)
 
 }
 
 func TestUpdateRecommendation(t *testing.T) {
 
-	// Check status
-	validate = validator.New()
-	err = validate.Var(1, "required,min=1,max=2")
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - Validation - error: %s", err)
+	var reqRec struct {
+		*model.Recommendation
+		Genres   []int `json:"genres"`
+		Keywords []int `json:"keywords"`
 	}
 
-	upRec := &model.Recommendation{
+	recItem := &model.Recommendation{
 		UserID:    1,
 		Title:     "Aquaman",
 		Type:      1,
@@ -170,81 +132,31 @@ func TestUpdateRecommendation(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 
-	validate = validator.New()
-	err = validate.Struct(upRec)
+	reqRec.Recommendation = recItem
+	reqRec.Genres = []int{3, 5}
+	reqRec.Keywords = []int{1, 2}
+
+	ri, err := json.Marshal(reqRec)
 
 	if err != nil {
-		t.Errorf("UpdateRecommendation - Validation - error: %s", err)
+		t.Error(err)
 	}
 
-	rec, err := db.UpdateRecommendation(2, upRec)
+	req, err := http.NewRequest("PUT", "/v1/recommendation/1", bytes.NewBuffer(ri))
 
 	if err != nil {
-		t.Errorf("UpdateRecommendation error: %s", err)
+		t.Error(err)
 	}
 
-	keywords := make(map[int64][]int)
-	genres := make(map[int64][]int)
-	emptyKeywords := make(map[int64][]int)
-	emptyArr := []int{}
+	rr := httptest.NewRecorder()
 
-	keywords[rec.ID] = []int{1, 2}
-	genres[rec.ID] = []int{3, 5}
-	emptyKeywords[rec.ID] = emptyArr
+	r.HandleFunc("/v1/recommendation/{id}", updateRecommendation).Methods("PUT")
 
-	eK, err := helper.IsEmpty(keywords)
+	r.ServeHTTP(rr, req)
 
-	if err != nil {
-		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
 	}
-
-	if eK {
-		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	eG, err := helper.IsEmpty(genres)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	if eG {
-		t.Errorf("UpdateRecommendation - IsEmpty - error: %s", err)
-	}
-
-	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
-	}
-
-	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
-	}
-
-	_, err = helper.Sync(emptyKeywords, "keyword_recommendation", "recommendation_id", db.DB)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - Sync - error: %s", err)
-	}
-
-	data, err := helper.ToJSON(rec)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - ToJSON - error: %s", err)
-	}
-
-	t.Log(data)
-
-	data, err = helper.ToJSONIndent(rec)
-
-	if err != nil {
-		t.Errorf("UpdateRecommendation - ToJSONIndent - error: %s", err)
-	}
-
-	t.Log(data)
 }
 
 func TestCreateRecommendationFail(t *testing.T) {
@@ -254,7 +166,7 @@ func TestCreateRecommendationFail(t *testing.T) {
 	req, err := http.NewRequest("POST", "/v1/recommendation", bytes.NewBuffer(recItem))
 
 	if err != nil {
-		log.Println(err)
+		t.Error(err)
 	}
 
 	rr := httptest.NewRecorder()
@@ -275,7 +187,7 @@ func TestUpdateRecommendationFail(t *testing.T) {
 	req, err := http.NewRequest("PUT", "/v1/recommendation/1", bytes.NewBuffer(recItem))
 
 	if err != nil {
-		log.Println(err)
+		t.Error(err)
 	}
 
 	rr := httptest.NewRecorder()
