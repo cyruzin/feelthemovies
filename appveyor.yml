@@ -1,14 +1,29 @@
-build: off
+version: 1.0.0.{build}
 
-clone_folder: /home/cyro/go/src/github.com/$username/$project
+platform: x64
+
+branches:
+  only:
+    - master
+
+clone_folder: c:\gopath\src\github.com\account\myproject
 
 environment:
-  GOPATH: /usr/go/
+  GOPATH: c:\gopath
 
-stack: go 1.10
+install:
+  - echo %PATH%
+  - echo %GOPATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+  - go version
+  - go env
 
-before_test:
-  - go vet ./...
+build_script:
+  - go build -o buildOutput\myapp -i .
 
-test_script:
-  - go test ./...
+build_script:
+  - ps: .\build.ps1
+
+artifacts:
+  - path: buildOutput/myapp
+    name: binary
