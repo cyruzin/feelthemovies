@@ -14,8 +14,6 @@ environment:
   global:
     GOPATH: c:\gopath
     MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
-    MYSQL_PORT: 3306
-    CODECOV_TOKEN: 28626b54-6de1-4ad3-bcce-cb98f1528b0b
    
 services:
  - mysql
@@ -38,7 +36,7 @@ build_script:
   - ps: |-
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "coverage.xml" -t %CODECOV_TOKEN
+      bash codecov.sh -f "coverage.xml" -t 28626b54-6de1-4ad3-bcce-cb98f1528b0b
 
 # to disable automatic tests
 test: off
