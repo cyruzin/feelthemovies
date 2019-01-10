@@ -1,6 +1,6 @@
 build: off
 
-clone_folder: /usr/go/src/github.com/$username/$project
+clone_folder: /home/cyro/go/src/github.com/$username/$project
 
 environment:
   GOPATH: /usr/go/
