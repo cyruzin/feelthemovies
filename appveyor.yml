@@ -24,7 +24,6 @@ install:
   - set PATH=%MYSQL_PATH%\bin;%PATH%
   - set PATH=C:\msys64\mingw64\bin;%PATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
-  - nuget restore
   - go version
   - go env
   - go get -v -t -d ./...
