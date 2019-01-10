@@ -10,10 +10,17 @@ clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
 # environment variables
 environment:
   GOPATH: c:\gopath
+  MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
+  MYSQL_PORT: 3307
+
+services:
+ - mysql
 
 # scripts that run after cloning repository
 install:
+  - set PATH=%MYSQL_PATH%\bin;%PATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+  - mysql < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
   - go version
   - go env
   - go get -v -t -d ./...
@@ -21,9 +28,6 @@ install:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - go vet ./...
-  - gofmt -s -l .
-  - deadcode
-  - ineffassign .
   - go test -v ./... -race
 
 # to disable automatic tests
