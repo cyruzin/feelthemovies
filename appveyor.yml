@@ -8,10 +8,6 @@ environment:
 
 stack: go 1.10
 
-services: mysql
-install:
-- cmd: mysql < db/api_feelthemovies.sql
-
 before_test:
   - go vet ./...
 
