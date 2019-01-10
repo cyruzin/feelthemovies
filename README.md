@@ -23,8 +23,6 @@ $ go run main.go
 
 ### Tests 
 
-70% covered :)
-
 To test locally, run:
 
 ```sh
