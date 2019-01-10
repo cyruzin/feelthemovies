@@ -1,12 +1,22 @@
-version: 1.0.{build}
-image: Ubuntu1804
+# appveyor.yml
+build: off
+
+clone_folder: /usr/go/src/github.com/$username/$project
+
+environment:
+  GOPATH: /usr/go/
+
+stack: go 1.10
+
 services: mysql
 install:
 - cmd: mysql < db/api_feelthemovies.sql
-build:
-  verbosity: minimal
+
+before_test:
+  - go vet ./...
+
 test_script:
-- cmd: >-
+  - cmd: >-
     go version
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
