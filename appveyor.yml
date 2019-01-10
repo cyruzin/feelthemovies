@@ -37,13 +37,13 @@ build_script:
   - cmd: |-
       "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
   - go vet ./...
-  - go test -v ./... -race -coverprofile=coverage.xml -coverprofile=profile.cov -covermode=atomic 
+  - go test -v ./... -race -coverprofile=profile.cov -covermode=atomic 
   - cmd: |-
       "c:\gopath\bin" -coverprofile=profile.cov -service=travis-ci
   - ps: |-
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash codecov.sh -f "coverage.xml" -t 28626b54-6de1-4ad3-bcce-cb98f1528b0b
+      bash codecov.sh -f "coverage.cov" -t 28626b54-6de1-4ad3-bcce-cb98f1528b0b
 
 # to disable automatic tests
 test: off
