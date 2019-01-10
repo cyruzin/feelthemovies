@@ -11,27 +11,16 @@ clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
 environment:
   global:
     GOPATH: c:\gopath
-    CC: gcc.exe
     MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
     MYSQL_PORT: 3306
-  matrix:
-   - GETH_ARCH: amd64
-     MSYS2_ARCH: x86_64
-     MSYS2_BITS: 64
-     MSYSTEM: MINGW64
-     PATH: C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
-   - GETH_ARCH: 386
-     MSYS2_ARCH: i686
-     MSYS2_BITS: 32
-     MSYSTEM: MINGW32
-
-
+   
 services:
  - mysql
 
 # scripts that run after cloning repository
 install:
   - set PATH=%MYSQL_PATH%\bin;%PATH%
+  - set PATH=c:\MinGW\bin;%PATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
   - go version
   - go env
