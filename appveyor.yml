@@ -40,8 +40,9 @@ build_script:
   - go test -v ./... -race
   - ps: |-
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-      bash <(curl -s https://codecov.io/bash)
+      Invoke-WebRequest -Uri 'https://codecov.io/bash'
+      #Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      #bash codecov.sh -f "coverage.xml" -t %CODECOV_TOKEN
 
 # to disable automatic tests
 test: off
