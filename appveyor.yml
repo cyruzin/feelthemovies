@@ -15,10 +15,7 @@ environment:
     GOPATH: c:\gopath
     MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
     MYSQL_PORT: 3306
-    CODECOV_TOKEN:
-      secure: XZHmiBGe720nDsV+5bhsbFoIZY9bsTXSPiu5/TfdCUDAyEQmSlO9CGfA9bUUrJ3d
-    COVERALLS_TOKEN:
-      secure: 1hL3hHA2Q+na6UeLIfwku6f6EQAeu/nPEqgdelc7hVBB8IOq1dF+IEet+pWqhes0
+    CODECOV_TOKEN: 28626b54-6de1-4ad3-bcce-cb98f1528b0b
    
 services:
  - mysql
