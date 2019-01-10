@@ -28,9 +28,8 @@ install:
 build_script:
   - cmd: |-
       "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
-      "cd c:\gopath\src\github.com\cyruzin\feelthemovies"
-      "go vet ./..."
-      "go test -v ./... -race"
+  - go vet ./...
+  - go test -v ./... -race
 
 # to disable automatic tests
 test: off
