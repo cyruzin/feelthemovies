@@ -3,9 +3,12 @@ codecov:
     require_ci_to_pass: yes
 
 coverage:
-  precision: 2
+  precision: 5
   round: down
-  range: "50...100"
+
+coverage:
+  round: up
+  range: "50..85"
 
   status:
     project: yes
