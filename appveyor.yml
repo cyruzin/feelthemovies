@@ -1,8 +1,8 @@
 version: 1.0.{build}
 image: Ubuntu1804
-init:
-- cmd: mysql < db/api_feelthemovies.sql
 services: mysql
+install:
+- cmd: mysql < db/api_feelthemovies.sql
 build:
   verbosity: minimal
 test_script:
