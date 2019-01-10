@@ -39,7 +39,8 @@ build_script:
   - go vet ./...
   - go test -v ./... -race -coverprofile=coverage.xml -covermode=atomic
   - go test -v ./... -covermode=count -coverprofile=profile.cov
-  - goveralls -coverprofile=profile.cov -service=travis-ci
+  - cmd: |-
+      "c:\gopath\bin" -coverprofile=profile.cov -service=travis-ci
   - ps: |-
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
       Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
