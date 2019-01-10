@@ -27,7 +27,7 @@ install:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - cmd: |-
-      "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
+      "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
       "go vet ./..."
       "go test -v ./... -race"
 
