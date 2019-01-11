@@ -137,6 +137,9 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
+	} else if rec.ID == 0 {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode("This ID does not exist")
 	} else {
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(response)
