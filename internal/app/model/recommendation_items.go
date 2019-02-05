@@ -33,15 +33,18 @@ type ResponseRecommendationItem struct {
 	Sources []*RecommendationItemSources `json:"sources"`
 }
 
-// RecommendationItemSources type is a struct for recommendation_item_source pivot table.
+// RecommendationItemSources type is a struct for
+// recommendation_item_source pivot table.
 type RecommendationItemSources struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
-// GetRecommendationItems retrieves all items of a given recommendation by ID.
-func (db *Conn) GetRecommendationItems(id int64) (*ResultRecommendationItem, error) {
-
+// GetRecommendationItems retrieves all items of
+// a given recommendation by ID.
+func (db *Conn) GetRecommendationItems(
+	id int64,
+) (*ResultRecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
@@ -51,40 +54,33 @@ func (db *Conn) GetRecommendationItems(id int64) (*ResultRecommendationItem, err
 		FROM recommendation_items
 		WHERE recommendation_id = ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query(id)
-
 	res := ResultRecommendationItem{}
-
 	for rows.Next() {
 		rec := RecommendationItem{}
-
 		err = rows.Scan(
 			&rec.ID, &rec.RecommendationID, &rec.Name, &rec.TMDBID,
 			&rec.Year, &rec.Overview, &rec.Poster, &rec.Backdrop,
 			&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
 			&rec.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &rec)
-
 	}
-
-	return &res, err
+	return &res, nil
 }
 
-// GetRecommendationItem retrieves a recommendation items by a given ID.
-func (db *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
+// GetRecommendationItem retrieves a recommendation
+// items by a given ID.
+func (db *Conn) GetRecommendationItem(
+	id int64,
+) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
@@ -94,31 +90,27 @@ func (db *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
 		FROM recommendation_items
 		WHERE id = ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rec := RecommendationItem{}
-
 	err = stmt.QueryRow(id).Scan(
 		&rec.ID, &rec.RecommendationID, &rec.Name, &rec.TMDBID,
 		&rec.Year, &rec.Overview, &rec.Poster, &rec.Backdrop,
 		&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
 		&rec.UpdatedAt,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return &rec, err
+	return &rec, nil
 }
 
 // CreateRecommendationItem creates a new recommendation item.
-func (db *Conn) CreateRecommendationItem(r *RecommendationItem) (*RecommendationItem, error) {
+func (db *Conn) CreateRecommendationItem(
+	r *RecommendationItem,
+) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		INSERT INTO recommendation_items (
 		recommendation_id, name, tmdb_id, year, 
@@ -127,40 +119,34 @@ func (db *Conn) CreateRecommendationItem(r *RecommendationItem) (*Recommendation
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&r.RecommendationID, &r.Name, &r.TMDBID, &r.Year,
 		&r.Overview, &r.Poster, &r.Backdrop, &r.Trailer,
 		&r.Commentary, &r.MediaType, &r.CreatedAt, &r.UpdatedAt,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	id, err := res.LastInsertId()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetRecommendationItem(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
+	return data, nil
 }
 
-// UpdateRecommendationItem updates a recommendation item by a given ID.
-func (db *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (*RecommendationItem, error) {
+// UpdateRecommendationItem updates a recommendation
+// item by a given ID.
+func (db *Conn) UpdateRecommendationItem(
+	id int64, r *RecommendationItem,
+) (*RecommendationItem, error) {
 	stmt, err := db.Prepare(`
 		UPDATE recommendation_items
 		SET name=?, tmdb_id=?, year=?, overview=?,
@@ -168,66 +154,50 @@ func (db *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (*Reco
 		media_type=?, updated_at=?
 		WHERE id=?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&r.Name, &r.TMDBID, &r.Year, &r.Overview,
 		&r.Poster, &r.Backdrop, &r.Trailer, &r.Commentary,
 		&r.MediaType, &r.UpdatedAt, &id,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	_, err = res.RowsAffected()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetRecommendationItem(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
-
+	return data, nil
 }
 
-// DeleteRecommendationItem deletes a recommendation item by a given ID.
+// DeleteRecommendationItem deletes a recommendation
+// item by a given ID.
 func (db *Conn) DeleteRecommendationItem(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendation_items
 		WHERE id=?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(id)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	data, err := res.RowsAffected()
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
-	return data, err
+	return data, nil
 }
 
 // GetRecommendationItemSources retrieves all sources of a given recommendation item.

@@ -6,9 +6,7 @@ import (
 )
 
 func TestGetKeywordsModel(t *testing.T) {
-
 	_, err = db.GetKeywords()
-
 	if err != nil {
 		t.Errorf("GetKeywords error: %s", err)
 	}
@@ -16,7 +14,6 @@ func TestGetKeywordsModel(t *testing.T) {
 
 func TestGetKeywordModel(t *testing.T) {
 	_, err = db.GetKeyword(1)
-
 	if err != nil {
 		t.Errorf("GetKeyword error: %s", err)
 	}
@@ -29,7 +26,6 @@ func TestCreateKeywordModel(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	_, err = db.CreateKeyword(&g)
-
 	if err != nil {
 		t.Errorf("CreateKeyword error: %s", err)
 	}
@@ -41,7 +37,6 @@ func TestUpdateKeywordModel(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	_, err = db.UpdateKeyword(1, &g)
-
 	if err != nil {
 		t.Errorf("UpdateKeyword error: %s", err)
 	}
@@ -49,7 +44,6 @@ func TestUpdateKeywordModel(t *testing.T) {
 
 func TestDeleteKeywordModel(t *testing.T) {
 	_, err = db.DeleteKeyword(3)
-
 	if err != nil {
 		t.Errorf("DeleteKeyword error: %s", err)
 	}

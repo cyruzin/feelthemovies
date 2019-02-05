@@ -27,7 +27,6 @@ type ResultUser struct {
 
 // GetUsers retrieves the first twenty users.
 func (db *Conn) GetUsers() (*ResultUser, error) {
-
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password,
@@ -36,34 +35,24 @@ func (db *Conn) GetUsers() (*ResultUser, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query(10)
-
 	res := ResultUser{}
-
 	for rows.Next() {
 		user := User{}
-
 		err = rows.Scan(
 			&user.ID, &user.Name, &user.Email, &user.Password,
 			&user.APIToken, &user.CreatedAt, &user.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &user)
-
 	}
-
-	return &res, err
+	return &res, nil
 }
 
 // GetUser retrieves a user by a given ID.
@@ -75,25 +64,19 @@ func (db *Conn) GetUser(id int64) (*User, error) {
 		FROM users
 		WHERE id = ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	user := User{}
-
 	err = stmt.QueryRow(id).Scan(
 		&user.ID, &user.Name, &user.Email, &user.Password,
 		&user.APIToken, &user.CreatedAt, &user.UpdatedAt,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return &user, err
+	return &user, nil
 }
 
 // CreateUser creates a new user.
@@ -105,38 +88,29 @@ func (db *Conn) CreateUser(u *User) (*User, error) {
 		)
 		VALUES (?, ?, ?, ?, ?, ?)
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&u.Name, &u.Email, &u.Password, &u.APIToken,
 		&u.CreatedAt, &u.UpdatedAt,
 	)
-
 	// Error handler for duplicate entries
 	if mysqlError, ok := err.(*mysql.MySQLError); ok {
 		if mysqlError.Number == 1062 {
 			return nil, err
 		}
 	}
-
 	id, err := res.LastInsertId()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetUser(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
+	return data, nil
 }
 
 // UpdateUser updates a user by a given ID.
@@ -147,43 +121,32 @@ func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
 		api_token=?, updated_at=?
 		WHERE id=?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&u.Name, &u.Email, &u.Password, &u.APIToken,
 		&u.UpdatedAt, &id,
 	)
-
 	// Error handler for duplicate entries
 	if mysqlError, ok := err.(*mysql.MySQLError); ok {
 		if mysqlError.Number == 1062 {
 			return nil, err
 		}
 	}
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	_, err = res.RowsAffected()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetUser(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
-
+	return data, nil
 }
 
 // DeleteUser deletes a user by a given ID.
@@ -193,26 +156,18 @@ func (db *Conn) DeleteUser(id int64) (int64, error) {
 		FROM users
 		WHERE id=?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(id)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	data, err := res.RowsAffected()
-
 	log.Println(data)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	return data, err
 }

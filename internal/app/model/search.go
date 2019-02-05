@@ -1,9 +1,5 @@
 package model
 
-import (
-	"log"
-)
-
 // Search type is a struct for search queries.
 type Search struct {
 	Query string `json:"query" validate:"required"`
@@ -12,8 +8,9 @@ type Search struct {
 
 // SearchRecommendation search for recommendations.
 // o = offset | l = limit | s = search term | t = type
-func (db *Conn) SearchRecommendation(o, l float64, s string) (*ResultRecommendation, error) {
-
+func (db *Conn) SearchRecommendation(
+	o, l float64, s string,
+) (*ResultRecommendation, error) {
 	stmt, err := db.Prepare(`
 		SELECT DISTINCT
 		r.id, r.user_id, r.title, r.type,
@@ -30,45 +27,32 @@ func (db *Conn) SearchRecommendation(o, l float64, s string) (*ResultRecommendat
 		ORDER BY r.id DESC
 		LIMIT ?,?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query("%"+s+"%", "%"+s+"%", "%"+s+"%", o, l)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	res := ResultRecommendation{}
-
 	for rows.Next() {
 		rec := Recommendation{}
-
 		err = rows.Scan(
 			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
 			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
 			&rec.CreatedAt, &rec.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &rec)
-
 	}
-
-	return &res, err
-
+	return &res, nil
 }
 
 // SearchUser search for users.
 func (db *Conn) SearchUser(s string) (*ResultUser, error) {
-
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password, 
@@ -78,44 +62,31 @@ func (db *Conn) SearchUser(s string) (*ResultUser, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query("%"+s+"%", 20)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	res := ResultUser{}
-
 	for rows.Next() {
 		u := User{}
-
 		err = rows.Scan(
 			&u.ID, &u.Name, &u.Email, &u.Password,
 			&u.APIToken, &u.CreatedAt, &u.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &u)
-
 	}
-
-	return &res, err
-
+	return &res, nil
 }
 
 // SearchGenre search for genres.
 func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
-
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -124,43 +95,30 @@ func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query("%"+s+"%", 20)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	res := ResultGenre{}
-
 	for rows.Next() {
 		g := Genre{}
-
 		err = rows.Scan(
 			&g.ID, &g.Name, &g.CreatedAt, &g.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &g)
-
 	}
-
-	return &res, err
-
+	return &res, nil
 }
 
 // SearchKeyword search for keywords.
 func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
-
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -169,43 +127,30 @@ func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query("%"+s+"%", 20)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	res := ResultKeyword{}
-
 	for rows.Next() {
 		k := Keyword{}
-
 		err = rows.Scan(
 			&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &k)
-
 	}
-
-	return &res, err
-
+	return &res, nil
 }
 
 // SearchSource search for sources.
 func (db *Conn) SearchSource(s string) (*ResultSource, error) {
-
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -214,42 +159,33 @@ func (db *Conn) SearchSource(s string) (*ResultSource, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query("%"+s+"%", 20)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	res := ResultSource{}
-
 	for rows.Next() {
 		s := Source{}
-
 		err = rows.Scan(
 			&s.ID, &s.Name, &s.CreatedAt, &s.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &s)
-
 	}
-
-	return &res, err
-
+	return &res, nil
 }
 
-// GetSearchRecommendationTotalRows retrieves the total rows of recommendations table.
-func (db *Conn) GetSearchRecommendationTotalRows(s string) (float64, error) {
+// GetSearchRecommendationTotalRows retrieves the total
+// rows of recommendations table.
+func (db *Conn) GetSearchRecommendationTotalRows(
+	s string,
+) (float64, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		COUNT(DISTINCT r.id)
@@ -262,20 +198,14 @@ func (db *Conn) GetSearchRecommendationTotalRows(s string) (float64, error) {
 		OR k.name LIKE ?
 		OR g.name LIKE ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	defer stmt.Close()
-
 	var total float64
-
 	err = stmt.QueryRow("%"+s+"%", "%"+s+"%", "%"+s+"%").Scan(&total)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
-	return total, err
+	return total, nil
 }

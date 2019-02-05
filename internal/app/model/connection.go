@@ -15,20 +15,14 @@ type Conn struct {
 
 // Connect creates a connection with MySQL database.
 func Connect() (*Conn, error) {
-
 	db, err := sql.Open("mysql", "root:Password12!@tcp(localhost:3306)/api_feelthemovies?parseTime=true")
-
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
-
 	err = db.Ping()
-
 	if err != nil {
 		log.Fatal("Could not connect to MySQL: ", err)
 	}
-
 	log.Println("MySQL: Connection OK.")
-
-	return &Conn{db}, err
+	return &Conn{db}, nil
 }

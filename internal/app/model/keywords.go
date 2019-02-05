@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -29,33 +28,23 @@ func (db *Conn) GetKeywords() (*ResultKeyword, error) {
 		ORDER BY id DESC
 		LIMIT ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	rows, err := stmt.Query(10)
-
 	res := ResultKeyword{}
-
 	for rows.Next() {
 		k := Keyword{}
-
 		err = rows.Scan(
 			&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 		)
-
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
-
 		res.Data = append(res.Data, &k)
-
 	}
-
-	return &res, err
+	return &res, nil
 }
 
 // GetKeyword retrieves a keyword by a given ID.
@@ -66,24 +55,18 @@ func (db *Conn) GetKeyword(id int64) (*Keyword, error) {
 		FROM keywords
 		WHERE id = ?
 `)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	k := Keyword{}
-
 	err = stmt.QueryRow(id).Scan(
 		&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return &k, err
+	return &k, nil
 }
 
 // CreateKeyword creates a new keyword.
@@ -94,37 +77,28 @@ func (db *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
 		)
 		VALUES (?, ?, ?)
 `)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&k.Name, &k.CreatedAt, &k.UpdatedAt,
 	)
-
 	// Error handler for duplicate entries
 	if mysqlError, ok := err.(*mysql.MySQLError); ok {
 		if mysqlError.Number == 1062 {
 			return nil, err
 		}
 	}
-
 	id, err := res.LastInsertId()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetKeyword(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
+	return data, nil
 }
 
 // UpdateKeyword updates a keyword by a given ID.
@@ -134,34 +108,25 @@ func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
 		SET name=?, updated_at=?
 		WHERE id=?
 `)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(
 		&k.Name, &k.UpdatedAt, &id,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	_, err = res.RowsAffected()
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	data, err := db.GetKeyword(id)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return data, err
+	return data, nil
 }
 
 // DeleteKeyword deletes a keyword by a given ID.
@@ -171,24 +136,17 @@ func (db *Conn) DeleteKeyword(id int64) (int64, error) {
 		FROM keywords
 		WHERE id=?
 `)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	defer stmt.Close()
-
 	res, err := stmt.Exec(id)
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
 	data, err := res.RowsAffected()
-
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
-
-	return data, err
+	return data, nil
 }

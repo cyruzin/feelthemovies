@@ -1,10 +1,6 @@
 package model
 
-import (
-	"log"
-)
-
-// Auth struct is a type for authentication.
+// Auth type is a struct for authentication.
 type Auth struct {
 	ID       int64  `json:"id"`
 	Name     string `json:"name"`
@@ -22,24 +18,18 @@ func (db *Conn) CheckAPIToken(token string) (bool, error) {
 		WHERE api_token = ?
 `)
 	if err != nil {
-		log.Println(err)
+		return false, err
 	}
-
 	defer stmt.Close()
-
 	var t string
-
 	err = stmt.QueryRow(token).Scan(&t)
-
 	if err != nil {
-		log.Println(err)
+		return false, err
 	}
-
 	if t != "" && t == token {
-		return true, err
+		return true, nil
 	}
-
-	return false, err
+	return false, nil
 }
 
 // Authenticate authenticates the current user and returns it's info.
@@ -50,22 +40,17 @@ func (db *Conn) Authenticate(email string) (string, error) {
 		WHERE email = ?
 `)
 	if err != nil {
-		log.Println(err)
+		return "", err
 	}
-
 	defer stmt.Close()
-
 	var password string
-
 	err = stmt.QueryRow(email).Scan(
 		&password,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return "", err
 	}
-
-	return password, err
+	return password, nil
 }
 
 // GetAuthInfo retrieves info for the authenticated user.
@@ -76,22 +61,16 @@ func (db *Conn) GetAuthInfo(email string) (*Auth, error) {
 		FROM users
 		WHERE email = ?
 	`)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
 	defer stmt.Close()
-
 	a := Auth{}
-
 	err = stmt.QueryRow(email).Scan(
 		&a.ID, &a.Name, &a.Email, &a.APIToken,
 	)
-
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-
-	return &a, err
+	return &a, nil
 }
