@@ -17,3 +17,8 @@
 # IDE
 \.idea/
 \.vscode/
+
+
+# govendor
+# vendor/*
+# !vendor/vendor.json
