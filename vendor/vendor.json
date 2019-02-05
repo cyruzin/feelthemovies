@@ -8,22 +8,6 @@
 	},
 	"package": [
 		{
-			"path": "github.com/go-playground/locales",
-			"revision": ""
-		},
-		{
-			"checksumSHA1": "JgF260rC9YpWyY5WEljjimWLUXs=",
-			"path": "github.com/go-playground/locales/currency",
-			"revision": "f63010822830b6fe52288ee52d5a1151088ce039",
-			"revisionTime": "2018-03-23T16:04:04Z"
-		},
-		{
-			"checksumSHA1": "7QcjNTtW0Rc/5BPw1MPaQ6YNjso=",
-			"path": "github.com/go-playground/universal-translator",
-			"revision": "71201497bace774495daed26a3874fd339e0b538",
-			"revisionTime": "2017-03-27T19:17:03Z"
-		},
-		{
 			"checksumSHA1": "wmiJbuFVCxg22zwXIeLsVCudyeY=",
 			"path": "github.com/go-sql-driver/mysql",
 			"revision": "c45f530f8e7fe40f4687eaa50d0c8c5f1b66f9e0",
