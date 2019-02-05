@@ -89,7 +89,9 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	rec, err := db.GetRecommendation(id)
 	if err != nil {
-		log.Println(err)
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode("The resource you requested could not be found.")
+		return
 	}
 	recG, err := db.GetRecommendationGenres(id)
 	if err != nil {
@@ -106,9 +108,6 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if rec.ID == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("This ID does not exist")
 	} else {
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(response)

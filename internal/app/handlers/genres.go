@@ -117,7 +117,7 @@ func deleteGenre(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else if d == 0 {
 		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
+		json.NewEncoder(w).Encode("The resource you requested could not be found.")
 	} else {
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode("Deleted Successfully!")
