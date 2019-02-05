@@ -1,6 +1,11 @@
 {
 	"comment": "",
 	"ignore": "test",
+	"heroku": {
+		"install": [
+			"./cmd/..."
+		]
+	},
 	"package": [
 		{
 			"path": "github.com/go-playground/locales",
