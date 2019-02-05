@@ -133,7 +133,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newRec := model.Recommendation{
-		UserID:    reqRec.UserID,
+		UserID:    int64(reqRec.UserID),
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
 		Body:      reqRec.Body,

@@ -8,9 +8,9 @@ import (
 // TODO: Check validation for type and status, it cannot be 0.
 type Recommendation struct {
 	ID        int64     `json:"id"`
-	UserID    int64     `json:"user_id" validate:"required,numeric"`
+	UserID    int64     `json:"user_id" validate:"required"`
 	Title     string    `json:"title" validate:"required"`
-	Type      int       `json:"type" validate:"min=1,max=3"`
+	Type      int       `json:"type"`
 	Body      string    `json:"body" validate:"required"`
 	Poster    string    `json:"poster" validate:"required"`
 	Backdrop  string    `json:"backdrop" validate:"required"`
