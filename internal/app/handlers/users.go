@@ -17,9 +17,7 @@ import (
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	u, err := db.GetUsers()
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -31,17 +29,12 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 
 func getUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	u, err := db.GetUser(id)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -49,37 +42,27 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(u)
 	}
-
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	var reqU model.User
-
 	err := json.NewDecoder(r.Body).Decode(&reqU)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	validate = validator.New()
 	err = validate.Struct(reqU)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	hashAPI := uuid.New()
-
 	newU := model.User{
 		Name:      reqU.Name,
 		Email:     reqU.Email,
@@ -88,9 +71,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-
 	u, err := db.CreateUser(&newU)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(err)
@@ -102,32 +83,23 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	var reqU model.User
-
 	err := json.NewDecoder(r.Body).Decode(&reqU)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	validate = validator.New()
 	err = validate.Struct(reqU)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	hashAPI := uuid.New()
-
 	upU := model.User{
 		Name:      reqU.Name,
 		Email:     reqU.Email,
@@ -135,17 +107,12 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		APIToken:  hashAPI,
 		UpdatedAt: time.Now(),
 	}
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	u, err := db.UpdateUser(id, &upU)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -157,17 +124,12 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	d, err := db.DeleteUser(id)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

@@ -12,13 +12,10 @@ var db, err = model.Connect()
 func TestAttach(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{1, 2}
-
 	data, err := Attach(m, "genre_recommendation", db.DB)
-
 	if err != nil {
 		t.Errorf("Attach error: %s", err)
 	}
-
 	if data == 0 {
 		t.Errorf("Attach error: %s", err)
 	}
@@ -27,13 +24,10 @@ func TestAttach(t *testing.T) {
 func TestDetach(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{2, 3}
-
 	data, err := Detach(m, "genre_recommendation", "recommendation_id", db.DB)
-
 	if err != nil {
 		t.Errorf("Detach error: %s", err)
 	}
-
 	if data == 0 {
 		t.Errorf("Detach error: %s", err)
 	}
@@ -42,20 +36,16 @@ func TestDetach(t *testing.T) {
 func TestSync(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{2, 3}
-
 	data, err := Sync(m, "genre_recommendation", "recommendation_id", db.DB)
-
 	if err != nil {
 		t.Errorf("Sync error: %s", err)
 	}
-
 	if data == 0 {
 		t.Errorf("Sync error: %s", err)
 	}
 }
 
 func TestToJSON(t *testing.T) {
-
 	rec := model.Recommendation{
 		ID:        1,
 		UserID:    1,
@@ -67,13 +57,10 @@ func TestToJSON(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-
 	data, err := ToJSON(rec)
-
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	if data == "" {
 		t.Error("Expected a string")
 	}

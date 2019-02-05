@@ -15,44 +15,31 @@ import (
 
 func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	rec, err := db.GetRecommendationItems(id)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	result := []*model.ResponseRecommendationItem{}
-
 	for _, r := range rec.Data {
 		recS, err := db.GetRecommendationItemSources(r.ID)
-
 		if err != nil {
 			log.Println(err)
 		}
-
 		recFinal := model.ResponseRecommendationItem{}
-
 		recFinal.RecommendationItem = r
 		recFinal.Sources = recS
-
 		result = append(result, &recFinal)
 	}
-
 	resultFinal := struct {
 		Data []*model.ResponseRecommendationItem `json:"data"`
 	}{
 		result,
 	}
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -64,32 +51,22 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	rec, err := db.GetRecommendationItem(id)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	recS, err := db.GetRecommendationItemSources(id)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	response := model.ResponseRecommendationItem{}
-
 	response.RecommendationItem = rec
 	response.Sources = recS
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -102,36 +79,28 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	var reqRec struct {
 		*model.RecommendationItem
 		Sources []int  `json:"sources" validate:"required"`
 		Year    string `json:"year" validate:"required"`
 	}
-
 	err := json.NewDecoder(r.Body).Decode(&reqRec)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	validate = validator.New()
 	err = validate.Struct(reqRec)
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-
 	// Parsing string to time.Time
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	newRec := model.RecommendationItem{
 		RecommendationID: reqRec.RecommendationID,
 		Name:             reqRec.Name,
@@ -146,20 +115,14 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
-
 	rec, err := db.CreateRecommendationItem(&newRec)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	// Attaching sources IDs in its respective pivot table.
 	sources := make(map[int64][]int)
-
 	sources[rec.ID] = reqRec.Sources
-
 	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -171,34 +134,26 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	var reqRec struct {
 		*model.RecommendationItem
 		Sources []int  `json:"sources" validate:"required"`
 		Year    string `json:"year" validate:"required"`
 	}
-
 	err := json.NewDecoder(r.Body).Decode(&reqRec)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	validate = validator.New()
 	err = validate.Struct(reqRec)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	upRec := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
@@ -211,28 +166,19 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		MediaType:  reqRec.MediaType,
 		UpdatedAt:  time.Now(),
 	}
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	rec, err := db.UpdateRecommendationItem(id, &upRec)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	// Syncing sources IDs in its respective pivot table.
 	sources := make(map[int64][]int)
-
 	sources[rec.ID] = reqRec.Sources
-
 	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -244,17 +190,12 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-
 	params := mux.Vars(r)
-
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-
 	if err != nil {
 		log.Println(err)
 	}
-
 	d, err := db.DeleteRecommendationItem(id)
-
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
