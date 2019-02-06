@@ -295,7 +295,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Cyro Dubeux','xorycx@gmail.com','$2a$10$o/Gau11Y8stFuiWKA7VYYOwLmyTzCiLYHNoiu4rB.mY1Q/531XzsC','ce3b81ee-0dc0-4133-8625-32007e64af7b','2018-10-31 01:15:38','2019-02-06 07:33:46');
+INSERT INTO `users` VALUES (1,'Cyro Dubeux','xorycx@gmail.com','qw12erty','bb9b6ed1-8688-44f4-9f35-f75e62ef83f1','2018-10-31 01:15:38','2019-02-06 07:33:46');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
