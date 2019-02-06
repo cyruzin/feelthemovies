@@ -79,7 +79,7 @@ func (db *Conn) GetRecommendations(
 		rec := Recommendation{}
 		err = rows.Scan(
 			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
-			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
+			&rec.Body, &rec.Poster, &rec.Backdrop, &rec.Status,
 			&rec.CreatedAt, &rec.UpdatedAt,
 		)
 		if err != nil {
@@ -106,7 +106,7 @@ func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 	rec := Recommendation{}
 	err = stmt.QueryRow(id).Scan(
 		&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
-		&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
+		&rec.Body, &rec.Poster, &rec.Backdrop, &rec.Status,
 		&rec.CreatedAt, &rec.UpdatedAt,
 	)
 	if err != nil {
@@ -133,7 +133,7 @@ func (db *Conn) CreateRecommendation(
 	defer stmt.Close()
 	res, err := stmt.Exec(
 		&r.UserID, &r.Title, &r.Type, &r.Body,
-		&r.Backdrop, &r.Poster, &r.Status, &r.CreatedAt,
+		&r.Poster, &r.Backdrop, &r.Status, &r.CreatedAt,
 		&r.UpdatedAt,
 	)
 	if err != nil {
