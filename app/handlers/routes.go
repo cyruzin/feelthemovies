@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/app/model"
 
 	validator "gopkg.in/go-playground/validator.v9"
 

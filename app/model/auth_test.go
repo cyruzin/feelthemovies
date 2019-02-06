@@ -3,7 +3,7 @@ package model
 import (
 	"testing"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/pkg/helper"
 )
 
 func TestCheckApiTokenModel(t *testing.T) {

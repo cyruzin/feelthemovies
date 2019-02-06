@@ -7,86 +7,85 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/app/model"
 	"github.com/gorilla/mux"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getKeywords(w http.ResponseWriter, r *http.Request) {
+func getSources(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	k, err := db.GetKeywords()
+	s, err := db.GetSources()
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		json.NewEncoder(w).Encode(s)
 	}
 }
 
-func getKeyword(w http.ResponseWriter, r *http.Request) {
+func getSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	k, err := db.GetKeyword(id)
+	s, err := db.GetSource(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		json.NewEncoder(w).Encode(s)
 	}
-
 }
 
-func createKeyword(w http.ResponseWriter, r *http.Request) {
+func createSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqK model.Keyword
-	err := json.NewDecoder(r.Body).Decode(&reqK)
+	var reqS model.Source
+	err := json.NewDecoder(r.Body).Decode(&reqS)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqK)
+	err = validate.Struct(reqS)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	newK := model.Keyword{
-		Name:      reqK.Name,
+	newS := model.Source{
+		Name:      reqS.Name,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	k, err := db.CreateKeyword(&newK)
+	s, err := db.CreateSource(&newS)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(k)
+		json.NewEncoder(w).Encode(s)
 	}
 }
 
-func updateKeyword(w http.ResponseWriter, r *http.Request) {
+func updateSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqK model.Keyword
-	err := json.NewDecoder(r.Body).Decode(&reqK)
+	var reqS model.Source
+	err := json.NewDecoder(r.Body).Decode(&reqS)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqK)
+	err = validate.Struct(reqS)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	upK := model.Keyword{
-		Name:      reqK.Name,
+	upS := model.Source{
+		Name:      reqS.Name,
 		UpdatedAt: time.Now(),
 	}
 	params := mux.Vars(r)
@@ -94,24 +93,24 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	k, err := db.UpdateKeyword(id, &upK)
+	s, err := db.UpdateSource(id, &upS)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		json.NewEncoder(w).Encode(s)
 	}
 }
 
-func deleteKeyword(w http.ResponseWriter, r *http.Request) {
+func deleteSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	d, err := db.DeleteKeyword(id)
+	d, err := db.DeleteSource(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

@@ -7,85 +7,104 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/google/uuid"
+
+	"github.com/cyruzin/feelthemovies/app/model"
+	"github.com/cyruzin/feelthemovies/pkg/helper"
 	"github.com/gorilla/mux"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getSources(w http.ResponseWriter, r *http.Request) {
+func getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	s, err := db.GetSources()
+	u, err := db.GetUsers()
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		json.NewEncoder(w).Encode(u)
 	}
 }
 
-func getSource(w http.ResponseWriter, r *http.Request) {
+func getUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	s, err := db.GetSource(id)
+	u, err := db.GetUser(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		json.NewEncoder(w).Encode(u)
 	}
 }
 
-func createSource(w http.ResponseWriter, r *http.Request) {
+func createUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqS model.Source
-	err := json.NewDecoder(r.Body).Decode(&reqS)
+	var reqU model.User
+	err := json.NewDecoder(r.Body).Decode(&reqU)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqS)
+	err = validate.Struct(reqU)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	newS := model.Source{
-		Name:      reqS.Name,
+	hashPass, err := helper.HashPassword(reqU.Password, 10)
+	if err != nil {
+		log.Println(err)
+	}
+	hashAPI := uuid.New()
+	newU := model.User{
+		Name:      reqU.Name,
+		Email:     reqU.Email,
+		Password:  hashPass,
+		APIToken:  hashAPI,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	s, err := db.CreateSource(&newS)
+	u, err := db.CreateUser(&newU)
 	if err != nil {
 		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
+		json.NewEncoder(w).Encode(err)
 	} else {
 		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(s)
+		json.NewEncoder(w).Encode(u)
 	}
 }
 
-func updateSource(w http.ResponseWriter, r *http.Request) {
+func updateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqS model.Source
-	err := json.NewDecoder(r.Body).Decode(&reqS)
+	var reqU model.User
+	err := json.NewDecoder(r.Body).Decode(&reqU)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqS)
+	err = validate.Struct(reqU)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	upS := model.Source{
-		Name:      reqS.Name,
+	hashPass, err := helper.HashPassword(reqU.Password, 10)
+	if err != nil {
+		log.Println(err)
+	}
+	hashAPI := uuid.New()
+	upU := model.User{
+		Name:      reqU.Name,
+		Email:     reqU.Email,
+		Password:  hashPass,
+		APIToken:  hashAPI,
 		UpdatedAt: time.Now(),
 	}
 	params := mux.Vars(r)
@@ -93,24 +112,24 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	s, err := db.UpdateSource(id, &upS)
+	u, err := db.UpdateUser(id, &upU)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		json.NewEncoder(w).Encode(u)
 	}
 }
 
-func deleteSource(w http.ResponseWriter, r *http.Request) {
+func deleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	d, err := db.DeleteSource(id)
+	d, err := db.DeleteUser(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

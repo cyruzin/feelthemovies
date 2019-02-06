@@ -7,86 +7,86 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/app/model"
 	"github.com/gorilla/mux"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getGenres(w http.ResponseWriter, r *http.Request) {
+func getKeywords(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	g, err := db.GetGenres()
+	k, err := db.GetKeywords()
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(g)
+		json.NewEncoder(w).Encode(k)
 	}
 }
 
-func getGenre(w http.ResponseWriter, r *http.Request) {
+func getKeyword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	g, err := db.GetGenre(id)
+	k, err := db.GetKeyword(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(g)
+		json.NewEncoder(w).Encode(k)
 	}
 
 }
 
-func createGenre(w http.ResponseWriter, r *http.Request) {
+func createKeyword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqG model.Genre
-	err := json.NewDecoder(r.Body).Decode(&reqG)
+	var reqK model.Keyword
+	err := json.NewDecoder(r.Body).Decode(&reqK)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqG)
+	err = validate.Struct(reqK)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	newG := model.Genre{
-		Name:      reqG.Name,
+	newK := model.Keyword{
+		Name:      reqK.Name,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	g, err := db.CreateGenre(&newG)
+	k, err := db.CreateKeyword(&newK)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(g)
+		json.NewEncoder(w).Encode(k)
 	}
 }
 
-func updateGenre(w http.ResponseWriter, r *http.Request) {
+func updateKeyword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
-	var reqG model.Genre
-	err := json.NewDecoder(r.Body).Decode(&reqG)
+	var reqK model.Keyword
+	err := json.NewDecoder(r.Body).Decode(&reqK)
 	if err != nil {
 		log.Println(err)
 	}
 	validate = validator.New()
-	err = validate.Struct(reqG)
+	err = validate.Struct(reqK)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	upG := model.Genre{
-		Name:      reqG.Name,
+	upK := model.Keyword{
+		Name:      reqK.Name,
 		UpdatedAt: time.Now(),
 	}
 	params := mux.Vars(r)
@@ -94,30 +94,30 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	g, err := db.UpdateGenre(id, &upG)
+	k, err := db.UpdateKeyword(id, &upK)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(g)
+		json.NewEncoder(w).Encode(k)
 	}
 }
 
-func deleteGenre(w http.ResponseWriter, r *http.Request) {
+func deleteKeyword(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
 	}
-	d, err := db.DeleteGenre(id)
+	d, err := db.DeleteKeyword(id)
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
 	} else if d == 0 {
 		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("The resource you requested could not be found.")
+		json.NewEncoder(w).Encode("Something went wrong!")
 	} else {
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode("Deleted Successfully!")
