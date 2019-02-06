@@ -2,7 +2,9 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	// MySQL connection driver
 	_ "github.com/go-sql-driver/mysql"
@@ -15,7 +17,11 @@ type Conn struct {
 
 // Connect creates a connection with MySQL database.
 func Connect() (*Conn, error) {
-	db, err := sql.Open("mysql", "root:Password12!@tcp(localhost:3306)/api_feelthemovies?parseTime=true")
+	url := fmt.Sprintf(
+		"%s:%s@tcp(localhost:3306)/api_feelthemovies?parseTime=true",
+		os.Getenv("DBUSER"), os.Getenv("DBPASS"),
+	)
+	db, err := sql.Open("mysql", url)
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
