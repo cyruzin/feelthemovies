@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
 --
--- Host: 157.230.141.254    Database: api_feelthemovies
+-- Host: localhost:3306    Database: api_feelthemovies
 -- ------------------------------------------------------
 -- Server version	5.7.25
 
@@ -14,6 +14,9 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+CREATE DATABASE api_feelthemovies;
+USE api_feelthemovies;
 
 --
 -- Table structure for table `genre_recommendation`
@@ -295,10 +298,6 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'Cyro Dubeux','xorycx@gmail.com','$2a$10$o/Gau11Y8stFuiWKA7VYYOwLmyTzCiLYHNoiu4rB.mY1Q/531XzsC','ce3b81ee-0dc0-4133-8625-32007e64af7b','2018-10-31 01:15:38','2019-02-06 07:33:46');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'api_feelthemovies'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -309,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-02-06 18:03:24
+-- Dump completed on 2019-02-06 18:22:24
