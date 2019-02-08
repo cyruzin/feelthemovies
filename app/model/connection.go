@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-redis/redis"
 	// MySQL connection driver
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -31,4 +32,19 @@ func Connect() (*Conn, error) {
 	}
 	log.Println("MySQL: Connection OK.")
 	return &Conn{db}, nil
+}
+
+// Redis func creates a connection with the Redis server.
+func Redis() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDISADDR"),
+		Password: os.Getenv("REDISPASS"),
+		DB:       0,
+	})
+	_, err := client.Ping().Result()
+	if err != nil {
+		log.Fatal("Could not open connection to Redis: ", err)
+	}
+	log.Println("Redis: Connection OK.")
+	return client
 }

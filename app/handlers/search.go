@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
 	"strconv"
 
 	"github.com/cyruzin/feelthemovies/app/model"
+	"github.com/cyruzin/feelthemovies/pkg/helper"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -24,6 +26,19 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("query field is empty")
+		return
+	}
+	//Redis check
+	rrKey := fmt.Sprintf("search_recommendation-%s", params["query"][0])
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		w.WriteHeader(200)
+		rr := new(model.RecommendationPagination)
+		err = helper.UnmarshalBinary([]byte(val), rr)
+		json.NewEncoder(w).Encode(rr)
 		return
 	}
 	total, err := db.GetSearchRecommendationTotalRows(params["query"][0]) // total results
@@ -74,6 +89,15 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	resultFinal.LastPage = lastPage
 	resultFinal.PerPage = limit
 	resultFinal.Total = total
+	// Redis set
+	rr, err := helper.MarshalBinary(resultFinal)
+	if err != nil {
+		log.Println(err)
+	}
+	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
+	if err != nil {
+		log.Println(err)
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

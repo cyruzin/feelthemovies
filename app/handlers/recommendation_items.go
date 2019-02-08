@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -20,6 +21,19 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+	//Redis check
+	rrKey := fmt.Sprintf("recommendation_items-%d", id)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		w.WriteHeader(200)
+		rr := new(model.RecommendationItemFinal)
+		err = helper.UnmarshalBinary([]byte(val), rr)
+		json.NewEncoder(w).Encode(rr)
+		return
+	}
 	rec, err := db.GetRecommendationItems(id)
 	if err != nil {
 		log.Println(err)
@@ -35,10 +49,15 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 		recFinal.Sources = recS
 		result = append(result, &recFinal)
 	}
-	resultFinal := struct {
-		Data []*model.ResponseRecommendationItem `json:"data"`
-	}{
-		result,
+	resultFinal := model.RecommendationItemFinal{Data: result}
+	// Redis set
+	rr, err := helper.MarshalBinary(resultFinal)
+	if err != nil {
+		log.Println(err)
+	}
+	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
+	if err != nil {
+		log.Println(err)
 	}
 	if err != nil {
 		w.WriteHeader(400)

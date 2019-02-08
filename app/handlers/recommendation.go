@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
@@ -17,6 +18,18 @@ import (
 
 func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
+	//Redis check
+	val, err := redisClient.Get("recommendations").Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		w.WriteHeader(200)
+		rr := new(model.RecommendationPagination)
+		err = helper.UnmarshalBinary([]byte(val), rr)
+		json.NewEncoder(w).Encode(rr)
+		return
+	}
 	// Start pagination
 	params := r.URL.Query()
 	total, err := db.GetRecommendationTotalRows() // total results
@@ -71,6 +84,15 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	resultFinal.LastPage = lastPage
 	resultFinal.PerPage = limit
 	resultFinal.Total = total
+	// Redis set
+	rr, err := helper.MarshalBinary(resultFinal)
+	if err != nil {
+		log.Println(err)
+	}
+	err = redisClient.Set("recommendations", rr, redisTimeout).Err()
+	if err != nil {
+		log.Println(err)
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -86,6 +108,19 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
+	}
+	//Redis check
+	rrKey := fmt.Sprintf("recommendation-%d", id)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		w.WriteHeader(200)
+		rr := new(model.ResponseRecommendation)
+		err = helper.UnmarshalBinary([]byte(val), rr)
+		json.NewEncoder(w).Encode(rr)
+		return
 	}
 	rec, err := db.GetRecommendation(id)
 	if err != nil {
@@ -105,6 +140,15 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	response.Recommendation = rec
 	response.Genres = recG
 	response.Keywords = recK
+	// Redis set
+	rr, err := helper.MarshalBinary(response)
+	if err != nil {
+		log.Println(err)
+	}
+	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
+	if err != nil {
+		log.Println(err)
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")

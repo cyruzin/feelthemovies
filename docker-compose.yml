@@ -12,3 +12,10 @@ services:
     environment:
       - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=Password12!
+  
+  redis:
+    image: redis:5.0.3-alpine
+    container_name: api-redis
+    command: redis-server --requirepass 69Wm3ZA2ianh8uUX
+    ports: 
+      - 6379:6379

@@ -40,6 +40,12 @@ type RecommendationItemSources struct {
 	Name string `json:"name"`
 }
 
+// RecommendationItemFinal type is a struct for
+// the final response.
+type RecommendationItemFinal struct {
+	Data []*ResponseRecommendationItem `json:"data"`
+}
+
 // GetRecommendationItems retrieves all items of
 // a given recommendation by ID.
 func (db *Conn) GetRecommendationItems(

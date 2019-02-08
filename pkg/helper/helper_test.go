@@ -66,6 +66,37 @@ func TestToJSON(t *testing.T) {
 	}
 }
 
+func TestMarshalBinary(t *testing.T) {
+	rec := model.Recommendation{
+		ID:        1,
+		UserID:    1,
+		Title:     "Test title",
+		Type:      0,
+		Poster:    "huApZqTkkLç",
+		Backdrop:  "ppkLiWUq",
+		Status:    0,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	data, err := MarshalBinary(rec)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(data)
+}
+
+func TestUnmarshalBinary(t *testing.T) {
+	rec := []byte(`{"name": "John Doe"}`)
+	var name struct {
+		Name string
+	}
+	err := UnmarshalBinary(rec, &name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(name)
+}
+
 func TestToJSONIndent(t *testing.T) {
 	rec := model.Recommendation{
 		ID:        1,

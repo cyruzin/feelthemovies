@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/cyruzin/feelthemovies/app/model"
 
@@ -14,6 +15,12 @@ import (
 
 // Initializing database connection.
 var db, err = model.Connect()
+
+// Initializing Redis.
+var redisClient = model.Redis()
+
+// Redis expiration time.
+const redisTimeout = time.Duration(120 * time.Minute)
 
 // Validator instance
 var validate *validator.Validate

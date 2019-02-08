@@ -112,3 +112,21 @@ func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+
+// MarshalBinary is a implementation of BinaryMarshaler interface.
+func MarshalBinary(d interface{}) ([]byte, error) {
+	data, err := json.Marshal(d)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+// UnmarshalBinary is a implementation of BinaryUnmarshaler interface.
+func UnmarshalBinary(d []byte, v interface{}) error {
+	err := json.Unmarshal(d, &v)
+	if err != nil {
+		return err
+	}
+	return nil
+}
