@@ -29,7 +29,15 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Redis check
-	rrKey := fmt.Sprintf("search_recommendation-%s", params["query"][0])
+	var rrKey string
+	if params["page"] != nil {
+		rrKey = fmt.Sprintf(
+			"?query=%s?page=%s",
+			params["query"][0], params["page"][0],
+		)
+	} else {
+		rrKey = params["query"][0]
+	}
 	val, err := redisClient.Get(rrKey).Result()
 	if err != nil {
 		log.Println(err)
