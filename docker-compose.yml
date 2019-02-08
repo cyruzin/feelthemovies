@@ -11,11 +11,11 @@ services:
       - 3306:3306
     environment:
       - MYSQL_USER=root
-      - MYSQL_ROOT_PASSWORD=Password12!
+      - MYSQL_ROOT_PASSWORD=h4BDXiTH2c9Nn3jN
   
   redis:
     image: redis:5.0.3-alpine
     container_name: api-redis
-    command: redis-server --requirepass 69Wm3ZA2ianh8uUX
+    command: redis-server --requirepass WD3h1QhzOfM06l56
     ports: 
       - 6379:6379
