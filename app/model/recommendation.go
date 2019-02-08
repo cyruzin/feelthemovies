@@ -62,9 +62,16 @@ func (db *Conn) GetRecommendations(
 ) (*ResultRecommendation, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
-		id, user_id, title, type, 
-		body, poster, backdrop, status, 
-		created_at, updated_at
+		id, 
+		user_id, 
+		title, 
+		type, 
+		body, 
+		poster, 
+		backdrop, 
+		status, 
+		created_at, 
+		updated_at
 		FROM recommendations
 		ORDER BY id DESC
 		LIMIT ?,?
@@ -78,9 +85,16 @@ func (db *Conn) GetRecommendations(
 	for rows.Next() {
 		rec := Recommendation{}
 		err = rows.Scan(
-			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
-			&rec.Body, &rec.Poster, &rec.Backdrop, &rec.Status,
-			&rec.CreatedAt, &rec.UpdatedAt,
+			&rec.ID,
+			&rec.UserID,
+			&rec.Title,
+			&rec.Type,
+			&rec.Body,
+			&rec.Poster,
+			&rec.Backdrop,
+			&rec.Status,
+			&rec.CreatedAt,
+			&rec.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err

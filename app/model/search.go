@@ -13,9 +13,16 @@ func (db *Conn) SearchRecommendation(
 ) (*ResultRecommendation, error) {
 	stmt, err := db.Prepare(`
 		SELECT DISTINCT
-		r.id, r.user_id, r.title, r.type,
-		r.body, r.backdrop, r.poster, r.status,
-		r.created_at, r.updated_at
+		r.id, 
+		r.user_id, 
+		r.title, 
+		r.type,
+		r.body, 
+		r.poster, 
+		r.backdrop, 
+		r.status,
+		r.created_at, 
+		r.updated_at
 		FROM recommendations AS r
 		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
 		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
@@ -39,9 +46,16 @@ func (db *Conn) SearchRecommendation(
 	for rows.Next() {
 		rec := Recommendation{}
 		err = rows.Scan(
-			&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
-			&rec.Body, &rec.Backdrop, &rec.Poster, &rec.Status,
-			&rec.CreatedAt, &rec.UpdatedAt,
+			&rec.ID,
+			&rec.UserID,
+			&rec.Title,
+			&rec.Type,
+			&rec.Body,
+			&rec.Backdrop,
+			&rec.Poster,
+			&rec.Status,
+			&rec.CreatedAt,
+			&rec.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
