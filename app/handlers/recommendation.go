@@ -18,8 +18,15 @@ import (
 
 func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
+	params := r.URL.Query()
 	//Redis check
-	val, err := redisClient.Get("recommendations").Result()
+	var rrKey string
+	if params["page"] != nil {
+		rrKey = fmt.Sprintf("recommendation?page=%s", params["page"][0])
+	} else {
+		rrKey = "recommendation"
+	}
+	val, err := redisClient.Get(rrKey).Result()
 	if err != nil {
 		log.Println(err)
 	}
@@ -31,7 +38,6 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Start pagination
-	params := r.URL.Query()
 	total, err := db.GetRecommendationTotalRows() // total results
 	if err != nil {
 		log.Println(err)
@@ -89,7 +95,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	err = redisClient.Set("recommendations", rr, redisTimeout).Err()
+	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
 		log.Println(err)
 	}
