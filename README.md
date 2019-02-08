@@ -1,6 +1,6 @@
 <p align="center"><img src="./assets/img/logo.png" width="350"></p>
 
-[![Build status](https://ci.appveyor.com/api/projects/status/q8xx4gg65060uf62?svg=true)](https://ci.appveyor.com/project/cyruzin/feelthemovies) [![codecov](https://codecov.io/gh/cyruzin/feelthemovies/branch/master/graph/badge.svg)](https://codecov.io/gh/cyruzin/feelthemovies) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
 
@@ -29,7 +29,6 @@ To test locally, run:
 $ go test -v ./... -race
 ```
 If you want to test more than one time, run:
-
 
 ```sh
 $ docker-compose down && docker-compose up -d && sleep 10 && go test -v ./... -race
