@@ -293,6 +293,17 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 		}
 	}
+	rrKey := fmt.Sprintf("recommendation-%d", id)
+	val, err = redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink(rrKey).Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
