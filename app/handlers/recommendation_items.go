@@ -142,6 +142,18 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
 	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
+	// Redis check
+	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink(rrKey).Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -198,6 +210,18 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
 	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
+	// Redis check
+	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink(rrKey).Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -213,6 +237,22 @@ func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
+	}
+	rec, err := db.GetRecommendationItem(id)
+	if err != nil {
+		log.Println(err)
+	}
+	// Redis check
+	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink(rrKey).Result()
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	d, err := db.DeleteRecommendationItem(id)
 	if err != nil {

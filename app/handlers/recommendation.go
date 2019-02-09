@@ -206,6 +206,17 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	_, err = helper.Attach(genres, "genre_recommendation", db.DB)
+	// Redis check
+	val, err := redisClient.Get("recommendation").Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink("recommendation").Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -233,13 +244,6 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Validation error, check your fields.")
 		return
 	}
-	// Check status
-	err = validate.Var(reqRec.Status, "required,min=1,max=2")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check status field.")
-		return
-	}
 	upRec := model.Recommendation{
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
@@ -259,7 +263,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	if itemCount == 0 {
+	if itemCount == 0 && reqRec.Status == 1 {
 		w.WriteHeader(422)
 		json.NewEncoder(w).Encode("You can not activate an empty recommendation.")
 		return
@@ -278,6 +282,17 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
+	// Redis check
+	val, err := redisClient.Get("recommendation").Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink("recommendation").Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if err != nil {
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("Something went wrong!")
@@ -293,6 +308,28 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		log.Println(err)
+	}
+	// Redis check
+	rrKey := fmt.Sprintf("recommendation-%d", id)
+	val, err := redisClient.Get(rrKey).Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink(rrKey).Result()
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	val, err = redisClient.Get("recommendation").Result()
+	if err != nil {
+		log.Println(err)
+	}
+	if val != "" {
+		_, err = redisClient.Unlink("recommendation").Result()
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	d, err := db.DeleteRecommendation(id)
 	if err != nil {
