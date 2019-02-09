@@ -20,7 +20,7 @@ var db, err = model.Connect()
 var redisClient = model.Redis()
 
 // Redis expiration time.
-const redisTimeout = time.Duration(120 * time.Minute)
+const redisTimeout = time.Duration(5 * time.Minute)
 
 // Validator instance
 var validate *validator.Validate

@@ -7,7 +7,6 @@ import (
 	"math"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/cyruzin/feelthemovies/app/model"
 	"github.com/cyruzin/feelthemovies/pkg/helper"
@@ -103,7 +102,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	err = redisClient.Set(rrKey, rr, time.Duration(5*time.Minute)).Err()
+	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
 		log.Println(err)
 	}
