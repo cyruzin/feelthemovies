@@ -91,12 +91,13 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		recFinal.Keywords = recK
 		result = append(result, &recFinal)
 	}
-	resultFinal := model.RecommendationPagination{}
-	resultFinal.Data = result
-	resultFinal.CurrentPage = currentPage
-	resultFinal.LastPage = lastPage
-	resultFinal.PerPage = limit
-	resultFinal.Total = total
+	resultFinal := model.RecommendationPagination{
+		Data:        result,
+		CurrentPage: currentPage,
+		LastPage:    lastPage,
+		PerPage:     limit,
+		Total:       total,
+	}
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
