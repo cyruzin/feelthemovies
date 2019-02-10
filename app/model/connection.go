@@ -19,7 +19,7 @@ type Conn struct {
 // Connect creates a connection with MySQL database.
 func Connect() (*Conn, error) {
 	url := fmt.Sprintf(
-		"%s:%s@tcp(http://feelthemovies.com.br:3306)/api_feelthemovies?parseTime=true",
+		"%s:%s@tcp(localhost:3306)/api_feelthemovies?parseTime=true",
 		os.Getenv("DBUSER"), os.Getenv("DBPASS"),
 	)
 	db, err := sql.Open("mysql", url)
