@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // Attach receives a map of int/[]int and attach the IDs on the given pivot table.
@@ -149,5 +150,12 @@ func DecodeError(
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		w.Write([]byte("Could not encode the payload"))
 		return
+	}
+}
+
+// ValidatorMessage handles validation error messages.
+func ValidatorMessage(w http.ResponseWriter, err error) {
+	for _, err := range err.(validator.ValidationErrors) {
+		DecodeError(w, err.Field()+" field is required", http.StatusBadRequest)
 	}
 }

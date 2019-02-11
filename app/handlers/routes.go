@@ -27,7 +27,7 @@ var validate *validator.Validate
 
 // NewRouter initiates the server with the given routes.
 // CORS are enabled.
-func NewRouter() *mux.Router {
+func NewRouter() {
 	r := mux.NewRouter()
 	r.Use(loggingMiddleware)
 	r.Use(authMiddleware)
@@ -38,7 +38,6 @@ func NewRouter() *mux.Router {
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
 	log.Fatal(http.ListenAndServe(":8000", handler))
-	return r
 }
 
 func publicRoutes(r *mux.Router) {
