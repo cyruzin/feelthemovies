@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"log"
 	"time"
 )
@@ -44,6 +45,14 @@ type RecommendationItemSources struct {
 // the final response.
 type RecommendationItemFinal struct {
 	Data []*ResponseRecommendationItem `json:"data"`
+}
+
+// RecommendationItemCreate type is a struct for decode
+// recommendation item post request.
+type RecommendationItemCreate struct {
+	*RecommendationItem
+	Sources []int  `json:"sources" validate:"required"`
+	Year    string `json:"year" validate:"required"`
 }
 
 // GetRecommendationItems retrieves all items of
@@ -185,25 +194,25 @@ func (db *Conn) UpdateRecommendationItem(
 
 // DeleteRecommendationItem deletes a recommendation
 // item by a given ID.
-func (db *Conn) DeleteRecommendationItem(id int64) (int64, error) {
+func (db *Conn) DeleteRecommendationItem(id int64) error {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendation_items
 		WHERE id=?
 	`)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	data, err := res.RowsAffected()
-	if err != nil {
-		return 0, err
+	if err != nil || data == 0 {
+		return errors.New("The resource you requested could not be found")
 	}
-	return data, nil
+	return nil
 }
 
 // GetRecommendationItemSources retrieves all sources of a given recommendation item.

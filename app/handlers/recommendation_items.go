@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,112 +14,120 @@ import (
 )
 
 func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse ID param", http.StatusInternalServerError)
+		return
 	}
-	//Redis check
+
+	//Redis check start
 	rrKey := fmt.Sprintf("recommendation_items-%d", id)
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
-		w.WriteHeader(200)
-		rr := new(model.RecommendationItemFinal)
-		err = helper.UnmarshalBinary([]byte(val), rr)
+		rr := &model.RecommendationItemFinal{}
+		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
+			helper.DecodeError(w, "Could not unmarshal the payload", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(rr)
 		return
 	}
+	// Redis check end
+
 	rec, err := db.GetRecommendationItems(id)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not fetch the recommendation items", http.StatusInternalServerError)
+		return
 	}
+
 	result := []*model.ResponseRecommendationItem{}
 	for _, r := range rec.Data {
 		recS, err := db.GetRecommendationItemSources(r.ID)
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not fetch the recommendation items sources", http.StatusInternalServerError)
+			return
 		}
-		recFinal := model.ResponseRecommendationItem{}
-		recFinal.RecommendationItem = r
-		recFinal.Sources = recS
-		result = append(result, &recFinal)
+
+		recFinal := &model.ResponseRecommendationItem{
+			RecommendationItem: r,
+			Sources:            recS,
+		}
+
+		result = append(result, recFinal)
 	}
-	resultFinal := model.RecommendationItemFinal{Data: result}
-	// Redis set
+
+	resultFinal := &model.RecommendationItemFinal{Data: result}
+
+	// Redis set start
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not unmarshal the payload", http.StatusInternalServerError)
+		return
 	}
-	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
-	if err != nil {
-		log.Println(err)
+
+	if err := redisClient.Set(rrKey, rr, redisTimeout).Err(); err != nil {
+		helper.DecodeError(w, "Could not set the key", http.StatusInternalServerError)
+		return
 	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(resultFinal)
-	}
+	// Redis set end
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(resultFinal)
+
 }
 
 func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
-	}
-	rec, err := db.GetRecommendationItem(id)
-	if err != nil {
-		log.Println(err)
-	}
-	recS, err := db.GetRecommendationItemSources(id)
-	if err != nil {
-		log.Println(err)
-	}
-	response := model.ResponseRecommendationItem{}
-	response.RecommendationItem = rec
-	response.Sources = recS
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(response)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 
+	rec, err := db.GetRecommendationItem(id)
+	if err != nil {
+		helper.DecodeError(w, "Could not fetch the recommendation item", http.StatusInternalServerError)
+		return
+	}
+
+	recS, err := db.GetRecommendationItemSources(id)
+	if err != nil {
+		helper.DecodeError(w, "Could not fetch the recommendation item source", http.StatusInternalServerError)
+		return
+	}
+
+	response := &model.ResponseRecommendationItem{
+		RecommendationItem: rec,
+		Sources:            recS,
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }
 
 func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqRec struct {
-		*model.RecommendationItem
-		Sources []int  `json:"sources" validate:"required"`
-		Year    string `json:"year" validate:"required"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&reqRec)
-	if err != nil {
-		log.Println(err)
-	}
-	validate = validator.New()
-	err = validate.Struct(reqRec)
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	reqRec := &model.RecommendationItemCreate{}
+	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
+		helper.DecodeError(w, "Could not decode request body", http.StatusInternalServerError)
 		return
 	}
+
+	validate = validator.New()
+	if err := validate.Struct(reqRec); err != nil {
+		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		return
+	}
+
 	// Parsing string to time.Time
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the date", http.StatusInternalServerError)
+		return
 	}
-	newRec := model.RecommendationItem{
+
+	newRec := &model.RecommendationItem{
 		RecommendationID: reqRec.RecommendationID,
 		Name:             reqRec.Name,
 		TMDBID:           reqRec.TMDBID,
@@ -134,55 +141,59 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
-	rec, err := db.CreateRecommendationItem(&newRec)
+
+	rec, err := db.CreateRecommendationItem(newRec)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not create the recommendation item", http.StatusInternalServerError)
+		return
 	}
-	// Attaching sources IDs in its respective pivot table.
+
+	// Attaching sources
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
 	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not attach the recommendation item sources", http.StatusInternalServerError)
+		return
 	}
-	// Redis check
+
+	// Redis check start
 	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
 	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
 		_, err = redisClient.Unlink(rrKey).Result()
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
+			return
 		}
 	}
+	// Redis check end
 
-	w.WriteHeader(201)
-	json.NewEncoder(w).Encode(rec)
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&rec)
 
 }
 
 func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqRec struct {
-		*model.RecommendationItem
-		Sources []int  `json:"sources" validate:"required"`
-		Year    string `json:"year" validate:"required"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&reqRec)
-	if err != nil {
-		log.Println(err)
-	}
-	validate = validator.New()
-	err = validate.Struct(reqRec)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	reqRec := &model.RecommendationItemCreate{}
+	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
+		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
 		return
 	}
+
+	validate = validator.New()
+	if err := validate.Struct(reqRec); err != nil {
+		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		return
+	}
+
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the date", http.StatusInternalServerError)
+		return
 	}
-	upRec := model.RecommendationItem{
+
+	upRec := &model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
 		Year:       yearParsed,
@@ -194,72 +205,76 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		MediaType:  reqRec.MediaType,
 		UpdatedAt:  time.Now(),
 	}
+
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
-	rec, err := db.UpdateRecommendationItem(id, &upRec)
+
+	rec, err := db.UpdateRecommendationItem(id, upRec)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not update the recommendation item", http.StatusInternalServerError)
+		return
 	}
-	// Syncing sources IDs in its respective pivot table.
+
+	// Syncing sources
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
 	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
-	// Redis check
-	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, err := redisClient.Get(rrKey).Result()
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not sync the recommendation item sources", http.StatusInternalServerError)
+		return
 	}
+
+	// Redis check start
+	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
+	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
 		_, err = redisClient.Unlink(rrKey).Result()
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
+			return
 		}
 	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(rec)
-	}
+	// Redis check end
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&rec)
 }
 
 func deleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
+
 	rec, err := db.GetRecommendationItem(id)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not get fetch the recommendation item", http.StatusInternalServerError)
+		return
 	}
-	// Redis check
+
+	// Redis check start
 	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
 		_, err = redisClient.Unlink(rrKey).Result()
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
+			return
 		}
 	}
-	d, err := db.DeleteRecommendationItem(id)
+
+	err = db.DeleteRecommendationItem(id)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode("Deleted Successfully!")
+		helper.DecodeError(w, "Could not delete the recommendation item", http.StatusInternalServerError)
+		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted successfully!"})
 }

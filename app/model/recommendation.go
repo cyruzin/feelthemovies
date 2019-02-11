@@ -290,7 +290,6 @@ func (db *Conn) GetRecommendationKeywords(
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
-// TODO: Optimize this func (db *Conn) tion.
 func (db *Conn) GetRecommendationTotalRows() (float64, error) {
 	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
 	if err != nil {

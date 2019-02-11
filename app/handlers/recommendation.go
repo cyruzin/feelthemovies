@@ -192,8 +192,7 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 func createRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	reqRec := &model.RecommendationCreate{}
-	err := json.NewDecoder(r.Body).Decode(reqRec)
-	if err != nil {
+	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
 		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
 		return
 	}
@@ -385,5 +384,5 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted Successfully!"})
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted successfully!"})
 }
