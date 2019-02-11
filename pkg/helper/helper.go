@@ -163,7 +163,7 @@ func ValidatorMessage(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusBadRequest)
 	av := &APIValidator{}
 	for _, err := range err.(validator.ValidationErrors) {
-		v := &APIMessage{Message: err.Field() + " field is required"}
+		v := &APIMessage{Message: "Check the " + err.Field() + " field"}
 		av.Errors = append(av.Errors, v)
 	}
 	if err := json.NewEncoder(w).Encode(av); err != nil {
