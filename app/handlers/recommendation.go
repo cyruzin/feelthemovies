@@ -19,6 +19,7 @@ import (
 func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
+
 	//Redis check
 	var rrKey string
 	if params["page"] != nil {
@@ -26,37 +27,47 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rrKey = "recommendation"
 	}
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+
+	val, _ := redisClient.Get(rrKey).Result()
+
 	if val != "" {
-		w.WriteHeader(200)
-		rr := new(model.RecommendationPagination)
+		rr := &model.RecommendationPagination{}
 		err = helper.UnmarshalBinary([]byte(val), rr)
 		json.NewEncoder(w).Encode(rr)
-		return
+		helper.APIResponse(
+			w,
+			HTTPOK,
+			err,
+			"Redis: Could not unmarshal the response",
+		)
 	}
+
 	// Start pagination
 	total, err := db.GetRecommendationTotalRows() // total results
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Database: Could not count recommendations total rows",
+	)
+
 	var (
 		limit       float64 = 10                       // limit per page
 		offset      float64                            // offset record
 		currentPage float64 = 1                        // current page
 		lastPage            = math.Ceil(total / limit) // last page
 	)
+
 	// checking if request contains the "page" parameter
 	if len(params) > 0 {
 		if params["page"][0] != "" {
 			page, err := strconv.ParseFloat(params["page"][0], 64)
-
-			if err != nil {
-				log.Println(err)
-			}
-
+			helper.APIResponse(
+				w,
+				HTTPUnprocessableEntity,
+				err,
+				"Pagination: Could not parse page to float",
+			)
 			if page > currentPage {
 				currentPage = page
 				offset = (currentPage - 1) * limit
@@ -64,104 +75,142 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	// End pagination
+
 	rec, err := db.GetRecommendations(offset, limit)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w, HTTPUnprocessableEntity,
+		err,
+		"Database: Could not fetch recommendations",
+	)
+
 	result := []*model.ResponseRecommendation{}
 	for _, r := range rec.Data {
 		recG, err := db.GetRecommendationGenres(r.ID)
-		if err != nil {
-			log.Println(err)
-		}
+		helper.APIResponse(
+			w,
+			HTTPUnprocessableEntity,
+			err,
+			"Database: Could not fetch recommendation genres",
+		)
 		recK, err := db.GetRecommendationKeywords(r.ID)
-		if err != nil {
-			log.Println(err)
+		helper.APIResponse(
+			w,
+			HTTPUnprocessableEntity,
+			err,
+			"Database: Could not fetch recommendation keywords",
+		)
+		recFinal := model.ResponseRecommendation{
+			Recommendation: r,
+			Genres:         recG,
+			Keywords:       recK,
 		}
-		recFinal := model.ResponseRecommendation{}
-		recFinal.Recommendation = r
-		recFinal.Genres = recG
-		recFinal.Keywords = recK
 		result = append(result, &recFinal)
 	}
-	resultFinal := model.RecommendationPagination{}
-	resultFinal.Data = result
-	resultFinal.CurrentPage = currentPage
-	resultFinal.LastPage = lastPage
-	resultFinal.PerPage = limit
-	resultFinal.Total = total
+
+	resultFinal := model.RecommendationPagination{
+		Data:        result,
+		CurrentPage: currentPage,
+		LastPage:    lastPage,
+		PerPage:     limit,
+		Total:       total,
+	}
+
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPInternalServerError,
+		err,
+		"Redis: Could not marshall the response",
+	)
 	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
-	if err != nil {
-		log.Println(err)
-	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(resultFinal)
-	}
+	helper.APIResponse(
+		w,
+		HTTPInternalServerError,
+		err,
+		"Redis: Could not set the key",
+	)
+
+	// Final response
+	helper.APIResponse(w, HTTPOK, err, resultFinal)
 }
 
 func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
+
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Parse: Could not parse the ID",
+	)
+
 	//Redis check
 	rrKey := fmt.Sprintf("recommendation-%d", id)
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+	val, _ := redisClient.Get(rrKey).Result()
+
 	if val != "" {
-		w.WriteHeader(200)
 		rr := new(model.ResponseRecommendation)
 		err = helper.UnmarshalBinary([]byte(val), rr)
-		json.NewEncoder(w).Encode(rr)
-		return
+		helper.APIResponse(
+			w,
+			HTTPInternalServerError,
+			err,
+			"Redis: Could not unmarshal the response",
+		)
 	}
+
 	rec, err := db.GetRecommendation(id)
-	if err != nil {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("The resource you requested could not be found.")
-		return
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Database: Could fetch the recommendation",
+	)
+
 	recG, err := db.GetRecommendationGenres(id)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Database: Could not fetch recommendation genres",
+	)
+
 	recK, err := db.GetRecommendationKeywords(id)
-	if err != nil {
-		log.Println(err)
+
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Database: Could not fetch recommendation keywords",
+	)
+
+	response := model.ResponseRecommendation{
+		Recommendation: rec,
+		Genres:         recG,
+		Keywords:       recK,
 	}
-	response := model.ResponseRecommendation{}
-	response.Recommendation = rec
-	response.Genres = recG
-	response.Keywords = recK
+
 	// Redis set
 	rr, err := helper.MarshalBinary(response)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPInternalServerError,
+		err,
+		"Redis: Could not marshall the response",
+	)
+
 	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
-	if err != nil {
-		log.Println(err)
-	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(response)
-	}
+	helper.APIResponse(
+		w,
+		HTTPInternalServerError,
+		err,
+		"Redis: Could not set the key",
+	)
+
+	helper.APIResponse(w, HTTPOK, err, response)
 }
 
 func createRecommendation(w http.ResponseWriter, r *http.Request) {
@@ -316,41 +365,53 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
+
 	id, err := strconv.ParseInt(params["id"], 10, 64)
-	if err != nil {
-		log.Println(err)
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Parse: Could not parse the ID",
+	)
+
 	// Redis check
 	rrKey := fmt.Sprintf("recommendation-%d", id)
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+	val, _ := redisClient.Get(rrKey).Result()
+
 	if val != "" {
 		_, err = redisClient.Unlink(rrKey).Result()
-		if err != nil {
-			log.Println(err)
-		}
+		helper.APIResponse(
+			w,
+			HTTPInternalServerError,
+			err,
+			"Redis: Could not unlink key",
+		)
 	}
-	val, err = redisClient.Get("recommendation").Result()
-	if err != nil {
-		log.Println(err)
-	}
+
+	val, _ = redisClient.Get("recommendation").Result()
+
 	if val != "" {
 		_, err = redisClient.Unlink("recommendation").Result()
-		if err != nil {
-			log.Println(err)
-		}
+		helper.APIResponse(
+			w,
+			HTTPInternalServerError,
+			err,
+			"Redis: Could not unlink the key",
+		)
 	}
+
 	d, err := db.DeleteRecommendation(id)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode("Deleted Successfully!")
-	}
+	helper.APIResponse(
+		w,
+		HTTPUnprocessableEntity,
+		err,
+		"Database: Could not delete the recommendation",
+	)
+
+	helper.APIResponse(
+		w,
+		HTTPOK,
+		err,
+		d,
+	)
 }

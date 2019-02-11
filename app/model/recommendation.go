@@ -27,8 +27,8 @@ type ResultRecommendation struct {
 // ResponseRecommendation type is a struct for a final response.
 type ResponseRecommendation struct {
 	*Recommendation
-	Genres   []*RecommendationGenres   `json:"genres"`
-	Keywords []*RecommendationKeywords `json:"keywords"`
+	Genres   []*RecommendationGenres   `json:"genres,omitempty"`
+	Keywords []*RecommendationKeywords `json:"keywords,omitempty"`
 }
 
 // RecommendationGenres type is a struct for
@@ -126,7 +126,7 @@ func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &rec, err
+	return &rec, nil
 }
 
 // CreateRecommendation creates a new recommendation.
@@ -282,7 +282,6 @@ func (db *Conn) GetRecommendationKeywords(
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
-// TODO: Optimize this func (db *Conn) tion.
 func (db *Conn) GetRecommendationTotalRows() (float64, error) {
 	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
 	if err != nil {
