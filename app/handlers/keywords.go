@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/cyruzin/feelthemovies/pkg/helper"
 
 	"github.com/cyruzin/feelthemovies/app/model"
 	"github.com/gorilla/mux"
@@ -13,47 +14,41 @@ import (
 )
 
 func getKeywords(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	k, err := db.GetKeywords()
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&k)
 }
 
 func getKeyword(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	k, err := db.GetKeyword(id)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		helper.DecodeError(w, "Could not fetch the keyword", http.StatusInternalServerError)
+		return
 	}
-
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&k)
 }
 
 func createKeyword(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqK model.Keyword
-	err := json.NewDecoder(r.Body).Decode(&reqK)
+	reqK := &model.Keyword{}
+	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqK)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	if err := validate.Struct(reqK); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	newK := model.Keyword{
@@ -63,27 +58,23 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 	k, err := db.CreateKeyword(&newK)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(k)
+		helper.DecodeError(w, "Could not create the keyword", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&k)
 }
 
 func updateKeyword(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqK model.Keyword
-	err := json.NewDecoder(r.Body).Decode(&reqK)
+	reqK := &model.Keyword{}
+	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqK)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
-		return
+	if err := validate.Struct(reqK); err != nil {
+		helper.ValidatorMessage(w, err)
 	}
 	upK := model.Keyword{
 		Name:      reqK.Name,
@@ -92,34 +83,29 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	k, err := db.UpdateKeyword(id, &upK)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(k)
+		helper.DecodeError(w, "Could not update the keyword", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&k)
 }
 
 func deleteKeyword(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
-	d, err := db.DeleteKeyword(id)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode("Deleted Successfully!")
+	if err := db.DeleteKeyword(id); err != nil {
+		helper.DecodeError(w, "Could not delete the keyword", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted successfully!"})
 }

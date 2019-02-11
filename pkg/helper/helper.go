@@ -153,9 +153,21 @@ func DecodeError(
 	}
 }
 
+// APIValidator type is a struct for multiple error messages.
+type APIValidator struct {
+	Errors []*APIMessage `json:"errors"`
+}
+
 // ValidatorMessage handles validation error messages.
 func ValidatorMessage(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusBadRequest)
+	av := &APIValidator{}
 	for _, err := range err.(validator.ValidationErrors) {
-		DecodeError(w, err.Field()+" field is required", http.StatusBadRequest)
+		v := &APIMessage{Message: err.Field() + " field is required"}
+		av.Errors = append(av.Errors, v)
+	}
+	if err := json.NewEncoder(w).Encode(av); err != nil {
+		w.Write([]byte("Could not encode the payload"))
+		return
 	}
 }

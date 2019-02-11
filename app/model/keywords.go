@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -130,23 +131,23 @@ func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
 }
 
 // DeleteKeyword deletes a keyword by a given ID.
-func (db *Conn) DeleteKeyword(id int64) (int64, error) {
+func (db *Conn) DeleteKeyword(id int64) error {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM keywords
 		WHERE id=?
 `)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	data, err := res.RowsAffected()
-	if err != nil {
-		return 0, err
+	if err != nil || data == 0 {
+		return errors.New("The resource you requested could not be found")
 	}
-	return data, nil
+	return nil
 }

@@ -199,7 +199,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	validate = validator.New()
 	if err := validate.Struct(reqRec); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		helper.ValidatorMessage(w, err)
 		return
 	}
 
@@ -265,7 +265,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	validate = validator.New()
 	if err := validate.Struct(reqRec); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		helper.ValidatorMessage(w, err)
 		return
 	}
 
@@ -294,7 +294,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if itemCount == 0 && reqRec.Status == 1 {
-		helper.DecodeError(w, "You can not activate an empty recommendation.", http.StatusUnprocessableEntity)
+		helper.DecodeError(w, "The recommendation is empty or does not exist", http.StatusUnprocessableEntity)
 		return
 	}
 

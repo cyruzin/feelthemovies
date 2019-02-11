@@ -74,7 +74,7 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 	}
 	validate = validator.New()
 	if err := validate.Struct(reqG); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	upG := model.Genre{

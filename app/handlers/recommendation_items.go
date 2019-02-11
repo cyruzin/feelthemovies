@@ -116,7 +116,7 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	validate = validator.New()
 	if err := validate.Struct(reqRec); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		helper.ValidatorMessage(w, err)
 		return
 	}
 
@@ -183,7 +183,7 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 
 	validate = validator.New()
 	if err := validate.Struct(reqRec); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+		helper.ValidatorMessage(w, err)
 		return
 	}
 
