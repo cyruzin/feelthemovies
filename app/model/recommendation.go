@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"time"
 )
 
@@ -28,8 +27,8 @@ type ResultRecommendation struct {
 // ResponseRecommendation type is a struct for a final response.
 type ResponseRecommendation struct {
 	*Recommendation
-	Genres   []*RecommendationGenres   `json:"genres,omitempty"`
-	Keywords []*RecommendationKeywords `json:"keywords,omitempty"`
+	Genres   []*RecommendationGenres   `json:"genres"`
+	Keywords []*RecommendationKeywords `json:"keywords"`
 }
 
 // RecommendationGenres type is a struct for
@@ -127,7 +126,7 @@ func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &rec, nil
+	return &rec, err
 }
 
 // CreateRecommendation creates a new recommendation.
@@ -198,25 +197,25 @@ func (db *Conn) UpdateRecommendation(
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
-func (db *Conn) DeleteRecommendation(id int64) error {
+func (db *Conn) DeleteRecommendation(id int64) (int64, error) {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendations
 		WHERE id=?
 	`)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	data, err := res.RowsAffected()
-	if err != nil || data == 0 {
-		return errors.New("The resource you requested could not be found")
+	if err != nil {
+		return 0, err
 	}
-	return nil
+	return data, nil
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
@@ -283,6 +282,7 @@ func (db *Conn) GetRecommendationKeywords(
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
+// TODO: Optimize this func (db *Conn) tion.
 func (db *Conn) GetRecommendationTotalRows() (float64, error) {
 	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
 	if err != nil {

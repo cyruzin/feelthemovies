@@ -25,17 +25,6 @@ const redisTimeout = time.Duration(5 * time.Minute)
 // Validator instance
 var validate *validator.Validate
 
-// HTTP Responses
-const (
-	HTTPOK                  = 200
-	HTTPCreated             = 201
-	HTTPBadRequest          = 400
-	HTTPUnauthorized        = 401
-	HTTPForbidden           = 403
-	HTTPUnprocessableEntity = 422
-	HTTPInternalServerError = 500
-)
-
 // NewRouter initiates the server with the given routes.
 // CORS are enabled.
 func NewRouter() *mux.Router {

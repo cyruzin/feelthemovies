@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -130,28 +129,4 @@ func UnmarshalBinary(d []byte, v interface{}) error {
 		return err
 	}
 	return nil
-}
-
-// APIResponse handles API response.
-func APIResponse(
-	w http.ResponseWriter,
-	code int,
-	err error,
-	msg interface{},
-) {
-	if err != nil {
-		w.WriteHeader(code)
-		errS := struct {
-			Message string `json:"message,omitempty"`
-			Status  int    `json:"status,omitempty"`
-		}{
-			msg.(string),
-			code,
-		}
-		json.NewEncoder(w).Encode(errS)
-		return
-	}
-	if err == nil && code == 200 || code == 201 {
-		json.NewEncoder(w).Encode(msg)
-	}
 }
