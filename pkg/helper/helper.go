@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -129,4 +130,23 @@ func UnmarshalBinary(d []byte, v interface{}) error {
 		return err
 	}
 	return nil
+}
+
+type apiError struct {
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+}
+
+// DecodeError handles API errors.
+func DecodeError(
+	w http.ResponseWriter,
+	apiErr string,
+	code int,
+) {
+	w.WriteHeader(code)
+	e := &apiError{apiErr, code}
+	if err := json.NewEncoder(w).Encode(&e); err != nil {
+		w.Write([]byte("Could not encode the payload"))
+		return
+	}
 }

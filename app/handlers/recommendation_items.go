@@ -142,25 +142,22 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
 	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
-	// Redis check
-	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, err := redisClient.Get(rrKey).Result()
 	if err != nil {
 		log.Println(err)
 	}
+	// Redis check
+	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
+	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
 		_, err = redisClient.Unlink(rrKey).Result()
 		if err != nil {
 			log.Println(err)
 		}
 	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(rec)
-	}
+
+	w.WriteHeader(201)
+	json.NewEncoder(w).Encode(rec)
+
 }
 
 func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {

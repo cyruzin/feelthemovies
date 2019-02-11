@@ -17,31 +17,35 @@ import (
 )
 
 func getRecommendations(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
-	//Redis check
+
+	//Redis check start
 	var rrKey string
 	if params["page"] != nil {
 		rrKey = fmt.Sprintf("recommendation?page=%s", params["page"][0])
 	} else {
 		rrKey = "recommendation"
 	}
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+
+	val, _ := redisClient.Get(rrKey).Result()
+
 	if val != "" {
-		w.WriteHeader(200)
-		rr := new(model.RecommendationPagination)
+		w.WriteHeader(http.StatusCreated)
+		rr := &model.RecommendationPagination{}
 		err = helper.UnmarshalBinary([]byte(val), rr)
-		json.NewEncoder(w).Encode(rr)
+		json.NewEncoder(w).Encode(&rr)
 		return
 	}
+	// Redis check end
+
 	// Start pagination
 	total, err := db.GetRecommendationTotalRows() // total results
+
 	if err != nil {
-		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+
 	var (
 		limit       float64 = 10                       // limit per page
 		offset      float64                            // offset record
