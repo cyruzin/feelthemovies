@@ -132,9 +132,10 @@ func UnmarshalBinary(d []byte, v interface{}) error {
 	return nil
 }
 
-type apiError struct {
-	Message string `json:"message"`
-	Status  int    `json:"status"`
+// APIMessage is a struct for generic JSON response.
+type APIMessage struct {
+	Message string `json:"message,omitempty"`
+	Status  int    `json:"status,omitempty"`
 }
 
 // DecodeError handles API errors.
@@ -144,8 +145,8 @@ func DecodeError(
 	code int,
 ) {
 	w.WriteHeader(code)
-	e := &apiError{apiErr, code}
-	if err := json.NewEncoder(w).Encode(&e); err != nil {
+	e := &APIMessage{apiErr, code}
+	if err := json.NewEncoder(w).Encode(e); err != nil {
 		w.Write([]byte("Could not encode the payload"))
 		return
 	}
