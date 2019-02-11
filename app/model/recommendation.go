@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 )
 
@@ -197,25 +198,25 @@ func (db *Conn) UpdateRecommendation(
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
-func (db *Conn) DeleteRecommendation(id int64) (int64, error) {
+func (db *Conn) DeleteRecommendation(id int64) error {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM recommendations
 		WHERE id=?
 	`)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	data, err := res.RowsAffected()
-	if err != nil {
-		return 0, err
+	if err != nil || data == 0 {
+		return errors.New("The resource you requested could not be found")
 	}
-	return data, nil
+	return nil
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.

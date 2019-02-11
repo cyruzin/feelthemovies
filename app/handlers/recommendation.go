@@ -400,18 +400,10 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	d, err := db.DeleteRecommendation(id)
-	helper.APIResponse(
-		w,
-		HTTPUnprocessableEntity,
-		err,
-		"Database: Could not delete the recommendation",
-	)
-
-	helper.APIResponse(
-		w,
-		HTTPOK,
-		err,
-		d,
-	)
+	err = db.DeleteRecommendation(id)
+	if err != nil {
+		helper.APIResponse(w, HTTPUnprocessableEntity, err, err.Error())
+	} else {
+		helper.APIResponse(w, HTTPOK, err, "Recommendation deleted")
+	}
 }
