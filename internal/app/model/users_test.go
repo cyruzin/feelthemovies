@@ -65,8 +65,7 @@ func TestUpdateUserModel(t *testing.T) {
 }
 
 func TestDeleteUserModel(t *testing.T) {
-	_, err = db.DeleteUser(3)
-	if err != nil {
+	if err := db.DeleteUser(1); err != nil {
 		t.Errorf("DeleteUser error: %s", err)
 	}
 }

@@ -43,8 +43,7 @@ func TestUpdateGenreModel(t *testing.T) {
 }
 
 func TestDeleteGenreModel(t *testing.T) {
-	_, err = db.DeleteGenre(3)
-	if err != nil {
+	if err := db.DeleteGenre(3); err != nil {
 		t.Errorf("DeleteGenre error: %s", err)
 	}
 }

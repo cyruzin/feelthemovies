@@ -12,11 +12,8 @@ var db, err = model.Connect()
 func TestAttach(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{1, 2}
-	data, err := Attach(m, "genre_recommendation", db.DB)
+	err := Attach(m, "genre_recommendation", db.DB)
 	if err != nil {
-		t.Errorf("Attach error: %s", err)
-	}
-	if data == 0 {
 		t.Errorf("Attach error: %s", err)
 	}
 }
@@ -24,11 +21,8 @@ func TestAttach(t *testing.T) {
 func TestDetach(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{2, 3}
-	data, err := Detach(m, "genre_recommendation", "recommendation_id", db.DB)
+	err := Detach(m, "genre_recommendation", "recommendation_id", db.DB)
 	if err != nil {
-		t.Errorf("Detach error: %s", err)
-	}
-	if data == 0 {
 		t.Errorf("Detach error: %s", err)
 	}
 }
@@ -36,33 +30,9 @@ func TestDetach(t *testing.T) {
 func TestSync(t *testing.T) {
 	m := make(map[int64][]int)
 	m[1] = []int{2, 3}
-	data, err := Sync(m, "genre_recommendation", "recommendation_id", db.DB)
+	err := Sync(m, "genre_recommendation", "recommendation_id", db.DB)
 	if err != nil {
 		t.Errorf("Sync error: %s", err)
-	}
-	if data == 0 {
-		t.Errorf("Sync error: %s", err)
-	}
-}
-
-func TestToJSON(t *testing.T) {
-	rec := model.Recommendation{
-		ID:        1,
-		UserID:    1,
-		Title:     "Test title",
-		Type:      0,
-		Poster:    "huApZqTkkLç",
-		Backdrop:  "ppkLiWUq",
-		Status:    0,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	data, err := ToJSON(rec)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if data == "" {
-		t.Error("Expected a string")
 	}
 }
 
@@ -78,11 +48,10 @@ func TestMarshalBinary(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	data, err := MarshalBinary(rec)
+	_, err := MarshalBinary(rec)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(data)
 }
 
 func TestUnmarshalBinary(t *testing.T) {
@@ -93,28 +62,6 @@ func TestUnmarshalBinary(t *testing.T) {
 	err := UnmarshalBinary(rec, &name)
 	if err != nil {
 		t.Fatal(err)
-	}
-	t.Log(name)
-}
-
-func TestToJSONIndent(t *testing.T) {
-	rec := model.Recommendation{
-		ID:        1,
-		UserID:    1,
-		Title:     "Test title",
-		Type:      0,
-		Poster:    "huApZqTkkLç",
-		Backdrop:  "ppkLiWUq",
-		Status:    0,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	data, err := ToJSONIndent(rec)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if data == "" {
-		t.Error("Expected a string")
 	}
 }
 

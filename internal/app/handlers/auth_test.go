@@ -8,7 +8,7 @@ import (
 )
 
 func TestAuthUserSuccess(t *testing.T) {
-	var auth = []byte(`{"email":"xorycx@gmail.com", "password":"qw12erty"}`)
+	var auth = []byte(`{"email":"xorycx@gmail.com", "password":"-%O1r2y3c487-%"}`)
 	req, err := http.NewRequest("POST", "/v1/auth", bytes.NewBuffer(auth))
 	if err != nil {
 		t.Error(err)
@@ -30,7 +30,7 @@ func TestAuthUserFailure(t *testing.T) {
 	rr := httptest.NewRecorder()
 	r.HandleFunc("/v1/auth", authUser).Methods("POST")
 	r.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusForbidden {
-		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusForbidden, status)
+	if status := rr.Code; status != http.StatusUnauthorized {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusUnauthorized, status)
 	}
 }

@@ -34,7 +34,7 @@ func TestGetUserSuccess(t *testing.T) {
 }
 
 func TestCreateUserSuccess(t *testing.T) {
-	var newUser = []byte(`{
+	newUser := []byte(`{
 		"name":"Travis Fox", 
 		"email":"travis_fox@outlook.com",
 		"password": "qw12erty"

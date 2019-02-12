@@ -7,18 +7,13 @@ import (
 )
 
 func TestCheckApiTokenModel(t *testing.T) {
-	check, err := db.CheckAPIToken("bb9b6ed1-8688-44f4-9f35-f75e62ef83f1")
+	check, err := db.CheckAPIToken("ce3b81ee-0dc0-4133-8625-32007e64af7b")
 	if err != nil {
 		t.Errorf("CheckApiToken error: %s", err)
 	}
 	if !check {
 		t.Errorf("CheckApiToken error: %s", err)
 	}
-	data, err := helper.ToJSON(check)
-	if err != nil {
-		t.Errorf("CheckApiToken - ToJSON - error: %s", err)
-	}
-	t.Log(data)
 }
 
 func TestAuthenticateModel(t *testing.T) {
@@ -26,7 +21,7 @@ func TestAuthenticateModel(t *testing.T) {
 	if err != nil {
 		t.Errorf("Authenticate error: %s", err)
 	}
-	checkPass := helper.CheckPasswordHash("qw12erty", dbPass)
+	checkPass := helper.CheckPasswordHash("-%O1r2y3c487-%", dbPass)
 	if !checkPass {
 		t.Errorf("Authenticate error: %s", err)
 	}

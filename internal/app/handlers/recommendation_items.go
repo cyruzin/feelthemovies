@@ -151,7 +151,7 @@ func createRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	// Attaching sources
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
-	_, err = helper.Attach(sources, "recommendation_item_source", db.DB)
+	err = helper.Attach(sources, "recommendation_item_source", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not attach the recommendation item sources", http.StatusInternalServerError)
 		return
@@ -222,7 +222,7 @@ func updateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	// Syncing sources
 	sources := make(map[int64][]int)
 	sources[rec.ID] = reqRec.Sources
-	_, err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
+	err = helper.Sync(sources, "recommendation_item_source", "recommendation_item_id", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not sync the recommendation item sources", http.StatusInternalServerError)
 		return

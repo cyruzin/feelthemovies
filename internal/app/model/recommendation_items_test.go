@@ -3,8 +3,6 @@ package model
 import (
 	"testing"
 	"time"
-
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
 func TestGetRecommendationItemssModel(t *testing.T) {
@@ -41,15 +39,10 @@ func TestCreateRecommendationItemsModel(t *testing.T) {
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
-	ri, err := db.CreateRecommendationItem(recItem)
+	_, err = db.CreateRecommendationItem(recItem)
 	if err != nil {
 		t.Errorf("CreateRecommendationItemError error: %s", err)
 	}
-	data, err := helper.ToJSON(ri)
-	if err != nil {
-		t.Errorf("CreateRecommendationItemError - ToJSON error: %s", err)
-	}
-	t.Log(data)
 }
 
 func TestUpdateRecommendationItemsModel(t *testing.T) {
@@ -70,15 +63,10 @@ func TestUpdateRecommendationItemsModel(t *testing.T) {
 		MediaType:  "movie",
 		UpdatedAt:  time.Now(),
 	}
-	ri, err := db.UpdateRecommendationItem(1, recItem)
+	_, err = db.UpdateRecommendationItem(1, recItem)
 	if err != nil {
 		t.Errorf("UpdateRecommendationItemError error: %s", err)
 	}
-	data, err := helper.ToJSON(ri)
-	if err != nil {
-		t.Errorf("UpdateRecommendationItemError - ToJSON error: %s", err)
-	}
-	t.Log(data)
 }
 
 func TestGetRecommendationItemModel(t *testing.T) {
@@ -89,8 +77,7 @@ func TestGetRecommendationItemModel(t *testing.T) {
 }
 
 func TestDeleteRecommendationItemsModel(t *testing.T) {
-	_, err = db.DeleteRecommendationItem(3)
-	if err != nil {
+	if err := db.DeleteRecommendationItem(3); err != nil {
 		t.Errorf("DeleteRecommendationItems error: %s", err)
 	}
 }

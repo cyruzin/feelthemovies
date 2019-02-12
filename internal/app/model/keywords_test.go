@@ -43,8 +43,7 @@ func TestUpdateKeywordModel(t *testing.T) {
 }
 
 func TestDeleteKeywordModel(t *testing.T) {
-	_, err = db.DeleteKeyword(3)
-	if err != nil {
+	if err := db.DeleteKeyword(3); err != nil {
 		t.Errorf("DeleteKeyword error: %s", err)
 	}
 }

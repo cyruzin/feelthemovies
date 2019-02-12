@@ -224,7 +224,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Attaching keywords
 	keywords := make(map[int64][]int)
 	keywords[rec.ID] = reqRec.Keywords
-	_, err = helper.Attach(keywords, "keyword_recommendation", db.DB)
+	err = helper.Attach(keywords, "keyword_recommendation", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not attach the recommendation keywords", http.StatusInternalServerError)
 		return
@@ -233,7 +233,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Attaching genres
 	genres := make(map[int64][]int)
 	genres[rec.ID] = reqRec.Genres
-	_, err = helper.Attach(genres, "genre_recommendation", db.DB)
+	err = helper.Attach(genres, "genre_recommendation", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not attach the recommendation genres", http.StatusInternalServerError)
 		return
@@ -307,7 +307,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Syncing keywords
 	keywords := make(map[int64][]int)
 	keywords[rec.ID] = reqRec.Keywords
-	_, err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
+	err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not sync the recommendation keywords", http.StatusInternalServerError)
 		return
@@ -316,7 +316,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Syncing genres
 	genres := make(map[int64][]int)
 	genres[rec.ID] = reqRec.Genres
-	_, err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
+	err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
 	if err != nil {
 		helper.DecodeError(w, "Could not sync the recommendation genres", http.StatusInternalServerError)
 		return

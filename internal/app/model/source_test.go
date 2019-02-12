@@ -43,8 +43,7 @@ func TestUpdateSourceModel(t *testing.T) {
 }
 
 func TestDeleteSourceModel(t *testing.T) {
-	_, err = db.DeleteSource(3)
-	if err != nil {
+	if err := db.DeleteSource(3); err != nil {
 		t.Errorf("DeleteSource error: %s", err)
 	}
 }
