@@ -15,13 +15,13 @@ type Genre struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ResultGenre type is a slice of genres.
-type ResultGenre struct {
+// GenreResult type is a slice of genres.
+type GenreResult struct {
 	Data []*Genre `json:"data"`
 }
 
 // GetGenres retrieves the latest 20 genres.
-func (db *Conn) GetGenres() (*ResultGenre, error) {
+func (db *Conn) GetGenres() (*GenreResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -34,7 +34,7 @@ func (db *Conn) GetGenres() (*ResultGenre, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
-	res := ResultGenre{}
+	res := GenreResult{}
 	for rows.Next() {
 		genre := Genre{}
 		err = rows.Scan(

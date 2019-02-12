@@ -73,7 +73,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return
 	}
-	result := []*model.ResponseRecommendation{}
+	result := []*model.RecommendationResponse{}
 	for _, r := range search.Data {
 		recG, err := db.GetRecommendationGenres(r.ID)
 		if err != nil {
@@ -85,7 +85,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 			helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
 			return
 		}
-		recFinal := &model.ResponseRecommendation{
+		recFinal := &model.RecommendationResponse{
 			Recommendation: r,
 			Genres:         recG,
 			Keywords:       recK,

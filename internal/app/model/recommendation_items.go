@@ -23,13 +23,13 @@ type RecommendationItem struct {
 	UpdatedAt        time.Time `json:"updated_at"`
 }
 
-// ResultRecommendationItem type is a slice of recommendation items.
-type ResultRecommendationItem struct {
+// RecommendationItemResult type is a slice of recommendation items.
+type RecommendationItemResult struct {
 	Data []*RecommendationItem `json:"data"`
 }
 
-// ResponseRecommendationItem type is a struct for a final response.
-type ResponseRecommendationItem struct {
+// RecommendationItemResponse type is a struct for a final response.
+type RecommendationItemResponse struct {
 	*RecommendationItem
 	Sources []*RecommendationItemSources `json:"sources"`
 }
@@ -44,7 +44,7 @@ type RecommendationItemSources struct {
 // RecommendationItemFinal type is a struct for
 // the final response.
 type RecommendationItemFinal struct {
-	Data []*ResponseRecommendationItem `json:"data"`
+	Data []*RecommendationItemResponse `json:"data"`
 }
 
 // RecommendationItemCreate type is a struct for decode
@@ -59,7 +59,7 @@ type RecommendationItemCreate struct {
 // a given recommendation by ID.
 func (db *Conn) GetRecommendationItems(
 	id int64,
-) (*ResultRecommendationItem, error) {
+) (*RecommendationItemResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
@@ -74,7 +74,7 @@ func (db *Conn) GetRecommendationItems(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(id)
-	res := ResultRecommendationItem{}
+	res := RecommendationItemResult{}
 	for rows.Next() {
 		rec := RecommendationItem{}
 		err = rows.Scan(

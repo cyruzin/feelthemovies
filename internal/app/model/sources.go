@@ -15,13 +15,13 @@ type Source struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ResultSource type is a slice of sources.
-type ResultSource struct {
+// SourceResult type is a slice of sources.
+type SourceResult struct {
 	Data []*Source `json:"data"`
 }
 
 // GetSources retrieves the latest 20 sources.
-func (db *Conn) GetSources() (*ResultSource, error) {
+func (db *Conn) GetSources() (*SourceResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -34,7 +34,7 @@ func (db *Conn) GetSources() (*ResultSource, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
-	res := ResultSource{}
+	res := SourceResult{}
 	for rows.Next() {
 		s := Source{}
 		err = rows.Scan(

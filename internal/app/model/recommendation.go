@@ -19,13 +19,13 @@ type Recommendation struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ResultRecommendation type is a slice of recommendations.
-type ResultRecommendation struct {
+// RecommendationResult type is a slice of recommendations.
+type RecommendationResult struct {
 	Data []*Recommendation `json:"data"`
 }
 
-// ResponseRecommendation type is a struct for a final response.
-type ResponseRecommendation struct {
+// RecommendationResponse type is a struct for a final response.
+type RecommendationResponse struct {
 	*Recommendation
 	Genres   []*RecommendationGenres   `json:"genres"`
 	Keywords []*RecommendationKeywords `json:"keywords"`
@@ -56,7 +56,7 @@ type RecommendationKeywords struct {
 // RecommendationPagination type is a struct for
 // paginate recommendations results.
 type RecommendationPagination struct {
-	Data        []*ResponseRecommendation `json:"data"`
+	Data        []*RecommendationResponse `json:"data"`
 	CurrentPage float64                   `json:"current_page"`
 	LastPage    float64                   `json:"last_page"`
 	PerPage     float64                   `json:"per_page"`
@@ -67,7 +67,7 @@ type RecommendationPagination struct {
 // o = offset | l = limit
 func (db *Conn) GetRecommendations(
 	o, l float64,
-) (*ResultRecommendation, error) {
+) (*RecommendationResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, 
@@ -89,7 +89,7 @@ func (db *Conn) GetRecommendations(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(o, l)
-	res := ResultRecommendation{}
+	res := RecommendationResult{}
 	for rows.Next() {
 		rec := Recommendation{}
 		err = rows.Scan(

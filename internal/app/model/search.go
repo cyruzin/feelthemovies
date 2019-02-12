@@ -10,7 +10,7 @@ type Search struct {
 // o = offset | l = limit | s = search term | t = type
 func (db *Conn) SearchRecommendation(
 	o, l float64, s string,
-) (*ResultRecommendation, error) {
+) (*RecommendationResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT DISTINCT
 		r.id, 
@@ -42,7 +42,7 @@ func (db *Conn) SearchRecommendation(
 	if err != nil {
 		return nil, err
 	}
-	res := ResultRecommendation{}
+	res := RecommendationResult{}
 	for rows.Next() {
 		rec := Recommendation{}
 		err = rows.Scan(
@@ -66,7 +66,7 @@ func (db *Conn) SearchRecommendation(
 }
 
 // SearchUser search for users.
-func (db *Conn) SearchUser(s string) (*ResultUser, error) {
+func (db *Conn) SearchUser(s string) (*UserResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password, 
@@ -84,7 +84,7 @@ func (db *Conn) SearchUser(s string) (*ResultUser, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := ResultUser{}
+	res := UserResult{}
 	for rows.Next() {
 		u := User{}
 		err = rows.Scan(
@@ -100,7 +100,7 @@ func (db *Conn) SearchUser(s string) (*ResultUser, error) {
 }
 
 // SearchGenre search for genres.
-func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
+func (db *Conn) SearchGenre(s string) (*GenreResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -117,7 +117,7 @@ func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := ResultGenre{}
+	res := GenreResult{}
 	for rows.Next() {
 		g := Genre{}
 		err = rows.Scan(
@@ -132,7 +132,7 @@ func (db *Conn) SearchGenre(s string) (*ResultGenre, error) {
 }
 
 // SearchKeyword search for keywords.
-func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
+func (db *Conn) SearchKeyword(s string) (*KeywordResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -149,7 +149,7 @@ func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := ResultKeyword{}
+	res := KeywordResult{}
 	for rows.Next() {
 		k := Keyword{}
 		err = rows.Scan(
@@ -164,7 +164,7 @@ func (db *Conn) SearchKeyword(s string) (*ResultKeyword, error) {
 }
 
 // SearchSource search for sources.
-func (db *Conn) SearchSource(s string) (*ResultSource, error) {
+func (db *Conn) SearchSource(s string) (*SourceResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -181,7 +181,7 @@ func (db *Conn) SearchSource(s string) (*ResultSource, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := ResultSource{}
+	res := SourceResult{}
 	for rows.Next() {
 		s := Source{}
 		err = rows.Scan(

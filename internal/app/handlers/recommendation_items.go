@@ -42,7 +42,7 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := []*model.ResponseRecommendationItem{}
+	result := []*model.RecommendationItemResponse{}
 	for _, r := range rec.Data {
 		recS, err := db.GetRecommendationItemSources(r.ID)
 		if err != nil {
@@ -50,7 +50,7 @@ func getRecommendationItems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		recFinal := &model.ResponseRecommendationItem{
+		recFinal := &model.RecommendationItemResponse{
 			RecommendationItem: r,
 			Sources:            recS,
 		}
@@ -98,7 +98,7 @@ func getRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := &model.ResponseRecommendationItem{
+	response := &model.RecommendationItemResponse{
 		RecommendationItem: rec,
 		Sources:            recS,
 	}

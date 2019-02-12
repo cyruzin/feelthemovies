@@ -78,7 +78,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := []*model.ResponseRecommendation{}
+	result := []*model.RecommendationResponse{}
 
 	for _, r := range rec.Data {
 		recG, err := db.GetRecommendationGenres(r.ID)
@@ -91,7 +91,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 			helper.DecodeError(w, "Could not fetch the recommendations", http.StatusInternalServerError)
 			return
 		}
-		recFinal := &model.ResponseRecommendation{
+		recFinal := &model.RecommendationResponse{
 			Recommendation: r,
 			Genres:         recG,
 			Keywords:       recK,
@@ -137,7 +137,7 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	val, _ := redisClient.Get(rrKey).Result()
 
 	if val != "" {
-		rr := &model.ResponseRecommendation{}
+		rr := &model.RecommendationResponse{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
 			helper.DecodeError(w, "Could not unmarshal the payload", http.StatusInternalServerError)
 			return
@@ -166,7 +166,7 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := &model.ResponseRecommendation{
+	response := &model.RecommendationResponse{
 		Recommendation: rec,
 		Genres:         recG,
 		Keywords:       recK,

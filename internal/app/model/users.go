@@ -20,13 +20,13 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ResultUser type is a slice of users.
-type ResultUser struct {
+// UserResult type is a slice of users.
+type UserResult struct {
 	Data []*User `json:"data"`
 }
 
 // GetUsers retrieves the first twenty users.
-func (db *Conn) GetUsers() (*ResultUser, error) {
+func (db *Conn) GetUsers() (*UserResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, email, password,
@@ -40,7 +40,7 @@ func (db *Conn) GetUsers() (*ResultUser, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
-	res := ResultUser{}
+	res := UserResult{}
 	for rows.Next() {
 		user := User{}
 		err = rows.Scan(

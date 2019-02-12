@@ -15,13 +15,13 @@ type Keyword struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ResultKeyword type is a slice of keywords.
-type ResultKeyword struct {
+// KeywordResult type is a slice of keywords.
+type KeywordResult struct {
 	Data []*Keyword `json:"data"`
 }
 
 // GetKeywords retrieves the latest 20 keywords.
-func (db *Conn) GetKeywords() (*ResultKeyword, error) {
+func (db *Conn) GetKeywords() (*KeywordResult, error) {
 	stmt, err := db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -34,7 +34,7 @@ func (db *Conn) GetKeywords() (*ResultKeyword, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
-	res := ResultKeyword{}
+	res := KeywordResult{}
 	for rows.Next() {
 		k := Keyword{}
 		err = rows.Scan(
