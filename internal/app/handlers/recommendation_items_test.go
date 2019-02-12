@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/app/model"
+	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
 
 func TestGetRecommendationItemsSuccess(t *testing.T) {

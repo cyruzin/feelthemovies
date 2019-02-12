@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cyruzin/feelthemovies/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {

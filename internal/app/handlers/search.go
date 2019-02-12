@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cyruzin/feelthemovies/app/model"
-	"github.com/cyruzin/feelthemovies/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 

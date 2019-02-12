@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/app/model"
+	"github.com/cyruzin/feelthemovies/internal/app/model"
 
 	validator "gopkg.in/go-playground/validator.v9"
 

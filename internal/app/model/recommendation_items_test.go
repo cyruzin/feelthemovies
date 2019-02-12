@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
 func TestGetRecommendationItemssModel(t *testing.T) {
