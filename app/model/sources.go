@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -130,23 +131,23 @@ func (db *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
 }
 
 // DeleteSource deletes a source by a given ID.
-func (db *Conn) DeleteSource(id int64) (int64, error) {
+func (db *Conn) DeleteSource(id int64) error {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM sources
 		WHERE id=?
 `)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	data, err := res.RowsAffected()
-	if err != nil {
-		return 0, err
+	if err != nil || data == 0 {
+		return errors.New("The resource you requested could not be found")
 	}
-	return data, nil
+	return nil
 }

@@ -171,3 +171,13 @@ func ValidatorMessage(w http.ResponseWriter, err error) {
 		return
 	}
 }
+
+// SearchValidatorMessage handles search validation errors.
+func SearchValidatorMessage(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusBadRequest)
+	s := &APIMessage{Message: "The query field is empty"}
+	if err := json.NewEncoder(w).Encode(s); err != nil {
+		w.Write([]byte("Could not encode the payload"))
+		return
+	}
+}

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"log"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -150,24 +150,23 @@ func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
 }
 
 // DeleteUser deletes a user by a given ID.
-func (db *Conn) DeleteUser(id int64) (int64, error) {
+func (db *Conn) DeleteUser(id int64) error {
 	stmt, err := db.Prepare(`
 		DELETE 
 		FROM users
 		WHERE id=?
 	`)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	data, err := res.RowsAffected()
-	log.Println(data)
-	if err != nil {
-		return 0, err
+	if err != nil || data == 0 {
+		return errors.New("The resource you requested could not be found")
 	}
-	return data, err
+	return nil
 }

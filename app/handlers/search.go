@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"math"
 	"net/http"
 	"strconv"
@@ -14,18 +13,14 @@ import (
 )
 
 func searchRecommendation(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
 	if len(params) == 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is required")
+		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
 	validate = validator.New()
-	err = validate.Var(params["query"][0], "required")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is empty")
+	if err := validate.Var(params["query"][0], "required"); err != nil {
+		helper.SearchValidatorMessage(w)
 		return
 	}
 	//Redis check
@@ -38,20 +33,21 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rrKey = params["query"][0]
 	}
-	val, err := redisClient.Get(rrKey).Result()
-	if err != nil {
-		log.Println(err)
-	}
+	val, _ := redisClient.Get(rrKey).Result()
 	if val != "" {
-		w.WriteHeader(200)
-		rr := new(model.RecommendationPagination)
-		err = helper.UnmarshalBinary([]byte(val), rr)
-		json.NewEncoder(w).Encode(rr)
+		rr := &model.RecommendationPagination{}
+		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
+			helper.DecodeError(w, "Could not unmarshal the payload", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(&rr)
 		return
 	}
 	total, err := db.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not fetch the search total rows", http.StatusInternalServerError)
+		return
 	}
 	var (
 		limit       float64 = 10                       // limit per page
@@ -63,7 +59,8 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if params["page"] != nil {
 		page, err := strconv.ParseFloat(params["page"][0], 64)
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not parse the page param", http.StatusInternalServerError)
+			return
 		}
 		if page > currentPage {
 			currentPage = page
@@ -73,25 +70,29 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// End pagination
 	search, err := db.SearchRecommendation(offset, limit, params["query"][0])
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		return
 	}
 	result := []*model.ResponseRecommendation{}
 	for _, r := range search.Data {
 		recG, err := db.GetRecommendationGenres(r.ID)
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not fetch the genres", http.StatusInternalServerError)
+			return
 		}
 		recK, err := db.GetRecommendationKeywords(r.ID)
 		if err != nil {
-			log.Println(err)
+			helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
+			return
 		}
-		recFinal := model.ResponseRecommendation{}
-		recFinal.Recommendation = r
-		recFinal.Genres = recG
-		recFinal.Keywords = recK
-		result = append(result, &recFinal)
+		recFinal := &model.ResponseRecommendation{
+			Recommendation: r,
+			Genres:         recG,
+			Keywords:       recK,
+		}
+		result = append(result, recFinal)
 	}
-	resultFinal := model.RecommendationPagination{
+	resultFinal := &model.RecommendationPagination{
 		Data:        result,
 		CurrentPage: currentPage,
 		LastPage:    lastPage,
@@ -101,117 +102,94 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not marshal the payload", http.StatusInternalServerError)
+		return
 	}
 	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not do the set the key", http.StatusInternalServerError)
+		return
 	}
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(resultFinal)
-	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(resultFinal)
 }
 
 func searchUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
 	if len(params) == 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is required")
+		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
 	validate = validator.New()
-	err = validate.Var(params["query"][0], "required")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is empty")
+	if err := validate.Var(params["query"][0], "required"); err != nil {
+		helper.SearchValidatorMessage(w)
 		return
 	}
 	search, err := db.SearchUser(params["query"][0])
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(search)
+		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&search)
 }
 
 func searchGenre(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
 	if len(params) == 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is required")
+		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
 	validate = validator.New()
-	err = validate.Var(params["query"][0], "required")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is empty")
+	if err := validate.Var(params["query"][0], "required"); err != nil {
+		helper.SearchValidatorMessage(w)
 		return
 	}
 	search, err := db.SearchGenre(params["query"][0])
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(search)
+		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&search)
 }
 
 func searchKeyword(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
 	if len(params) == 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is required")
+		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
 	validate = validator.New()
-	err = validate.Var(params["query"][0], "required")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is empty")
+	if err := validate.Var(params["query"][0], "required"); err != nil {
+		helper.SearchValidatorMessage(w)
 		return
 	}
 	search, err := db.SearchKeyword(params["query"][0])
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(search)
+		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&search)
 }
 
 func searchSource(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := r.URL.Query()
 	if len(params) == 0 {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is required")
+		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
 	validate = validator.New()
-	err = validate.Var(params["query"][0], "required")
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("query field is empty")
+	if err := validate.Var(params["query"][0], "required"); err != nil {
+		helper.SearchValidatorMessage(w)
 		return
 	}
 	search, err := db.SearchSource(params["query"][0])
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(search)
+		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&search)
 }

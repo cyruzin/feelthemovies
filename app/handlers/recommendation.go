@@ -384,5 +384,5 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted successfully!"})
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Recommendation deleted successfully!"})
 }

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,51 +15,46 @@ import (
 )
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	u, err := db.GetUsers()
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(u)
+		helper.DecodeError(w, "Could not fetch the users", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&u)
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	u, err := db.GetUser(id)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(u)
+		helper.DecodeError(w, "Could not fetch the user", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&u)
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqU model.User
-	err := json.NewDecoder(r.Body).Decode(&reqU)
-	if err != nil {
-		log.Println(err)
+	reqU := &model.User{}
+	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
+		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqU)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	if err := validate.Struct(reqU); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not hash the password", http.StatusInternalServerError)
+		return
 	}
 	hashAPI := uuid.New()
 	newU := model.User{
@@ -73,31 +67,28 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	}
 	u, err := db.CreateUser(&newU)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(err)
-	} else {
-		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(u)
+		helper.DecodeError(w, "Could not create the user", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&u)
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqU model.User
-	err := json.NewDecoder(r.Body).Decode(&reqU)
-	if err != nil {
-		log.Println(err)
+	reqU := &model.User{}
+	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
+		helper.DecodeError(w, "Could not decode the body response", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqU)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	if err := validate.Struct(reqU); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not hash the password", http.StatusInternalServerError)
+		return
 	}
 	hashAPI := uuid.New()
 	upU := model.User{
@@ -110,34 +101,29 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	u, err := db.UpdateUser(id, &upU)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(u)
+		helper.DecodeError(w, "Could not update the user", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&u)
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
-	d, err := db.DeleteUser(id)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode("Deleted Successfully!")
+	if err := db.DeleteUser(id); err != nil {
+		helper.DecodeError(w, "Could not delete the user", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "User deleted successfully!"})
 }

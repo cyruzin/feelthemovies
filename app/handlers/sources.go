@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/cyruzin/feelthemovies/pkg/helper"
 
 	"github.com/cyruzin/feelthemovies/app/model"
 	"github.com/gorilla/mux"
@@ -13,46 +14,40 @@ import (
 )
 
 func getSources(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	s, err := db.GetSources()
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		helper.DecodeError(w, "Could not fetch the sources", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&s)
 }
 
 func getSource(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	s, err := db.GetSource(id)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		helper.DecodeError(w, "Could not fetch the source", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&s)
 }
 
 func createSource(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqS model.Source
-	err := json.NewDecoder(r.Body).Decode(&reqS)
-	if err != nil {
-		log.Println(err)
+	reqS := &model.Source{}
+	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
+		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqS)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	if err := validate.Struct(reqS); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	newS := model.Source{
@@ -62,26 +57,22 @@ func createSource(w http.ResponseWriter, r *http.Request) {
 	}
 	s, err := db.CreateSource(&newS)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(s)
+		helper.DecodeError(w, "Could not create the source", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&s)
 }
 
 func updateSource(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
-	var reqS model.Source
-	err := json.NewDecoder(r.Body).Decode(&reqS)
-	if err != nil {
-		log.Println(err)
+	reqS := &model.Source{}
+	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
+		helper.DecodeError(w, "Could not decode the body response", http.StatusInternalServerError)
+		return
 	}
 	validate = validator.New()
-	err = validate.Struct(reqS)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Validation error, check your fields.")
+	if err := validate.Struct(reqS); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 	upS := model.Source{
@@ -91,34 +82,29 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
 	s, err := db.UpdateSource(id, &upS)
 	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(s)
+		helper.DecodeError(w, "Could not update the source", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&s)
 }
 
 func deleteSource(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "Application/json")
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.Println(err)
+		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		return
 	}
-	d, err := db.DeleteSource(id)
-	if err != nil {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else if d == 0 {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode("Something went wrong!")
-	} else {
-		w.WriteHeader(200)
-		json.NewEncoder(w).Encode("Deleted Successfully!")
+	if err := db.DeleteSource(id); err != nil {
+		helper.DecodeError(w, "Could not delete the source", http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Source deleted successfully!"})
 }

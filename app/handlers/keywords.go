@@ -107,5 +107,5 @@ func deleteKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Deleted successfully!"})
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Keyword deleted successfully!"})
 }
