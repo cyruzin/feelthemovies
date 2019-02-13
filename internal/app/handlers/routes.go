@@ -37,7 +37,9 @@ func NewRouter() {
 	handler := cors.AllowAll().Handler(r)
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	//log.Fatal(http.ListenAndServe(":8000", handler))
+
+	log.Fatal(http.ListenAndServeTLS(":8000", "server.crt", "server.key", handler))
 }
 
 func publicRoutes(r *mux.Router) {
