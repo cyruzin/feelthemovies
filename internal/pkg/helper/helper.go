@@ -14,7 +14,8 @@ import (
 func Attach(s map[int64][]int, pivot string, db *sql.DB) error {
 	for index, ids := range s {
 		for _, values := range ids {
-			stmt, err := db.Prepare("INSERT INTO " + pivot + " VALUES (?,?)")
+			query := "INSERT INTO " + pivot + " VALUES (?,?)"
+			stmt, err := db.Prepare(query)
 			if err != nil {
 				return err
 			}
@@ -34,7 +35,8 @@ func Attach(s map[int64][]int, pivot string, db *sql.DB) error {
 // Detach receives a map of int/[]int and Detach the IDs on the given pivot table.
 func Detach(s map[int64][]int, pivot, field string, db *sql.DB) error {
 	for index := range s {
-		stmt, err := db.Prepare("DELETE FROM " + pivot + " WHERE " + field + " = ?")
+		query := "DELETE FROM " + pivot + " WHERE " + field + " = ?"
+		stmt, err := db.Prepare(query)
 		if err != nil {
 			return err
 		}
