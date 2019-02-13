@@ -11,6 +11,7 @@ import (
 )
 
 // Attach receives a map of int/[]int and attach the IDs on the given pivot table.
+// TODO: Optimize to bulk.
 func Attach(s map[int64][]int, pivot string, db *sql.DB) error {
 	for index, ids := range s {
 		for _, values := range ids {
@@ -33,6 +34,7 @@ func Attach(s map[int64][]int, pivot string, db *sql.DB) error {
 }
 
 // Detach receives a map of int/[]int and Detach the IDs on the given pivot table.
+// TODO: Optimize to bulk.
 func Detach(s map[int64][]int, pivot, field string, db *sql.DB) error {
 	for index := range s {
 		query := "DELETE FROM " + pivot + " WHERE " + field + " = ?"
