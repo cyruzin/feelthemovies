@@ -7,7 +7,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
 
-var db, err = model.Connect()
+var db = model.Connect()
 
 func TestAttach(t *testing.T) {
 	m := make(map[int64][]int)

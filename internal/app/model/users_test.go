@@ -10,14 +10,14 @@ import (
 )
 
 func TestGetUsersModel(t *testing.T) {
-	_, err = db.GetUsers()
+	_, err := db.GetUsers()
 	if err != nil {
 		t.Errorf("GetUsers error: %s", err)
 	}
 }
 
 func TestGetUserModel(t *testing.T) {
-	_, err = db.GetUser(1)
+	_, err := db.GetUser(1)
 	if err != nil {
 		t.Errorf("GetUser error: %s", err)
 	}

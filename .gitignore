@@ -11,9 +11,6 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Env files
-.env
-
 # IDE
 \.idea/
 \.vscode/

@@ -14,7 +14,7 @@ import (
 )
 
 // Initializing database connection.
-var db, err = model.Connect()
+var db = model.Connect()
 
 // Initializing Redis.
 var redisClient = model.Redis()

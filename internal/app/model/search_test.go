@@ -4,17 +4,17 @@ import (
 	"testing"
 )
 
-var db, err = Connect()
+var db = Connect()
 
 func TestSearchRecommendationModel(t *testing.T) {
-	_, err = db.SearchRecommendation(0, 10, "war")
+	_, err := db.SearchRecommendation(0, 10, "war")
 	if err != nil {
 		t.Errorf("SearchRecommendations error: %s", err)
 	}
 }
 
 func TestSearchRecommendationTotalRowsModel(t *testing.T) {
-	_, err = db.GetSearchRecommendationTotalRows("war")
+	_, err := db.GetSearchRecommendationTotalRows("war")
 	if err != nil {
 		t.Errorf("SearchRecommendations error: %s", err)
 	}

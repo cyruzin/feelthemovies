@@ -6,14 +6,14 @@ import (
 )
 
 func TestGetRecommendationItemssModel(t *testing.T) {
-	_, err = db.GetRecommendationItems(1)
+	_, err := db.GetRecommendationItems(1)
 	if err != nil {
 		t.Errorf("GetRecommendationItems error: %s", err)
 	}
 }
 
 func TestSearchRecommendationItemsTotalRowsModel(t *testing.T) {
-	_, err = db.GetRecommendationItemsTotalRows(1)
+	_, err := db.GetRecommendationItemsTotalRows(1)
 	if err != nil {
 		t.Errorf("RecommendationItemsTotalRows error: %s", err)
 	}
@@ -70,7 +70,7 @@ func TestUpdateRecommendationItemsModel(t *testing.T) {
 }
 
 func TestGetRecommendationItemModel(t *testing.T) {
-	_, err = db.GetRecommendationItems(1)
+	_, err := db.GetRecommendationItems(1)
 	if err != nil {
 		t.Errorf("GetRecommendationItem error: %s", err)
 	}

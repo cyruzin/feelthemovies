@@ -6,14 +6,14 @@ import (
 )
 
 func TestGetSourcesModel(t *testing.T) {
-	_, err = db.GetSources()
+	_, err := db.GetSources()
 	if err != nil {
 		t.Errorf("GetSources error: %s", err)
 	}
 }
 
 func TestGetSourceModel(t *testing.T) {
-	_, err = db.GetSource(1)
+	_, err := db.GetSource(1)
 	if err != nil {
 		t.Errorf("GetSource error: %s", err)
 	}
@@ -25,7 +25,7 @@ func TestCreateSourceModel(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	_, err = db.CreateSource(&g)
+	_, err := db.CreateSource(&g)
 	if err != nil {
 		t.Errorf("CreateSource error: %s", err)
 	}
@@ -36,7 +36,7 @@ func TestUpdateSourceModel(t *testing.T) {
 		Name:      "UpSourceModel",
 		UpdatedAt: time.Now(),
 	}
-	_, err = db.UpdateSource(1, &g)
+	_, err := db.UpdateSource(1, &g)
 	if err != nil {
 		t.Errorf("UpdateSource error: %s", err)
 	}

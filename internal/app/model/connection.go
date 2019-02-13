@@ -17,7 +17,7 @@ type Conn struct {
 }
 
 // Connect creates a connection with MySQL database.
-func Connect() (*Conn, error) {
+func Connect() *Conn {
 	url := fmt.Sprintf(
 		"%s:%s@tcp(localhost:3306)/api_feelthemovies?parseTime=true",
 		os.Getenv("DBUSER"), os.Getenv("DBPASS"),
@@ -31,7 +31,7 @@ func Connect() (*Conn, error) {
 		log.Fatal("Could not connect to MySQL: ", err)
 	}
 	log.Println("MySQL: Connection OK.")
-	return &Conn{db}, nil
+	return &Conn{db}
 }
 
 // Redis func creates a connection with the Redis server.
