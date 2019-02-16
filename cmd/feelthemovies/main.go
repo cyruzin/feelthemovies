@@ -12,7 +12,7 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 
-	"github.com/cyruzin/feelthemovies/internal/app/handlers"
+	"github.com/cyruzin/feelthemovies/internal/app/handler"
 	re "github.com/go-redis/redis"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -20,12 +20,12 @@ import (
 var v *validator.Validate
 
 func main() {
-	db := database()                    // Database instance.
-	mc := model.Connect(db)             // Injecting database instance on the model pkg.
-	rc := redis()                       // Redis client instance.
-	v = validator.New()                 // Validator instance.
-	h := handlers.NewHandler(mc, rc, v) // Injecting instances on the handlers pkg.
-	routes(h)                           // Passing handlers to the router.
+	db := database()                   // Database instance.
+	mc := model.Connect(db)            // Injecting database instance on the model pkg.
+	rc := redis()                      // Redis client instance.
+	v = validator.New()                // Validator instance.
+	h := handler.NewHandler(mc, rc, v) // Injecting instances on the handlers pkg.
+	routes(h)                          // Passing handlers to the router.
 }
 
 // Database connection.
@@ -61,7 +61,8 @@ func redis() *re.Client {
 	return client
 }
 
-func routes(h *handlers.Setup) {
+// All routes setup with CORS and middlewares.
+func routes(h *handler.Setup) {
 	r := mux.NewRouter()
 
 	r.Use(h.LoggingMiddleware)
@@ -78,12 +79,13 @@ func routes(h *handlers.Setup) {
 	log.Fatal(http.ListenAndServe(":8000", handler))
 }
 
-func publicRoutes(r *mux.Router, h *handlers.Setup) {
+// Public routes.
+func publicRoutes(r *mux.Router, h *handler.Setup) {
 	r.HandleFunc("/v1/auth", h.AuthUser).Methods("POST")
 }
 
-func authRoutes(r *mux.Router, h *handlers.Setup) {
-	r.Use()
+// Auth routes.
+func authRoutes(r *mux.Router, h *handler.Setup) {
 	r.HandleFunc("/v1/users", h.GetUsers).Methods("GET")
 	r.HandleFunc("/v1/user/{id}", h.GetUser).Methods("GET")
 	r.HandleFunc("/v1/user", h.CreateUser).Methods("POST")
