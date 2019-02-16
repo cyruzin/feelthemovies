@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This is the new API repository for Feel the Movies. Written in Go, totally open source, with test coverage.
+This is the new API repository for Feel the Movies. Written in Go, totally open source.
 
 This is my first Golang project, so probably there's a lot to improve. Any kind of help is welcome. I did my best researching the best practices, the best folder structuration and all that I could find. In the future, I pretend to bump this project to the version 2.0 using advanced concepts, like design patterns.
 
@@ -21,18 +21,6 @@ That's it! Go to folder "cmd/feelthemovies" and run the command:
 $ go run main.go
 ```
 
-### Tests 
-
-To test locally, run:
-
-```sh
-$ go test -v ./... -race
-```
-If you want to test more than one time, run:
-
-```sh
-$ docker-compose down && docker-compose up -d && sleep 10 && go test -v ./... -race
-```
 ### Packages
 
 These are the packages that helped me build this project:
