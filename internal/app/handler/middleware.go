@@ -7,7 +7,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
-// LoggingMiddleware ...
+// LoggingMiddleware logs every request.
 func (s *Setup) LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.RequestURI)
@@ -15,7 +15,8 @@ func (s *Setup) LoggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// AuthMiddleware ...
+// AuthMiddleware checks if the request contain the Api Token
+// on the headers and if it is valid.
 func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "Application/json")

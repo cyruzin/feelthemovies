@@ -13,7 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetUsers ...
+// GetUsers get all users.
 func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 	u, err := s.h.GetUsers()
 	if err != nil {
@@ -24,7 +24,7 @@ func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-// GetUser ...
+// GetUser gets a user by ID.
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -41,7 +41,7 @@ func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-// CreateUser ...
+// CreateUser creates a new user.
 func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
@@ -75,7 +75,7 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-// UpdateUser ...
+// UpdateUser updates a user.
 func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
@@ -114,7 +114,7 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-// DeleteUser ...
+// DeleteUser deletes a user.
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)

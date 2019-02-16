@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetGenres ...
+// GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 	g, err := s.h.GetGenres()
 	if err != nil {
@@ -23,7 +23,7 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-// GetGenre ...
+// GetGenre gets a genre by ID.
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -40,7 +40,7 @@ func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-// CreateGenre ...
+// CreateGenre creates a new genre.
 func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
@@ -66,7 +66,7 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-// UpdateGenre ...
+// UpdateGenre updates a genre.
 func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
@@ -97,7 +97,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-// DeleteGenre ...
+// DeleteGenre deletes a genre.
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)

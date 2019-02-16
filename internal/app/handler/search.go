@@ -11,7 +11,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
-// SearchRecommendation ...
+// SearchRecommendation searches for recommendations.
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
@@ -113,7 +113,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resultFinal)
 }
 
-// SearchUser ...
+// SearchUser searches for users.
 func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
@@ -133,7 +133,7 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-// SearchGenre ...
+// SearchGenre searches for genres.
 func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
@@ -153,7 +153,7 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-// SearchKeyword ...
+// SearchKeyword searches for keywords.
 func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
@@ -173,7 +173,7 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-// SearchSource ...
+// SearchSource searches for sources.
 func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {

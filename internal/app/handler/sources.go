@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetSources ...
+// GetSources gets all sources.
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 	so, err := s.h.GetSources()
 	if err != nil {
@@ -23,7 +23,7 @@ func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&so)
 }
 
-// GetSource ...
+// GetSource gets a source by ID.
 func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -40,7 +40,7 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&so)
 }
 
-// CreateSource ...
+// CreateSource creates a new source.
 func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
@@ -65,7 +65,7 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&so)
 }
 
-// UpdateSource ...
+// UpdateSource updates a source.
 func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
@@ -95,7 +95,7 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&so)
 }
 
-// DeleteSource ...
+// DeleteSource deletes a source.
 func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)

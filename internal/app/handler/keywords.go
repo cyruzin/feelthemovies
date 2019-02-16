@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetKeywords ...
+// GetKeywords gets all keywords.
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 	k, err := s.h.GetKeywords()
 	if err != nil {
@@ -23,7 +23,7 @@ func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-// GetKeyword ...
+// GetKeyword gets a keyword by ID.
 func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -40,7 +40,7 @@ func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-// CreateKeyword ...
+// CreateKeyword creates a new keyword.
 func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
@@ -66,7 +66,7 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-// UpdateKeyword ...
+// UpdateKeyword updates a keyword.
 func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
@@ -96,7 +96,7 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-// DeleteKeyword ...
+// DeleteKeyword deletes a keyword.
 func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)

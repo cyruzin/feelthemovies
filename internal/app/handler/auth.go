@@ -8,7 +8,7 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
 
-// AuthUser ...
+// AuthUser authenticates the user.
 func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	var reqA model.Auth
 

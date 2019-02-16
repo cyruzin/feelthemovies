@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetRecommendations ...
+// GetRecommendations gets all recommendations.
 func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
@@ -123,7 +123,7 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resultFinal)
 }
 
-// GetRecommendation ...
+// GetRecommendation gets a recommendation by ID.
 func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
@@ -190,7 +190,7 @@ func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// CreateRecommendation ...
+// CreateRecommendation creates a new recommendation.
 func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	reqRec := &model.RecommendationCreate{}
@@ -255,7 +255,7 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rec)
 }
 
-// UpdateRecommendation ...
+// UpdateRecommendation updates a recommendation.
 func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	reqRec := &model.RecommendationCreate{}
@@ -348,7 +348,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&rec)
 }
 
-// DeleteRecommendation ...
+// DeleteRecommendation deletes a recommendation.
 func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)

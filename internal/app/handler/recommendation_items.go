@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetRecommendationItems ...
+// GetRecommendationItems gets all recommendation items.
 func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -78,7 +78,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// GetRecommendationItem ...
+// GetRecommendationItem gets a recommendation item by ID.
 func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -108,7 +108,7 @@ func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// CreateRecommendationItem ...
+// CreateRecommendationItem creates a new recommendation item.
 func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	reqRec := &model.RecommendationItemCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
@@ -175,7 +175,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 }
 
-// UpdateRecommendationItem ...
+// UpdateRecommendationItem updates a recommendation item.
 func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	reqRec := &model.RecommendationItemCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
