@@ -21,8 +21,8 @@ type KeywordResult struct {
 }
 
 // GetKeywords retrieves the latest 20 keywords.
-func (db *Conn) GetKeywords() (*KeywordResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetKeywords() (*KeywordResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM keywords
@@ -49,8 +49,8 @@ func (db *Conn) GetKeywords() (*KeywordResult, error) {
 }
 
 // GetKeyword retrieves a keyword by a given ID.
-func (db *Conn) GetKeyword(id int64) (*Keyword, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetKeyword(id int64) (*Keyword, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM keywords
@@ -71,8 +71,8 @@ func (db *Conn) GetKeyword(id int64) (*Keyword, error) {
 }
 
 // CreateKeyword creates a new keyword.
-func (db *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
+	stmt, err := c.db.Prepare(`
 		INSERT INTO keywords (
 		name, created_at, updated_at
 		)
@@ -95,7 +95,7 @@ func (db *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetKeyword(id)
+	data, err := c.GetKeyword(id)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,8 @@ func (db *Conn) CreateKeyword(k *Keyword) (*Keyword, error) {
 }
 
 // UpdateKeyword updates a keyword by a given ID.
-func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
+	stmt, err := c.db.Prepare(`
 		UPDATE keywords
 		SET name=?, updated_at=?
 		WHERE id=?
@@ -123,7 +123,7 @@ func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetKeyword(id)
+	data, err := c.GetKeyword(id)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +131,8 @@ func (db *Conn) UpdateKeyword(id int64, k *Keyword) (*Keyword, error) {
 }
 
 // DeleteKeyword deletes a keyword by a given ID.
-func (db *Conn) DeleteKeyword(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteKeyword(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM keywords
 		WHERE id=?

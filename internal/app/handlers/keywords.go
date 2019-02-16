@@ -13,8 +13,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getKeywords(w http.ResponseWriter, r *http.Request) {
-	k, err := db.GetKeywords()
+// GetKeywords ...
+func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
+	k, err := s.h.GetKeywords()
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
 		return
@@ -23,14 +24,15 @@ func getKeywords(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-func getKeyword(w http.ResponseWriter, r *http.Request) {
+// GetKeyword ...
+func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	k, err := db.GetKeyword(id)
+	k, err := s.h.GetKeyword(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the keyword", http.StatusInternalServerError)
 		return
@@ -39,7 +41,8 @@ func getKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-func createKeyword(w http.ResponseWriter, r *http.Request) {
+// CreateKeyword ...
+func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
@@ -56,7 +59,7 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	k, err := db.CreateKeyword(&newK)
+	k, err := s.h.CreateKeyword(&newK)
 	if err != nil {
 		helper.DecodeError(w, "Could not create the keyword", http.StatusInternalServerError)
 		return
@@ -65,7 +68,8 @@ func createKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-func updateKeyword(w http.ResponseWriter, r *http.Request) {
+// UpdateKeyword ...
+func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
@@ -86,7 +90,7 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	k, err := db.UpdateKeyword(id, &upK)
+	k, err := s.h.UpdateKeyword(id, &upK)
 	if err != nil {
 		helper.DecodeError(w, "Could not update the keyword", http.StatusInternalServerError)
 		return
@@ -95,14 +99,15 @@ func updateKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&k)
 }
 
-func deleteKeyword(w http.ResponseWriter, r *http.Request) {
+// DeleteKeyword ...
+func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	if err := db.DeleteKeyword(id); err != nil {
+	if err := s.h.DeleteKeyword(id); err != nil {
 		helper.DecodeError(w, "Could not delete the keyword", http.StatusInternalServerError)
 		return
 	}

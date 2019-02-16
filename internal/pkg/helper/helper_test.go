@@ -7,35 +7,6 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
 
-var db = model.Connect()
-
-func TestAttach(t *testing.T) {
-	m := make(map[int64][]int)
-	m[1] = []int{1, 2}
-	err := Attach(m, "genre_recommendation", db.DB)
-	if err != nil {
-		t.Errorf("Attach error: %s", err)
-	}
-}
-
-func TestDetach(t *testing.T) {
-	m := make(map[int64][]int)
-	m[1] = []int{2, 3}
-	err := Detach(m, "genre_recommendation", "recommendation_id", db.DB)
-	if err != nil {
-		t.Errorf("Detach error: %s", err)
-	}
-}
-
-func TestSync(t *testing.T) {
-	m := make(map[int64][]int)
-	m[1] = []int{2, 3}
-	err := Sync(m, "genre_recommendation", "recommendation_id", db.DB)
-	if err != nil {
-		t.Errorf("Sync error: %s", err)
-	}
-}
-
 func TestMarshalBinary(t *testing.T) {
 	rec := model.Recommendation{
 		ID:        1,
@@ -62,23 +33,6 @@ func TestUnmarshalBinary(t *testing.T) {
 	err := UnmarshalBinary(rec, &name)
 	if err != nil {
 		t.Fatal(err)
-	}
-}
-
-func TestIsEmptyTrue(t *testing.T) {
-	m := make(map[int64][]int)
-	empty := IsEmpty(m)
-	if !empty {
-		t.Errorf("Expected %t.\n Got %t.", empty, !empty)
-	}
-}
-
-func TestIsEmptyFalse(t *testing.T) {
-	m := make(map[int64][]int)
-	m[0] = []int{1, 2, 3}
-	empty := IsEmpty(m)
-	if empty {
-		t.Errorf("Expected %t.\n Got %t.", !empty, empty)
 	}
 }
 

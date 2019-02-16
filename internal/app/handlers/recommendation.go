@@ -15,7 +15,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func getRecommendations(w http.ResponseWriter, r *http.Request) {
+// GetRecommendations ...
+func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
 	//Redis check start
@@ -26,7 +27,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 		rrKey = "recommendation"
 	}
 
-	val, _ := redisClient.Get(rrKey).Result()
+	val, _ := s.rc.Get(rrKey).Result()
 
 	if val != "" {
 		rr := &model.RecommendationPagination{}
@@ -40,7 +41,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	// Redis check end
 
 	// Start pagination
-	total, err := db.GetRecommendationTotalRows() // total results
+	total, err := s.h.GetRecommendationTotalRows() // total results
 
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendations total rows", http.StatusInternalServerError)
@@ -72,7 +73,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	}
 	// End pagination
 
-	rec, err := db.GetRecommendations(offset, limit)
+	rec, err := s.h.GetRecommendations(offset, limit)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendations", http.StatusInternalServerError)
 		return
@@ -81,12 +82,12 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	result := []*model.RecommendationResponse{}
 
 	for _, r := range rec.Data {
-		recG, err := db.GetRecommendationGenres(r.ID)
+		recG, err := s.h.GetRecommendationGenres(r.ID)
 		if err != nil {
 			helper.DecodeError(w, "Could not fetch the recommendations genres", http.StatusInternalServerError)
 			return
 		}
-		recK, err := db.GetRecommendationKeywords(r.ID)
+		recK, err := s.h.GetRecommendationKeywords(r.ID)
 		if err != nil {
 			helper.DecodeError(w, "Could not fetch the recommendations", http.StatusInternalServerError)
 			return
@@ -113,7 +114,7 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not marshal the payload", http.StatusInternalServerError)
 		return
 	}
-	if err := redisClient.Set(rrKey, rr, redisTimeout).Err(); err != nil {
+	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
 		helper.DecodeError(w, "Could not set the key", http.StatusInternalServerError)
 		return
 	}
@@ -123,7 +124,8 @@ func getRecommendations(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resultFinal)
 }
 
-func getRecommendation(w http.ResponseWriter, r *http.Request) {
+// GetRecommendation ...
+func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
@@ -134,7 +136,7 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	//Redis check start
 	rrKey := fmt.Sprintf("recommendation-%d", id)
-	val, _ := redisClient.Get(rrKey).Result()
+	val, _ := s.rc.Get(rrKey).Result()
 
 	if val != "" {
 		rr := &model.RecommendationResponse{}
@@ -148,19 +150,19 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	// Redis check end
 
-	rec, err := db.GetRecommendation(id)
+	rec, err := s.h.GetRecommendation(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendation", http.StatusInternalServerError)
 		return
 	}
 
-	recG, err := db.GetRecommendationGenres(id)
+	recG, err := s.h.GetRecommendationGenres(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendation genres", http.StatusInternalServerError)
 		return
 	}
 
-	recK, err := db.GetRecommendationKeywords(id)
+	recK, err := s.h.GetRecommendationKeywords(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendation keywords", http.StatusInternalServerError)
 		return
@@ -179,7 +181,7 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := redisClient.Set(rrKey, rr, redisTimeout).Err(); err != nil {
+	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
 		helper.DecodeError(w, "Could not set the key", http.StatusInternalServerError)
 		return
 	}
@@ -189,7 +191,8 @@ func getRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func createRecommendation(w http.ResponseWriter, r *http.Request) {
+// CreateRecommendation ...
+func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	reqRec := &model.RecommendationCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
@@ -214,7 +217,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	rec, err := db.CreateRecommendation(newRec)
+	rec, err := s.h.CreateRecommendation(newRec)
 
 	if err != nil {
 		helper.DecodeError(w, "Could not create the recommendation", http.StatusInternalServerError)
@@ -224,7 +227,7 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Attaching keywords
 	keywords := make(map[int64][]int)
 	keywords[rec.ID] = reqRec.Keywords
-	err = helper.Attach(keywords, "keyword_recommendation", db.DB)
+	err = s.h.Attach(keywords, "keyword_recommendation")
 	if err != nil {
 		helper.DecodeError(w, "Could not attach the recommendation keywords", http.StatusInternalServerError)
 		return
@@ -233,16 +236,16 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Attaching genres
 	genres := make(map[int64][]int)
 	genres[rec.ID] = reqRec.Genres
-	err = helper.Attach(genres, "genre_recommendation", db.DB)
+	err = s.h.Attach(genres, "genre_recommendation")
 	if err != nil {
 		helper.DecodeError(w, "Could not attach the recommendation genres", http.StatusInternalServerError)
 		return
 	}
 
 	// Redis check start
-	val, _ := redisClient.Get("recommendation").Result()
+	val, _ := s.rc.Get("recommendation").Result()
 	if val != "" {
-		_, err = redisClient.Unlink("recommendation").Result()
+		_, err = s.rc.Unlink("recommendation").Result()
 		if err != nil {
 			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
 			return
@@ -254,7 +257,8 @@ func createRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rec)
 }
 
-func updateRecommendation(w http.ResponseWriter, r *http.Request) {
+// UpdateRecommendation ...
+func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	reqRec := &model.RecommendationCreate{}
 
@@ -287,7 +291,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Empty recommendation check
-	itemCount, err := db.GetRecommendationItemsTotalRows(id)
+	itemCount, err := s.h.GetRecommendationItemsTotalRows(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the recommendation items total rows", http.StatusInternalServerError)
 		return
@@ -298,7 +302,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rec, err := db.UpdateRecommendation(id, &upRec)
+	rec, err := s.h.UpdateRecommendation(id, &upRec)
 	if err != nil {
 		helper.DecodeError(w, "Could not update the recommendation", http.StatusInternalServerError)
 		return
@@ -307,7 +311,7 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Syncing keywords
 	keywords := make(map[int64][]int)
 	keywords[rec.ID] = reqRec.Keywords
-	err = helper.Sync(keywords, "keyword_recommendation", "recommendation_id", db.DB)
+	err = s.h.Sync(keywords, "keyword_recommendation", "recommendation_id")
 	if err != nil {
 		helper.DecodeError(w, "Could not sync the recommendation keywords", http.StatusInternalServerError)
 		return
@@ -316,16 +320,16 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Syncing genres
 	genres := make(map[int64][]int)
 	genres[rec.ID] = reqRec.Genres
-	err = helper.Sync(genres, "genre_recommendation", "recommendation_id", db.DB)
+	err = s.h.Sync(genres, "genre_recommendation", "recommendation_id")
 	if err != nil {
 		helper.DecodeError(w, "Could not sync the recommendation genres", http.StatusInternalServerError)
 		return
 	}
 
 	// Redis check start
-	val, _ := redisClient.Get("recommendation").Result()
+	val, _ := s.rc.Get("recommendation").Result()
 	if val != "" {
-		_, err = redisClient.Unlink("recommendation").Result()
+		_, err = s.rc.Unlink("recommendation").Result()
 		if err != nil {
 			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
 			return
@@ -333,9 +337,9 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rrKey := fmt.Sprintf("recommendation-%d", id)
-	val, _ = redisClient.Get(rrKey).Result()
+	val, _ = s.rc.Get(rrKey).Result()
 	if val != "" {
-		_, err = redisClient.Unlink(rrKey).Result()
+		_, err = s.rc.Unlink(rrKey).Result()
 		if err != nil {
 			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
 			return
@@ -347,7 +351,8 @@ func updateRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&rec)
 }
 
-func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
+// DeleteRecommendation ...
+func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
@@ -357,20 +362,20 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Redis check start
 	rrKey := fmt.Sprintf("recommendation-%d", id)
-	val, _ := redisClient.Get(rrKey).Result()
+	val, _ := s.rc.Get(rrKey).Result()
 
 	if val != "" {
-		_, err = redisClient.Unlink(rrKey).Result()
+		_, err = s.rc.Unlink(rrKey).Result()
 		if err != nil {
 			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
 			return
 		}
 	}
 
-	val, _ = redisClient.Get("recommendation").Result()
+	val, _ = s.rc.Get("recommendation").Result()
 
 	if val != "" {
-		_, err = redisClient.Unlink("recommendation").Result()
+		_, err = s.rc.Unlink("recommendation").Result()
 		if err != nil {
 			helper.DecodeError(w, "Could not unlink the key", http.StatusInternalServerError)
 			return
@@ -378,7 +383,7 @@ func deleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	// Redis check end
 
-	if err := db.DeleteRecommendation(id); err != nil {
+	if err := s.h.DeleteRecommendation(id); err != nil {
 		helper.DecodeError(w, "Could not delete the recommendation", http.StatusInternalServerError)
 		return
 	}

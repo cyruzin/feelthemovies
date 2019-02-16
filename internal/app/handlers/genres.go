@@ -13,8 +13,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getGenres(w http.ResponseWriter, r *http.Request) {
-	g, err := db.GetGenres()
+// GetGenres ...
+func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
+	g, err := s.h.GetGenres()
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the genres", http.StatusInternalServerError)
 		return
@@ -23,14 +24,15 @@ func getGenres(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-func getGenre(w http.ResponseWriter, r *http.Request) {
+// GetGenre ...
+func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	g, err := db.GetGenre(id)
+	g, err := s.h.GetGenre(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the genre", http.StatusInternalServerError)
 		return
@@ -39,7 +41,8 @@ func getGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-func createGenre(w http.ResponseWriter, r *http.Request) {
+// CreateGenre ...
+func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
 	if err != nil {
@@ -56,7 +59,7 @@ func createGenre(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	g, err := db.CreateGenre(&newG)
+	g, err := s.h.CreateGenre(&newG)
 	if err != nil {
 		helper.DecodeError(w, "Could not create the genre", http.StatusInternalServerError)
 		return
@@ -65,7 +68,8 @@ func createGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-func updateGenre(w http.ResponseWriter, r *http.Request) {
+// UpdateGenre ...
+func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
 	if err != nil {
@@ -87,7 +91,7 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	g, err := db.UpdateGenre(id, &upG)
+	g, err := s.h.UpdateGenre(id, &upG)
 	if err != nil {
 		helper.DecodeError(w, "Could not update the genre", http.StatusInternalServerError)
 		return
@@ -96,14 +100,15 @@ func updateGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&g)
 }
 
-func deleteGenre(w http.ResponseWriter, r *http.Request) {
+// DeleteGenre ...
+func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	if err := db.DeleteGenre(id); err != nil {
+	if err := s.h.DeleteGenre(id); err != nil {
 		helper.DecodeError(w, "Could not delete the genre", http.StatusInternalServerError)
 		return
 	}

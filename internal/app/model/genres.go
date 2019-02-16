@@ -21,8 +21,8 @@ type GenreResult struct {
 }
 
 // GetGenres retrieves the latest 20 genres.
-func (db *Conn) GetGenres() (*GenreResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetGenres() (*GenreResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM genres
@@ -49,8 +49,8 @@ func (db *Conn) GetGenres() (*GenreResult, error) {
 }
 
 // GetGenre retrieves a genre by a given ID.
-func (db *Conn) GetGenre(id int64) (*Genre, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetGenre(id int64) (*Genre, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM genres
@@ -71,8 +71,8 @@ func (db *Conn) GetGenre(id int64) (*Genre, error) {
 }
 
 // CreateGenre creates a new genre.
-func (db *Conn) CreateGenre(g *Genre) (*Genre, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) CreateGenre(g *Genre) (*Genre, error) {
+	stmt, err := c.db.Prepare(`
 		INSERT INTO genres (
 		name, created_at, updated_at
 		)
@@ -95,7 +95,7 @@ func (db *Conn) CreateGenre(g *Genre) (*Genre, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetGenre(id)
+	data, err := c.GetGenre(id)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,8 @@ func (db *Conn) CreateGenre(g *Genre) (*Genre, error) {
 }
 
 // UpdateGenre updates a genre by a given ID.
-func (db *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
+	stmt, err := c.db.Prepare(`
 		UPDATE genres
 		SET name=?, updated_at=?
 		WHERE id=?
@@ -123,7 +123,7 @@ func (db *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetGenre(id)
+	data, err := c.GetGenre(id)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +131,8 @@ func (db *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
 }
 
 // DeleteGenre deletes a genre by a given ID.
-func (db *Conn) DeleteGenre(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteGenre(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM genres
 		WHERE id=?

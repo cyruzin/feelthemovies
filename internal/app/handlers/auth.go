@@ -9,7 +9,8 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func authUser(w http.ResponseWriter, r *http.Request) {
+// AuthUser ...
+func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	var reqA model.Auth
 
 	if err := json.NewDecoder(r.Body).Decode(&reqA); err != nil {
@@ -23,7 +24,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dbPass, err := db.Authenticate(reqA.Email)
+	dbPass, err := s.h.Authenticate(reqA.Email)
 	if err != nil {
 		helper.DecodeError(w, "Could not authenticate", http.StatusInternalServerError)
 		return
@@ -34,7 +35,7 @@ func authUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authInfo, err := db.GetAuthInfo(reqA.Email)
+	authInfo, err := s.h.GetAuthInfo(reqA.Email)
 	if err != nil {
 		helper.DecodeError(w, "Could not get user info", http.StatusInternalServerError)
 		return

@@ -21,8 +21,8 @@ type SourceResult struct {
 }
 
 // GetSources retrieves the latest 20 sources.
-func (db *Conn) GetSources() (*SourceResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetSources() (*SourceResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM sources
@@ -49,8 +49,8 @@ func (db *Conn) GetSources() (*SourceResult, error) {
 }
 
 // GetSource retrieves a source by a given ID.
-func (db *Conn) GetSource(id int64) (*Source, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetSource(id int64) (*Source, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM sources
@@ -71,8 +71,8 @@ func (db *Conn) GetSource(id int64) (*Source, error) {
 }
 
 // CreateSource creates a new source.
-func (db *Conn) CreateSource(s *Source) (*Source, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) CreateSource(s *Source) (*Source, error) {
+	stmt, err := c.db.Prepare(`
 		INSERT INTO sources (
 		name, created_at, updated_at
 		)
@@ -95,7 +95,7 @@ func (db *Conn) CreateSource(s *Source) (*Source, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetSource(id)
+	data, err := c.GetSource(id)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,8 @@ func (db *Conn) CreateSource(s *Source) (*Source, error) {
 }
 
 // UpdateSource updates a source by a given ID.
-func (db *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
+	stmt, err := c.db.Prepare(`
 		UPDATE sources
 		SET name=?, updated_at=?
 		WHERE id=?
@@ -123,7 +123,7 @@ func (db *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetSource(id)
+	data, err := c.GetSource(id)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +131,8 @@ func (db *Conn) UpdateSource(id int64, s *Source) (*Source, error) {
 }
 
 // DeleteSource deletes a source by a given ID.
-func (db *Conn) DeleteSource(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteSource(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM sources
 		WHERE id=?

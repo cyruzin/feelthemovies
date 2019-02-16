@@ -57,10 +57,10 @@ type RecommendationItemCreate struct {
 
 // GetRecommendationItems retrieves all items of
 // a given recommendation by ID.
-func (db *Conn) GetRecommendationItems(
+func (c *Conn) GetRecommendationItems(
 	id int64,
 ) (*RecommendationItemResult, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
 		year, overview, poster, backdrop, 
@@ -93,10 +93,10 @@ func (db *Conn) GetRecommendationItems(
 
 // GetRecommendationItem retrieves a recommendation
 // items by a given ID.
-func (db *Conn) GetRecommendationItem(
+func (c *Conn) GetRecommendationItem(
 	id int64,
 ) (*RecommendationItem, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, recommendation_id, name, tmdb_id, 
 		year, overview, poster, backdrop, 
@@ -123,10 +123,10 @@ func (db *Conn) GetRecommendationItem(
 }
 
 // CreateRecommendationItem creates a new recommendation item.
-func (db *Conn) CreateRecommendationItem(
+func (c *Conn) CreateRecommendationItem(
 	r *RecommendationItem,
 ) (*RecommendationItem, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		INSERT INTO recommendation_items (
 		recommendation_id, name, tmdb_id, year, 
 		overview, poster, backdrop, trailer, 
@@ -150,7 +150,7 @@ func (db *Conn) CreateRecommendationItem(
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetRecommendationItem(id)
+	data, err := c.GetRecommendationItem(id)
 	if err != nil {
 		return nil, err
 	}
@@ -159,10 +159,10 @@ func (db *Conn) CreateRecommendationItem(
 
 // UpdateRecommendationItem updates a recommendation
 // item by a given ID.
-func (db *Conn) UpdateRecommendationItem(
+func (c *Conn) UpdateRecommendationItem(
 	id int64, r *RecommendationItem,
 ) (*RecommendationItem, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		UPDATE recommendation_items
 		SET name=?, tmdb_id=?, year=?, overview=?,
 		poster=?, backdrop=?, trailer=?, commentary=?,
@@ -185,7 +185,7 @@ func (db *Conn) UpdateRecommendationItem(
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetRecommendationItem(id)
+	data, err := c.GetRecommendationItem(id)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +194,8 @@ func (db *Conn) UpdateRecommendationItem(
 
 // DeleteRecommendationItem deletes a recommendation
 // item by a given ID.
-func (db *Conn) DeleteRecommendationItem(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteRecommendationItem(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM recommendation_items
 		WHERE id=?
@@ -216,8 +216,8 @@ func (db *Conn) DeleteRecommendationItem(id int64) error {
 }
 
 // GetRecommendationItemSources retrieves all sources of a given recommendation item.
-func (db *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSources, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSources, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		s.id, s.name 
 		FROM sources AS s
@@ -255,8 +255,8 @@ func (db *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSou
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
-func (db *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT COUNT(*) 
 		FROM recommendation_items 
 		WHERE recommendation_id = ?

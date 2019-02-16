@@ -8,10 +8,10 @@ type Search struct {
 
 // SearchRecommendation search for recommendations.
 // o = offset | l = limit | s = search term | t = type
-func (db *Conn) SearchRecommendation(
+func (c *Conn) SearchRecommendation(
 	o, l float64, s string,
 ) (*RecommendationResult, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT DISTINCT
 		r.id, 
 		r.user_id, 
@@ -66,8 +66,8 @@ func (db *Conn) SearchRecommendation(
 }
 
 // SearchUser search for users.
-func (db *Conn) SearchUser(s string) (*UserResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) SearchUser(s string) (*UserResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, email, password, 
 		api_token, created_at, updated_at
@@ -100,8 +100,8 @@ func (db *Conn) SearchUser(s string) (*UserResult, error) {
 }
 
 // SearchGenre search for genres.
-func (db *Conn) SearchGenre(s string) (*GenreResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) SearchGenre(s string) (*GenreResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM genres
@@ -132,8 +132,8 @@ func (db *Conn) SearchGenre(s string) (*GenreResult, error) {
 }
 
 // SearchKeyword search for keywords.
-func (db *Conn) SearchKeyword(s string) (*KeywordResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) SearchKeyword(s string) (*KeywordResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM keywords
@@ -164,8 +164,8 @@ func (db *Conn) SearchKeyword(s string) (*KeywordResult, error) {
 }
 
 // SearchSource search for sources.
-func (db *Conn) SearchSource(s string) (*SourceResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) SearchSource(s string) (*SourceResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
 		FROM sources
@@ -197,10 +197,10 @@ func (db *Conn) SearchSource(s string) (*SourceResult, error) {
 
 // GetSearchRecommendationTotalRows retrieves the total
 // rows of recommendations table.
-func (db *Conn) GetSearchRecommendationTotalRows(
+func (c *Conn) GetSearchRecommendationTotalRows(
 	s string,
 ) (float64, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		COUNT(DISTINCT r.id)
 		FROM recommendations AS r

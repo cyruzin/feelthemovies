@@ -10,8 +10,8 @@ type Auth struct {
 }
 
 // CheckAPIToken checks if the given token exists.
-func (db *Conn) CheckAPIToken(token string) (bool, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) CheckAPIToken(token string) (bool, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		api_token
 		FROM users
@@ -33,8 +33,8 @@ func (db *Conn) CheckAPIToken(token string) (bool, error) {
 }
 
 // Authenticate authenticates the current user and returns it's info.
-func (db *Conn) Authenticate(email string) (string, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) Authenticate(email string) (string, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT password
 		FROM users
 		WHERE email = ?
@@ -54,8 +54,8 @@ func (db *Conn) Authenticate(email string) (string, error) {
 }
 
 // GetAuthInfo retrieves info for the authenticated user.
-func (db *Conn) GetAuthInfo(email string) (*Auth, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetAuthInfo(email string) (*Auth, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, email, api_token
 		FROM users

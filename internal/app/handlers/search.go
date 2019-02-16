@@ -12,7 +12,8 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func searchRecommendation(w http.ResponseWriter, r *http.Request) {
+// SearchRecommendation ...
+func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
@@ -33,7 +34,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rrKey = params["query"][0]
 	}
-	val, _ := redisClient.Get(rrKey).Result()
+	val, _ := s.rc.Get(rrKey).Result()
 	if val != "" {
 		rr := &model.RecommendationPagination{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
@@ -44,7 +45,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&rr)
 		return
 	}
-	total, err := db.GetSearchRecommendationTotalRows(params["query"][0]) // total results
+	total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the search total rows", http.StatusInternalServerError)
 		return
@@ -68,19 +69,19 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	// End pagination
-	search, err := db.SearchRecommendation(offset, limit, params["query"][0])
+	search, err := s.h.SearchRecommendation(offset, limit, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return
 	}
 	result := []*model.RecommendationResponse{}
 	for _, r := range search.Data {
-		recG, err := db.GetRecommendationGenres(r.ID)
+		recG, err := s.h.GetRecommendationGenres(r.ID)
 		if err != nil {
 			helper.DecodeError(w, "Could not fetch the genres", http.StatusInternalServerError)
 			return
 		}
-		recK, err := db.GetRecommendationKeywords(r.ID)
+		recK, err := s.h.GetRecommendationKeywords(r.ID)
 		if err != nil {
 			helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
 			return
@@ -105,7 +106,7 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not marshal the payload", http.StatusInternalServerError)
 		return
 	}
-	err = redisClient.Set(rrKey, rr, redisTimeout).Err()
+	err = s.rc.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
 		helper.DecodeError(w, "Could not do the set the key", http.StatusInternalServerError)
 		return
@@ -114,7 +115,8 @@ func searchRecommendation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resultFinal)
 }
 
-func searchUser(w http.ResponseWriter, r *http.Request) {
+// SearchUser ...
+func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
@@ -125,7 +127,7 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := db.SearchUser(params["query"][0])
+	search, err := s.h.SearchUser(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return
@@ -134,7 +136,8 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-func searchGenre(w http.ResponseWriter, r *http.Request) {
+// SearchGenre ...
+func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
@@ -145,7 +148,7 @@ func searchGenre(w http.ResponseWriter, r *http.Request) {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := db.SearchGenre(params["query"][0])
+	search, err := s.h.SearchGenre(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return
@@ -154,7 +157,8 @@ func searchGenre(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-func searchKeyword(w http.ResponseWriter, r *http.Request) {
+// SearchKeyword ...
+func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
@@ -165,7 +169,7 @@ func searchKeyword(w http.ResponseWriter, r *http.Request) {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := db.SearchKeyword(params["query"][0])
+	search, err := s.h.SearchKeyword(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return
@@ -174,7 +178,8 @@ func searchKeyword(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&search)
 }
 
-func searchSource(w http.ResponseWriter, r *http.Request) {
+// SearchSource ...
+func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
@@ -185,7 +190,7 @@ func searchSource(w http.ResponseWriter, r *http.Request) {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := db.SearchSource(params["query"][0])
+	search, err := s.h.SearchSource(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
 		return

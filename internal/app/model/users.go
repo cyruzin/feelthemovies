@@ -26,8 +26,8 @@ type UserResult struct {
 }
 
 // GetUsers retrieves the first twenty users.
-func (db *Conn) GetUsers() (*UserResult, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetUsers() (*UserResult, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, email, password,
 		api_token, created_at, updated_at
@@ -56,8 +56,8 @@ func (db *Conn) GetUsers() (*UserResult, error) {
 }
 
 // GetUser retrieves a user by a given ID.
-func (db *Conn) GetUser(id int64) (*User, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetUser(id int64) (*User, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, email, password,
 		api_token, created_at, updated_at
@@ -80,8 +80,8 @@ func (db *Conn) GetUser(id int64) (*User, error) {
 }
 
 // CreateUser creates a new user.
-func (db *Conn) CreateUser(u *User) (*User, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) CreateUser(u *User) (*User, error) {
+	stmt, err := c.db.Prepare(`
 		INSERT INTO users (
 		name, email, password,
 		api_token, created_at, updated_at
@@ -106,7 +106,7 @@ func (db *Conn) CreateUser(u *User) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetUser(id)
+	data, err := c.GetUser(id)
 	if err != nil {
 		return nil, err
 	}
@@ -114,8 +114,8 @@ func (db *Conn) CreateUser(u *User) (*User, error) {
 }
 
 // UpdateUser updates a user by a given ID.
-func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) UpdateUser(id int64, u *User) (*User, error) {
+	stmt, err := c.db.Prepare(`
 		UPDATE users
 		SET name=?, email=?, password=?,
 		api_token=?, updated_at=?
@@ -142,7 +142,7 @@ func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetUser(id)
+	data, err := c.GetUser(id)
 	if err != nil {
 		return nil, err
 	}
@@ -150,8 +150,8 @@ func (db *Conn) UpdateUser(id int64, u *User) (*User, error) {
 }
 
 // DeleteUser deletes a user by a given ID.
-func (db *Conn) DeleteUser(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteUser(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM users
 		WHERE id=?

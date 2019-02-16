@@ -65,10 +65,10 @@ type RecommendationPagination struct {
 
 // GetRecommendations retrieves the latest recommendations.
 // o = offset | l = limit
-func (db *Conn) GetRecommendations(
+func (c *Conn) GetRecommendations(
 	o, l float64,
 ) (*RecommendationResult, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, 
 		user_id, 
@@ -113,8 +113,8 @@ func (db *Conn) GetRecommendations(
 }
 
 // GetRecommendation retrieves a recommendation by a given ID.
-func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
-	stmt, err := db.Prepare(`
+func (c *Conn) GetRecommendation(id int64) (*Recommendation, error) {
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, user_id, title, type, body, poster, 
 		backdrop, status, created_at, updated_at
@@ -138,10 +138,10 @@ func (db *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 }
 
 // CreateRecommendation creates a new recommendation.
-func (db *Conn) CreateRecommendation(
+func (c *Conn) CreateRecommendation(
 	r *Recommendation,
 ) (*Recommendation, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		INSERT INTO recommendations (
 		user_id, title, type, body, 
 		poster, backdrop, status, created_at, 
@@ -165,7 +165,7 @@ func (db *Conn) CreateRecommendation(
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetRecommendation(id)
+	data, err := c.GetRecommendation(id)
 	if err != nil {
 		return nil, err
 	}
@@ -173,10 +173,10 @@ func (db *Conn) CreateRecommendation(
 }
 
 // UpdateRecommendation updates a recommendation by a given ID.
-func (db *Conn) UpdateRecommendation(
+func (c *Conn) UpdateRecommendation(
 	id int64, r *Recommendation,
 ) (*Recommendation, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		UPDATE recommendations
 		SET title=?, type=?, body=?, poster=?,
 		backdrop=?, status=?, updated_at=?
@@ -197,7 +197,7 @@ func (db *Conn) UpdateRecommendation(
 	if err != nil {
 		return nil, err
 	}
-	data, err := db.GetRecommendation(id)
+	data, err := c.GetRecommendation(id)
 	if err != nil {
 		return nil, err
 	}
@@ -205,8 +205,8 @@ func (db *Conn) UpdateRecommendation(
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
-func (db *Conn) DeleteRecommendation(id int64) error {
-	stmt, err := db.Prepare(`
+func (c *Conn) DeleteRecommendation(id int64) error {
+	stmt, err := c.db.Prepare(`
 		DELETE 
 		FROM recommendations
 		WHERE id=?
@@ -227,10 +227,10 @@ func (db *Conn) DeleteRecommendation(id int64) error {
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
-func (db *Conn) GetRecommendationGenres(
+func (c *Conn) GetRecommendationGenres(
 	id int64,
 ) ([]*RecommendationGenres, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		g.id, g.name 
 		FROM genres AS g
@@ -258,10 +258,10 @@ func (db *Conn) GetRecommendationGenres(
 }
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
-func (db *Conn) GetRecommendationKeywords(
+func (c *Conn) GetRecommendationKeywords(
 	id int64,
 ) ([]*RecommendationKeywords, error) {
-	stmt, err := db.Prepare(`
+	stmt, err := c.db.Prepare(`
 		SELECT 
 		k.id, k.name 
 		FROM keywords AS k
@@ -290,8 +290,8 @@ func (db *Conn) GetRecommendationKeywords(
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
-func (db *Conn) GetRecommendationTotalRows() (float64, error) {
-	stmt, err := db.Prepare("SELECT COUNT(*) FROM recommendations")
+func (c *Conn) GetRecommendationTotalRows() (float64, error) {
+	stmt, err := c.db.Prepare("SELECT COUNT(*) FROM recommendations")
 	if err != nil {
 		return 0, err
 	}

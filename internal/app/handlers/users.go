@@ -14,8 +14,9 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getUsers(w http.ResponseWriter, r *http.Request) {
-	u, err := db.GetUsers()
+// GetUsers ...
+func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
+	u, err := s.h.GetUsers()
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the users", http.StatusInternalServerError)
 		return
@@ -24,14 +25,15 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-func getUser(w http.ResponseWriter, r *http.Request) {
+// GetUser ...
+func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	u, err := db.GetUser(id)
+	u, err := s.h.GetUser(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the user", http.StatusInternalServerError)
 		return
@@ -40,7 +42,8 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-func createUser(w http.ResponseWriter, r *http.Request) {
+// CreateUser ...
+func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
 		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
@@ -65,7 +68,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	u, err := db.CreateUser(&newU)
+	u, err := s.h.CreateUser(&newU)
 	if err != nil {
 		helper.DecodeError(w, "Could not create the user", http.StatusInternalServerError)
 		return
@@ -74,7 +77,8 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-func updateUser(w http.ResponseWriter, r *http.Request) {
+// UpdateUser ...
+func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
 		helper.DecodeError(w, "Could not decode the body response", http.StatusInternalServerError)
@@ -104,7 +108,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	u, err := db.UpdateUser(id, &upU)
+	u, err := s.h.UpdateUser(id, &upU)
 	if err != nil {
 		helper.DecodeError(w, "Could not update the user", http.StatusInternalServerError)
 		return
@@ -113,14 +117,15 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&u)
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request) {
+// DeleteUser ...
+func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	if err := db.DeleteUser(id); err != nil {
+	if err := s.h.DeleteUser(id); err != nil {
 		helper.DecodeError(w, "Could not delete the user", http.StatusInternalServerError)
 		return
 	}

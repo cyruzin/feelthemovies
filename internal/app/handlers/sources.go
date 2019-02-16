@@ -13,33 +13,36 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-func getSources(w http.ResponseWriter, r *http.Request) {
-	s, err := db.GetSources()
+// GetSources ...
+func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
+	so, err := s.h.GetSources()
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the sources", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&s)
+	json.NewEncoder(w).Encode(&so)
 }
 
-func getSource(w http.ResponseWriter, r *http.Request) {
+// GetSource ...
+func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	s, err := db.GetSource(id)
+	so, err := s.h.GetSource(id)
 	if err != nil {
 		helper.DecodeError(w, "Could not fetch the source", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&s)
+	json.NewEncoder(w).Encode(&so)
 }
 
-func createSource(w http.ResponseWriter, r *http.Request) {
+// CreateSource ...
+func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
 		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
@@ -55,16 +58,17 @@ func createSource(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	s, err := db.CreateSource(&newS)
+	so, err := s.h.CreateSource(&newS)
 	if err != nil {
 		helper.DecodeError(w, "Could not create the source", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&s)
+	json.NewEncoder(w).Encode(&so)
 }
 
-func updateSource(w http.ResponseWriter, r *http.Request) {
+// UpdateSource ...
+func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
 		helper.DecodeError(w, "Could not decode the body response", http.StatusInternalServerError)
@@ -85,23 +89,24 @@ func updateSource(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	s, err := db.UpdateSource(id, &upS)
+	so, err := s.h.UpdateSource(id, &upS)
 	if err != nil {
 		helper.DecodeError(w, "Could not update the source", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&s)
+	json.NewEncoder(w).Encode(&so)
 }
 
-func deleteSource(w http.ResponseWriter, r *http.Request) {
+// DeleteSource ...
+func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
 		return
 	}
-	if err := db.DeleteSource(id); err != nil {
+	if err := s.h.DeleteSource(id); err != nil {
 		helper.DecodeError(w, "Could not delete the source", http.StatusInternalServerError)
 		return
 	}
