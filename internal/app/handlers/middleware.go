@@ -24,16 +24,14 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 		} else {
 			token := r.Header.Get("Api-Token")
 			auth, err := s.h.CheckAPIToken(token)
-
 			if err != nil {
-				helper.DecodeError(w, "Invalid API Token", http.StatusUnauthorized)
+				helper.DecodeError(w, errInvalidToken, http.StatusUnauthorized)
 				return
 			}
-
 			if auth {
 				next.ServeHTTP(w, r)
 			} else {
-				helper.DecodeError(w, "Unauthorized", http.StatusUnauthorized)
+				helper.DecodeError(w, errUnauthorized, http.StatusUnauthorized)
 				return
 			}
 		}

@@ -9,18 +9,16 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // SearchRecommendation ...
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
+		helper.DecodeError(w, errQueryField, http.StatusBadRequest)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Var(params["query"][0], "required"); err != nil {
+	if err := s.v.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
@@ -38,7 +36,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if val != "" {
 		rr := &model.RecommendationPagination{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w, "Could not unmarshal the payload", http.StatusInternalServerError)
+			helper.DecodeError(w, errUnmarshal, http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -47,7 +45,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 	if err != nil {
-		helper.DecodeError(w, "Could not fetch the search total rows", http.StatusInternalServerError)
+		helper.DecodeError(w, errFetchRows, http.StatusInternalServerError)
 		return
 	}
 	var (
@@ -60,7 +58,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if params["page"] != nil {
 		page, err := strconv.ParseFloat(params["page"][0], 64)
 		if err != nil {
-			helper.DecodeError(w, "Could not parse the page param", http.StatusInternalServerError)
+			helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 			return
 		}
 		if page > currentPage {
@@ -71,19 +69,19 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// End pagination
 	search, err := s.h.SearchRecommendation(offset, limit, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, errSearch, http.StatusInternalServerError)
 		return
 	}
 	result := []*model.RecommendationResponse{}
 	for _, r := range search.Data {
 		recG, err := s.h.GetRecommendationGenres(r.ID)
 		if err != nil {
-			helper.DecodeError(w, "Could not fetch the genres", http.StatusInternalServerError)
+			helper.DecodeError(w, errFetch, http.StatusInternalServerError)
 			return
 		}
 		recK, err := s.h.GetRecommendationKeywords(r.ID)
 		if err != nil {
-			helper.DecodeError(w, "Could not fetch the keywords", http.StatusInternalServerError)
+			helper.DecodeError(w, errFetch, http.StatusInternalServerError)
 			return
 		}
 		recFinal := &model.RecommendationResponse{
@@ -103,12 +101,12 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
-		helper.DecodeError(w, "Could not marshal the payload", http.StatusInternalServerError)
+		helper.DecodeError(w, errMarhsal, http.StatusInternalServerError)
 		return
 	}
 	err = s.rc.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
-		helper.DecodeError(w, "Could not do the set the key", http.StatusInternalServerError)
+		helper.DecodeError(w, errKeySet, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -119,17 +117,16 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
+		helper.DecodeError(w, errQueryField, http.StatusBadRequest)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Var(params["query"][0], "required"); err != nil {
+	if err := s.v.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
 	search, err := s.h.SearchUser(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -143,8 +140,7 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Var(params["query"][0], "required"); err != nil {
+	if err := s.v.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
@@ -164,8 +160,7 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Var(params["query"][0], "required"); err != nil {
+	if err := s.v.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
@@ -185,8 +180,7 @@ func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, "The query field is required", http.StatusBadRequest)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Var(params["query"][0], "required"); err != nil {
+	if err := s.v.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}

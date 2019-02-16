@@ -10,14 +10,13 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/gorilla/mux"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // GetSources ...
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 	so, err := s.h.GetSources()
 	if err != nil {
-		helper.DecodeError(w, "Could not fetch the sources", http.StatusInternalServerError)
+		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -29,12 +28,12 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	so, err := s.h.GetSource(id)
 	if err != nil {
-		helper.DecodeError(w, "Could not fetch the source", http.StatusInternalServerError)
+		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -45,11 +44,10 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, "Could not decode the body request", http.StatusInternalServerError)
+		helper.DecodeError(w, errDecode, http.StatusInternalServerError)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Struct(reqS); err != nil {
+	if err := s.v.Struct(reqS); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -60,7 +58,7 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	}
 	so, err := s.h.CreateSource(&newS)
 	if err != nil {
-		helper.DecodeError(w, "Could not create the source", http.StatusInternalServerError)
+		helper.DecodeError(w, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -71,11 +69,10 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, "Could not decode the body response", http.StatusInternalServerError)
+		helper.DecodeError(w, errDecode, http.StatusInternalServerError)
 		return
 	}
-	validate = validator.New()
-	if err := validate.Struct(reqS); err != nil {
+	if err := s.v.Struct(reqS); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -86,12 +83,12 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	so, err := s.h.UpdateSource(id, &upS)
 	if err != nil {
-		helper.DecodeError(w, "Could not update the source", http.StatusInternalServerError)
+		helper.DecodeError(w, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -103,11 +100,11 @@ func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		helper.DecodeError(w, "Could not parse the ID param", http.StatusInternalServerError)
+		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	if err := s.h.DeleteSource(id); err != nil {
-		helper.DecodeError(w, "Could not delete the source", http.StatusInternalServerError)
+		helper.DecodeError(w, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

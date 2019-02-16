@@ -14,16 +14,21 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/handlers"
 	re "github.com/go-redis/redis"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
+var v *validator.Validate
+
 func main() {
-	db := database()
-	rc := redis()
-	mc := model.Connect(db)
-	nh := handlers.NewHandler(mc, rc)
-	routes(nh)
+	db := database()                    // Database instance.
+	mc := model.Connect(db)             // Injecting database instance on the model pkg.
+	rc := redis()                       // Redis client instance.
+	v = validator.New()                 // Validator instance.
+	h := handlers.NewHandler(mc, rc, v) // Injecting instances on the handlers pkg.
+	routes(h)                           // Passing handlers to the router.
 }
 
+// Database connection.
 func database() *sql.DB {
 	url := fmt.Sprintf(
 		"%s:%s@tcp(localhost:3306)/api_feelthemovies?parseTime=true",
@@ -41,6 +46,7 @@ func database() *sql.DB {
 	return db
 }
 
+// Redis connection.
 func redis() *re.Client {
 	client := re.NewClient(&re.Options{
 		Addr:     os.Getenv("REDISADDR"),
@@ -77,6 +83,7 @@ func publicRoutes(r *mux.Router, h *handlers.Setup) {
 }
 
 func authRoutes(r *mux.Router, h *handlers.Setup) {
+	r.Use()
 	r.HandleFunc("/v1/users", h.GetUsers).Methods("GET")
 	r.HandleFunc("/v1/user/{id}", h.GetUser).Methods("GET")
 	r.HandleFunc("/v1/user", h.CreateUser).Methods("POST")

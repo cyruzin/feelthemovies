@@ -6,7 +6,6 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // AuthUser ...
@@ -14,30 +13,29 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	var reqA model.Auth
 
 	if err := json.NewDecoder(r.Body).Decode(&reqA); err != nil {
-		helper.DecodeError(w, "Could not decode the auth payload", http.StatusInternalServerError)
+		helper.DecodeError(w, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	validate = validator.New()
-	if err := validate.Struct(reqA); err != nil {
-		helper.DecodeError(w, "Validation error, check your fields", http.StatusBadRequest)
+	if err := s.v.Struct(reqA); err != nil {
+		helper.ValidatorMessage(w, err)
 		return
 	}
 
 	dbPass, err := s.h.Authenticate(reqA.Email)
 	if err != nil {
-		helper.DecodeError(w, "Could not authenticate", http.StatusInternalServerError)
+		helper.DecodeError(w, errAuth, http.StatusInternalServerError)
 		return
 	}
 
 	if checkPass := helper.CheckPasswordHash(reqA.Password, dbPass); !checkPass {
-		helper.DecodeError(w, "Unauthorized", http.StatusUnauthorized)
+		helper.DecodeError(w, errUnauthorized, http.StatusUnauthorized)
 		return
 	}
 
 	authInfo, err := s.h.GetAuthInfo(reqA.Email)
 	if err != nil {
-		helper.DecodeError(w, "Could not get user info", http.StatusInternalServerError)
+		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
 		return
 	}
 
