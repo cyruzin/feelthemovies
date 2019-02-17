@@ -20,11 +20,13 @@ import (
 var v *validator.Validate
 
 func main() {
-	db := database()                   // Database instance.
-	mc := model.Connect(db)            // Injecting database instance on the model pkg.
-	rc := redis()                      // Redis client instance.
+	db := database() // Database instance.
+	defer db.Close()
+	rc := redis() // Redis client instance.
+	defer rc.Close()
+	mc := model.Connect(db)            // Passing database instance on the model pkg.
 	v = validator.New()                // Validator instance.
-	h := handler.NewHandler(mc, rc, v) // Injecting instances on the handlers pkg.
+	h := handler.NewHandler(mc, rc, v) // Passing instances on the handlers pkg.
 	routes(h)                          // Passing handlers to the router.
 }
 

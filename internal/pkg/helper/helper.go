@@ -2,7 +2,9 @@ package helper
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"runtime"
 
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -88,4 +90,19 @@ func SearchValidatorMessage(w http.ResponseWriter) {
 		w.Write([]byte("Could not encode the payload"))
 		return
 	}
+}
+
+// PrintMemUsage prints the mem usage.
+// For info on each, see: https://golang.org/pkg/runtime/#MemStats
+func PrintMemUsage() {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("Alloc = %v MiB", bToMb(m.Alloc))
+	fmt.Printf("\tTotalAlloc = %v MiB", bToMb(m.TotalAlloc))
+	fmt.Printf("\tSys = %v MiB", bToMb(m.Sys))
+	fmt.Printf("\tNumGC = %v\n", m.NumGC)
+}
+
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }
