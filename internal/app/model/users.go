@@ -40,6 +40,9 @@ func (c *Conn) GetUsers() (*UserResult, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
+	if err != nil {
+		return nil, err
+	}
 	res := UserResult{}
 	for rows.Next() {
 		user := User{}

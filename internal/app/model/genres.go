@@ -34,6 +34,9 @@ func (c *Conn) GetGenres() (*GenreResult, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
+	if err != nil {
+		return nil, err
+	}
 	res := GenreResult{}
 	for rows.Next() {
 		genre := Genre{}

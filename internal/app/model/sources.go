@@ -34,6 +34,9 @@ func (c *Conn) GetSources() (*SourceResult, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
+	if err != nil {
+		return nil, err
+	}
 	res := SourceResult{}
 	for rows.Next() {
 		s := Source{}

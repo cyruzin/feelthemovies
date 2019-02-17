@@ -89,6 +89,9 @@ func (c *Conn) GetRecommendations(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(o, l)
+	if err != nil {
+		return nil, err
+	}
 	res := RecommendationResult{}
 	for rows.Next() {
 		rec := Recommendation{}
@@ -243,6 +246,9 @@ func (c *Conn) GetRecommendationGenres(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(id)
+	if err != nil {
+		return nil, err
+	}
 	recG := []*RecommendationGenres{}
 	for rows.Next() {
 		rec := RecommendationGenres{}
@@ -274,6 +280,9 @@ func (c *Conn) GetRecommendationKeywords(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(id)
+	if err != nil {
+		return nil, err
+	}
 	recK := []*RecommendationKeywords{}
 	for rows.Next() {
 		rec := RecommendationKeywords{}

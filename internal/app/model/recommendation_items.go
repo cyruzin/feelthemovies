@@ -74,6 +74,9 @@ func (c *Conn) GetRecommendationItems(
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(id)
+	if err != nil {
+		return nil, err
+	}
 	res := RecommendationItemResult{}
 	for rows.Next() {
 		rec := RecommendationItem{}

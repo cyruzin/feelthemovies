@@ -34,6 +34,9 @@ func (c *Conn) GetKeywords() (*KeywordResult, error) {
 	}
 	defer stmt.Close()
 	rows, err := stmt.Query(10)
+	if err != nil {
+		return nil, err
+	}
 	res := KeywordResult{}
 	for rows.Next() {
 		k := Keyword{}
