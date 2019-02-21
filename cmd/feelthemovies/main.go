@@ -33,8 +33,8 @@ func main() {
 // Database connection.
 func database() *sql.DB {
 	url := fmt.Sprintf(
-		"%s:%s@tcp(localhost:3306)/api_feelthemovies?parseTime=true",
-		os.Getenv("DBUSER"), os.Getenv("DBPASS"),
+		"%s:%s@tcp(%s:3306)/api_feelthemovies?parseTime=true",
+		os.Getenv("DBUSER"), os.Getenv("DBPASS"), os.Getenv("DBHOST"),
 	)
 	db, err := sql.Open("mysql", url)
 	if err != nil {
