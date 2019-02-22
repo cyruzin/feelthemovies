@@ -8,8 +8,6 @@ This is my first Golang project, so probably there's a lot to improve. Any kind 
 
 ## Installation
 
-Set environment variables for MySQL and Redis. Check the main.go file.
-
 Make sure that you have Docker installed and then run the following commands:
 
 ```sh
