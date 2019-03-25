@@ -14,7 +14,7 @@ import (
 
 // GetRecommendationItems gets all recommendation items.
 func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
-	// New Relic Transacation.
+	// New Relic Transaction.
 	txn := s.nr.StartTransaction("/v1/recommendation_items/{id}", w, r)
 	defer txn.End()
 

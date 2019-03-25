@@ -16,7 +16,7 @@ import (
 
 // GetRecommendations gets all recommendations.
 func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
-	// New Relic Transacation.
+	// New Relic Transaction.
 	txn := s.nr.StartTransaction("/v1/recommendations", w, r)
 	defer txn.End()
 
@@ -129,7 +129,7 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 
 // GetRecommendation gets a recommendation by ID.
 func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
-	// New Relic Transacation.
+	// New Relic Transaction.
 	txn := s.nr.StartTransaction("/v1/recommendation/{id}", w, r)
 	defer txn.End()
 
