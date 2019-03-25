@@ -13,6 +13,10 @@ import (
 
 // SearchRecommendation searches for recommendations.
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
+	// New Relic Transacation.
+	txn := s.nr.StartTransaction("/v1/search_recommendation", w, r)
+	defer txn.End()
+
 	params := r.URL.Query()
 	if len(params) == 0 {
 		helper.DecodeError(w, errQueryField, http.StatusBadRequest)
