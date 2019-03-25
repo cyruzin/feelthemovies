@@ -23,12 +23,21 @@ var v *validator.Validate
 func main() {
 	db := database() // Database instance.
 	defer db.Close()
+
 	rc := redis() // Redis client instance.
 	defer rc.Close()
-	mc := model.Connect(db)            // Passing database instance to the model pkg.
-	v = validator.New()                // Validator instance.
-	h := handler.NewHandler(mc, rc, v) // Passing instances to the handlers pkg.
-	router(h)                          // Passing handlers to the router.
+
+	mc := model.Connect(db) // Passing database instance to the model pkg.
+
+	v = validator.New() // Validator instance.
+
+	nr, err := newRelicApp() // New Relic Application instance.
+	if err != nil {
+		log.Printf("New Relic error: %s", err)
+	}
+
+	h := handler.NewHandler(mc, rc, v, nr) // Passing instances to the handlers pkg.
+	router(h)                              // Passing handlers to the router.
 }
 
 // Database connection.
@@ -68,7 +77,6 @@ func redis() *re.Client {
 func router(h *handler.Setup) {
 	r := mux.NewRouter()
 
-	r.Use(h.LoggingMiddleware)
 	r.Use(h.AuthMiddleware)
 
 	publicRoutes(r, h)
@@ -89,11 +97,6 @@ func publicRoutes(r *mux.Router, h *handler.Setup) {
 
 // Auth routes.
 func authRoutes(r *mux.Router, h *handler.Setup) {
-	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY")) // New Relic config.
-	app, err := newrelic.NewApplication(config)
-	if err != nil {
-		log.Printf("New Relic Error: %s", err)
-	}
 
 	r.HandleFunc("/v1/users", h.GetUsers).Methods("GET")
 	r.HandleFunc("/v1/user/{id}", h.GetUser).Methods("GET")
@@ -101,13 +104,13 @@ func authRoutes(r *mux.Router, h *handler.Setup) {
 	r.HandleFunc("/v1/user/{id}", h.UpdateUser).Methods("PUT")
 	r.HandleFunc("/v1/user/{id}", h.DeleteUser).Methods("DELETE")
 
-	r.HandleFunc(newrelic.WrapHandleFunc(app, "/v1/recommendations", h.GetRecommendations)).Methods("GET")
-	r.HandleFunc(newrelic.WrapHandleFunc(app, "/v1/recommendation/{id}", h.GetRecommendation)).Methods("GET")
+	r.HandleFunc("/v1/recommendations", h.GetRecommendations).Methods("GET")
+	r.HandleFunc("/v1/recommendation/{id}", h.GetRecommendation).Methods("GET")
 	r.HandleFunc("/v1/recommendation", h.CreateRecommendation).Methods("POST")
 	r.HandleFunc("/v1/recommendation/{id}", h.UpdateRecommendation).Methods("PUT")
 	r.HandleFunc("/v1/recommendation/{id}", h.DeleteRecommendation).Methods("DELETE")
 
-	r.HandleFunc(newrelic.WrapHandleFunc(app, "/v1/recommendation_items/{id}", h.GetRecommendationItems)).Methods("GET")
+	r.HandleFunc("/v1/recommendation_items/{id}", h.GetRecommendationItems).Methods("GET")
 	r.HandleFunc("/v1/recommendation_item/{id}", h.GetRecommendationItem).Methods("GET")
 	r.HandleFunc("/v1/recommendation_item", h.CreateRecommendationItem).Methods("POST")
 	r.HandleFunc("/v1/recommendation_item/{id}", h.UpdateRecommendationItem).Methods("PUT")
@@ -131,9 +134,19 @@ func authRoutes(r *mux.Router, h *handler.Setup) {
 	r.HandleFunc("/v1/source/{id}", h.UpdateSource).Methods("PUT")
 	r.HandleFunc("/v1/source/{id}", h.DeleteSource).Methods("DELETE")
 
-	r.HandleFunc(newrelic.WrapHandleFunc(app, "/v1/search_recommendation", h.SearchRecommendation)).Methods("GET")
+	r.HandleFunc("/v1/search_recommendation", h.SearchRecommendation).Methods("GET")
 	r.HandleFunc("/v1/search_user", h.SearchUser).Methods("GET")
 	r.HandleFunc("/v1/search_genre", h.SearchGenre).Methods("GET")
 	r.HandleFunc("/v1/search_keyword", h.SearchKeyword).Methods("GET")
 	r.HandleFunc("/v1/search_source", h.SearchSource).Methods("GET")
+}
+
+// New Relic App instance.
+func newRelicApp() (newrelic.Application, error) {
+	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
+	app, err := newrelic.NewApplication(config)
+	if err != nil {
+		return nil, err
+	}
+	return app, nil
 }
