@@ -3,8 +3,6 @@ package handler
 import (
 	"time"
 
-	newrelic "github.com/newrelic/go-agent"
-
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/go-redis/redis"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -44,7 +42,6 @@ type Setup struct {
 	h  *model.Conn
 	rc *redis.Client
 	v  *validator.Validate
-	nr newrelic.Application
 }
 
 // NewHandler initiates the setup.
@@ -52,7 +49,6 @@ func NewHandler(
 	m *model.Conn,
 	rc *redis.Client,
 	v *validator.Validate,
-	nr newrelic.Application,
 ) *Setup {
-	return &Setup{m, rc, v, nr}
+	return &Setup{m, rc, v}
 }
