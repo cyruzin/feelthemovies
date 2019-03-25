@@ -11,8 +11,6 @@ import (
 func (s *Setup) LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.RequestURI)
-		txn := s.nr.StartTransaction("Test", w, r)
-		defer txn.End()
 		next.ServeHTTP(w, r)
 	})
 }

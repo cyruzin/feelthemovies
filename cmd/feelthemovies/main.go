@@ -2,15 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gorilla/mux"
-	newrelic "github.com/newrelic/go-agent"
 	"github.com/rs/cors"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
@@ -33,13 +30,8 @@ func main() {
 
 	v = validator.New() // Validator instance.
 
-	nr, err := newRelicApp() // New Relic Application instance.
-	if err != nil {
-		log.Println(err)
-	}
-
-	h := handler.NewHandler(mc, rc, v, nr) // Passing instances to the handlers pkg.
-	router(h)                              // Passing handlers to the router.
+	h := handler.NewHandler(mc, rc, v) // Passing instances to the handlers pkg.
+	router(h)                          // Passing handlers to the router.
 }
 
 // Database connection.
@@ -100,7 +92,6 @@ func publicRoutes(r *mux.Router, h *handler.Setup) {
 
 // Auth routes.
 func authRoutes(r *mux.Router, h *handler.Setup) {
-
 	r.HandleFunc("/v1/users", h.GetUsers).Methods("GET")
 	r.HandleFunc("/v1/user/{id}", h.GetUser).Methods("GET")
 	r.HandleFunc("/v1/user", h.CreateUser).Methods("POST")
@@ -142,17 +133,4 @@ func authRoutes(r *mux.Router, h *handler.Setup) {
 	r.HandleFunc("/v1/search_genre", h.SearchGenre).Methods("GET")
 	r.HandleFunc("/v1/search_keyword", h.SearchKeyword).Methods("GET")
 	r.HandleFunc("/v1/search_source", h.SearchSource).Methods("GET")
-}
-
-// New Relic App instance.
-func newRelicApp() (newrelic.Application, error) {
-	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
-	app, err := newrelic.NewApplication(config)
-	if err != nil {
-		return nil, errors.New("Could not create New Relic Application")
-	}
-	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
-		return nil, errors.New("Could not connect to the New Relic")
-	}
-	return app, nil
 }
