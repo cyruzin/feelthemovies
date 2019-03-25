@@ -125,8 +125,6 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 
 // GetRecommendation gets a recommendation by ID.
 func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
-	txn := s.nr.StartTransaction("recommendations", w, r)
-	defer txn.End()
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseInt(params["id"], 10, 64)
