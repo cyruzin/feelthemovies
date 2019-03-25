@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	newrelic "github.com/newrelic/go-agent"
@@ -33,7 +35,7 @@ func main() {
 
 	nr, err := newRelicApp() // New Relic Application instance.
 	if err != nil {
-		log.Printf("New Relic error: %s", err)
+		log.Println(err)
 	}
 
 	h := handler.NewHandler(mc, rc, v, nr) // Passing instances to the handlers pkg.
@@ -77,6 +79,7 @@ func redis() *re.Client {
 func router(h *handler.Setup) {
 	r := mux.NewRouter()
 
+	r.Use(h.LoggingMiddleware)
 	r.Use(h.AuthMiddleware)
 
 	publicRoutes(r, h)
@@ -146,7 +149,10 @@ func newRelicApp() (newrelic.Application, error) {
 	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
 	app, err := newrelic.NewApplication(config)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Could not create New Relic Application")
+	}
+	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
+		return nil, errors.New("Could not connect to the New Relic")
 	}
 	return app, nil
 }
