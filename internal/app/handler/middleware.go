@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
@@ -13,12 +12,11 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "Application/json")
 
-		if !strings.Contains(r.RequestURI, "/v1/") {
-			next.ServeHTTP(w, r)
+		token := r.Header.Get("Api-Token")
+		if token == "" {
+			helper.DecodeError(w, errEmptyToken, http.StatusBadRequest)
 			return
 		}
-
-		token := r.Header.Get("Api-Token")
 		auth, err := s.h.CheckAPIToken(token)
 		if err != nil {
 			helper.DecodeError(w, errInvalidToken, http.StatusUnauthorized)
@@ -32,4 +30,14 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 	})
+}
+
+// NewRelicMiddleware sends data to New Relic servers.
+func (s *Setup) NewRelicMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		txn := s.nr.StartTransaction(r.URL.Path, w, r)
+		next.ServeHTTP(w, r)
+		txn.End()
+	}
+	return http.HandlerFunc(fn)
 }

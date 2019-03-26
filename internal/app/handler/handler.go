@@ -3,6 +3,8 @@ package handler
 import (
 	"time"
 
+	newrelic "github.com/newrelic/go-agent"
+
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/go-redis/redis"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -32,6 +34,7 @@ const (
 	errPassHash     = "Could not hash the password"
 	errAuth         = "Could not authenticate"
 	errUnauthorized = "Unauthorized"
+	errEmptyToken   = "An API Token is necessary"
 	errInvalidToken = "Invalid API Token"
 	errQueryField   = "The query field is required"
 	errEmptyRec     = "The recommendation is empty or does not exist"
@@ -42,6 +45,7 @@ type Setup struct {
 	h  *model.Conn
 	rc *redis.Client
 	v  *validator.Validate
+	nr newrelic.Application
 }
 
 // NewHandler initiates the setup.
@@ -49,6 +53,7 @@ func NewHandler(
 	m *model.Conn,
 	rc *redis.Client,
 	v *validator.Validate,
+	nr newrelic.Application,
 ) *Setup {
-	return &Setup{m, rc, v}
+	return &Setup{m, rc, v, nr}
 }

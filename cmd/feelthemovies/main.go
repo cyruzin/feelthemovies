@@ -2,11 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	newrelic "github.com/newrelic/go-agent"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -32,8 +35,13 @@ func main() {
 
 	v = validator.New() // Validator instance.
 
-	h := handler.NewHandler(mc, rc, v) // Passing instances to the handlers pkg.
-	router(h)                          // Passing handlers to the router.
+	nr, err := newRelicApp()
+	if err != nil { // Just log New Relic errors.
+		log.Println(err)
+	}
+
+	h := handler.NewHandler(mc, rc, v, nr) // Passing instances to the handlers pkg.
+	router(h)                              // Passing handlers to the router.
 }
 
 // Database connection.
@@ -69,6 +77,19 @@ func redis() *re.Client {
 	return client
 }
 
+// New Relic Application instance.
+func newRelicApp() (newrelic.Application, error) {
+	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
+	app, err := newrelic.NewApplication(config)
+	if err != nil {
+		return nil, errors.New("Configuration error")
+	}
+	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
+		return nil, errors.New("Connection timeout error")
+	}
+	return app, nil
+}
+
 // All routes setup with CORS and middlewares.
 func router(h *handler.Setup) {
 	r := chi.NewRouter()
@@ -83,12 +104,12 @@ func router(h *handler.Setup) {
 	})
 
 	r.Use(cors.Handler)
-	r.Use(h.AuthMiddleware)
 	r.Use(middleware.Logger)
+	r.Use(h.NewRelicMiddleware)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	publicRoutes(r, h)
 	authRoutes(r, h)
+	publicRoutes(r, h)
 
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
@@ -99,52 +120,56 @@ func router(h *handler.Setup) {
 func publicRoutes(r *chi.Mux, h *handler.Setup) {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Feel the Movies API V1"))
-	})
+	}) // Initial page.
 
-	r.Post("/auth", h.AuthUser)
+	r.Post("/auth", h.AuthUser) // Authentication end-point.
 }
 
 // Auth routes.
 func authRoutes(r *chi.Mux, h *handler.Setup) {
-	r.Get("/v1/users", h.GetUsers)
-	r.Get("/v1/user/{id}", h.GetUser)
-	r.Post("/v1/user", h.CreateUser)
-	r.Put("/v1/user/{id}", h.UpdateUser)
-	r.Delete("/v1/user/{id}", h.DeleteUser)
+	r.Group(func(r chi.Router) {
+		r.Use(h.AuthMiddleware) // Authentication Middleware.
 
-	r.Get("/v1/recommendations", h.GetRecommendations)
-	r.Get("/v1/recommendation/{id}", h.GetRecommendation)
-	r.Post("/v1/recommendation", h.CreateRecommendation)
-	r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
-	r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
+		r.Get("/v1/users", h.GetUsers)
+		r.Get("/v1/user/{id}", h.GetUser)
+		r.Post("/v1/user", h.CreateUser)
+		r.Put("/v1/user/{id}", h.UpdateUser)
+		r.Delete("/v1/user/{id}", h.DeleteUser)
 
-	r.Get("/v1/recommendation_items/{id}", h.GetRecommendationItems)
-	r.Get("/v1/recommendation_item/{id}", h.GetRecommendationItem)
-	r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
-	r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
-	r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
+		r.Get("/v1/recommendations", h.GetRecommendations)
+		r.Get("/v1/recommendation/{id}", h.GetRecommendation)
+		r.Post("/v1/recommendation", h.CreateRecommendation)
+		r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
+		r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
 
-	r.Get("/v1/genres", h.GetGenres)
-	r.Get("/v1/genre/{id}", h.GetGenre)
-	r.Post("/v1/genre", h.CreateGenre)
-	r.Put("/v1/genre/{id}", h.UpdateGenre)
-	r.Delete("/v1/genre/{id}", h.DeleteGenre)
+		r.Get("/v1/recommendation_items/{id}", h.GetRecommendationItems)
+		r.Get("/v1/recommendation_item/{id}", h.GetRecommendationItem)
+		r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
+		r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
+		r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
 
-	r.Get("/v1/keywords", h.GetKeywords)
-	r.Get("/v1/keyword/{id}", h.GetKeyword)
-	r.Post("/v1/keyword", h.CreateKeyword)
-	r.Put("/v1/keyword/{id}", h.UpdateKeyword)
-	r.Delete("/v1/keyword/{id}", h.DeleteKeyword)
+		r.Get("/v1/genres", h.GetGenres)
+		r.Get("/v1/genre/{id}", h.GetGenre)
+		r.Post("/v1/genre", h.CreateGenre)
+		r.Put("/v1/genre/{id}", h.UpdateGenre)
+		r.Delete("/v1/genre/{id}", h.DeleteGenre)
 
-	r.Get("/v1/sources", h.GetSources)
-	r.Get("/v1/source/{id}", h.GetSource)
-	r.Post("/v1/source", h.CreateSource)
-	r.Put("/v1/source/{id}", h.UpdateSource)
-	r.Delete("/v1/source/{id}", h.DeleteSource)
+		r.Get("/v1/keywords", h.GetKeywords)
+		r.Get("/v1/keyword/{id}", h.GetKeyword)
+		r.Post("/v1/keyword", h.CreateKeyword)
+		r.Put("/v1/keyword/{id}", h.UpdateKeyword)
+		r.Delete("/v1/keyword/{id}", h.DeleteKeyword)
 
-	r.HandleFunc("/v1/search_recommendation", h.SearchRecommendation)
-	r.HandleFunc("/v1/search_user", h.SearchUser)
-	r.HandleFunc("/v1/search_genre", h.SearchGenre)
-	r.HandleFunc("/v1/search_keyword", h.SearchKeyword)
-	r.HandleFunc("/v1/search_source", h.SearchSource)
+		r.Get("/v1/sources", h.GetSources)
+		r.Get("/v1/source/{id}", h.GetSource)
+		r.Post("/v1/source", h.CreateSource)
+		r.Put("/v1/source/{id}", h.UpdateSource)
+		r.Delete("/v1/source/{id}", h.DeleteSource)
+
+		r.HandleFunc("/v1/search_recommendation", h.SearchRecommendation)
+		r.HandleFunc("/v1/search_user", h.SearchUser)
+		r.HandleFunc("/v1/search_genre", h.SearchGenre)
+		r.HandleFunc("/v1/search_keyword", h.SearchKeyword)
+		r.HandleFunc("/v1/search_source", h.SearchSource)
+	})
 }
