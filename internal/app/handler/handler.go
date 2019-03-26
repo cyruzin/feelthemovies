@@ -12,7 +12,7 @@ import (
 const redisTimeout = time.Duration(5 * time.Minute)
 
 // Error messages.
-var (
+const (
 	errDecode       = "Could not decode the body request"
 	errParseInt     = "Could not parse to int"
 	errParseFloat   = "Could not parse to float"

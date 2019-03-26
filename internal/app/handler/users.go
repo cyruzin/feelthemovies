@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
-	"github.com/gorilla/mux"
 )
 
 // GetUsers get all users.
@@ -26,8 +26,7 @@ func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 // GetUser gets a user by ID.
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -99,8 +98,7 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		APIToken:  hashAPI,
 		UpdatedAt: time.Now(),
 	}
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -116,8 +114,7 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 // DeleteUser deletes a user.
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return

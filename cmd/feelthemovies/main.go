@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
@@ -69,72 +70,80 @@ func redis() *re.Client {
 
 // All routes setup with CORS and middlewares.
 func router(h *handler.Setup) {
-	r := mux.NewRouter()
+	r := chi.NewRouter()
 
-	r.Use(h.LoggingMiddleware)
+	cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Api-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	})
+
+	r.Use(cors.Handler)
 	r.Use(h.AuthMiddleware)
+	r.Use(middleware.Logger)
 
 	publicRoutes(r, h)
 	authRoutes(r, h)
 
-	http.Handle("/", r)
-	handler := cors.AllowAll().Handler(r)
-
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
 // Public routes.
-func publicRoutes(r *mux.Router, h *handler.Setup) {
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+func publicRoutes(r *chi.Mux, h *handler.Setup) {
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Feel the Movies API V1"))
-	}).Methods("GET")
+	})
 
-	r.HandleFunc("/auth", h.AuthUser).Methods("POST")
+	r.Post("/auth", h.AuthUser)
 }
 
 // Auth routes.
-func authRoutes(r *mux.Router, h *handler.Setup) {
-	r.HandleFunc("/v1/users", h.GetUsers).Methods("GET")
-	r.HandleFunc("/v1/user/{id}", h.GetUser).Methods("GET")
-	r.HandleFunc("/v1/user", h.CreateUser).Methods("POST")
-	r.HandleFunc("/v1/user/{id}", h.UpdateUser).Methods("PUT")
-	r.HandleFunc("/v1/user/{id}", h.DeleteUser).Methods("DELETE")
+func authRoutes(r *chi.Mux, h *handler.Setup) {
 
-	r.HandleFunc("/v1/recommendations", h.GetRecommendations).Methods("GET")
-	r.HandleFunc("/v1/recommendation/{id}", h.GetRecommendation).Methods("GET")
-	r.HandleFunc("/v1/recommendation", h.CreateRecommendation).Methods("POST")
-	r.HandleFunc("/v1/recommendation/{id}", h.UpdateRecommendation).Methods("PUT")
-	r.HandleFunc("/v1/recommendation/{id}", h.DeleteRecommendation).Methods("DELETE")
+	r.Get("/v1/users", h.GetUsers)
+	r.Get("/v1/user/{id}", h.GetUser)
+	r.Post("/v1/user", h.CreateUser)
+	r.Put("/v1/user/{id}", h.UpdateUser)
+	r.Delete("/v1/user/{id}", h.DeleteUser)
 
-	r.HandleFunc("/v1/recommendation_items/{id}", h.GetRecommendationItems).Methods("GET")
-	r.HandleFunc("/v1/recommendation_item/{id}", h.GetRecommendationItem).Methods("GET")
-	r.HandleFunc("/v1/recommendation_item", h.CreateRecommendationItem).Methods("POST")
-	r.HandleFunc("/v1/recommendation_item/{id}", h.UpdateRecommendationItem).Methods("PUT")
-	r.HandleFunc("/v1/recommendation_item/{id}", h.DeleteRecommendationItem).Methods("DELETE")
+	r.Get("/v1/recommendations", h.GetRecommendations)
+	r.Get("/v1/recommendation/{id}", h.GetRecommendation)
+	r.Post("/v1/recommendation", h.CreateRecommendation)
+	r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
+	r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
 
-	r.HandleFunc("/v1/genres", h.GetGenres).Methods("GET")
-	r.HandleFunc("/v1/genre/{id}", h.GetGenre).Methods("GET")
-	r.HandleFunc("/v1/genre", h.CreateGenre).Methods("POST")
-	r.HandleFunc("/v1/genre/{id}", h.UpdateGenre).Methods("PUT")
-	r.HandleFunc("/v1/genre/{id}", h.DeleteGenre).Methods("DELETE")
+	r.Get("/v1/recommendation_items/{id}", h.GetRecommendationItems)
+	r.Get("/v1/recommendation_item/{id}", h.GetRecommendationItem)
+	r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
+	r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
+	r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
 
-	r.HandleFunc("/v1/keywords", h.GetKeywords).Methods("GET")
-	r.HandleFunc("/v1/keyword/{id}", h.GetKeyword).Methods("GET")
-	r.HandleFunc("/v1/keyword", h.CreateKeyword).Methods("POST")
-	r.HandleFunc("/v1/keyword/{id}", h.UpdateKeyword).Methods("PUT")
-	r.HandleFunc("/v1/keyword/{id}", h.DeleteKeyword).Methods("DELETE")
+	r.Get("/v1/genres", h.GetGenres)
+	r.Get("/v1/genre/{id}", h.GetGenre)
+	r.Post("/v1/genre", h.CreateGenre)
+	r.Put("/v1/genre/{id}", h.UpdateGenre)
+	r.Delete("/v1/genre/{id}", h.DeleteGenre)
 
-	r.HandleFunc("/v1/sources", h.GetSources).Methods("GET")
-	r.HandleFunc("/v1/source/{id}", h.GetSource).Methods("GET")
-	r.HandleFunc("/v1/source", h.CreateSource).Methods("POST")
-	r.HandleFunc("/v1/source/{id}", h.UpdateSource).Methods("PUT")
-	r.HandleFunc("/v1/source/{id}", h.DeleteSource).Methods("DELETE")
+	r.Get("/v1/keywords", h.GetKeywords)
+	r.Get("/v1/keyword/{id}", h.GetKeyword)
+	r.Post("/v1/keyword", h.CreateKeyword)
+	r.Put("/v1/keyword/{id}", h.UpdateKeyword)
+	r.Delete("/v1/keyword/{id}", h.DeleteKeyword)
 
-	r.HandleFunc("/v1/search_recommendation", h.SearchRecommendation).Methods("GET")
-	r.HandleFunc("/v1/search_user", h.SearchUser).Methods("GET")
-	r.HandleFunc("/v1/search_genre", h.SearchGenre).Methods("GET")
-	r.HandleFunc("/v1/search_keyword", h.SearchKeyword).Methods("GET")
-	r.HandleFunc("/v1/search_source", h.SearchSource).Methods("GET")
+	r.Get("/v1/sources", h.GetSources)
+	r.Get("/v1/source/{id}", h.GetSource)
+	r.Post("/v1/source", h.CreateSource)
+	r.Put("/v1/source/{id}", h.UpdateSource)
+	r.Delete("/v1/source/{id}", h.DeleteSource)
+
+	r.HandleFunc("/v1/search_recommendation", h.SearchRecommendation)
+	r.HandleFunc("/v1/search_user", h.SearchUser)
+	r.HandleFunc("/v1/search_genre", h.SearchGenre)
+	r.HandleFunc("/v1/search_keyword", h.SearchKeyword)
+	r.HandleFunc("/v1/search_source", h.SearchSource)
 }

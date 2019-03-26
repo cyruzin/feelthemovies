@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/go-chi/chi"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/gorilla/mux"
 )
 
 // GetSources gets all sources.
@@ -25,8 +25,7 @@ func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 
 // GetSource gets a source by ID.
 func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -80,8 +79,7 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 		Name:      reqS.Name,
 		UpdatedAt: time.Now(),
 	}
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -97,8 +95,7 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 
 // DeleteSource deletes a source.
 func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return

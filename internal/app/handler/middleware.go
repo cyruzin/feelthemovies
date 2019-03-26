@@ -1,20 +1,11 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
-
-// LoggingMiddleware logs every request.
-func (s *Setup) LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RequestURI)
-		next.ServeHTTP(w, r)
-	})
-}
 
 // AuthMiddleware checks if the request contain the Api Token
 // on the headers and if it is valid.

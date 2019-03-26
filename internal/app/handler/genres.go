@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-chi/chi"
+
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/gorilla/mux"
 )
 
 // GetGenres gets all genres.
@@ -25,8 +26,7 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 
 // GetGenre gets a genre by ID.
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -82,8 +82,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 		Name:      reqG.Name,
 		UpdatedAt: time.Now(),
 	}
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -99,8 +98,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 // DeleteGenre deletes a genre.
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return

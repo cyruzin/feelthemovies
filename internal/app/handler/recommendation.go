@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/go-chi/chi"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/gorilla/mux"
 )
 
 // GetRecommendations gets all recommendations.
@@ -125,9 +125,8 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 
 // GetRecommendation gets a recommendation by ID.
 func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
 
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -280,8 +279,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -350,8 +348,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 // DeleteRecommendation deletes a recommendation.
 func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return

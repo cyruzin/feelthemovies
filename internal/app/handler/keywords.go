@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/go-chi/chi"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/gorilla/mux"
 )
 
 // GetKeywords gets all keywords.
@@ -25,8 +25,7 @@ func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 
 // GetKeyword gets a keyword by ID.
 func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -81,8 +80,7 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 		Name:      reqK.Name,
 		UpdatedAt: time.Now(),
 	}
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
@@ -98,8 +96,7 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 
 // DeleteKeyword deletes a keyword.
 func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.ParseInt(params["id"], 10, 64)
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
 		return
