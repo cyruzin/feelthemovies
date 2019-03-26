@@ -3,6 +3,7 @@ package handler
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 )
@@ -20,21 +21,24 @@ func (s *Setup) LoggingMiddleware(next http.Handler) http.Handler {
 func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "Application/json")
-		if r.RequestURI == "/v1/auth" {
+
+		if !strings.Contains(r.RequestURI, "/v1/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		token := r.Header.Get("Api-Token")
+		auth, err := s.h.CheckAPIToken(token)
+		if err != nil {
+			helper.DecodeError(w, errInvalidToken, http.StatusUnauthorized)
+			return
+		}
+		if auth {
 			next.ServeHTTP(w, r)
 		} else {
-			token := r.Header.Get("Api-Token")
-			auth, err := s.h.CheckAPIToken(token)
-			if err != nil {
-				helper.DecodeError(w, errInvalidToken, http.StatusUnauthorized)
-				return
-			}
-			if auth {
-				next.ServeHTTP(w, r)
-			} else {
-				helper.DecodeError(w, errUnauthorized, http.StatusUnauthorized)
-				return
-			}
+			helper.DecodeError(w, errUnauthorized, http.StatusUnauthorized)
+			return
 		}
+
 	})
 }

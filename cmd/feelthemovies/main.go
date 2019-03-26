@@ -87,7 +87,11 @@ func router(h *handler.Setup) {
 
 // Public routes.
 func publicRoutes(r *mux.Router, h *handler.Setup) {
-	r.HandleFunc("/v1/auth", h.AuthUser).Methods("POST")
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Feel the Movies API V1"))
+	}).Methods("GET")
+
+	r.HandleFunc("/auth", h.AuthUser).Methods("POST")
 }
 
 // Auth routes.
