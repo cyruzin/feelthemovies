@@ -31,13 +31,3 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 
 	})
 }
-
-// NewRelicMiddleware sends data to New Relic servers.
-func (s *Setup) NewRelicMiddleware(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		txn := s.nr.StartTransaction(r.URL.Path, w, r)
-		next.ServeHTTP(w, r)
-		txn.End()
-	}
-	return http.HandlerFunc(fn)
-}

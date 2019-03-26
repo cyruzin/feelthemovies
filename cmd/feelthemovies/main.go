@@ -2,14 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
-
-	newrelic "github.com/newrelic/go-agent"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -35,13 +32,8 @@ func main() {
 
 	v = validator.New() // Validator instance.
 
-	nr, err := newRelicApp()
-	if err != nil { // Just log New Relic errors.
-		log.Println(err)
-	}
-
-	h := handler.NewHandler(mc, rc, v, nr) // Passing instances to the handlers pkg.
-	router(h)                              // Passing handlers to the router.
+	h := handler.NewHandler(mc, rc, v) // Passing instances to the handlers pkg.
+	router(h)                          // Passing handlers to the router.
 }
 
 // Database connection.
@@ -77,19 +69,6 @@ func redis() *re.Client {
 	return client
 }
 
-// New Relic Application instance.
-func newRelicApp() (newrelic.Application, error) {
-	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
-	app, err := newrelic.NewApplication(config)
-	if err != nil {
-		return nil, errors.New("Configuration error")
-	}
-	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
-		return nil, errors.New("Connection timeout error")
-	}
-	return app, nil
-}
-
 // All routes setup with CORS and middlewares.
 func router(h *handler.Setup) {
 	r := chi.NewRouter()
@@ -105,7 +84,6 @@ func router(h *handler.Setup) {
 
 	r.Use(cors.Handler)
 	r.Use(middleware.Logger)
-	r.Use(h.NewRelicMiddleware)
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	authRoutes(r, h)
