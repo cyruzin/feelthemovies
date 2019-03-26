@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -84,6 +85,7 @@ func router(h *handler.Setup) {
 	r.Use(cors.Handler)
 	r.Use(h.AuthMiddleware)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Timeout(60 * time.Second))
 
 	publicRoutes(r, h)
 	authRoutes(r, h)
@@ -104,7 +106,6 @@ func publicRoutes(r *chi.Mux, h *handler.Setup) {
 
 // Auth routes.
 func authRoutes(r *chi.Mux, h *handler.Setup) {
-
 	r.Get("/v1/users", h.GetUsers)
 	r.Get("/v1/user/{id}", h.GetUser)
 	r.Post("/v1/user", h.CreateUser)
