@@ -385,3 +385,39 @@ func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Recommendation deleted successfully!"})
 }
+
+// GetRecommendationsAdmin retrieves the last 10 recommendations
+// without filter.
+func (s *Setup) GetRecommendationsAdmin(w http.ResponseWriter, r *http.Request) {
+	rec, err := s.h.GetRecommendationsAdmin()
+	if err != nil {
+		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	result := []*model.RecommendationResponse{}
+
+	for _, r := range rec.Data {
+		recG, err := s.h.GetRecommendationGenres(r.ID)
+		if err != nil {
+			helper.DecodeError(w, errFetch, http.StatusInternalServerError)
+			return
+		}
+		recK, err := s.h.GetRecommendationKeywords(r.ID)
+		if err != nil {
+			helper.DecodeError(w, errFetch, http.StatusInternalServerError)
+			return
+		}
+		recFinal := &model.RecommendationResponse{
+			Recommendation: r,
+			Genres:         recG,
+			Keywords:       recK,
+		}
+		result = append(result, recFinal)
+	}
+
+	resultFinal := &model.RecommendationPagination{Data: result}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(resultFinal)
+}

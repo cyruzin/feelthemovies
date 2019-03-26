@@ -81,6 +81,7 @@ func (c *Conn) GetRecommendations(
 		created_at, 
 		updated_at
 		FROM recommendations
+		WHERE status = ?
 		ORDER BY id DESC
 		LIMIT ?,?
 	`)
@@ -88,7 +89,7 @@ func (c *Conn) GetRecommendations(
 		return nil, err
 	}
 	defer stmt.Close()
-	rows, err := stmt.Query(o, l)
+	rows, err := stmt.Query(1, o, l)
 	if err != nil {
 		return nil, err
 	}
@@ -311,4 +312,54 @@ func (c *Conn) GetRecommendationTotalRows() (float64, error) {
 		return 0, err
 	}
 	return total, nil
+}
+
+// GetRecommendationsAdmin retrieves the last 10
+// recommendations without filter.
+func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
+	stmt, err := c.db.Prepare(`
+		SELECT 
+		id, 
+		user_id, 
+		title, 
+		type, 
+		body, 
+		poster, 
+		backdrop, 
+		status, 
+		created_at, 
+		updated_at
+		FROM recommendations
+		ORDER BY id DESC
+		LIMIT ?
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query(10)
+	if err != nil {
+		return nil, err
+	}
+	res := RecommendationResult{}
+	for rows.Next() {
+		rec := Recommendation{}
+		err = rows.Scan(
+			&rec.ID,
+			&rec.UserID,
+			&rec.Title,
+			&rec.Type,
+			&rec.Body,
+			&rec.Poster,
+			&rec.Backdrop,
+			&rec.Status,
+			&rec.CreatedAt,
+			&rec.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		res.Data = append(res.Data, &rec)
+	}
+	return &res, nil
 }
