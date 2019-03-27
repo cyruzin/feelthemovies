@@ -27,13 +27,12 @@ $ go run main.go
 
 These are the packages that helped me build this project:
 
-* [gorilla/mux](https://github.com/gorilla/mux) - Package mux implements a request router and dispatcher.
+* [go-chi/chi](https://github.com/go-chi/chi) - chi is a lightweight, idiomatic and composable router for building Go HTTP services.
+* [uber-go/zap](https://github.com/uber-go/zap) - Blazing fast, structured, leveled logging in Go.
 * [go-playground/validator](https://github.com/go-playground/validator) - 
 Package validator implements value validations for structs and individual fields based on tags.
 * [google/uuid](https://github.com/google/uuid) - 
 The uuid package generates and inspects UUIDs based on RFC 4122 and DCE 1.1: Authentication and Security Services.
-* [rs/cors](https://github.com/rs/cors) - 
-CORS is a net/http handler implementing Cross Origin Resource Sharing W3 specification in Golang.
 * [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
 
 ### Useful links

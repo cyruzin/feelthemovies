@@ -16,7 +16,7 @@ import (
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 	so, err := s.h.GetSources()
 	if err != nil {
-		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -27,12 +27,12 @@ func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
 		return
 	}
 	so, err := s.h.GetSource(id)
 	if err != nil {
-		helper.DecodeError(w, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -43,7 +43,7 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqS); err != nil {
@@ -57,7 +57,7 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	}
 	so, err := s.h.CreateSource(&newS)
 	if err != nil {
-		helper.DecodeError(w, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -68,7 +68,7 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqS); err != nil {
@@ -81,12 +81,12 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
 		return
 	}
 	so, err := s.h.UpdateSource(id, &upS)
 	if err != nil {
-		helper.DecodeError(w, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -97,11 +97,11 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
 		return
 	}
 	if err := s.h.DeleteSource(id); err != nil {
-		helper.DecodeError(w, errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w,  err,errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

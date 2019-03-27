@@ -83,7 +83,6 @@ func router(h *handler.Setup) {
 	})
 
 	r.Use(cors.Handler)
-	r.Use(middleware.Logger)
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	authRoutes(r, h)

@@ -2,7 +2,10 @@ package helper
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+
+	"go.uber.org/zap"
 
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -41,6 +44,16 @@ func UnmarshalBinary(d []byte, v interface{}) error {
 	return nil
 }
 
+func zapLogger(errMsg string, err error) {
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Printf("Zap error: %s", err)
+	}
+	defer logger.Sync()
+	sugar := logger.Sugar()
+	sugar.Errorf("%s: %s", errMsg, err)
+}
+
 // APIMessage is a struct for generic JSON response.
 type APIMessage struct {
 	Message string `json:"message,omitempty"`
@@ -50,9 +63,11 @@ type APIMessage struct {
 // DecodeError handles API errors.
 func DecodeError(
 	w http.ResponseWriter,
+	errDebug error,
 	apiErr string,
 	code int,
 ) {
+	zapLogger(apiErr, errDebug)
 	w.WriteHeader(code)
 	e := &APIMessage{apiErr, code}
 	if err := json.NewEncoder(w).Encode(e); err != nil {
