@@ -85,7 +85,7 @@ func newRelicApp() (newrelic.Application, error) {
 	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
 	app, err := newrelic.NewApplication(config)
 	if err != nil {
-		return nil, errors.New("Could create New Relic Application")
+		return nil, errors.New("Could not create New Relic Application")
 	}
 	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
 		return nil, errors.New("Could not connect to New Relic server")
