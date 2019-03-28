@@ -52,11 +52,17 @@ type APIMessage struct {
 // DecodeError handles API errors.
 func DecodeError(
 	w http.ResponseWriter,
+	r *http.Request,
 	l *zap.SugaredLogger,
 	apiErr string,
 	code int,
 ) {
-	l.Error(apiErr)     // Loggin before JSON response.
+	l.Errorw(
+		apiErr,
+		"status", code,
+		"method", r.Method,
+		"end-point", r.RequestURI,
+	) // Loggin before JSON response.
 	w.WriteHeader(code) // Setting error code.
 	e := &APIMessage{apiErr, code}
 	if err := json.NewEncoder(w).Encode(e); err != nil {

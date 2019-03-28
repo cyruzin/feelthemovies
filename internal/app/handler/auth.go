@@ -13,7 +13,7 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	var reqA model.Auth
 
 	if err := json.NewDecoder(r.Body).Decode(&reqA); err != nil {
-		helper.DecodeError(w, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
 		return
 	}
 
@@ -24,18 +24,18 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 
 	dbPass, err := s.h.Authenticate(reqA.Email)
 	if err != nil {
-		helper.DecodeError(w, s.l, errAuth, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.l, errAuth, http.StatusInternalServerError)
 		return
 	}
 
 	if checkPass := helper.CheckPasswordHash(reqA.Password, dbPass); !checkPass {
-		helper.DecodeError(w, s.l, errUnauthorized, http.StatusUnauthorized)
+		helper.DecodeError(w, r, s.l, errUnauthorized, http.StatusUnauthorized)
 		return
 	}
 
 	authInfo, err := s.h.GetAuthInfo(reqA.Email)
 	if err != nil {
-		helper.DecodeError(w, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
