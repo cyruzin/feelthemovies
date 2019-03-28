@@ -17,7 +17,7 @@ import (
 func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
@@ -27,7 +27,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	if val != "" {
 		rr := &model.RecommendationItemFinal{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w,  s.l, err, errUnmarshal, http.StatusInternalServerError)
+			helper.DecodeError(w,  s.l, errUnmarshal, http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -38,7 +38,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 	rec, err := s.h.GetRecommendationItems(id)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -46,7 +46,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	for _, r := range rec.Data {
 		recS, err := s.h.GetRecommendationItemSources(r.ID)
 		if err != nil {
-			helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
+			helper.DecodeError(w,  s.l, errFetch, http.StatusInternalServerError)
 			return
 		}
 
@@ -63,12 +63,12 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	// Redis set start
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errUnmarshal, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errUnmarshal, http.StatusInternalServerError)
 		return
 	}
 
 	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
-		helper.DecodeError(w,  s.l, err, errKeySet, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errKeySet, http.StatusInternalServerError)
 		return
 	}
 	// Redis set end
@@ -82,19 +82,19 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	rec, err := s.h.GetRecommendationItem(id)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
 	recS, err := s.h.GetRecommendationItemSources(id)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -111,7 +111,7 @@ func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	reqRec := &model.RecommendationItemCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
-		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errDecode, http.StatusInternalServerError)
 		return
 	}
 
@@ -123,7 +123,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 	// Parsing string to time.Time
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseDate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseDate, http.StatusInternalServerError)
 		return
 	}
 
@@ -144,7 +144,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 	rec, err := s.h.CreateRecommendationItem(newRec)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errCreate, http.StatusInternalServerError)
 		return
 	}
 
@@ -153,7 +153,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 	sources[rec.ID] = reqRec.Sources
 	err = s.h.Attach(sources, "recommendation_item_source")
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errAttach, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errAttach, http.StatusInternalServerError)
 		return
 	}
 
@@ -163,7 +163,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 	if val != "" {
 		_, err = s.rc.Unlink(rrKey).Result()
 		if err != nil {
-			helper.DecodeError(w,  s.l, err, errKeyUnlink, http.StatusInternalServerError)
+			helper.DecodeError(w,  s.l, errKeyUnlink, http.StatusInternalServerError)
 			return
 		}
 	}
@@ -178,7 +178,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	reqRec := &model.RecommendationItemCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
-		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errDecode, http.StatusInternalServerError)
 		return
 	}
 
@@ -189,7 +189,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseDate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseDate, http.StatusInternalServerError)
 		return
 	}
 
@@ -208,13 +208,13 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	rec, err := s.h.UpdateRecommendationItem(id, upRec)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
@@ -223,7 +223,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 	sources[rec.ID] = reqRec.Sources
 	err = s.h.Sync(sources, "recommendation_item_source", "recommendation_item_id")
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errSync, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errSync, http.StatusInternalServerError)
 		return
 	}
 
@@ -233,7 +233,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 	if val != "" {
 		_, err = s.rc.Unlink(rrKey).Result()
 		if err != nil {
-			helper.DecodeError(w,  s.l, err, errKeyUnlink, http.StatusInternalServerError)
+			helper.DecodeError(w,  s.l, errKeyUnlink, http.StatusInternalServerError)
 			return
 		}
 	}
@@ -247,13 +247,13 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	rec, err := s.h.GetRecommendationItem(id)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -263,14 +263,14 @@ func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request)
 	if val != "" {
 		_, err = s.rc.Unlink(rrKey).Result()
 		if err != nil {
-			helper.DecodeError(w,  s.l, err, errKeyUnlink, http.StatusInternalServerError)
+			helper.DecodeError(w,  s.l, errKeyUnlink, http.StatusInternalServerError)
 			return
 		}
 	}
 
 	err = s.h.DeleteRecommendationItem(id)
 	if err != nil {
-		helper.DecodeError(w,  s.l, err, errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, errDelete, http.StatusInternalServerError)
 		return
 	}
 

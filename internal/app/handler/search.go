@@ -15,7 +15,7 @@ import (
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, s.l, nil, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, s.l, errQueryField, http.StatusBadRequest)
 		return
 	}
 	if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -36,7 +36,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if val != "" {
 		rr := &model.RecommendationPagination{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w, s.l, err, errUnmarshal, http.StatusInternalServerError)
+			helper.DecodeError(w, s.l, errUnmarshal, http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -45,7 +45,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 	if err != nil {
-		helper.DecodeError(w, s.l, err, errFetchRows, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errFetchRows, http.StatusInternalServerError)
 		return
 	}
 	var (
@@ -58,7 +58,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	if params["page"] != nil {
 		page, err := strconv.ParseFloat(params["page"][0], 64)
 		if err != nil {
-			helper.DecodeError(w, s.l, err, errParseInt, http.StatusInternalServerError)
+			helper.DecodeError(w, s.l, errParseInt, http.StatusInternalServerError)
 			return
 		}
 		if page > currentPage {
@@ -69,19 +69,19 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// End pagination
 	search, err := s.h.SearchRecommendation(offset, limit, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, s.l, err, errSearch, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errSearch, http.StatusInternalServerError)
 		return
 	}
 	result := []*model.RecommendationResponse{}
 	for _, r := range search.Data {
 		recG, err := s.h.GetRecommendationGenres(r.ID)
 		if err != nil {
-			helper.DecodeError(w, s.l, err, errFetch, http.StatusInternalServerError)
+			helper.DecodeError(w, s.l, errFetch, http.StatusInternalServerError)
 			return
 		}
 		recK, err := s.h.GetRecommendationKeywords(r.ID)
 		if err != nil {
-			helper.DecodeError(w, s.l, err, errFetch, http.StatusInternalServerError)
+			helper.DecodeError(w, s.l, errFetch, http.StatusInternalServerError)
 			return
 		}
 		recFinal := &model.RecommendationResponse{
@@ -101,12 +101,12 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
-		helper.DecodeError(w, s.l, err, errMarhsal, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errMarhsal, http.StatusInternalServerError)
 		return
 	}
 	err = s.rc.Set(rrKey, rr, redisTimeout).Err()
 	if err != nil {
-		helper.DecodeError(w, s.l, err, errKeySet, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errKeySet, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -117,7 +117,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, s.l, nil, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, s.l, errQueryField, http.StatusBadRequest)
 		return
 	}
 	if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -126,7 +126,7 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	}
 	search, err := s.h.SearchUser(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, s.l, err, errSearch, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -137,7 +137,7 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, s.l, nil, "The query field is required", http.StatusBadRequest)
+		helper.DecodeError(w, s.l, errQueryField, http.StatusBadRequest)
 		return
 	}
 	if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -146,7 +146,7 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	}
 	search, err := s.h.SearchGenre(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, s.l, err, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, "Could not do the search", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -157,7 +157,7 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, s.l, nil, "The query field is required", http.StatusBadRequest)
+		helper.DecodeError(w, s.l, errQueryField, http.StatusBadRequest)
 		return
 	}
 	if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -166,7 +166,7 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 	search, err := s.h.SearchKeyword(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, s.l, err, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -177,7 +177,7 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, s.l, nil, "The query field is required", http.StatusBadRequest)
+		helper.DecodeError(w, s.l, errQueryField, http.StatusBadRequest)
 		return
 	}
 	if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -186,7 +186,7 @@ func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	}
 	search, err := s.h.SearchSource(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, s.l, err, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

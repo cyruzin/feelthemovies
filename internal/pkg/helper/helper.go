@@ -53,12 +53,11 @@ type APIMessage struct {
 func DecodeError(
 	w http.ResponseWriter,
 	l *zap.SugaredLogger,
-	errDebug error,
 	apiErr string,
 	code int,
 ) {
-	l.Errorf("%s: %s", apiErr, errDebug)
-	w.WriteHeader(code)
+	l.Error(apiErr)     // Loggin before JSON response.
+	w.WriteHeader(code) // Setting error code.
 	e := &APIMessage{apiErr, code}
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		w.Write([]byte("Could not encode the payload"))
