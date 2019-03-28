@@ -17,7 +17,7 @@ import (
 func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 	u, err := s.h.GetUsers()
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -28,12 +28,12 @@ func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	u, err := s.h.GetUser(id)
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -44,7 +44,7 @@ func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqU); err != nil {
@@ -53,7 +53,7 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		helper.DecodeError(w,  err,errPassHash, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errPassHash, http.StatusInternalServerError)
 		return
 	}
 	hashAPI := uuid.New()
@@ -67,7 +67,7 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	u, err := s.h.CreateUser(&newU)
 	if err != nil {
-		helper.DecodeError(w,  err,errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -78,7 +78,7 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqU); err != nil {
@@ -87,7 +87,7 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		helper.DecodeError(w,  err,errPassHash, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errPassHash, http.StatusInternalServerError)
 		return
 	}
 	hashAPI := uuid.New()
@@ -100,12 +100,12 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	u, err := s.h.UpdateUser(id, &upU)
 	if err != nil {
-		helper.DecodeError(w,  err,errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -116,11 +116,11 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	if err := s.h.DeleteUser(id); err != nil {
-		helper.DecodeError(w,  err,errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

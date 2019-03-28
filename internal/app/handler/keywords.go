@@ -16,7 +16,7 @@ import (
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 	k, err := s.h.GetKeywords()
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -27,12 +27,12 @@ func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	k, err := s.h.GetKeyword(id)
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -44,7 +44,7 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqK); err != nil {
@@ -58,7 +58,7 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 	k, err := s.h.CreateKeyword(&newK)
 	if err != nil {
-		helper.DecodeError(w,  err,errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -70,7 +70,7 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 	reqK := &model.Keyword{}
 	err := json.NewDecoder(r.Body).Decode(reqK)
 	if err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqK); err != nil {
@@ -82,12 +82,12 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	k, err := s.h.UpdateKeyword(id, &upK)
 	if err != nil {
-		helper.DecodeError(w,  err,errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -98,11 +98,11 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	if err := s.h.DeleteKeyword(id); err != nil {
-		helper.DecodeError(w,  err,errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w,  s.l, err, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

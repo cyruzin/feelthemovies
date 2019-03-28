@@ -20,18 +20,18 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Api-Token")
 		if token == "" {
-			helper.DecodeError(w, nil, errEmptyToken, http.StatusBadRequest)
+			helper.DecodeError(w, s.l, nil, errEmptyToken, http.StatusBadRequest)
 			return
 		}
 		auth, err := s.h.CheckAPIToken(token)
 		if err != nil {
-			helper.DecodeError(w, err, errInvalidToken, http.StatusUnauthorized)
+			helper.DecodeError(w, s.l, err, errInvalidToken, http.StatusUnauthorized)
 			return
 		}
 		if auth {
 			next.ServeHTTP(w, r)
 		} else {
-			helper.DecodeError(w, err, errUnauthorized, http.StatusUnauthorized)
+			helper.DecodeError(w, s.l, err, errUnauthorized, http.StatusUnauthorized)
 			return
 		}
 

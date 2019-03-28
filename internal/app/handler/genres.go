@@ -17,7 +17,7 @@ import (
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 	g, err := s.h.GetGenres()
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -28,12 +28,12 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	g, err := s.h.GetGenre(id)
 	if err != nil {
-		helper.DecodeError(w,  err,errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -45,7 +45,7 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
 	if err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqG); err != nil {
@@ -59,7 +59,7 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	}
 	g, err := s.h.CreateGenre(&newG)
 	if err != nil {
-		helper.DecodeError(w,  err,errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -71,7 +71,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 	reqG := &model.Genre{}
 	err := json.NewDecoder(r.Body).Decode(reqG)
 	if err != nil {
-		helper.DecodeError(w,  err,errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errDecode, http.StatusInternalServerError)
 		return
 	}
 	if err := s.v.Struct(reqG); err != nil {
@@ -84,12 +84,12 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	g, err := s.h.UpdateGenre(id, &upG)
 	if err != nil {
-		helper.DecodeError(w,  err,errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -100,11 +100,11 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w,  err,errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errParseInt, http.StatusInternalServerError)
 		return
 	}
 	if err := s.h.DeleteGenre(id); err != nil {
-		helper.DecodeError(w,  err,errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w, s.l, err, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

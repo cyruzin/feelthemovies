@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
@@ -22,6 +24,12 @@ import (
 var v *validator.Validate
 
 func main() {
+	l, err := zap.NewProduction() // Uber Zap Logger instance.
+	if err != nil {
+		log.Fatal("Could not initiate the logger")
+	}
+	defer l.Sync()
+
 	db := database() // Database instance.
 	defer db.Close()
 
@@ -32,8 +40,8 @@ func main() {
 
 	v = validator.New() // Validator instance.
 
-	h := handler.NewHandler(mc, rc, v) // Passing instances to the handlers pkg.
-	router(h)                          // Passing handlers to the router.
+	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
+	router(h)                                     // Passing handlers to the router.
 }
 
 // Database connection.
