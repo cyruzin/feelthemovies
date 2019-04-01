@@ -6,7 +6,13 @@ type Auth struct {
 	Name     string `json:"name"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password,omitempty" validate:"required"`
-	APIToken string `json:"api_token"`
+	APIToken string `json:"api_token,omitempty"`
+}
+
+// AuthJWT type is a struct for JWT authentication.
+type AuthJWT struct {
+	*Auth
+	Token string `json:"token"`
 }
 
 // CheckAPIToken checks if the given token exists.
