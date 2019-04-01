@@ -2,10 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 // AuthUser authenticates the user.
@@ -39,6 +43,34 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	token, err := s.GenerateToken()
+	if err != nil {
+		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	finalInfo := &model.AuthJWT{
+		Auth:  authInfo,
+		Token: token,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&authInfo)
+	json.NewEncoder(w).Encode(finalInfo)
+}
+
+// GenerateToken ...
+func (s *Setup) GenerateToken() (string, error) {
+	mySigningKey := []byte(os.Getenv("JWTSecret"))
+
+	claims := jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+		Issuer:    "Feel the Movies",
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	ss, err := token.SignedString(mySigningKey)
+	if err != nil {
+		return "", errors.New("Could not generate the Token")
+	}
+	return ss, nil
 }

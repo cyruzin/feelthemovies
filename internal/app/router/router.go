@@ -117,6 +117,6 @@ func newRelicApp() (newrelic.Application, error) {
 	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
 		return nil, errors.New("Could not connect to New Relic server")
 	}
-	log.Println("New Relic: OK.")
+	log.Println("New Relic: Connection OK.")
 	return app, nil
 }
