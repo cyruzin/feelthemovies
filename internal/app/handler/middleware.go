@@ -56,7 +56,7 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// If the toke is valid.
+		// If the token is valid.
 		if token.Valid {
 			next.ServeHTTP(w, r)
 		} else {
