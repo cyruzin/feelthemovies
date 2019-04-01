@@ -58,9 +58,9 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(finalInfo)
 }
 
-// GenerateToken ...
+// GenerateToken generates a new JWT Token.
 func (s *Setup) GenerateToken() (string, error) {
-	mySigningKey := []byte(os.Getenv("JWTSecret"))
+	secret := []byte(os.Getenv("JWTSecret"))
 
 	claims := jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
@@ -68,7 +68,7 @@ func (s *Setup) GenerateToken() (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(mySigningKey)
+	ss, err := token.SignedString(secret)
 	if err != nil {
 		return "", errors.New("Could not generate the Token")
 	}

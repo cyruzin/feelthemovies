@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -43,12 +44,15 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 
 		// Parsing the token to verify its authenticity.
 		token, err := jwt.Parse(jwtString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			}
 			return []byte(os.Getenv("JWTSecret")), nil
 		})
 
 		// Returning parsing errors.
 		if err != nil {
-			helper.DecodeError(w, r, s.l, err.Error(), http.StatusUnauthorized)
+			helper.DecodeError(w, r, s.l, errInvalidJWTToken, http.StatusUnauthorized)
 			return
 		}
 
