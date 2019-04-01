@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 
@@ -39,9 +40,18 @@ func main() {
 	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
 	r := router.NewRouter(h)                      // Passing handlers to the router.
 
+	srv := &http.Server{
+		Addr:              ":8000",
+		ReadTimeout:       time.Duration(5 * time.Second),
+		ReadHeaderTimeout: time.Duration(5 * time.Second),
+		WriteTimeout:      time.Duration(10 * time.Second),
+		IdleTimeout:       time.Duration(120 * time.Second),
+		Handler:           r,
+	}
+
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
-	log.Fatal(http.ListenAndServe(":8000", r)) // Initiating the server.
+	log.Println(srv.ListenAndServe()) // Initiating the server.
 }
 
 // Database connection.

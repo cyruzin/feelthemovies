@@ -65,10 +65,10 @@ func publicRoutes(r *chi.Mux, h *handler.Setup) {
 	r.Get("/v1/sources", h.GetSources)
 	r.Get("/v1/source/{id}", h.GetSource)
 
-	r.HandleFunc(newrelic.WrapHandleFunc(app, "/v1/search_recommendation", h.SearchRecommendation))
-	r.HandleFunc("/v1/search_genre", h.SearchGenre)
-	r.HandleFunc("/v1/search_keyword", h.SearchKeyword)
-	r.HandleFunc("/v1/search_source", h.SearchSource)
+	r.Get(newrelic.WrapHandleFunc(app, "/v1/search_recommendation", h.SearchRecommendation))
+	r.Get("/v1/search_genre", h.SearchGenre)
+	r.Get("/v1/search_keyword", h.SearchKeyword)
+	r.Get("/v1/search_source", h.SearchSource)
 }
 
 // Auth routes.
@@ -103,7 +103,7 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 		r.Put("/v1/source/{id}", h.UpdateSource)
 		r.Delete("/v1/source/{id}", h.DeleteSource)
 
-		r.HandleFunc("/v1/search_user", h.SearchUser)
+		r.Get("/v1/search_user", h.SearchUser)
 	})
 }
 
