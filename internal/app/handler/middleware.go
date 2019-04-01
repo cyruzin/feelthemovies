@@ -33,14 +33,8 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Checking if the header contains Bearer string.
-		if !strings.Contains(tokenHeader, "Bearer") {
-			helper.DecodeError(w, r, s.l, errMalformedToken, http.StatusUnauthorized)
-			return
-		}
-
-		// Checking if the token exists.
-		if len(strings.Split(tokenHeader, "Bearer ")) == 1 {
+		// Checking if the header contains Bearer string and if the token exists.
+		if !strings.Contains(tokenHeader, "Bearer") || len(strings.Split(tokenHeader, "Bearer ")) == 1 {
 			helper.DecodeError(w, r, s.l, errMalformedToken, http.StatusUnauthorized)
 			return
 		}
