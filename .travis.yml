@@ -3,12 +3,6 @@ language: go
 go:
 - master
 
-go_import_path: 
-  - github.com/cyruzin/feelthemovies/internal/app/model
-  - github.com/cyruzin/feelthemovies/internal/app/handler
-  - github.com/cyruzin/feelthemovies/internal/app/router
-  - github.com/cyruzin/feelthemovies/internal/pkg/helper
-
 services:
 - docker
 
