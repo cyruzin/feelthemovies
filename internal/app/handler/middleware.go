@@ -33,8 +33,8 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Checking if the header contains Bearer string.
-		if !strings.Contains(tokenHeader, "Bearer") {
+		// Checking if the header contains Bearer string and if the token exists.
+		if !strings.Contains(tokenHeader, "Bearer") || len(strings.Split(tokenHeader, "Bearer ")) == 1 {
 			helper.DecodeError(w, r, s.l, errMalformedToken, http.StatusUnauthorized)
 			return
 		}
@@ -56,7 +56,7 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// If the toke is valid.
+		// If the token is valid.
 		if token.Valid {
 			next.ServeHTTP(w, r)
 		} else {
