@@ -1,45 +1,27 @@
-
-# version format
-version: "{build}"
-
-# Operating system (build VM template)
-os: Windows Server 2012 R2
-
-#image: Previous Visual Studio 2017
-
+version: 1.1.{build}
+image: Previous Ubuntu1604
+clone_depth: 1
 clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
-
-# environment variables
+services:
+- docker
 environment:
-    GOPATH: c:\gopath
-    #MYSQL_PATH: C:\Program Files\MySQL\MySQL Server 5.7
-   
-#services:
-# - mysql
-
-# scripts that run after cloning repository
-install:
-  #- set PATH=%MYSQL_PATH%\bin;%PATH%
-  - set PATH=C:\msys64\mingw64\bin;%PATH%
-  - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
-  - go version
-  - go env
-  - go get -v -t -d ./...
-
-# to run your custom scripts instead of automatic MSBuild
-build_script:
-  #- cmd: |-
-   #   "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql.exe" -u root --password=Password12! < c:\gopath\src\github.com\cyruzin\feelthemovies\db\api_feelthemovies.sql
-  - go vet ./...
-  #- go test -v ./... -race -coverprofile=coverage.xml -covermode=atomic
-  - go test -v ./...
-  #- ps: |-
-   #   $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
-   #  Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-   #   bash codecov.sh -f "coverage.xml" -t 28626b54-6de1-4ad3-bcce-cb98f1528b0b
-
-# to disable automatic tests
+  DBUSER:
+    secure: D96kLX50Wgb9dLMp9fTDrw==
+  DBPASS:
+    secure: 3uPmkr+oh1vXGrjippcSeA==
+  DBHOST:
+    secure: /PCUeNHuS71rh4GYzoRc0Q==
+  REDISADDR:
+    secure: 14sChUaD8DQwH6ClqLTgeA==
+  REDISPASS:
+    secure: F107pnl4jI09Elw95j8V7A==
+  JWTSecret:
+    secure: 7+ydAw/1wIDUVAc01SluVw==
+  NEWRELICKEY:
+    secure: H7zzbZZm/V21rW/JgZeDo/9fFwihvyk6C4slqSJkYH1WfmQYxyjalx3T9rbjoB+v
+build:
+  verbosity: minimal
+test_script:
+- cmd: "docker-compose up -d \ngo version\n    go get -v -t -d ./...\n    if [ -f Gopkg.toml ]; then\n        curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh\n        dep ensure\n    fi\n    go test -v ./... -race"
 test: off
-
-# to disable deployment
 deploy: off
