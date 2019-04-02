@@ -20,8 +20,10 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-script:
+install:
   - docker-compose up -d
+
+script:
   - go get -v -t -d ./... 
   - go get github.com/mattn/goveralls  
   - $GOPATH/bin/goveralls -service=travis-ci
