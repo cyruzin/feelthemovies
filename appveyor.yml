@@ -1,7 +1,7 @@
 version: 1.1.{build}
 image: Previous Ubuntu1604
 clone_depth: 1
-clone_folder: c:\gopath\src\github.com\cyruzin\feelthemovies
+clone_folder: gopath/src/github.com/cyruzin/feelthemovies
 services:
 - docker
 environment:
