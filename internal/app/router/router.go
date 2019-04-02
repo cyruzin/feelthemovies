@@ -16,7 +16,7 @@ import (
 )
 
 // NewRouter has all routes setup with CORS and middlewares.
-func NewRouter(h *handler.Setup) *chi.Mux {
+func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
@@ -31,8 +31,9 @@ func NewRouter(h *handler.Setup) *chi.Mux {
 	r.Use(cors.Handler)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	authRoutes(r, h)
-	publicRoutes(r, h)
+	authRoutes(r, h)                        // Auth routes.
+	publicRoutes(r, h)                      // Public routes.
+	r.Handle("/healthcheck", healthHandler) // Health check route.
 
 	return r
 }

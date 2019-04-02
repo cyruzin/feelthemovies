@@ -8,8 +8,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/InVisionApp/go-health/handlers"
+
 	"go.uber.org/zap"
 
+	health "github.com/InVisionApp/go-health"
+	"github.com/InVisionApp/go-health/checkers"
+	redisCheck "github.com/InVisionApp/go-health/checkers/redis"
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/app/router"
 
@@ -38,7 +43,13 @@ func main() {
 	v = validator.New() // Validator instance.
 
 	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
-	r := router.NewRouter(h)                      // Passing handlers to the router.
+
+	healthCheck, err := healthChecks(db) // Health instance.
+	if err != nil {
+		log.Println("Failed to perform health checks")
+	}
+
+	r := router.NewRouter(h, handlers.NewJSONHandlerFunc(healthCheck, nil)) // Passing handlers to the router.
 
 	srv := &http.Server{
 		Addr:              ":8000",
@@ -85,4 +96,52 @@ func redis() *re.Client {
 	}
 	log.Println("Redis: Connection OK.")
 	return client
+}
+
+// healthChecks checks the services health periodically.
+func healthChecks(db *sql.DB) (*health.Health, error) {
+	h := health.New()
+	h.DisableLogging()
+
+	mysqlDB, err := checkers.NewSQL(&checkers.SQLConfig{
+		Pinger: db,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	redisDB, err := redisCheck.NewRedis(&redisCheck.RedisConfig{
+		Auth: &redisCheck.RedisAuthConfig{
+			Addr:     os.Getenv("REDISADDR"),
+			Password: os.Getenv("REDISPASS"),
+			DB:       0,
+		},
+		Ping: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if err = h.AddChecks([]*health.Config{
+		{
+			Name:     "feelthemovies-database",
+			Checker:  mysqlDB,
+			Interval: time.Duration(3) * time.Second,
+			Fatal:    true,
+		},
+		{
+			Name:     "feelthemovies-redis",
+			Checker:  redisDB,
+			Interval: time.Duration(3) * time.Second,
+			Fatal:    true,
+		},
+	}); err != nil {
+		return nil, err
+	}
+
+	if err := h.Start(); err != nil {
+		return nil, err
+	}
+
+	return h, nil
 }
