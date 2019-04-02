@@ -9,7 +9,7 @@ services:
 - docker
 
 env: 
-  - DOCKER_COMPOSE_VERSION=1.2.4
+  - DOCKER_COMPOSE_VERSION=1.24.0
 
 git:
   depth: 1
