@@ -57,7 +57,6 @@ func TestCreateGenreSuccess(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+token)
 
 	rr := httptest.NewRecorder()
@@ -85,7 +84,6 @@ func TestUpdateGenreSuccess(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+token)
 
 	rr := httptest.NewRecorder()
@@ -116,7 +114,6 @@ func TestDeleteGenreSuccess(t *testing.T) {
 
 	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+token)
 
 	r.ServeHTTP(rr, req)
@@ -133,7 +130,7 @@ func TestMalformedToken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := http.NewRequest("DELETE", "/v1/genre/7", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/9", nil)
 
 	if err != nil {
 		t.Fatal(err)
@@ -143,7 +140,6 @@ func TestMalformedToken(t *testing.T) {
 
 	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", token)
 
 	r.ServeHTTP(rr, req)
@@ -155,7 +151,7 @@ func TestMalformedToken(t *testing.T) {
 
 func TestEmptyToken(t *testing.T) {
 
-	req, err := http.NewRequest("DELETE", "/v1/genre/5", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/9", nil)
 
 	if err != nil {
 		t.Fatal(err)
@@ -165,7 +161,6 @@ func TestEmptyToken(t *testing.T) {
 
 	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "")
 
 	r.ServeHTTP(rr, req)
@@ -177,7 +172,7 @@ func TestEmptyToken(t *testing.T) {
 
 func TestInvalidToken(t *testing.T) {
 
-	req, err := http.NewRequest("DELETE", "/v1/genre/10", nil)
+	req, err := http.NewRequest("DELETE", "/v1/genre/9", nil)
 
 	if err != nil {
 		t.Fatal(err)
@@ -187,7 +182,6 @@ func TestInvalidToken(t *testing.T) {
 
 	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
 
-	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer a")
 
 	r.ServeHTTP(rr, req)

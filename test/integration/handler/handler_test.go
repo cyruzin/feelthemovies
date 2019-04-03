@@ -24,6 +24,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	r.Use(h.h.JSONMiddleware)
 	defer tearDownHandlers(h) // Closing connections.
 	os.Exit(m.Run())
 }
