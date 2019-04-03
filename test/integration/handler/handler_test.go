@@ -3,6 +3,7 @@ package handler_test
 import (
 	"database/sql"
 	"log"
+	"os"
 	"testing"
 
 	"github.com/go-chi/chi"
@@ -24,6 +25,7 @@ var (
 
 func TestMain(m *testing.M) {
 	defer tearDownHandlers(h) // Closing connections.
+	os.Exit(m.Run())
 }
 
 type setupTest struct {

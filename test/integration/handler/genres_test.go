@@ -8,7 +8,6 @@ import (
 )
 
 func TestGetGenresSuccess(t *testing.T) {
-
 	req, err := http.NewRequest("GET", "/v1/genres", nil)
 
 	if err != nil {
@@ -45,7 +44,6 @@ func TestGetGenreSuccess(t *testing.T) {
 }
 
 func TestCreateGenreSuccess(t *testing.T) {
-
 	var newGenre = []byte(`{"name":"SpongeBob"}`)
 	token, err := h.h.GenerateToken()
 
@@ -60,11 +58,11 @@ func TestCreateGenreSuccess(t *testing.T) {
 	}
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", "Bearer "+token)
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/genre", h.h.CreateGenre)
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre", h.h.CreateGenre)
 
 	r.ServeHTTP(rr, req)
 
@@ -74,7 +72,6 @@ func TestCreateGenreSuccess(t *testing.T) {
 }
 
 func TestUpdateGenreSuccess(t *testing.T) {
-
 	var newGenre = []byte(`{"name":"SquidwardTentacles"}`)
 	token, err := h.h.GenerateToken()
 
@@ -89,11 +86,11 @@ func TestUpdateGenreSuccess(t *testing.T) {
 	}
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", "Bearer "+token)
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/genre/{id}", h.h.UpdateGenre)
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.UpdateGenre)
 
 	r.ServeHTTP(rr, req)
 
@@ -109,6 +106,33 @@ func TestDeleteGenreSuccess(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	req, err := http.NewRequest("DELETE", "/v1/genre/9", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer "+token)
+
+	r.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
+
+func TestMalformedToken(t *testing.T) {
+	token, err := h.h.GenerateToken()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	req, err := http.NewRequest("DELETE", "/v1/genre/7", nil)
 
 	if err != nil {
@@ -117,14 +141,58 @@ func TestDeleteGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	r.HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", token)
 
 	r.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	if status := rr.Code; status != http.StatusUnauthorized {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusUnauthorized, status)
+	}
+}
+
+func TestEmptyToken(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", "/v1/genre/5", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "")
+
+	r.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusBadRequest, status)
+	}
+}
+
+func TestInvalidToken(t *testing.T) {
+
+	req, err := http.NewRequest("DELETE", "/v1/genre/10", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	r.With(h.h.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.h.DeleteGenre)
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Bearer a")
+
+	r.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusUnauthorized {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusUnauthorized, status)
 	}
 }
