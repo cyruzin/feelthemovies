@@ -29,6 +29,7 @@ func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
 	})
 
 	r.Use(cors.Handler)
+	r.Use(middleware.Logger)
 	r.Use(middleware.Timeout(60 * time.Second))
 
 	authRoutes(r, h)                        // Auth routes.
