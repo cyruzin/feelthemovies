@@ -52,7 +52,7 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 
 		// Returning parsing errors.
 		if err != nil {
-			helper.DecodeError(w, r, s.l, errInvalidJWTToken, http.StatusUnauthorized)
+			helper.DecodeError(w, r, s.l, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
