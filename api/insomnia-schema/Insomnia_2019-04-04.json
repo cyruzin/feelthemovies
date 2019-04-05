@@ -1,7 +1,7 @@
 {
 	"_type": "export",
 	"__export_format": 3,
-	"__export_date": "2019-01-06T22:09:49.474Z",
+	"__export_date": "2019-04-05T00:54:58.345Z",
 	"__export_source": "insomnia.desktop.app:v6.3.2",
 	"resources": [
 		{
@@ -27,9 +27,46 @@
 		},
 		{
 			"_id": "jar_e77be4907439404fa559bcce932f055a",
-			"cookies": [],
+			"cookies": [
+				{
+					"creation": "2019-01-14T23:13:40.855Z",
+					"domain": "www.themoviedb.org",
+					"expires": "2019-02-04T18:17:22.000Z",
+					"hostOnly": false,
+					"httpOnly": true,
+					"id": "06493645410186555",
+					"key": "session",
+					"lastAccessed": "2019-02-03T18:17:23.153Z",
+					"path": "/",
+					"value": "BAh7CUkiD3Nlc3Npb25faWQGOgZFVEkiRWZjMTRlODE4MWY4ODE4YjE4NDNi%0AODJkN2UzZTE3YjkzNTMxZTIyNGIxMGI0MWY2ZGE4YjAwZWUzYTEyMmMyNWYG%0AOwBGSSIJY3NyZgY7AEZJIjFSTmFNWFV0Y3d4Tk9vSkRjLzNYTC8yZjhZS2lI%0AWm1CeTBWaVl2S3hCSkZFPQY7AEZJIg10cmFja2luZwY7AEZ7BkkiFEhUVFBf%0AVVNFUl9BR0VOVAY7AFRJIi05YmZhMmY1MzdmYWYyM2JkOWI1ODg4Mzk0NjBi%0ANjU3ZjYzNzhhYzkzBjsARkkiHmFwaV9zZXNzaW9uX3JlcXVlc3RfdG9rZW4G%0AOwBGSSItOTczMzUzNGEyMzc3NTEzYTJhNzQ1ODgyN2QwM2ZkZTNkYTYxOGFh%0AYwY7AFQ%3D%0A--e8b1e35485b047c7f4cc35c70327a406e0f20cc5"
+				},
+				{
+					"creation": "2019-01-15T01:44:21.631Z",
+					"domain": "typicode.com",
+					"expires": "2020-01-15T01:44:21.000Z",
+					"hostOnly": false,
+					"httpOnly": true,
+					"id": "3589119179159448",
+					"key": "__cfduid",
+					"lastAccessed": "2019-01-15T01:44:21.631Z",
+					"path": "/",
+					"value": "d4557f95b9c60293a9e9ceb8d799718a91547516661"
+				},
+				{
+					"creation": "2019-02-06T15:28:47.634Z",
+					"domain": "feelthemovies.com.br",
+					"expires": "2020-02-06T15:28:47.000Z",
+					"hostOnly": false,
+					"httpOnly": true,
+					"id": "24458280877490024",
+					"key": "__cfduid",
+					"lastAccessed": "2019-02-06T15:28:47.634Z",
+					"path": "/",
+					"value": "de15a896cbd7e80fd1fd04dd517801ced1549466927"
+				}
+			],
 			"created": 1543673158267,
-			"modified": 1543673158267,
+			"modified": 1549466927643,
 			"name": "Default Jar",
 			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
 			"_type": "cookie_jar"
@@ -39,11 +76,11 @@
 			"created": 1546359816290,
 			"description": "",
 			"environment": {
-				"api_token": "aa0f3579-c1ed-4377-867d-e5a11c45f76f",
-				"base_url": "http://localhost:8000/v1"
+				"base_url": "http://localhost:8000/v1",
+				"production_url": "https://feelthemovies.com.br/v1"
 			},
 			"metaSortKey": -1546359816290,
-			"modified": 1546812530783,
+			"modified": 1554425205122,
 			"name": "Feel the Movies",
 			"parentId": "wrk_510f549825d244c5926a538b0f855c53",
 			"_type": "request_group"
@@ -137,6 +174,17 @@
 			"_type": "request_group"
 		},
 		{
+			"_id": "fld_e742c5cadc904b7694f5fe914d1a6205",
+			"created": 1554170681711,
+			"description": "",
+			"environment": {},
+			"metaSortKey": -1554170681711,
+			"modified": 1554170681711,
+			"name": "HealthCheck",
+			"parentId": "fld_a6f436f7d0a648ada2b4e9b3bdfdb1f5",
+			"_type": "request_group"
+		},
+		{
 			"_id": "req_fb959f6cfe204aa5ae8a758488a2c4ed",
 			"authentication": {},
 			"body": {},
@@ -144,15 +192,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_752d0d9f51db47828589439d2dfed667",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_69add52ee752404b949ae248e0f4f8db",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546359832096,
 			"method": "GET",
-			"modified": 1546633909948,
+			"modified": 1554425313626,
 			"name": "/recommendations",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -162,7 +210,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendations",
+			"url": "{{ base_url }}/recommendations",
 			"_type": "request"
 		},
 		{
@@ -173,15 +221,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_dfebee5d5221404ab68cc988deeae464",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_1d83466e89ed48f1a940ef6edd041013",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546359832046,
 			"method": "GET",
-			"modified": 1546742115411,
+			"modified": 1554425320255,
 			"name": "/recommendation/{id}",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -191,15 +239,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/2",
+			"url": "{{ base_url }}/recommendation/1",
 			"_type": "request"
 		},
 		{
 			"_id": "req_3e2412467a7847b6a3e4abc1084c8f39",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Romance Movies\",\n\t\"type\": 0,\n\t\"body\": \"<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [1,2],\n\t\"keywords\": [1,2]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Brazilian movies\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"genres\": [1,4],\n\t\"keywords\": [1,3]\n}"
 			},
 			"created": 1546362293924,
 			"description": "",
@@ -208,17 +258,12 @@
 					"id": "pair_37ca6da9f5584419b9905df49e67fab4",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_a610a2a5dc9441c986afa80ad6fbe65f",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546359831996,
 			"method": "POST",
-			"modified": 1546741715134,
+			"modified": 1554425607403,
 			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
@@ -233,10 +278,12 @@
 		},
 		{
 			"_id": "req_ebb5ef772cd1421aa67bdbef410698b1",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Romance Movies\",\n\t\"type\": 2,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [1],\n\t\"keywords\": [5]\n}"
+				"text": "{\n\t\"user_id\": 1,\n\t\"title\": \"The Best Romance Movies\",\n\t\"type\": 3,\n\t\"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\",\n\t\"poster\": \"pOiiUyTZmlLznq\",\n\t\"backdrop\": \"IjqIzzMninQmok\",\n\t\"status\": 1,\n\t\"genres\": [],\n\t\"keywords\": []\n}"
 			},
 			"created": 1546363702513,
 			"description": "",
@@ -245,18 +292,44 @@
 					"id": "pair_5a068342b517428987c900e7dc0b0e4c",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_f084f777742b4f069ba60956deefc5f4",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546359831946,
 			"method": "PUT",
-			"modified": 1546742145053,
+			"modified": 1554425610058,
 			"name": "/recommendation/{id}",
+			"parameters": [],
+			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "{{ base_url  }}/recommendation/41",
+			"_type": "request"
+		},
+		{
+			"_id": "req_541407beb3274d6286a0ae9199695be7",
+			"authentication": {
+				"type": "bearer"
+			},
+			"body": {},
+			"created": 1546368315284,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_a8dc1278ead34844a108f3b34cd9d189",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1546359831896,
+			"method": "DELETE",
+			"modified": 1554425613333,
+			"name": "/recommendation",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
 			"settingDisableRenderRequestBody": false,
@@ -269,23 +342,26 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_541407beb3274d6286a0ae9199695be7",
-			"authentication": {},
+			"_id": "req_eacf661fc5084d329e124deab95f2610",
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
-			"created": 1546368315284,
+			"created": 1553643282581,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_a8dc1278ead34844a108f3b34cd9d189",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"disabled": false,
+					"id": "pair_66e7ef79cf1b4eadba1286a1770ce5ab",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
-			"metaSortKey": -1546359831896,
-			"method": "DELETE",
-			"modified": 1546473041467,
-			"name": "/recommendation",
+			"metaSortKey": -1553643282581,
+			"method": "GET",
+			"modified": 1554425598990,
+			"name": "/recommendations_admin",
 			"parameters": [],
 			"parentId": "fld_5f303f2d1e5a42e093d5ce8e7a23278f",
 			"settingDisableRenderRequestBody": false,
@@ -294,26 +370,28 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation/3",
+			"url": "{{ base_url  }}/recommendations_admin",
 			"_type": "request"
 		},
 		{
 			"_id": "req_8acee4f2232e47bf83bde7b724847dd1",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546386626746,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_21edd37642484b8dadb8e2898d858f5e",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_efa3a84162694844ba018da326d870e4",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546386626746,
 			"method": "GET",
-			"modified": 1546468302522,
+			"modified": 1554425619990,
 			"name": "/users",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -323,26 +401,28 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/users",
+			"url": "{{ base_url }}/users",
 			"_type": "request"
 		},
 		{
 			"_id": "req_61f2649908d343c18f78803f7843de33",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546386659673,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_370fa5ab0b4e4c5c8b8478d7f6cae449",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_8f00223a0ffb45478d41548f82b6cb6d",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546386626696,
 			"method": "GET",
-			"modified": 1546744495943,
+			"modified": 1554425622340,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -357,10 +437,12 @@
 		},
 		{
 			"_id": "req_596f6e8a5f5749bd96a5809492e44a0d",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"John Doe\",\n\t\"email\": \"johndoe@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"John Doe 2\",\n\t\"email\": \"johndoe2@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386681568,
 			"description": "",
@@ -369,18 +451,12 @@
 					"id": "pair_715a1309f22d42899cbc6afd28550c0c",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"disabled": false,
-					"id": "pair_73b0692634354facbb33467cc83f13af",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546386626646,
 			"method": "POST",
-			"modified": 1546811186182,
+			"modified": 1554425625021,
 			"name": "/user",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -395,10 +471,12 @@
 		},
 		{
 			"_id": "req_c5bdea91ee9343439114030b3c1392ec",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Cyro Dubeux\",\n\t\"email\": \"xorycx@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"name\": \"John Doe 3\",\n\t\"email\": \"johndoe3@admin.com\",\n\t\"password\": \"qw12erty\"\n}"
 			},
 			"created": 1546386851209,
 			"description": "",
@@ -407,17 +485,12 @@
 					"id": "pair_00f549b6c0de46cbb9fda4e46786a321",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_fc0fdb77aec34ea3b641398ad5bb0c31",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546386626596,
 			"method": "PUT",
-			"modified": 1546811151967,
+			"modified": 1554425627477,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -427,26 +500,28 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/1",
+			"url": "{{ base_url  }}/user/3",
 			"_type": "request"
 		},
 		{
 			"_id": "req_6ec473c578a646cc848ead80570ef835",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546387377640,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_8a688fd155bd448b9486411bfad952bb",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_3fe6af1840f64e01a4e15250e9516f29",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546386626546,
 			"method": "DELETE",
-			"modified": 1546473303913,
+			"modified": 1554425630104,
 			"name": "/user/{id}",
 			"parameters": [],
 			"parentId": "fld_d65d48c290b64b3ebd1852b09a26f283",
@@ -456,7 +531,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/user/2",
+			"url": "{{ base_url  }}/user/3",
 			"_type": "request"
 		},
 		{
@@ -467,15 +542,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_3718e2218c004fa79c9eaaf1d7a32b26",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_5a2d2167196e4261aa3242c59d565a4a",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546391830958,
 			"method": "GET",
-			"modified": 1546468377142,
+			"modified": 1554425567352,
 			"name": "/sources",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -496,15 +571,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_fbf6754e132d423aac0a2810506a279b",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_b34e12edf29a4fdabf07f56304ee785d",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546391830908,
 			"method": "GET",
-			"modified": 1546473555494,
+			"modified": 1554425563374,
 			"name": "/source/{id}",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -514,15 +589,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/source/1",
+			"url": "{{ base_url  }}/source/3",
 			"_type": "request"
 		},
 		{
 			"_id": "req_5d24001a489441c08d70d8b163548952",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"NET NOW\"\n}"
+				"text": "{\n\t\"name\": \"Netflix1\"\n}"
 			},
 			"created": 1546391891715,
 			"description": "",
@@ -531,17 +608,12 @@
 					"id": "pair_20d4deab12f6457aa5b0ea72621a09ca",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_502a1896adc745d08a7bcf5735eaaa65",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546391830858,
 			"method": "POST",
-			"modified": 1546537154528,
+			"modified": 1554425516362,
 			"name": "/source",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -556,10 +628,12 @@
 		},
 		{
 			"_id": "req_b93e4f1163f3439cbb30027d880a6a5a",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"YouTube\"\n}"
+				"text": "{\n\t\"name\": \"YouTube1\"\n}"
 			},
 			"created": 1546473518399,
 			"description": "",
@@ -568,17 +642,12 @@
 					"id": "pair_2e2167ad6f2d4b3cb4450ea8be20baac",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_1cea3fdcda1d457999c23686a74d2d0e",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546391830808,
 			"method": "PUT",
-			"modified": 1546537174892,
+			"modified": 1554425523513,
 			"name": "/source/{id}",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -593,21 +662,23 @@
 		},
 		{
 			"_id": "req_cf8ed60366fa480b9199b8ea19e26399",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546473659659,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_8f3ff9d5bd70447f9c9b332528dbda09",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_f3b5d59abb354fc8ba9a7a619c40eeab",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546391830758,
 			"method": "DELETE",
-			"modified": 1546473685810,
+			"modified": 1554425532315,
 			"name": "/source/{id}",
 			"parameters": [],
 			"parentId": "fld_051a3ba4c3444d82a85623431650fc45",
@@ -625,7 +696,7 @@
 			"authentication": {},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"email\": \"xorycx@gmail.com\",\n\t\"password\": \"qw12erty\"\n}"
+				"text": "{\n\t\"email\": \"admin@admin.com\",\n\t\"password\": \"password\"\n}"
 			},
 			"created": 1546448441083,
 			"description": "",
@@ -639,7 +710,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546448441083,
 			"method": "POST",
-			"modified": 1546743053796,
+			"modified": 1554425636466,
 			"name": "/auth",
 			"parameters": [],
 			"parentId": "fld_6e2a0754bf7d4f48a3f66c3fb8d674b7",
@@ -649,7 +720,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/auth",
+			"url": "{{ base_url }}/auth",
 			"_type": "request"
 		},
 		{
@@ -660,15 +731,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_f98d2eaeaeca4126a5d18c8422eda360",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_85612c122339477e9abe27828305428d",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546473712600,
 			"method": "GET",
-			"modified": 1546473794471,
+			"modified": 1554425571700,
 			"name": "/keywords",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -689,15 +760,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_d16fde5189994c278e6f836af7d9d2e6",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_a59d27a69fe14a69abd4e32ec0b35495",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546473712550,
 			"method": "GET",
-			"modified": 1546474011172,
+			"modified": 1554425574815,
 			"name": "/keyword/{id}",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -712,7 +783,9 @@
 		},
 		{
 			"_id": "req_025dc655ba564afcbbb5ea82cf783a44",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
 				"text": "{\n\t\"name\": \"Oceanborn a\"\n}"
@@ -724,17 +797,12 @@
 					"id": "pair_1dfb1e178d2d429a94fdb0415ae5c617",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_7245aa4da1a249359b306f57e94a5f64",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546473712450,
 			"method": "PUT",
-			"modified": 1546643340143,
+			"modified": 1554425477625,
 			"name": "/keyword/{id}",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -744,15 +812,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/keyword/1",
+			"url": "{{ base_url  }}/keyword/10",
 			"_type": "request"
 		},
 		{
 			"_id": "req_044e2d94b03e4b0c80b0246694697fa1",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"name\": \"Action\"\n}"
+				"text": "{\n\t\"name\": \"Shark 22\"\n}"
 			},
 			"created": 1546473751093,
 			"description": "",
@@ -761,17 +831,12 @@
 					"id": "pair_63b067776e834dceb61bdd0ac96292a6",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_8b76d29430e64a288c3ccec4461fdfec",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546473712500,
 			"method": "POST",
-			"modified": 1546741685927,
+			"modified": 1554425472004,
 			"name": "/keyword",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -786,21 +851,23 @@
 		},
 		{
 			"_id": "req_769bac50909140199107650103474973",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546473765612,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_5211cc41bfe74adea1e78daee9b5349c",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_e97f7c6eec8c4573bf96fae837485815",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546473712400,
 			"method": "DELETE",
-			"modified": 1546474691802,
+			"modified": 1554425486872,
 			"name": "/keyword/{id}",
 			"parameters": [],
 			"parentId": "fld_36c1e7a279354c4685304e6b652b2295",
@@ -821,15 +888,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_a9c37a4daf524f449fca7a65be768653",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_e7fb8ad0ad2f46bc9a8d1c578aff890b",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474714675,
 			"method": "GET",
-			"modified": 1546474725148,
+			"modified": 1554425578315,
 			"name": "/genres",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -839,7 +906,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/genres",
+			"url": "{{ base_url }}/genres",
 			"_type": "request"
 		},
 		{
@@ -850,15 +917,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_4759a23554a34123b7821ca550eb03b0",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_43fdba2dacb9438a9103a8767507cabe",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474714625,
 			"method": "GET",
-			"modified": 1546727684613,
+			"modified": 1554425581383,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -868,15 +935,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/genre/1",
+			"url": "{{ base_url  }}/genre/10",
 			"_type": "request"
 		},
 		{
 			"_id": "req_cf0702c915b144f9a5421ecdf2fdf558",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"Comedy\"\t\n}"
+				"text": "{\n\"name\": \"NewGenre\"\t\n}"
 			},
 			"created": 1546474786105,
 			"description": "",
@@ -885,17 +954,12 @@
 					"id": "pair_38d0258e996247338e859d1801cde2e9",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_2726ffee8bc54bd8b239204c31327cdd",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474714575,
 			"method": "POST",
-			"modified": 1546727708354,
+			"modified": 1554425419905,
 			"name": "/genre",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -910,10 +974,12 @@
 		},
 		{
 			"_id": "req_218ea0222805464892e5102c365a7552",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\"name\": \"Biography\"\t\n}"
+				"text": "{\n\"name\": \"Biography2\"\t\n}"
 			},
 			"created": 1546474845087,
 			"description": "",
@@ -922,17 +988,12 @@
 					"id": "pair_cf149abb63ed405297693c77c0f99ba8",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_c2e8e4714c2b4f4090cabd852e7f7152",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474714525,
 			"method": "PUT",
-			"modified": 1546532260535,
+			"modified": 1554425428156,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -947,21 +1008,23 @@
 		},
 		{
 			"_id": "req_5e3eea34b129452fb18ec664a5fe9703",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546474888731,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_9e9365cbb8df4f48b8ee3e14e254a71e",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_7965abc863b1485296d857fb74c03e9e",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474714475,
 			"method": "DELETE",
-			"modified": 1546732618177,
+			"modified": 1554425437323,
 			"name": "/genre/{id}",
 			"parameters": [],
 			"parentId": "fld_7fa48d5cea36498d910f2fa9dbf3b31b",
@@ -971,7 +1034,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/genre/3",
+			"url": "{{ base_url  }}/genre/8",
 			"_type": "request"
 		},
 		{
@@ -982,15 +1045,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_f66e23ad18bc423abac6ef66abebb721",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_b04a9a97328246288087c6f587737940",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474951648,
 			"method": "GET",
-			"modified": 1546742086877,
+			"modified": 1554425584802,
 			"name": "/recomendation_items/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1000,15 +1063,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_items/1",
+			"url": "{{ base_url }}/recommendation_items/2",
 			"_type": "request"
 		},
 		{
 			"_id": "req_116fb0eb152b472b96803371cdc685b9",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 2,\n\t\"name\": \"Aquamarine\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [1,2]\n}"
+				"text": "{\n\t\"recommendation_id\": 23,\n\t\"name\": \"Star Wars\",\n\t\"tmdb_id\": 5231,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"Lore Impsum A...\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great tv show!\",\n\t\"media_type\": \"tv\",\n\t\"sources\": [1,3]\n}"
 			},
 			"created": 1546475043713,
 			"description": "",
@@ -1017,17 +1082,12 @@
 					"id": "pair_2875c82c63b143ac90cab5332dcaa37c",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_284f0290350740b79a3b95d23619ff8a",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474951598,
 			"method": "POST",
-			"modified": 1546742175532,
+			"modified": 1554425367545,
 			"name": "/recommendation_item",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1048,15 +1108,15 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_aa496a278a3e45c58feebdfdb11c2550",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_4f44074d65664dd19c53ac163d28d565",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474951623,
 			"method": "GET",
-			"modified": 1546629056513,
+			"modified": 1554425587016,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1066,15 +1126,17 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_item/18",
+			"url": "{{ base_url }}/recommendation_item/21",
 			"_type": "request"
 		},
 		{
 			"_id": "req_7f1f6b0d518a4e65a825c0be4f32ff01",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"recommendation_id\": 12,\n\t\"name\": \"John Wick: Chapter III\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [4,6]\n}"
+				"text": "{\n\t\"recommendation_id\": 43,\n\t\"name\": \"John Wick: Chapter III\",\n\t\"tmdb_id\": 5232,\n\t\"year\": \"2017-12-24\",\n\t\"overview\": \"I'll kill them all!\",\n\t\"poster\": \"OqAmzALlnkasQml\",\n\t\"backdrop\": \"pKqnkmAqmlasas\",\n\t\"trailer\": \"/iqnonAsnkas\",\n\t\"commentary\": \"Really great movie!\",\n\t\"media_type\": \"movie\",\n\t\"sources\": [4,6]\n}"
 			},
 			"created": 1546478525137,
 			"description": "",
@@ -1083,17 +1145,12 @@
 					"id": "pair_d2624c2cc6374f62bf2b0b3b6ea351a9",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_c8f0ec14da024b1f929764c98210fd7b",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474951548,
 			"method": "PUT",
-			"modified": 1546581777579,
+			"modified": 1554425372717,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1103,26 +1160,28 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/recommendation_item/16",
+			"url": "{{ base_url  }}/recommendation_item/61",
 			"_type": "request"
 		},
 		{
 			"_id": "req_a429ef280c0f46bd91b00fb6866b1706",
-			"authentication": {},
+			"authentication": {
+				"type": "bearer"
+			},
 			"body": {},
 			"created": 1546478693764,
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_17c142c8642e4a4eac29bf3981e0f443",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
+					"id": "pair_6e42114f52284f4db89904c72a0dbe23",
+					"name": "Content-Type",
+					"value": "application/json"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546474951498,
 			"method": "DELETE",
-			"modified": 1546478714304,
+			"modified": 1554425383309,
 			"name": "/recommendation_item/{id}",
 			"parameters": [],
 			"parentId": "fld_d1ca3f7cb9c64546b85efb14d457babd",
@@ -1146,12 +1205,6 @@
 			"description": "",
 			"headers": [
 				{
-					"disabled": false,
-					"id": "pair_ca88a86ba82648dabcbadecd79eadfe0",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
-				},
-				{
 					"id": "pair_8fcac9c2dac14868845e1a176bc03532",
 					"name": "Content-Type",
 					"value": "application/json"
@@ -1160,7 +1213,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546558984132,
 			"method": "GET",
-			"modified": 1546636126873,
+			"modified": 1554425538275,
 			"name": "/search_recommendation",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1170,7 +1223,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_recommendation?query=war&page=1",
+			"url": "{{ base_url }}/search_recommendation?query=drama",
 			"_type": "request"
 		},
 		{
@@ -1184,11 +1237,6 @@
 			"description": "",
 			"headers": [
 				{
-					"id": "pair_5b51edd2aa2e485cb0092671de09ecf2",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
-				},
-				{
 					"id": "pair_10fdbdd36e574207bc775d5f41f26d16",
 					"name": "Content-Type",
 					"value": "application/json"
@@ -1197,7 +1245,7 @@
 			"isPrivate": false,
 			"metaSortKey": -1546558984082,
 			"method": "GET",
-			"modified": 1546635526351,
+			"modified": 1554425547092,
 			"name": "/search_user",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1207,7 +1255,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_user?query=cyro",
+			"url": "{{ base_url  }}/search_user?query=john",
 			"_type": "request"
 		},
 		{
@@ -1224,17 +1272,12 @@
 					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546558984032,
 			"method": "GET",
-			"modified": 1546635524351,
+			"modified": 1554425550050,
 			"name": "/search_keyword",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1261,17 +1304,12 @@
 					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546516967840,
 			"method": "GET",
-			"modified": 1546639984565,
+			"modified": 1554425553404,
 			"name": "/search_genre",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1281,7 +1319,7 @@
 			"settingRebuildPath": true,
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
-			"url": "{{ base_url  }}/search_genre?query=a",
+			"url": "{{ base_url }}/search_genre?query=a",
 			"_type": "request"
 		},
 		{
@@ -1298,17 +1336,12 @@
 					"id": "pair_9c79b1fe8afe4f099e266c07fd00e8de",
 					"name": "Content-Type",
 					"value": "application/json"
-				},
-				{
-					"id": "pair_b6a156ad76de4a0d9e9bb6e6e42ea3a1",
-					"name": "Api-Token",
-					"value": "{{ api_token  }}"
 				}
 			],
 			"isPrivate": false,
 			"metaSortKey": -1546495959744,
 			"method": "GET",
-			"modified": 1546635521587,
+			"modified": 1554425555431,
 			"name": "/search_source",
 			"parameters": [],
 			"parentId": "fld_b0fdc80353344790b58c959c868b7030",
@@ -1319,6 +1352,35 @@
 			"settingSendCookies": true,
 			"settingStoreCookies": true,
 			"url": "{{ base_url  }}/search_source?query=hbo",
+			"_type": "request"
+		},
+		{
+			"_id": "req_801c43cbf0fd4f829d103a7a4b10f240",
+			"authentication": {},
+			"body": {},
+			"created": 1554170690523,
+			"description": "",
+			"headers": [
+				{
+					"id": "pair_c804b11d8b54444db23bbca3905004cf",
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"isPrivate": false,
+			"metaSortKey": -1554170690523,
+			"method": "GET",
+			"modified": 1554425291353,
+			"name": "/healthcheck",
+			"parameters": [],
+			"parentId": "fld_e742c5cadc904b7694f5fe914d1a6205",
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingMaxTimelineDataSize": 1000,
+			"settingRebuildPath": true,
+			"settingSendCookies": true,
+			"settingStoreCookies": true,
+			"url": "http://localhost:8000/healthcheck",
 			"_type": "request"
 		}
 	]
