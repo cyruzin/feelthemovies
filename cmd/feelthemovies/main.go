@@ -92,7 +92,7 @@ func redis() *re.Client {
 		DialTimeout:  10 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
-		PoolSize:     10,
+		PoolSize:     20,
 		PoolTimeout:  30 * time.Second,
 	})
 	_, err := client.Ping().Result()
