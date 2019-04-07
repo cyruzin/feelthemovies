@@ -53,10 +53,10 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              ":8000",
-		ReadTimeout:       time.Duration(5 * time.Second),
-		ReadHeaderTimeout: time.Duration(5 * time.Second),
-		WriteTimeout:      time.Duration(10 * time.Second),
-		IdleTimeout:       time.Duration(120 * time.Second),
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       120 * time.Second,
 		Handler:           r,
 	}
 
@@ -86,9 +86,14 @@ func database() *sql.DB {
 // Redis connection.
 func redis() *re.Client {
 	client := re.NewClient(&re.Options{
-		Addr:     os.Getenv("REDISADDR"),
-		Password: os.Getenv("REDISPASS"),
-		DB:       0,
+		Addr:         os.Getenv("REDISADDR"),
+		Password:     os.Getenv("REDISPASS"),
+		DB:           0,
+		DialTimeout:  10 * time.Second,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		PoolSize:     10,
+		PoolTimeout:  30 * time.Second,
 	})
 	_, err := client.Ping().Result()
 	if err != nil {
