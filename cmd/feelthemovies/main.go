@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/InVisionApp/go-health/handlers"
@@ -30,19 +33,16 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not initiate the logger")
 	}
-	defer l.Sync()
 
-	db := database() // Database instance.
-	defer db.Close()
-
-	rc := redis() // Redis client instance.
-	defer rc.Close()
-
-	mc := model.Connect(db) // Passing database instance to the model pkg.
-
-	v = validator.New() // Validator instance.
-
+	db := database()                              // Database instance.
+	rc := redis()                                 // Redis client instance.
+	mc := model.Connect(db)                       // Passing database instance to the model pkg.
+	v = validator.New()                           // Validator instance.
 	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
+
+	defer l.Sync()
+	defer db.Close()
+	defer rc.Close()
 
 	healthCheck, err := healthChecks(db) // Health instance.
 	if err != nil {
@@ -60,9 +60,27 @@ func main() {
 		Handler:           r,
 	}
 
+	// Graceful shutdown setup.
+	ctx := context.Background()
+	gracefulStop := make(chan os.Signal)
+
+	signal.Notify(gracefulStop, syscall.SIGTERM)
+	signal.Notify(gracefulStop, syscall.SIGINT)
+
+	go func() {
+		<-gracefulStop
+		log.Println("Shutting down the server...")
+		srv.Shutdown(ctx) // Shutting down the server gracefully.
+		db.Close()        // Closing database and prevent new queries.
+		rc.Close()        // Closing redis client.
+		l.Sync()          // Flushing buffered log entries.
+		os.Exit(0)        // Terminating the app.
+	}()
+
+	// Initiating the server.
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
-	log.Println(srv.ListenAndServe()) // Initiating the server.
+	log.Println(srv.ListenAndServe())
 }
 
 // Database connection.
