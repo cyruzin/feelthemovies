@@ -71,8 +71,7 @@ func main() {
 		if err := srv.Shutdown(context.Background()); err != nil { // Shutting down the server gracefully.
 			log.Printf("HTTP server Shutdown: %v", err) // Error from closing listeners, or context timeout.
 		}
-		close(gracefulStop) // Closing channel.
-		os.Exit(0)          // Terminating the app.
+		close(idleConnsClosed) // Closing channel.
 	}()
 
 	// Initiating the server.
