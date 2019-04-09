@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// Graceful shutdown setup.
-	idleConssClosed := make(chan struct{})
+	idleConnsClosed := make(chan struct{})
 
 	go func() {
 		gracefulStop := make(chan os.Signal, 1)
@@ -81,7 +81,7 @@ func main() {
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
 		log.Printf("HTTP server ListenAndServe: %v", err) // Error starting or closing listener.
 	}
-	<-idleConssClosed
+	<-idleConnsClosed
 }
 
 // Database connection.
