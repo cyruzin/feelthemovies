@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/InVisionApp/go-health/handlers"
@@ -61,28 +60,28 @@ func main() {
 	}
 
 	// Graceful shutdown setup.
-	ctx := context.Background()
-	gracefulStop := make(chan os.Signal)
-
-	signal.Notify(gracefulStop, syscall.SIGTERM)
-	signal.Notify(gracefulStop, syscall.SIGINT)
+	idleConssClosed := make(chan struct{})
 
 	go func() {
+		gracefulStop := make(chan os.Signal, 1)
+		signal.Notify(gracefulStop, os.Interrupt)
 		<-gracefulStop
+
 		log.Println("Shutting down the server...")
-		if err := srv.Shutdown(ctx); err != nil { // Shutting down the server gracefully.
-			log.Printf("Shutdown error: %s", err)
+		if err := srv.Shutdown(context.Background()); err != nil { // Shutting down the server gracefully.
+			log.Printf("HTTP server Shutdown: %v", err) // Error from closing listeners, or context timeout.
 		}
-		db.Close() // Closing database and prevent new queries.
-		rc.Close() // Closing redis client.
-		l.Sync()   // Flushing buffered log entries.
-		os.Exit(0) // Terminating the app.
+		close(gracefulStop) // Closing channel.
+		os.Exit(0)          // Terminating the app.
 	}()
 
 	// Initiating the server.
 	log.Println("Listening on port: 8000.")
 	log.Println("You're good to go! :)")
-	log.Println(srv.ListenAndServe())
+	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
+		log.Printf("HTTP server ListenAndServe: %v", err) // Error starting or closing listener.
+	}
+	<-idleConssClosed
 }
 
 // Database connection.
