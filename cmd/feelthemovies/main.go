@@ -70,11 +70,13 @@ func main() {
 	go func() {
 		<-gracefulStop
 		log.Println("Shutting down the server...")
-		srv.Shutdown(ctx) // Shutting down the server gracefully.
-		db.Close()        // Closing database and prevent new queries.
-		rc.Close()        // Closing redis client.
-		l.Sync()          // Flushing buffered log entries.
-		os.Exit(0)        // Terminating the app.
+		if err := srv.Shutdown(ctx); err != nil { // Shutting down the server gracefully.
+			log.Printf("Shutdown error: %s", err)
+		}
+		db.Close() // Closing database and prevent new queries.
+		rc.Close() // Closing redis client.
+		l.Sync()   // Flushing buffered log entries.
+		os.Exit(0) // Terminating the app.
 	}()
 
 	// Initiating the server.
