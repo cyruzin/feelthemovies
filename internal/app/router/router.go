@@ -46,13 +46,13 @@ func publicRoutes(r *chi.Mux, h *handler.Setup) {
 		log.Println(err)
 	}
 
+	r.HandleFunc("/loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../../loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt")
+	}) // HTTP load test.
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Feel the Movies API V1"))
 	}) // Initial page.
-
-	http.HandleFunc("/loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "../../loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt") // HTTP load test.
-	})
 
 	r.Post("/auth", h.AuthUser) // Authentication end-point.
 
