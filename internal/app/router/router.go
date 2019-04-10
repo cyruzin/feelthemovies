@@ -50,6 +50,10 @@ func publicRoutes(r *chi.Mux, h *handler.Setup) {
 		w.Write([]byte("Feel the Movies API V1"))
 	}) // Initial page.
 
+	http.HandleFunc("/loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../../loaderio-854a99a8b21a4fa71a27cd471937ca7c.txt") // HTTP load test.
+	})
+
 	r.Post("/auth", h.AuthUser) // Authentication end-point.
 
 	r.Get(newrelic.WrapHandleFunc(app, "/v1/recommendations", h.GetRecommendations))
