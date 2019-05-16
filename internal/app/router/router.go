@@ -47,7 +47,15 @@ func publicRoutes(r *chi.Mux, h *handler.Setup) {
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Feel the Movies API V1"))
+		w.Write([]byte(`
+		___            _   _    _                                  _                     _     ___  
+		/ __\___   ___ | | | |_ | |__    ___    /\/\    ___ __   __(_)  ___  ___  __   __/ |   / _ \ 
+	   / _\ / _ \ / _ \| | | __|| '_ \  / _ \  /    \  / _ \\ \ / /| | / _ \/ __| \ \ / /| |  | | | |
+	  / /  |  __/|  __/| | | |_ | | | ||  __/ / /\/\ \| (_) |\ V / | ||  __/\__ \  \ V / | | _| |_| |
+	  \/    \___| \___||_|  \__||_| |_| \___| \/    \/ \___/  \_/  |_| \___||___/   \_/  |_|(_)\___/ 
+	  
+	  https://github.com/cyruzin/feelthemovies
+		`))
 	}) // Initial page.
 
 	r.Post("/auth", h.AuthUser) // Authentication end-point.
