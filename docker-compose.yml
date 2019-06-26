@@ -1,21 +1,45 @@
-version: "3.3"
+version: "3.7"
 
 services: 
 
   mysql:
     image: mysql:8.0
-    container_name: api-mysql
+    container_name: feelthemovies-mysql
+    hostname: database
+    restart: always
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
     ports: 
       - 3306:3306
     environment:
-      - MYSQL_USER=root
-      - MYSQL_ROOT_PASSWORD=YOURDBPASS
+      - MYSQL_USER=$DBUSER
+      - MYSQL_ROOT_PASSWORD=$DBPASS
   
   redis:
     image: redis:5.0.3-alpine
-    container_name: api-redis
-    command: redis-server --requirepass YOURREDISPASS
+    container_name: feelthemovies-redis
+    hostname: redis
+    restart: always
+    command: redis-server --requirepass $REDISPASS
     ports: 
       - 6379:6379
+    
+  api:
+    build:
+      context: .
+    container_name: feelthemovies-api
+    hostname: feelthemovies-api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DBHOST=$DBHOST
+      - DBUSER=$DBUSER
+      - DBPASS=$DBPASS
+      - REDISADDR=$REDISADDR
+      - REDISPASS=$REDISPASS
+      - NEWRELICKEY=$NEWRELICKEY
+      - JWTSecret=$JWTSecret
+    depends_on:
+      - mysql
+      - redis
