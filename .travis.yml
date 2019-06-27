@@ -9,6 +9,7 @@ services:
 - docker
 
 env: 
+  - GO111MODULE=on
   - DOCKER_COMPOSE_VERSION=1.24.1
 
 git:
