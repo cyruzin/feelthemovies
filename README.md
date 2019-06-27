@@ -23,7 +23,15 @@ That's it! Go to folder "cmd/feelthemovies" and run the command:
 $ go run main.go
 ```
 
-### Packages
+## Build
+
+Run the command below and check the binary in the dist folder.
+
+```sh
+$ make build
+```
+
+## Packages
 
 These are the packages that helped me build this project:
 
@@ -37,17 +45,17 @@ Package validator implements value validations for structs and individual fields
 The uuid package generates and inspects UUIDs based on RFC 4122 and DCE 1.1: Authentication and Security Services.
 * [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
 
-### Useful links
+## Useful links
 
 * [golang-standards / project-layout](https://github.com/golang-standards/project-layout) - Standard Go Project Layout.
 * [avelino / awesome-go](https://github.com/avelino/awesome-go) - 
 A curated list of awesome Go frameworks, libraries and software.
 * [insomnia](https://insomnia.rest/download/) - Rest client.
 
-### Contributing
+## Contributing
 
 To start contributing, please check [CONTRIBUTING](https://github.com/cyruzin/feelthemovies/blob/master/CONTRIBUTING.md).
 
-### License
+## License
 
 MIT
