@@ -20,7 +20,6 @@ script:
 
 deploy:
 - provider: script
-  api_key: $GITHUB_TOKEN
   skip_cleanup: true
   script: curl -sL https://git.io/goreleaser | bash
   on:
