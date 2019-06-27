@@ -2,23 +2,13 @@ project_name: feelthemovies
 builds:
 - goos:
   - linux
+  - windows
+  - darwin
   goarch:
   - amd64
+  main: ./cmd/feelthemovies/main.go
   env:
   - CGO_ENABLED=0
   ldflags:
   -s -w -extldflags "-static" -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.Date}}"
-  main: ./cmd/feelthemovies/main.go
-
-release:
-  name_template: "v{{.Version}}"
-
-archive:
-  name_template: "{{.ProjectName}}-{{.Version}}-{{.Os}}-{{.Arch}}"
-  format: tar.gz
-
-checksum:
-  name_template: "{{ .ProjectName }}-checksums.txt"
-
-sign:
-  artifacts: checksum
+  
