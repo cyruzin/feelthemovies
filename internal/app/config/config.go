@@ -7,16 +7,16 @@ import (
 // Config is a configuration struct that contains
 // all environment variables of the app.
 type Config struct {
-	ServerPort   string `envconfig:"SERVERPORT"`
-	DBHost       string `envconfig:"DBHOST"`
-	DBUser       string `envconfig:"DBUSER"`
-	DBName       string `envconfig:"DBNAME"`
-	DBPort       string `envconfig:"DBPORT"`
-	DBPass       string `envconfig:"DBPASS"`
-	RedisAddress string `envconfig:"REDISADDR"`
-	RedisPass    string `envconfig:"REDISPASS"`
+	ServerPort   string `envconfig:"SERVERPORT" required:"true"`
+	DBHost       string `envconfig:"DBHOST" required:"true"`
+	DBUser       string `envconfig:"DBUSER" required:"true"`
+	DBName       string `envconfig:"DBNAME" required:"true"`
+	DBPort       string `envconfig:"DBPORT" required:"true"`
+	DBPass       string `envconfig:"DBPASS" required:"true"`
+	RedisAddress string `envconfig:"REDISADDR" required:"true"`
+	RedisPass    string `envconfig:"REDISPASS" required:"true"`
 	NewRelicKey  string `envconfig:"NEWRELICKEY"`
-	JWTSecret    string `envconfig:"JWTSECRET"`
+	JWTSecret    string `envconfig:"JWTSECRET" required:"true"`
 }
 
 // Load loads the app the configuration based

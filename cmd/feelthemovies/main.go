@@ -17,6 +17,7 @@ import (
 	health "github.com/InVisionApp/go-health"
 	"github.com/InVisionApp/go-health/checkers"
 	redisCheck "github.com/InVisionApp/go-health/checkers/redis"
+	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/app/router"
 
@@ -33,8 +34,13 @@ func main() {
 		log.Fatal("Could not initiate the logger")
 	}
 
-	db := database()                              // Database instance.
-	rc := redis()                                 // Redis client instance.
+	cfg, err := config.Load() // Loading environment variables.
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	db := database(cfg)                           // Database instance.
+	rc := redis(cfg)                              // Redis client instance.
 	mc := model.Connect(db)                       // Passing database instance to the model pkg.
 	v = validator.New()                           // Validator instance.
 	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
@@ -43,7 +49,7 @@ func main() {
 	defer db.Close()
 	defer rc.Close()
 
-	healthCheck, err := healthChecks(db) // Health instance.
+	healthCheck, err := healthChecks(cfg, db) // Health instance.
 	if err != nil {
 		log.Println("Failed to perform health checks")
 	}
@@ -51,10 +57,10 @@ func main() {
 	r := router.NewRouter(h, handlers.NewJSONHandlerFunc(healthCheck, nil)) // Passing handlers to the router.
 
 	srv := &http.Server{
-		Addr:              ":8000",
-		ReadTimeout:       10 * time.Second,
-		ReadHeaderTimeout: 10 * time.Second,
-		WriteTimeout:      30 * time.Second,
+		Addr:              ":" + cfg.ServerPort,
+		ReadTimeout:       5 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
+		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       120 * time.Second,
 		Handler:           r,
 	}
@@ -75,7 +81,7 @@ func main() {
 	}()
 
 	// Initiating the server.
-	log.Println("Listening on port: 8000.")
+	log.Println("Listening on port: " + cfg.ServerPort)
 	log.Println("You're good to go! :)")
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
 		log.Printf("HTTP server ListenAndServe: %v", err) // Error starting or closing listener.
@@ -84,10 +90,11 @@ func main() {
 }
 
 // Database connection.
-func database() *sql.DB {
+func database(cfg *config.Config) *sql.DB {
 	url := fmt.Sprintf(
-		"%s:%s@tcp(%s:3306)/api_feelthemovies?parseTime=true",
-		os.Getenv("DBUSER"), os.Getenv("DBPASS"), os.Getenv("DBHOST"),
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		cfg.DBUser, cfg.DBPass, cfg.DBHost,
+		cfg.DBPort, cfg.DBName,
 	)
 	db, err := sql.Open("mysql", url)
 	if err != nil {
@@ -102,16 +109,15 @@ func database() *sql.DB {
 }
 
 // Redis connection.
-func redis() *re.Client {
+func redis(cfg *config.Config) *re.Client {
 	client := re.NewClient(&re.Options{
-		Addr:         os.Getenv("REDISADDR"),
-		Password:     os.Getenv("REDISPASS"),
+		Addr:         cfg.RedisAddress,
+		Password:     cfg.RedisPass,
 		DB:           0,
-		DialTimeout:  10 * time.Second,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 		PoolSize:     20,
-		PoolTimeout:  30 * time.Second,
+		PoolTimeout:  10 * time.Second,
 	})
 	_, err := client.Ping().Result()
 	if err != nil {
@@ -122,7 +128,7 @@ func redis() *re.Client {
 }
 
 // healthChecks checks the services health periodically.
-func healthChecks(db *sql.DB) (*health.Health, error) {
+func healthChecks(cfg *config.Config, db *sql.DB) (*health.Health, error) {
 	h := health.New()
 	h.DisableLogging()
 
@@ -135,8 +141,8 @@ func healthChecks(db *sql.DB) (*health.Health, error) {
 
 	redisDB, err := redisCheck.NewRedis(&redisCheck.RedisConfig{
 		Auth: &redisCheck.RedisAuthConfig{
-			Addr:     os.Getenv("REDISADDR"),
-			Password: os.Getenv("REDISPASS"),
+			Addr:     cfg.RedisAddress,
+			Password: cfg.RedisPass,
 			DB:       0,
 		},
 		Ping: true,

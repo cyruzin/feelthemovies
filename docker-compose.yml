@@ -32,14 +32,7 @@ services:
     restart: always
     ports:
       - "8000:8000"
-    environment:
-      - DBHOST=$DBHOST
-      - DBUSER=$DBUSER
-      - DBPASS=$DBPASS
-      - REDISADDR=$REDISADDR
-      - REDISPASS=$REDISPASS
-      - NEWRELICKEY=$NEWRELICKEY
-      - JWTSECRET=$JWTSECRET
+    env_file: .env
     depends_on:
       - mysql
       - redis
