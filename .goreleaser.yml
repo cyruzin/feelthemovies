@@ -9,5 +9,15 @@ builds:
       - darwin
       - linux
     goarch:
-      - arm64
+      - amd64
     main: ./cmd/feelthemovies/main.go
+
+release:
+  name_template: "v{{.Version}}"
+
+archive:
+  name_template: "{{.ProjectName}}-{{.Version}}-{{.Os}}-{{.Arch}}"
+  format: tar.gz
+  format_overrides:
+  - goos: windows
+    format: zip
