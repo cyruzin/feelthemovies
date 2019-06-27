@@ -1,6 +1,6 @@
 project_name: feelthemovies
 builds:
-    env:
+  - env:
       - CGO_ENABLED=0
     ldflags: 
     - -s -w -X main.build={{.Version}}
