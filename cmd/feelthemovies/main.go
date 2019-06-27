@@ -12,14 +12,13 @@ import (
 
 	"github.com/InVisionApp/go-health/handlers"
 
-	"go.uber.org/zap"
-
 	health "github.com/InVisionApp/go-health"
 	"github.com/InVisionApp/go-health/checkers"
 	redisCheck "github.com/InVisionApp/go-health/checkers/redis"
 	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/app/router"
+	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 
 	"github.com/cyruzin/feelthemovies/internal/app/handler"
 	re "github.com/go-redis/redis"
@@ -29,9 +28,9 @@ import (
 var v *validator.Validate
 
 func main() {
-	l, err := zap.NewProduction() // Uber Zap Logger instance.
+	l, err := logger.Init() // Uber Zap Logger instance.
 	if err != nil {
-		log.Fatal("Could not initiate the logger")
+		log.Fatal("Could not initiate the logger: " + err.Error())
 	}
 
 	cfg, err := config.Load() // Loading environment variables.
@@ -39,11 +38,11 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	db := database(cfg)                           // Database instance.
-	rc := redis(cfg)                              // Redis client instance.
-	mc := model.Connect(db)                       // Passing database instance to the model pkg.
-	v = validator.New()                           // Validator instance.
-	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
+	db := database(cfg)                   // Database instance.
+	rc := redis(cfg)                      // Redis client instance.
+	mc := model.Connect(db)               // Passing database instance to the model pkg.
+	v = validator.New()                   // Validator instance.
+	h := handler.NewHandler(mc, rc, v, l) // Passing instances to the handlers pkg.
 
 	defer l.Sync()
 	defer db.Close()

@@ -7,6 +7,7 @@ import (
 // Config is a configuration struct that contains
 // all environment variables of the app.
 type Config struct {
+	EnvMode      string `envconfig:"ENVMODE" required:"true" default:"development"`
 	ServerPort   string `envconfig:"SERVERPORT" required:"true"`
 	DBHost       string `envconfig:"DBHOST" required:"true"`
 	DBUser       string `envconfig:"DBUSER" required:"true"`
