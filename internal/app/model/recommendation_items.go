@@ -2,7 +2,6 @@ package model
 
 import (
 	"errors"
-	"log"
 	"time"
 )
 
@@ -230,7 +229,7 @@ func (c *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSour
 	`)
 
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	defer stmt.Close()
@@ -247,7 +246,7 @@ func (c *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSour
 		)
 
 		if err != nil {
-			log.Println(err)
+			return nil, err
 		}
 
 		recS = append(recS, &rec)
@@ -266,7 +265,7 @@ func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
 		`)
 
 	if err != nil {
-		log.Println(err)
+		return 0, err
 	}
 
 	defer stmt.Close()
@@ -276,7 +275,7 @@ func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
 	err = stmt.QueryRow(id).Scan(&total)
 
 	if err != nil {
-		log.Println(err)
+		return 0, nil
 	}
 
 	return total, err
