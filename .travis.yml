@@ -8,9 +8,6 @@ go:
 services:
 - docker
 
-env: 
-  - GO111MODULE=on
-
 git:
   depth: 1
 
