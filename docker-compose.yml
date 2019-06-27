@@ -39,7 +39,7 @@ services:
       - REDISADDR=$REDISADDR
       - REDISPASS=$REDISPASS
       - NEWRELICKEY=$NEWRELICKEY
-      - JWTSecret=$JWTSecret
+      - JWTSECRET=$JWTSECRET
     depends_on:
       - mysql
       - redis

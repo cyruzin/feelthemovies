@@ -60,7 +60,7 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 
 // GenerateToken generates a new JWT Token.
 func (s *Setup) GenerateToken() (string, error) {
-	secret := []byte(os.Getenv("JWTSecret"))
+	secret := []byte(os.Getenv("JWTSECRET"))
 
 	claims := jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
