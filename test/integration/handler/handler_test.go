@@ -2,7 +2,6 @@ package handler_test
 
 import (
 	"database/sql"
-	"log"
 	"os"
 	"testing"
 
@@ -10,10 +9,10 @@ import (
 	"github.com/go-redis/redis"
 
 	"github.com/cyruzin/feelthemovies/internal/app/handler"
+	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/test/integration/setup"
-	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -33,24 +32,23 @@ type setupTest struct {
 	h  *handler.Setup
 	db *sql.DB
 	rc *redis.Client
-	l  *zap.SugaredLogger
+	l  *logger.Logger
 }
 
 func initHandlers() *setupTest {
-	l, err := zap.NewDevelopment() // Uber Zap Logger instance.
-
+	l, err := logger.Init() // Uber Zap Logger instance.
 	if err != nil {
-		log.Fatal("Could not initiate the logger")
+		l.Fatal("Could not initiate the logger: " + err.Error())
 	}
 
-	db := setup.Database()                        // Database instance.
-	rc := setup.Redis()                           // Redis client instance.
-	mc := model.Connect(db)                       // Passing database instance to the model pkg.
-	v = validator.New()                           // Validator instance.
-	h := handler.NewHandler(mc, rc, v, l.Sugar()) // Passing instances to the handlers pkg.
+	db := setup.Database()                // Database instance.
+	rc := setup.Redis()                   // Redis client instance.
+	mc := model.Connect(db)               // Passing database instance to the model pkg.
+	v = validator.New()                   // Validator instance.
+	h := handler.NewHandler(mc, rc, v, l) // Passing instances to the handlers pkg.
 
 	return &setupTest{
-		h, db, rc, l.Sugar(),
+		h, db, rc, l,
 	}
 }
 

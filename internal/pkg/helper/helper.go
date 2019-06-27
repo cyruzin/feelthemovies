@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"go.uber.org/zap"
-
+	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -53,7 +52,7 @@ type APIMessage struct {
 func DecodeError(
 	w http.ResponseWriter,
 	r *http.Request,
-	l *zap.SugaredLogger,
+	l *logger.Logger,
 	apiErr string,
 	code int,
 ) {
