@@ -9,7 +9,6 @@ services:
 - docker
 
 env: 
-  - GO111MODULE=on
   - DOCKER_COMPOSE_VERSION=1.24.1
 
 git:
@@ -23,7 +22,7 @@ before_install:
   - go get github.com/mattn/goveralls
 
 install:
-  - docker-compose up -d redis mysql 
+  - docker-compose up -d
   
 script:
   - go get -v -t -d ./... 
