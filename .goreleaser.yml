@@ -1,0 +1,23 @@
+project_name: feelthemovies
+builds:
+  - env:
+      - CGO_ENABLED=0
+    ldflags: 
+    - -s -w -X main.build={{.Version}}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+    main: ./cmd/feelthemovies/main.go
+
+release:
+  name_template: "v{{.Version}}"
+
+archive:
+  name_template: "{{.ProjectName}}-{{.Version}}-{{.Os}}-{{.Arch}}"
+  format: tar.gz
+  format_overrides:
+  - goos: windows
+    format: zip

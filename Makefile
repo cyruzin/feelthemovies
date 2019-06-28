@@ -7,7 +7,7 @@ dependencies:
 	go get -t -v ./... 
 
 build:
-	cd cmd/feelthemovies &&	env GOOS=linux GOARCH=amd64 go build -o ${HOME}/feelthemovies
+	cd cmd/feelthemovies &&	env GOOS=linux GOARCH=amd64 go build -o ../../dist/feelthemovies
 
 test: 
 	clear && go test -v ./...

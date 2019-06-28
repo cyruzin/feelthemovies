@@ -9,7 +9,7 @@ services:
 - docker
 
 env: 
-  - DOCKER_COMPOSE_VERSION=1.24.0
+  - DOCKER_COMPOSE_VERSION=1.24.1
 
 git:
   depth: 1
@@ -22,7 +22,7 @@ before_install:
   - go get github.com/mattn/goveralls
 
 install:
-  - docker-compose up -d
+  - docker-compose up -d redis mysql
 
 script:
   - go get -v -t -d ./... 
