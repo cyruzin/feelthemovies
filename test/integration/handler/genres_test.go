@@ -45,7 +45,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 func TestCreateGenreSuccess(t *testing.T) {
 	var newGenre = []byte(`{"name":"SpongeBob"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -72,7 +72,7 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 func TestUpdateGenreSuccess(t *testing.T) {
 	var newGenre = []byte(`{"name":"SquidwardTentacles"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -98,7 +98,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 }
 
 func TestDeleteGenreSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -124,7 +124,7 @@ func TestDeleteGenreSuccess(t *testing.T) {
 }
 
 func TestMalformedToken(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)

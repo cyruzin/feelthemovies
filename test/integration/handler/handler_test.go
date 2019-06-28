@@ -17,9 +17,14 @@ import (
 )
 
 var (
-	h = initHandlers()
-	r = chi.NewRouter()
-	v *validator.Validate
+	h    = initHandlers()
+	r    = chi.NewRouter()
+	v    *validator.Validate
+	info = &model.Auth{
+		ID:    600,
+		Name:  "Admin",
+		Email: "admin@admin.com",
+	}
 )
 
 func TestMain(m *testing.M) {

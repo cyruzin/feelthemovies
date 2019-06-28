@@ -44,7 +44,7 @@ func TestGetSourceSuccess(t *testing.T) {
 
 func TestCreateSourceSuccess(t *testing.T) {
 	var newSource = []byte(`{"name":"BBC Eleven"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -71,7 +71,7 @@ func TestCreateSourceSuccess(t *testing.T) {
 
 func TestUpdateSourceSuccess(t *testing.T) {
 	var newSource = []byte(`{"name":"BBC Twelve"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -97,7 +97,7 @@ func TestUpdateSourceSuccess(t *testing.T) {
 }
 
 func TestDeleteSourceSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)

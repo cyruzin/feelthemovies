@@ -47,7 +47,7 @@ func TestGetRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestCreateRecommendationItemSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -104,7 +104,7 @@ func TestCreateRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestUpdateRecommendationItemSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -159,7 +159,7 @@ func TestUpdateRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestCreateRecommendationItemFail(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -187,7 +187,7 @@ func TestCreateRecommendationItemFail(t *testing.T) {
 }
 
 func TestUpdateRecommendationItemFail(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -215,7 +215,7 @@ func TestUpdateRecommendationItemFail(t *testing.T) {
 }
 
 func TestDeleteRecommendationItemSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)

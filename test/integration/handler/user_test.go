@@ -48,7 +48,7 @@ func TestCreateUserSuccess(t *testing.T) {
 		"email":"travis_fox@outlook.com",
 		"password": "qw12erty"
 		}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -79,7 +79,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 		"email":"travis_fox_jr@outlook.com",
 		"password": "qw12erty"
 		}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -105,7 +105,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 }
 
 func TestDeleteUserSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)

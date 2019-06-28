@@ -1,7 +1,7 @@
 .PHONY: all test clean
 
 containers-up:
-	clear && docker-compose down && docker-compose up -d
+	clear && docker-compose down && docker-compose up -d redis mysql
 
 dependencies:
 	go get -t -v ./... 

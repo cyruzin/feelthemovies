@@ -3,12 +3,12 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
 	"strconv"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/tome"
 )
 
 // SearchRecommendation searches for recommendations.
@@ -32,6 +32,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	} else {
 		rrKey = params["query"][0]
 	}
+
 	val, _ := s.rc.Get(rrKey).Result()
 	if val != "" {
 		rr := &model.RecommendationPagination{}
@@ -43,36 +44,42 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&rr)
 		return
 	}
+
+	// Start pagination
 	total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetchRows, http.StatusInternalServerError)
 		return
 	}
-	var (
-		limit       float64 = 10                       // limit per page
-		offset      float64                            // offset record
-		currentPage float64 = 1                        // current page
-		lastPage            = math.Ceil(total / limit) // last page
-	)
-	// checking if request contains the "page" parameter
-	if params["page"] != nil {
-		page, err := strconv.ParseFloat(params["page"][0], 64)
+
+	newPage := 1
+	if params["page"] != nil && params["page"][0] != "" {
+		newPage, err = strconv.Atoi(params["page"][0])
 		if err != nil {
 			helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
 			return
 		}
-		if page > currentPage {
-			currentPage = page
-			offset = (currentPage - 1) * limit
-		}
+	}
+
+	chapter := &tome.Chapter{
+		NewPage:      newPage,
+		TotalResults: total,
+	}
+
+	if err := chapter.Paginate(); err != nil {
+		helper.DecodeError(w, r, s.l, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	// End pagination
-	search, err := s.h.SearchRecommendation(offset, limit, params["query"][0])
+
+	search, err := s.h.SearchRecommendation(chapter.Offset, chapter.Limit, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errSearch, http.StatusInternalServerError)
 		return
 	}
+
 	result := []*model.RecommendationResponse{}
+
 	for _, rr := range search.Data {
 		recG, err := s.h.GetRecommendationGenres(rr.ID)
 		if err != nil {
@@ -91,13 +98,12 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		}
 		result = append(result, recFinal)
 	}
+
 	resultFinal := &model.RecommendationPagination{
-		Data:        result,
-		CurrentPage: currentPage,
-		LastPage:    lastPage,
-		PerPage:     limit,
-		Total:       total,
+		Data:    result,
+		Chapter: chapter,
 	}
+
 	// Redis set
 	rr, err := helper.MarshalBinary(resultFinal)
 	if err != nil {
@@ -109,6 +115,8 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, r, s.l, errKeySet, http.StatusInternalServerError)
 		return
 	}
+	// Redis set check end
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resultFinal)
 }

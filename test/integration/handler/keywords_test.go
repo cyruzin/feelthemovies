@@ -45,7 +45,7 @@ func TestGetKeywordSuccess(t *testing.T) {
 
 func TestCreateKeywordSuccess(t *testing.T) {
 	var newKeyword = []byte(`{"name":"Tsunami"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -72,7 +72,7 @@ func TestCreateKeywordSuccess(t *testing.T) {
 
 func TestUpdateKeywordSuccess(t *testing.T) {
 	var newKeyword = []byte(`{"name":"Witness"}`)
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -98,7 +98,7 @@ func TestUpdateKeywordSuccess(t *testing.T) {
 }
 
 func TestDeleteKeywordSuccess(t *testing.T) {
-	token, err := h.h.GenerateToken()
+	token, err := h.h.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)

@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/InVisionApp/go-health v2.1.0+incompatible
 	github.com/InVisionApp/go-logger v1.0.1 // indirect
+	github.com/cyruzin/tome v0.0.0-20190417201703-21cfcc89c401
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-chi/cors v1.0.0
@@ -16,6 +17,8 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/newrelic/go-agent v2.8.1+incompatible
+	github.com/pkg/errors v0.8.1 // indirect
+	github.com/stretchr/testify v1.3.0 // indirect
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.10.0
