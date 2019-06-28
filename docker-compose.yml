@@ -3,7 +3,7 @@ version: "3.7"
 services: 
 
   mysql:
-    image: mysql:8.0.16
+    image: mysql:5.7.26
     container_name: feelthemovies-mysql
     hostname: database
     restart: always
