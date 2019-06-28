@@ -43,28 +43,35 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.GenerateToken()
+	token, err := s.GenerateToken(authInfo)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	finalInfo := &model.AuthJWT{
-		Auth:  authInfo,
-		Token: token,
-	}
+	finalInfo := &model.AuthJWT{Token: token}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(finalInfo)
 }
 
 // GenerateToken generates a new JWT Token.
-func (s *Setup) GenerateToken() (string, error) {
+func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
 	secret := []byte(os.Getenv("JWTSECRET"))
 
-	claims := jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
-		Issuer:    "Feel the Movies",
+	claims := struct {
+		ID    int64  `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		jwt.StandardClaims
+	}{
+		info.ID,
+		info.Name,
+		info.Email,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+			Issuer:    "Feel the Movies",
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
