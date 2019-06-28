@@ -3,6 +3,8 @@ package model
 import (
 	"errors"
 	"time"
+
+	"github.com/cyruzin/tome"
 )
 
 // Recommendation type is a struct for recommendations table.
@@ -56,17 +58,14 @@ type RecommendationKeywords struct {
 // RecommendationPagination type is a struct for
 // paginate recommendations results.
 type RecommendationPagination struct {
-	Data        []*RecommendationResponse `json:"data"`
-	CurrentPage float64                   `json:"current_page"`
-	LastPage    float64                   `json:"last_page"`
-	PerPage     float64                   `json:"per_page"`
-	Total       float64                   `json:"total"`
+	Data []*RecommendationResponse `json:"data"`
+	*tome.Chapter
 }
 
 // GetRecommendations retrieves the latest recommendations.
 // o = offset | l = limit
 func (c *Conn) GetRecommendations(
-	o, l float64,
+	o, l int,
 ) (*RecommendationResult, error) {
 	stmt, err := c.db.Prepare(`
 		SELECT 
@@ -300,13 +299,13 @@ func (c *Conn) GetRecommendationKeywords(
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
-func (c *Conn) GetRecommendationTotalRows() (float64, error) {
+func (c *Conn) GetRecommendationTotalRows() (int, error) {
 	stmt, err := c.db.Prepare("SELECT COUNT(*) FROM recommendations")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
-	var total float64
+	var total int
 	err = stmt.QueryRow().Scan(&total)
 	if err != nil {
 		return 0, err

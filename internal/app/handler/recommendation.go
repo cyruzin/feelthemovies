@@ -3,12 +3,12 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/tome"
 	"github.com/go-chi/chi"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
@@ -47,32 +47,27 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var (
-		limit       float64 = 10                       // limit per page
-		offset      float64                            // offset record
-		currentPage float64 = 1                        // current page
-		lastPage            = math.Ceil(total / limit) // last page
-	)
-
-	// checking if request contains the "page" parameter
-	if len(params) > 0 {
-		if params["page"][0] != "" {
-			page, err := strconv.ParseFloat(params["page"][0], 64)
-
-			if err != nil {
-				helper.DecodeError(w, r, s.l, errParseFloat, http.StatusInternalServerError)
-				return
-			}
-
-			if page > currentPage {
-				currentPage = page
-				offset = (currentPage - 1) * limit
-			}
+	newPage := 1
+	if params["page"] != nil && params["page"][0] != "" {
+		newPage, err = strconv.Atoi(params["page"][0])
+		if err != nil {
+			helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+			return
 		}
+	}
+
+	chapter := &tome.Chapter{
+		NewPage:      newPage,
+		TotalResults: total,
+	}
+
+	if err := chapter.Paginate(); err != nil {
+		helper.DecodeError(w, r, s.l, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	// End pagination
 
-	rec, err := s.h.GetRecommendations(offset, limit)
+	rec, err := s.h.GetRecommendations(chapter.Offset, chapter.Limit)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
@@ -100,11 +95,8 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resultFinal := &model.RecommendationPagination{
-		Data:        result,
-		CurrentPage: currentPage,
-		LastPage:    lastPage,
-		PerPage:     limit,
-		Total:       total,
+		Data:    result,
+		Chapter: chapter,
 	}
 
 	// Redis set check start

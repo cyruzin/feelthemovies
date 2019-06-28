@@ -9,7 +9,7 @@ type Search struct {
 // SearchRecommendation search for recommendations.
 // o = offset | l = limit | s = search term | t = type
 func (c *Conn) SearchRecommendation(
-	o, l float64, s string,
+	o, l int, s string,
 ) (*RecommendationResult, error) {
 	stmt, err := c.db.Prepare(`
 		SELECT DISTINCT
@@ -199,7 +199,7 @@ func (c *Conn) SearchSource(s string) (*SourceResult, error) {
 // rows of recommendations table.
 func (c *Conn) GetSearchRecommendationTotalRows(
 	s string,
-) (float64, error) {
+) (int, error) {
 	stmt, err := c.db.Prepare(`
 		SELECT 
 		COUNT(DISTINCT r.id)
@@ -216,7 +216,7 @@ func (c *Conn) GetSearchRecommendationTotalRows(
 		return 0, err
 	}
 	defer stmt.Close()
-	var total float64
+	var total int
 	err = stmt.QueryRow("%"+s+"%", "%"+s+"%", "%"+s+"%").Scan(&total)
 	if err != nil {
 		return 0, err
