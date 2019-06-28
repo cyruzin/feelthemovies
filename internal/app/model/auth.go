@@ -11,7 +11,6 @@ type Auth struct {
 
 // AuthJWT type is a struct for JWT authentication.
 type AuthJWT struct {
-	*Auth
 	Token string `json:"token"`
 }
 
