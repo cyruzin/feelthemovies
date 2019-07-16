@@ -55,7 +55,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	if total == 0 { // Fix for total rows equal to zero.
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(nil)
+		json.NewEncoder(w).Encode(&model.RecommendationPagination{})
 		return
 	}
 
