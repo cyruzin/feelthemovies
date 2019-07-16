@@ -1,5 +1,7 @@
 package model
 
+import "database/sql"
+
 // Auth type is a struct for authentication.
 type Auth struct {
 	ID       int64  `json:"id"`
@@ -52,7 +54,7 @@ func (c *Conn) Authenticate(email string) (string, error) {
 	err = stmt.QueryRow(email).Scan(
 		&password,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return "", err
 	}
 	return password, nil
@@ -74,7 +76,7 @@ func (c *Conn) GetAuthInfo(email string) (*Auth, error) {
 	err = stmt.QueryRow(email).Scan(
 		&a.ID, &a.Name, &a.Email, &a.APIToken,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &a, nil

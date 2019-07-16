@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -43,7 +44,7 @@ func (c *Conn) GetSources() (*SourceResult, error) {
 		err = rows.Scan(
 			&s.ID, &s.Name, &s.CreatedAt, &s.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &s)
@@ -67,7 +68,7 @@ func (c *Conn) GetSource(id int64) (*Source, error) {
 	err = stmt.QueryRow(id).Scan(
 		&s.ID, &s.Name, &s.CreatedAt, &s.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &s, nil

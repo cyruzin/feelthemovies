@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -107,7 +108,7 @@ func (c *Conn) GetRecommendations(
 			&rec.CreatedAt,
 			&rec.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &rec)
@@ -134,7 +135,7 @@ func (c *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 		&rec.Body, &rec.Poster, &rec.Backdrop, &rec.Status,
 		&rec.CreatedAt, &rec.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &rec, err
@@ -255,7 +256,7 @@ func (c *Conn) GetRecommendationGenres(
 		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		recG = append(recG, &rec)
@@ -289,7 +290,7 @@ func (c *Conn) GetRecommendationKeywords(
 		err = rows.Scan(
 			&rec.ID, &rec.Name,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		recK = append(recK, &rec)
@@ -307,7 +308,7 @@ func (c *Conn) GetRecommendationTotalRows() (int, error) {
 	defer stmt.Close()
 	var total int
 	err = stmt.QueryRow().Scan(&total)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}
 	return total, nil
@@ -355,7 +356,7 @@ func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
 			&rec.CreatedAt,
 			&rec.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &rec)

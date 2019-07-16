@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -43,7 +44,7 @@ func (c *Conn) GetGenres() (*GenreResult, error) {
 		err = rows.Scan(
 			&genre.ID, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &genre)
@@ -67,7 +68,7 @@ func (c *Conn) GetGenre(id int64) (*Genre, error) {
 	err = stmt.QueryRow(id).Scan(
 		&genre.ID, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &genre, nil
