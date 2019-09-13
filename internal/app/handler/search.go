@@ -47,8 +47,15 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Start pagination
 	total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
+
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetchRows, http.StatusInternalServerError)
+		return
+	}
+
+	if total == 0 { // Fix for total rows equal to zero.
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(&model.RecommendationPagination{})
 		return
 	}
 

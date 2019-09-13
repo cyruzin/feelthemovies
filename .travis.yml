@@ -5,24 +5,11 @@ language: go
 go:
 - 1.12.x
 
-services:
-- docker
-
-env: 
-  - DOCKER_COMPOSE_VERSION=1.24.1
-
 git:
   depth: 1
 
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
   - go get github.com/mattn/goveralls
-
-install:
-  - docker-compose up -d redis mysql
 
 script:
   - go get -v -t -d ./... 

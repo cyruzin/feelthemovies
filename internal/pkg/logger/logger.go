@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"go.uber.org/zap"
 )
 
@@ -11,9 +12,20 @@ type Logger struct {
 
 // Init initiates the logger.
 func Init() (*Logger, error) {
-	log, err := zap.NewProduction() // Uber Zap Logger instance.
+	cfg, err := config.Load()
 	if err != nil {
 		return nil, err
 	}
+
+	log, err := zap.NewDevelopment()
+
+	if env := cfg.EnvMode; env == "production" {
+		log, err = zap.NewProduction()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &Logger{log.Sugar()}, nil
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 )
@@ -85,7 +86,7 @@ func (c *Conn) GetRecommendationItems(
 			&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
 			&rec.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &rec)
@@ -118,7 +119,7 @@ func (c *Conn) GetRecommendationItem(
 		&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
 		&rec.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &rec, nil
@@ -245,7 +246,7 @@ func (c *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSour
 			&rec.ID, &rec.Name,
 		)
 
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 
@@ -274,7 +275,7 @@ func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
 
 	err = stmt.QueryRow(id).Scan(&total)
 
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return 0, nil
 	}
 

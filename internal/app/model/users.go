@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -50,7 +51,7 @@ func (c *Conn) GetUsers() (*UserResult, error) {
 			&user.ID, &user.Name, &user.Email, &user.Password,
 			&user.APIToken, &user.CreatedAt, &user.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &user)
@@ -76,7 +77,7 @@ func (c *Conn) GetUser(id int64) (*User, error) {
 		&user.ID, &user.Name, &user.Email, &user.Password,
 		&user.APIToken, &user.CreatedAt, &user.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &user, nil

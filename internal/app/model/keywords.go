@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -43,7 +44,7 @@ func (c *Conn) GetKeywords() (*KeywordResult, error) {
 		err = rows.Scan(
 			&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &k)
@@ -67,7 +68,7 @@ func (c *Conn) GetKeyword(id int64) (*Keyword, error) {
 	err = stmt.QueryRow(id).Scan(
 		&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 	)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	return &k, nil

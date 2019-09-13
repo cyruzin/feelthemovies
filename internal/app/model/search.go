@@ -1,5 +1,7 @@
 package model
 
+import "database/sql"
+
 // Search type is a struct for search queries.
 type Search struct {
 	Query string `json:"query" validate:"required"`
@@ -57,7 +59,7 @@ func (c *Conn) SearchRecommendation(
 			&rec.CreatedAt,
 			&rec.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &rec)
@@ -91,7 +93,7 @@ func (c *Conn) SearchUser(s string) (*UserResult, error) {
 			&u.ID, &u.Name, &u.Email, &u.Password,
 			&u.APIToken, &u.CreatedAt, &u.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &u)
@@ -123,7 +125,7 @@ func (c *Conn) SearchGenre(s string) (*GenreResult, error) {
 		err = rows.Scan(
 			&g.ID, &g.Name, &g.CreatedAt, &g.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &g)
@@ -155,7 +157,7 @@ func (c *Conn) SearchKeyword(s string) (*KeywordResult, error) {
 		err = rows.Scan(
 			&k.ID, &k.Name, &k.CreatedAt, &k.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &k)
@@ -187,7 +189,7 @@ func (c *Conn) SearchSource(s string) (*SourceResult, error) {
 		err = rows.Scan(
 			&s.ID, &s.Name, &s.CreatedAt, &s.UpdatedAt,
 		)
-		if err != nil {
+		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
 		res.Data = append(res.Data, &s)
@@ -218,7 +220,7 @@ func (c *Conn) GetSearchRecommendationTotalRows(
 	defer stmt.Close()
 	var total int
 	err = stmt.QueryRow("%"+s+"%", "%"+s+"%", "%"+s+"%").Scan(&total)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}
 	return total, nil
