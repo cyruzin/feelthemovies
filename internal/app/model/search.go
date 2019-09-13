@@ -13,58 +13,59 @@ type Search struct {
 func (c *Conn) SearchRecommendation(
 	o, l int, s string,
 ) (*RecommendationResult, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT DISTINCT
-		r.id, 
-		r.user_id, 
-		r.title, 
-		r.type,
-		r.body, 
-		r.poster, 
-		r.backdrop, 
-		r.status,
-		r.created_at, 
-		r.updated_at
-		FROM recommendations AS r
-		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
-		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
-		JOIN genres AS g ON g.id = gr.genre_id
-		JOIN keywords AS k ON k.id = kr.keyword_id
-		WHERE r.title LIKE ?
-		OR k.name LIKE ?
-		OR g.name LIKE ?
-		ORDER BY r.id DESC
-		LIMIT ?,?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query("%"+s+"%", "%"+s+"%", "%"+s+"%", o, l)
-	if err != nil {
-		return nil, err
-	}
-	res := RecommendationResult{}
-	for rows.Next() {
-		rec := Recommendation{}
-		err = rows.Scan(
-			&rec.ID,
-			&rec.UserID,
-			&rec.Title,
-			&rec.Type,
-			&rec.Body,
-			&rec.Poster,
-			&rec.Backdrop,
-			&rec.Status,
-			&rec.CreatedAt,
-			&rec.UpdatedAt,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		res.Data = append(res.Data, &rec)
-	}
-	return &res, nil
+	// stmt, err := c.db.Prepare(`
+	// 	SELECT DISTINCT
+	// 	r.id,
+	// 	r.user_id,
+	// 	r.title,
+	// 	r.type,
+	// 	r.body,
+	// 	r.poster,
+	// 	r.backdrop,
+	// 	r.status,
+	// 	r.created_at,
+	// 	r.updated_at
+	// 	FROM recommendations AS r
+	// 	JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
+	// 	JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
+	// 	JOIN genres AS g ON g.id = gr.genre_id
+	// 	JOIN keywords AS k ON k.id = kr.keyword_id
+	// 	WHERE r.title LIKE ?
+	// 	OR k.name LIKE ?
+	// 	OR g.name LIKE ?
+	// 	ORDER BY r.id DESC
+	// 	LIMIT ?,?
+	// `)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// defer stmt.Close()
+	// rows, err := stmt.Query("%"+s+"%", "%"+s+"%", "%"+s+"%", o, l)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// res := RecommendationResult{}
+	// for rows.Next() {
+	// 	rec := Recommendation{}
+	// 	err = rows.Scan(
+	// 		&rec.ID,
+	// 		&rec.UserID,
+	// 		&rec.Title,
+	// 		&rec.Type,
+	// 		&rec.Body,
+	// 		&rec.Poster,
+	// 		&rec.Backdrop,
+	// 		&rec.Status,
+	// 		&rec.CreatedAt,
+	// 		&rec.UpdatedAt,
+	// 	)
+	// 	if err != nil && err != sql.ErrNoRows {
+	// 		return nil, err
+	// 	}
+	// 	res.Data = append(res.Data, &rec)
+	// }
+	// return &res, nil
+	return &RecommendationResult{}, nil
 }
 
 // SearchUser search for users.

@@ -3,117 +3,68 @@ package model
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/cyruzin/tome"
 )
 
-// Recommendation type is a struct for recommendations table.
+// Recommendation type is a struct for the recommendations table.
 type Recommendation struct {
 	ID        int64     `json:"id"`
-	UserID    int64     `json:"user_id" validate:"required"`
+	UserID    int64     `db:"user_id" json:"user_id" validate:"required"`
 	Title     string    `json:"title" validate:"required"`
 	Type      int       `json:"type"`
 	Body      string    `json:"body" validate:"required"`
 	Poster    string    `json:"poster" validate:"required"`
 	Backdrop  string    `json:"backdrop" validate:"required"`
 	Status    int       `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Genres    string    `json:"genres"`
+	Keywords  string    `json:"keywords"`
+	CreatedAt time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
 
-// RecommendationResult type is a slice of recommendations.
+// RecommendationResult type is a result slice for recommendations.
 type RecommendationResult struct {
-	Data []*Recommendation `json:"data"`
+	Data *[]Recommendation `json:"data"`
+	*tome.Chapter
 }
 
-// RecommendationResponse type is a struct for a final response.
-type RecommendationResponse struct {
-	*Recommendation
-	Genres   []*RecommendationGenres   `json:"genres"`
-	Keywords []*RecommendationKeywords `json:"keywords"`
-}
-
-// RecommendationCreate type is a struct for decode
-// recommendation post request.
-type RecommendationCreate struct {
-	*Recommendation
-	Genres   []int `json:"genres"`
-	Keywords []int `json:"keywords"`
-}
-
-// RecommendationGenres type is a struct for
+// RecommendationGenres type is a struct for the
 // genre_recommendation pivot table.
 type RecommendationGenres struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
-// RecommendationKeywords type is a struct for
+// RecommendationKeywords type is a struct for the
 // keyword_recommendation pivot table.
 type RecommendationKeywords struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
-// RecommendationPagination type is a struct for
-// paginate recommendations results.
-type RecommendationPagination struct {
-	Data []*RecommendationResponse `json:"data"`
-	*tome.Chapter
+// RecommendationCreate type is a struct for decode
+// the recommendation post request.
+type RecommendationCreate struct {
+	*Recommendation
+	Genres   []int `json:"genres"`
+	Keywords []int `json:"keywords"`
 }
 
 // GetRecommendations retrieves the latest recommendations.
-// o = offset | l = limit
-func (c *Conn) GetRecommendations(
-	o, l int,
-) (*RecommendationResult, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, 
-		user_id, 
-		title, 
-		type, 
-		body, 
-		poster, 
-		backdrop, 
-		status, 
-		created_at, 
-		updated_at
-		FROM recommendations
-		WHERE status = ?
-		ORDER BY id DESC
-		LIMIT ?,?
-	`)
-	if err != nil {
+// Receives two parameters, the database offset and limit.
+func (c *Conn) GetRecommendations(offset, limit int) (*[]Recommendation, error) {
+	var result []Recommendation
+
+	err := c.db.Select(&result, queryRecommendationsSelect, 1, offset, limit)
+	if err != nil && err != sql.ErrNoRows {
+		log.Println(err)
 		return nil, err
 	}
-	defer stmt.Close()
-	rows, err := stmt.Query(1, o, l)
-	if err != nil {
-		return nil, err
-	}
-	res := RecommendationResult{}
-	for rows.Next() {
-		rec := Recommendation{}
-		err = rows.Scan(
-			&rec.ID,
-			&rec.UserID,
-			&rec.Title,
-			&rec.Type,
-			&rec.Body,
-			&rec.Poster,
-			&rec.Backdrop,
-			&rec.Status,
-			&rec.CreatedAt,
-			&rec.UpdatedAt,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		res.Data = append(res.Data, &rec)
-	}
-	return &res, nil
+
+	return &result, nil
 }
 
 // GetRecommendation retrieves a recommendation by a given ID.
@@ -317,49 +268,50 @@ func (c *Conn) GetRecommendationTotalRows() (int, error) {
 // GetRecommendationsAdmin retrieves the last 10
 // recommendations without filter.
 func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, 
-		user_id, 
-		title, 
-		type, 
-		body, 
-		poster, 
-		backdrop, 
-		status, 
-		created_at, 
-		updated_at
-		FROM recommendations
-		ORDER BY id DESC
-		LIMIT ?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query(10)
-	if err != nil {
-		return nil, err
-	}
-	res := RecommendationResult{}
-	for rows.Next() {
-		rec := Recommendation{}
-		err = rows.Scan(
-			&rec.ID,
-			&rec.UserID,
-			&rec.Title,
-			&rec.Type,
-			&rec.Body,
-			&rec.Poster,
-			&rec.Backdrop,
-			&rec.Status,
-			&rec.CreatedAt,
-			&rec.UpdatedAt,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		res.Data = append(res.Data, &rec)
-	}
-	return &res, nil
+	// stmt, err := c.db.Prepare(`
+	// 	SELECT
+	// 	id,
+	// 	user_id,
+	// 	title,
+	// 	type,
+	// 	body,
+	// 	poster,
+	// 	backdrop,
+	// 	status,
+	// 	created_at,
+	// 	updated_at
+	// 	FROM recommendations
+	// 	ORDER BY id DESC
+	// 	LIMIT ?
+	// `)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// defer stmt.Close()
+	// rows, err := stmt.Query(10)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// res := RecommendationResult{}
+	// for rows.Next() {
+	// 	rec := Recommendation{}
+	// 	err = rows.Scan(
+	// 		&rec.ID,
+	// 		&rec.UserID,
+	// 		&rec.Title,
+	// 		&rec.Type,
+	// 		&rec.Body,
+	// 		&rec.Poster,
+	// 		&rec.Backdrop,
+	// 		&rec.Status,
+	// 		&rec.CreatedAt,
+	// 		&rec.UpdatedAt,
+	// 	)
+	// 	if err != nil && err != sql.ErrNoRows {
+	// 		return nil, err
+	// 	}
+	// 	res.Data = append(res.Data, &rec)
+	// }
+	var result RecommendationResult
+	return &result, nil
 }

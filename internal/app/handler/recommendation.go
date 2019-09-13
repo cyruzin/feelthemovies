@@ -29,7 +29,7 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	val, _ := s.rc.Get(rrKey).Result()
 
 	if val != "" {
-		rr := &model.RecommendationPagination{}
+		rr := &model.RecommendationResult{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
 			helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
 			return
@@ -67,34 +67,13 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	}
 	// End pagination
 
-	rec, err := s.h.GetRecommendations(chapter.Offset, chapter.Limit)
+	result, err := s.h.GetRecommendations(chapter.Offset, chapter.Limit)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	result := []*model.RecommendationResponse{}
-
-	for _, rr := range rec.Data {
-		recG, err := s.h.GetRecommendationGenres(rr.ID)
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-			return
-		}
-		recK, err := s.h.GetRecommendationKeywords(rr.ID)
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-			return
-		}
-		recFinal := &model.RecommendationResponse{
-			Recommendation: rr,
-			Genres:         recG,
-			Keywords:       recK,
-		}
-		result = append(result, recFinal)
-	}
-
-	resultFinal := &model.RecommendationPagination{
+	resultFinal := &model.RecommendationResult{
 		Data:    result,
 		Chapter: chapter,
 	}
@@ -381,35 +360,35 @@ func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 // GetRecommendationsAdmin retrieves the last 10 recommendations
 // without filter.
 func (s *Setup) GetRecommendationsAdmin(w http.ResponseWriter, r *http.Request) {
-	rec, err := s.h.GetRecommendationsAdmin()
-	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-		return
-	}
+	// rec, err := s.h.GetRecommendationsAdmin()
+	// if err != nil {
+	// 	helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+	// 	return
+	// }
 
-	result := []*model.RecommendationResponse{}
+	// result := []*model.RecommendationResponse{}
 
-	for _, rr := range rec.Data {
-		recG, err := s.h.GetRecommendationGenres(rr.ID)
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-			return
-		}
-		recK, err := s.h.GetRecommendationKeywords(rr.ID)
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-			return
-		}
-		recFinal := &model.RecommendationResponse{
-			Recommendation: rr,
-			Genres:         recG,
-			Keywords:       recK,
-		}
-		result = append(result, recFinal)
-	}
+	// for _, rr := range rec.Data {
+	// 	recG, err := s.h.GetRecommendationGenres(rr.ID)
+	// 	if err != nil {
+	// 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	recK, err := s.h.GetRecommendationKeywords(rr.ID)
+	// 	if err != nil {
+	// 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	recFinal := &model.RecommendationResponse{
+	// 		Recommendation: rr,
+	// 		Genres:         recG,
+	// 		Keywords:       recK,
+	// 	}
+	// 	result = append(result, recFinal)
+	// }
 
-	resultFinal := &model.RecommendationPagination{Data: result}
+	// resultFinal := &model.RecommendationPagination{Data: result}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(resultFinal)
+	// w.WriteHeader(http.StatusOK)
+	// json.NewEncoder(w).Encode(resultFinal)
 }
