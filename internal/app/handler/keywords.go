@@ -14,7 +14,7 @@ import (
 
 // GetKeywords gets all keywords.
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
-	keywords, err := s.h.GetKeywords()
+	keywords, err := s.h.GetKeywords(20)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return

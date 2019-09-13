@@ -18,11 +18,11 @@ type GenreResult struct {
 	Data *[]Genre `json:"data"`
 }
 
-// GetGenres retrieves the latest 10 genres.
-func (c *Conn) GetGenres() (*GenreResult, error) {
+// GetGenres retrieves the latest genres.
+func (c *Conn) GetGenres(limit int) (*GenreResult, error) {
 	var result []Genre
 
-	err := c.db.Select(&result, queryGenresSelect, 10)
+	err := c.db.Select(&result, queryGenresSelect, limit)
 
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err

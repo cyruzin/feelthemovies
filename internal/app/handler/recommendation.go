@@ -96,7 +96,6 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 
 // GetRecommendation gets a recommendation by ID.
 func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
-
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
@@ -108,7 +107,7 @@ func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	val, _ := s.rc.Get(rrKey).Result()
 
 	if val != "" {
-		rr := &model.RecommendationResponse{}
+		rr := &model.Recommendation{}
 		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
 			helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
 			return
@@ -119,32 +118,14 @@ func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	}
 	// Redis check end
 
-	rec, err := s.h.GetRecommendation(id)
+	recommentation, err := s.h.GetRecommendation(id)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
-	}
-
-	recG, err := s.h.GetRecommendationGenres(id)
-	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-		return
-	}
-
-	recK, err := s.h.GetRecommendationKeywords(id)
-	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-		return
-	}
-
-	response := &model.RecommendationResponse{
-		Recommendation: rec,
-		Genres:         recG,
-		Keywords:       recK,
 	}
 
 	// Redis set check start
-	rr, err := helper.MarshalBinary(response)
+	rr, err := helper.MarshalBinary(recommentation)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errMarhsal, http.StatusInternalServerError)
 		return
@@ -157,12 +138,11 @@ func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis set check end
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(recommentation)
 }
 
 // CreateRecommendation creates a new recommendation.
 func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
-
 	reqRec := &model.RecommendationCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
 		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
@@ -174,7 +154,7 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newRec := &model.Recommendation{
+	recommendation := &model.Recommendation{
 		UserID:    int64(reqRec.UserID),
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
@@ -185,8 +165,7 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	rec, err := s.h.CreateRecommendation(newRec)
-
+	recommendationID, err := s.h.CreateRecommendation(recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
 		return
@@ -194,7 +173,7 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Attaching keywords
 	keywords := make(map[int64][]int)
-	keywords[rec.ID] = reqRec.Keywords
+	keywords[recommendationID] = reqRec.Keywords
 	err = s.h.Attach(keywords, "keyword_recommendation")
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errAttach, http.StatusInternalServerError)
@@ -203,7 +182,7 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Attaching genres
 	genres := make(map[int64][]int)
-	genres[rec.ID] = reqRec.Genres
+	genres[recommendationID] = reqRec.Genres
 	err = s.h.Attach(genres, "genre_recommendation")
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errAttach, http.StatusInternalServerError)
@@ -222,12 +201,11 @@ func (s *Setup) CreateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis check end
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(rec)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Recommendation created successfully!"})
 }
 
 // UpdateRecommendation updates a recommendation.
 func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
-
 	reqRec := &model.RecommendationCreate{}
 
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
@@ -240,7 +218,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	upRec := model.Recommendation{
+	recommendation := model.Recommendation{
 		Title:     reqRec.Title,
 		Type:      reqRec.Type,
 		Body:      reqRec.Body,
@@ -268,7 +246,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rec, err := s.h.UpdateRecommendation(id, &upRec)
+	err = s.h.UpdateRecommendation(id, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
 		return
@@ -276,7 +254,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Syncing keywords
 	keywords := make(map[int64][]int)
-	keywords[rec.ID] = reqRec.Keywords
+	keywords[id] = reqRec.Keywords
 	err = s.h.Sync(keywords, "keyword_recommendation", "recommendation_id")
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errSync, http.StatusInternalServerError)
@@ -285,7 +263,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	// Syncing genres
 	genres := make(map[int64][]int)
-	genres[rec.ID] = reqRec.Genres
+	genres[id] = reqRec.Genres
 	err = s.h.Sync(genres, "genre_recommendation", "recommendation_id")
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errSync, http.StatusInternalServerError)
@@ -314,7 +292,7 @@ func (s *Setup) UpdateRecommendation(w http.ResponseWriter, r *http.Request) {
 	// Redis check end
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&rec)
+	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Recommendation updated successfully!"})
 }
 
 // DeleteRecommendation deletes a recommendation.

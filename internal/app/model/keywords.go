@@ -18,11 +18,11 @@ type KeywordResult struct {
 	Data *[]Keyword `json:"data"`
 }
 
-// GetKeywords retrieves the latest 10 keywords.
-func (c *Conn) GetKeywords() (*KeywordResult, error) {
+// GetKeywords retrieves the latest keywords.
+func (c *Conn) GetKeywords(limit int) (*KeywordResult, error) {
 	var result []Keyword
 
-	err := c.db.Select(&result, queryKeywordsSelect, 10)
+	err := c.db.Select(&result, queryKeywordsSelect, limit)
 
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err

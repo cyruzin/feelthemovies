@@ -15,7 +15,7 @@ import (
 
 // GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
-	genres, err := s.h.GetGenres()
+	genres, err := s.h.GetGenres(20)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return

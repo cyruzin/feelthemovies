@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/cyruzin/tome"
@@ -60,103 +59,68 @@ func (c *Conn) GetRecommendations(offset, limit int) (*[]Recommendation, error) 
 
 	err := c.db.Select(&result, queryRecommendationsSelect, 1, offset, limit)
 	if err != nil && err != sql.ErrNoRows {
-		log.Println(err)
 		return nil, err
 	}
 
 	return &result, nil
 }
 
-// GetRecommendation retrieves a recommendation by a given ID.
+// GetRecommendation retrieves a recommendation by ID.
 func (c *Conn) GetRecommendation(id int64) (*Recommendation, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, user_id, title, type, body, poster, 
-		backdrop, status, created_at, updated_at
-		FROM recommendations
-		WHERE id = ?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	rec := Recommendation{}
-	err = stmt.QueryRow(id).Scan(
-		&rec.ID, &rec.UserID, &rec.Title, &rec.Type,
-		&rec.Body, &rec.Poster, &rec.Backdrop, &rec.Status,
-		&rec.CreatedAt, &rec.UpdatedAt,
-	)
+	var recommendation Recommendation
+
+	err := c.db.Get(&recommendation, queryRecommendationSelectByID, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
-	return &rec, err
+
+	return &recommendation, nil
 }
 
 // CreateRecommendation creates a new recommendation.
-func (c *Conn) CreateRecommendation(
-	r *Recommendation,
-) (*Recommendation, error) {
-	stmt, err := c.db.Prepare(`
-		INSERT INTO recommendations (
-		user_id, title, type, body, 
-		poster, backdrop, status, created_at, 
-		updated_at
-		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&r.UserID, &r.Title, &r.Type, &r.Body,
-		&r.Poster, &r.Backdrop, &r.Status, &r.CreatedAt,
-		&r.UpdatedAt,
+func (c *Conn) CreateRecommendation(r *Recommendation) (int64, error) {
+	result, err := c.db.Exec(
+		queryRecommendationInsert,
+		r.UserID,
+		r.Title,
+		r.Type,
+		r.Body,
+		r.Poster,
+		r.Backdrop,
+		r.Status,
+		r.CreatedAt,
+		r.UpdatedAt,
 	)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	id, err := res.LastInsertId()
+
+	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	data, err := c.GetRecommendation(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return id, nil
 }
 
 // UpdateRecommendation updates a recommendation by a given ID.
-func (c *Conn) UpdateRecommendation(
-	id int64, r *Recommendation,
-) (*Recommendation, error) {
-	stmt, err := c.db.Prepare(`
-		UPDATE recommendations
-		SET title=?, type=?, body=?, poster=?,
-		backdrop=?, status=?, updated_at=?
-		WHERE id=?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&r.Title, &r.Type, &r.Body, &r.Poster,
-		&r.Backdrop, &r.Status, &r.UpdatedAt, &id,
+func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
+	_, err := c.db.Exec(
+		queryRecommendationUpdate,
+		r.Title,
+		r.Type,
+		r.Body,
+		r.Poster,
+		r.Backdrop,
+		r.Status,
+		r.UpdatedAt,
+		id,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	_, err = res.RowsAffected()
-	if err != nil {
-		return nil, err
-	}
-	data, err := c.GetRecommendation(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return nil
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
