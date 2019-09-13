@@ -1,23 +1,22 @@
 package model
 
 import (
-	"database/sql"
-
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 // Conn type is a struct for connections.
 type Conn struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-// Connect ...
-func Connect(db *sql.DB) *Conn {
+// Connect connects to the database.
+func Connect(db *sqlx.DB) *Conn {
 	return &Conn{db}
 }
 
-// Attach receives a map of int/[]int and attach the IDs on the given pivot table.
-// TODO: Optimize to bulk.
+// Attach receives a map of int/[]int and attach
+// the IDs on the given pivot table.
 func (c *Conn) Attach(s map[int64][]int, pivot string) error {
 	for index, ids := range s {
 		for _, values := range ids {
@@ -39,8 +38,8 @@ func (c *Conn) Attach(s map[int64][]int, pivot string) error {
 	return nil
 }
 
-// Detach receives a map of int/[]int and Detach the IDs on the given pivot table.
-// TODO: Optimize to bulk.
+// Detach receives a map of int/[]int and Detach
+// the IDs on the given pivot table.
 func (c *Conn) Detach(s map[int64][]int, pivot, field string) error {
 	for index := range s {
 		query := "DELETE FROM " + pivot + " WHERE " + field + " = ?"
@@ -57,7 +56,8 @@ func (c *Conn) Detach(s map[int64][]int, pivot, field string) error {
 	return nil
 }
 
-// Sync receives a map of int/[]int and sync the IDs on the given pivot table.
+// Sync receives a map of int/[]int and sync
+// the IDs on the given pivot table.
 func (c *Conn) Sync(s map[int64][]int, pivot, field string) error {
 	empty := c.IsEmpty(s)
 	if !empty {

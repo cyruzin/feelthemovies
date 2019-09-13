@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	"github.com/InVisionApp/go-health/handlers"
+	"github.com/jmoiron/sqlx"
 
 	health "github.com/InVisionApp/go-health"
 	"github.com/InVisionApp/go-health/checkers"
@@ -89,20 +89,23 @@ func main() {
 }
 
 // Database connection.
-func database(cfg *config.Config) *sql.DB {
+func database(cfg *config.Config) *sqlx.DB {
 	url := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		cfg.DBUser, cfg.DBPass, cfg.DBHost,
 		cfg.DBPort, cfg.DBName,
 	)
-	db, err := sql.Open("mysql", url)
+
+	db, err := sqlx.Connect("mysql", url)
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
+
 	err = db.Ping()
 	if err != nil {
 		log.Fatal("Could not connect to MySQL: ", err)
 	}
+
 	log.Println("MySQL: Connection OK.")
 	return db
 }
@@ -127,7 +130,7 @@ func redis(cfg *config.Config) *re.Client {
 }
 
 // healthChecks checks the services health periodically.
-func healthChecks(cfg *config.Config, db *sql.DB) (*health.Health, error) {
+func healthChecks(cfg *config.Config, db *sqlx.DB) (*health.Health, error) {
 	h := health.New()
 	h.DisableLogging()
 

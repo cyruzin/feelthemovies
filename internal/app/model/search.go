@@ -102,7 +102,7 @@ func (c *Conn) SearchUser(s string) (*UserResult, error) {
 }
 
 // SearchGenre search for genres.
-func (c *Conn) SearchGenre(s string) (*GenreResult, error) {
+func (c *Conn) SearchGenre(s string) (*[]Genre, error) {
 	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -119,7 +119,7 @@ func (c *Conn) SearchGenre(s string) (*GenreResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := GenreResult{}
+	res := []Genre{}
 	for rows.Next() {
 		g := Genre{}
 		err = rows.Scan(
@@ -128,7 +128,7 @@ func (c *Conn) SearchGenre(s string) (*GenreResult, error) {
 		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
-		res.Data = append(res.Data, &g)
+		res = append(res, g)
 	}
 	return &res, nil
 }

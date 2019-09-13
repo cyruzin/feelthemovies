@@ -14,6 +14,7 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/google/uuid v1.1.1
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/newrelic/go-agent v2.8.1+incompatible
