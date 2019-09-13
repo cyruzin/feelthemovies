@@ -15,14 +15,14 @@ import (
 
 // GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
-	g, err := s.h.GetGenres()
+	genres, err := s.h.GetGenres()
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&g)
+	json.NewEncoder(w).Encode(&genres)
 }
 
 // GetGenre gets a genre by ID.
@@ -33,35 +33,35 @@ func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	g, err := s.h.GetGenre(id)
+	genre, err := s.h.GetGenre(id)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&g)
+	json.NewEncoder(w).Encode(&genre)
 }
 
 // CreateGenre creates a new genre.
 func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
-	var reqG model.Genre
+	var genre model.Genre
 
-	err := json.NewDecoder(r.Body).Decode(&reqG)
+	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(reqG); err != nil {
+	if err := s.v.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	reqG.CreatedAt = time.Now()
-	reqG.UpdatedAt = time.Now()
+	genre.CreatedAt = time.Now()
+	genre.UpdatedAt = time.Now()
 
-	err = s.h.CreateGenre(&reqG)
+	err = s.h.CreateGenre(&genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
 		return
@@ -73,20 +73,20 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 
 // UpdateGenre updates a genre.
 func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
-	var reqG model.Genre
+	var genre model.Genre
 
-	err := json.NewDecoder(r.Body).Decode(&reqG)
+	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(reqG); err != nil {
+	if err := s.v.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	reqG.UpdatedAt = time.Now()
+	genre.UpdatedAt = time.Now()
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
@@ -94,7 +94,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.h.UpdateGenre(id, &reqG)
+	err = s.h.UpdateGenre(id, &genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
 		return

@@ -21,7 +21,7 @@ type AuthJWT struct {
 func (c *Conn) Authenticate(email string) (string, error) {
 	var password string
 
-	err := c.db.Get(&password, "SELECT password from users WHERE email = ?", email)
+	err := c.db.Get(&password, queryAuthAuthenticate, email)
 	if err != nil && err != sql.ErrNoRows {
 		return "", err
 	}
@@ -33,7 +33,7 @@ func (c *Conn) Authenticate(email string) (string, error) {
 func (c *Conn) GetAuthInfo(email string) (*Auth, error) {
 	var auth Auth
 
-	err := c.db.Get(&auth, "SELECT id, name, email FROM users WHERE email = ?", email)
+	err := c.db.Get(&auth, queryAuthGetInfo, email)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}

@@ -134,7 +134,7 @@ func (c *Conn) SearchGenre(s string) (*[]Genre, error) {
 }
 
 // SearchKeyword search for keywords.
-func (c *Conn) SearchKeyword(s string) (*KeywordResult, error) {
+func (c *Conn) SearchKeyword(s string) (*[]Keyword, error) {
 	stmt, err := c.db.Prepare(`
 		SELECT 
 		id, name, created_at, updated_at
@@ -151,7 +151,7 @@ func (c *Conn) SearchKeyword(s string) (*KeywordResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	res := KeywordResult{}
+	res := []Keyword{}
 	for rows.Next() {
 		k := Keyword{}
 		err = rows.Scan(
@@ -160,7 +160,7 @@ func (c *Conn) SearchKeyword(s string) (*KeywordResult, error) {
 		if err != nil && err != sql.ErrNoRows {
 			return nil, err
 		}
-		res.Data = append(res.Data, &k)
+		res = append(res, k)
 	}
 	return &res, nil
 }
