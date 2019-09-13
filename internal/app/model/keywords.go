@@ -13,8 +13,13 @@ type Keyword struct {
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
 
+// KeywordResult type is a result slice for keywords.
+type KeywordResult struct {
+	Data *[]Keyword `json:"data"`
+}
+
 // GetKeywords retrieves the latest 10 keywords.
-func (c *Conn) GetKeywords() (*[]Keyword, error) {
+func (c *Conn) GetKeywords() (*KeywordResult, error) {
 	var result []Keyword
 
 	err := c.db.Select(&result, queryKeywordsSelect, 10)
@@ -23,7 +28,7 @@ func (c *Conn) GetKeywords() (*[]Keyword, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return &KeywordResult{&result}, nil
 }
 
 // GetKeyword retrieves a keyword by ID.

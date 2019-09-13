@@ -13,8 +13,13 @@ type Genre struct {
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
 
+// GenreResult type is a result slice for genres.
+type GenreResult struct {
+	Data *[]Genre `json:"data"`
+}
+
 // GetGenres retrieves the latest 10 genres.
-func (c *Conn) GetGenres() (*[]Genre, error) {
+func (c *Conn) GetGenres() (*GenreResult, error) {
 	var result []Genre
 
 	err := c.db.Select(&result, queryGenresSelect, 10)
@@ -23,7 +28,7 @@ func (c *Conn) GetGenres() (*[]Genre, error) {
 		return nil, err
 	}
 
-	return &result, nil
+	return &GenreResult{&result}, nil
 }
 
 // GetGenre retrieves a genre by ID.
