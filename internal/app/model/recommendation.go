@@ -57,7 +57,7 @@ type RecommendationCreate struct {
 func (c *Conn) GetRecommendations(offset, limit int) (*[]Recommendation, error) {
 	var result []Recommendation
 
-	err := c.db.Select(&result, queryRecommendationsSelect, 1, offset, limit)
+	err := c.db.Select(&result, queryRecommendationsSelect, offset, limit)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (c *Conn) CreateRecommendation(r *Recommendation) (int64, error) {
 
 // UpdateRecommendation updates a recommendation by a given ID.
 func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
-	_, err := c.db.Exec(
+	result, err := c.db.Exec(
 		queryRecommendationUpdate,
 		r.Title,
 		r.Type,
@@ -120,162 +120,112 @@ func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
 		return err
 	}
 
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
+	}
+
 	return nil
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
 func (c *Conn) DeleteRecommendation(id int64) error {
-	stmt, err := c.db.Prepare(`
-		DELETE 
-		FROM recommendations
-		WHERE id=?
-	`)
+	result, err := c.db.Exec(queryRecommendationDelete, id)
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
-	res, err := stmt.Exec(id)
-	if err != nil {
-		return err
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
-	data, err := res.RowsAffected()
-	if err != nil || data == 0 {
-		return errors.New("The resource you requested could not be found")
-	}
+
 	return nil
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
-func (c *Conn) GetRecommendationGenres(
-	id int64,
-) ([]*RecommendationGenres, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		g.id, g.name 
-		FROM genres AS g
-		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
-		JOIN recommendations AS r ON r.id = gr.recommendation_id
-		WHERE r.id = ?
-	`)
-	if err != nil {
+func (c *Conn) GetRecommendationGenres(id int64) (*[]RecommendationGenres, error) {
+	var recommendationGenres []RecommendationGenres
+
+	err := c.db.Select(&recommendationGenres, queryRecommendationGenres, id)
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
-	defer stmt.Close()
-	rows, err := stmt.Query(id)
-	if err != nil {
-		return nil, err
-	}
-	recG := []*RecommendationGenres{}
-	for rows.Next() {
-		rec := RecommendationGenres{}
-		err = rows.Scan(
-			&rec.ID, &rec.Name,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		recG = append(recG, &rec)
-	}
-	return recG, nil
+
+	return &recommendationGenres, nil
 }
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
-func (c *Conn) GetRecommendationKeywords(
-	id int64,
-) ([]*RecommendationKeywords, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		k.id, k.name 
-		FROM keywords AS k
-		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
-		JOIN recommendations AS r ON r.id = kr.recommendation_id
-		WHERE r.id = ?
-	`)
-	if err != nil {
+func (c *Conn) GetRecommendationKeywords(id int64) (*[]RecommendationKeywords, error) {
+	var recommendationKeywords []RecommendationKeywords
+
+	err := c.db.Select(&recommendationKeywords, queryRecommendationKeywords, id)
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
-	defer stmt.Close()
-	rows, err := stmt.Query(id)
-	if err != nil {
-		return nil, err
-	}
-	recK := []*RecommendationKeywords{}
-	for rows.Next() {
-		rec := RecommendationKeywords{}
-		err = rows.Scan(
-			&rec.ID, &rec.Name,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		recK = append(recK, &rec)
-	}
-	return recK, nil
+
+	return &recommendationKeywords, nil
 }
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
 func (c *Conn) GetRecommendationTotalRows() (int, error) {
-	stmt, err := c.db.Prepare("SELECT COUNT(*) FROM recommendations")
-	if err != nil {
-		return 0, err
-	}
-	defer stmt.Close()
-	var total int
-	err = stmt.QueryRow().Scan(&total)
+	var totalRows int
+
+	err := c.db.Get(&totalRows, queryRecommendationsTotalRows)
 	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}
-	return total, nil
+
+	return totalRows, nil
 }
 
 // GetRecommendationsAdmin retrieves the last 10
 // recommendations without filter.
-func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
-	// stmt, err := c.db.Prepare(`
-	// 	SELECT
-	// 	id,
-	// 	user_id,
-	// 	title,
-	// 	type,
-	// 	body,
-	// 	poster,
-	// 	backdrop,
-	// 	status,
-	// 	created_at,
-	// 	updated_at
-	// 	FROM recommendations
-	// 	ORDER BY id DESC
-	// 	LIMIT ?
-	// `)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// defer stmt.Close()
-	// rows, err := stmt.Query(10)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// res := RecommendationResult{}
-	// for rows.Next() {
-	// 	rec := Recommendation{}
-	// 	err = rows.Scan(
-	// 		&rec.ID,
-	// 		&rec.UserID,
-	// 		&rec.Title,
-	// 		&rec.Type,
-	// 		&rec.Body,
-	// 		&rec.Poster,
-	// 		&rec.Backdrop,
-	// 		&rec.Status,
-	// 		&rec.CreatedAt,
-	// 		&rec.UpdatedAt,
-	// 	)
-	// 	if err != nil && err != sql.ErrNoRows {
-	// 		return nil, err
-	// 	}
-	// 	res.Data = append(res.Data, &rec)
-	// }
-	var result RecommendationResult
-	return &result, nil
-}
+//func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
+// stmt, err := c.db.Prepare(`
+// 	SELECT
+// 	id,
+// 	user_id,
+// 	title,
+// 	type,
+// 	body,
+// 	poster,
+// 	backdrop,
+// 	status,
+// 	created_at,
+// 	updated_at
+// 	FROM recommendations
+// 	ORDER BY id DESC
+// 	LIMIT ?
+// `)
+// if err != nil {
+// 	return nil, err
+// }
+// defer stmt.Close()
+// rows, err := stmt.Query(10)
+// if err != nil {
+// 	return nil, err
+// }
+// res := RecommendationResult{}
+// for rows.Next() {
+// 	rec := Recommendation{}
+// 	err = rows.Scan(
+// 		&rec.ID,
+// 		&rec.UserID,
+// 		&rec.Title,
+// 		&rec.Type,
+// 		&rec.Body,
+// 		&rec.Poster,
+// 		&rec.Backdrop,
+// 		&rec.Status,
+// 		&rec.CreatedAt,
+// 		&rec.UpdatedAt,
+// 	)
+// 	if err != nil && err != sql.ErrNoRows {
+// 		return nil, err
+// 	}
+// 	res.Data = append(res.Data, &rec)
+// }
+// 	return &result, nil
+// }

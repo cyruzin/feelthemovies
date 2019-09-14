@@ -5,6 +5,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+const (
+	errResourceNotFound = "The resource you requested could not be found"
+)
+
 // Conn type is a struct for connections.
 type Conn struct {
 	db *sqlx.DB

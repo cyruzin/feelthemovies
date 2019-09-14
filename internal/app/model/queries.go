@@ -45,7 +45,7 @@ const (
 		JOIN keywords AS k ON k.id = kr.keyword_id
 		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
 		JOIN genres AS g ON g.id = gr.genre_id	
-		WHERE r.status = ?
+		WHERE r.status = 1
 		GROUP BY r.id
 		ORDER BY r.id DESC
 		LIMIT ?,?
@@ -101,4 +101,28 @@ const (
 		updated_at = ?
 		WHERE id = ?
 	`
+
+	queryRecommendationDelete = "DELETE FROM recommendations WHERE id = ?"
+
+	queryRecommendationGenres = `
+		SELECT 
+		g.id, 
+		g.name 
+		FROM genres AS g
+		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
+		JOIN recommendations AS r ON r.id = gr.recommendation_id
+		WHERE r.id = ?
+	`
+
+	queryRecommendationKeywords = `
+		SELECT 
+		k.id, 
+		k.name 
+		FROM keywords AS k
+		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
+		JOIN recommendations AS r ON r.id = kr.recommendation_id
+		WHERE r.id = ?
+	`
+
+	queryRecommendationsTotalRows = "SELECT COUNT(*) FROM recommendations"
 )
