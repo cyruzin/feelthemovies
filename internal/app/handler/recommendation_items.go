@@ -26,7 +26,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 
 	recommendationItem := &model.RecommendationItemFinal{}
 
-	cache, err := helper.CheckCache(s.rc, redisKey, recommendationItem)
+	cache, err := s.CheckCache(redisKey, recommendationItem)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
 		return
@@ -64,7 +64,7 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	resultFinal := &model.RecommendationItemFinal{Data: result}
 
 	// Redis set start
-	err = helper.SetCache(s.rc, redisKey, resultFinal)
+	err = s.SetCache(redisKey, resultFinal)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
 		return

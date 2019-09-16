@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"github.com/go-redis/redis"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -57,4 +58,43 @@ func NewHandler(
 	l *logger.Logger,
 ) *Setup {
 	return &Setup{m, rc, v, l}
+}
+
+// CheckCache checks if the given key exists in cache.
+func (s *Setup) CheckCache(key string, dest interface{}) (bool, error) {
+	cacheValue, _ := s.rc.Get(key).Result()
+	if cacheValue != "" {
+		if err := helper.UnmarshalBinary([]byte(cacheValue), dest); err != nil {
+			return false, err
+		}
+	}
+
+	return true, nil
+}
+
+// SetCache sets the given key in cache.
+func (s *Setup) SetCache(key string, dest interface{}) error {
+	cacheValue, err := helper.MarshalBinary(dest)
+	if err != nil {
+		return err
+	}
+
+	if err := s.rc.Set(key, cacheValue, redisTimeout).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveCache removes the given key from the cache.
+func (s *Setup) RemoveCache(key string) error {
+	val, _ := s.rc.Get(key).Result()
+	if val != "" {
+		_, err := s.rc.Unlink(key).Result()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

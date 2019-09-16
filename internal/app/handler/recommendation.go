@@ -19,29 +19,29 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
 	//Redis check start
-	var rrKey string
+	var redisKey string
 	if params["page"] != nil {
-		rrKey = fmt.Sprintf("recommendation?page=%s", params["page"][0])
+		redisKey = fmt.Sprintf("recommendation?page=%s", params["page"][0])
 	} else {
-		rrKey = "recommendation"
+		redisKey = "recommendation"
 	}
 
-	val, _ := s.rc.Get(rrKey).Result()
+	recommendation := &model.RecommendationResult{}
 
-	if val != "" {
-		rr := &model.RecommendationResult{}
-		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
-			return
-		}
-		json.NewEncoder(w).Encode(&rr)
+	cache, err := s.CheckCache(redisKey, recommendation)
+	if err != nil {
+		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
+		return
+	}
+
+	if cache {
+		json.NewEncoder(w).Encode(recommendation)
 		return
 	}
 	// Redis check end
 
 	// Start pagination
 	total, err := s.h.GetRecommendationTotalRows() // total results
-
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
@@ -79,13 +79,9 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Redis set check start
-	rr, err := helper.MarshalBinary(resultFinal)
+	err = s.SetCache(redisKey, resultFinal)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errMarhsal, http.StatusInternalServerError)
-		return
-	}
-	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
-		helper.DecodeError(w, r, s.l, errKeySet, http.StatusInternalServerError)
 		return
 	}
 	// Redis set check end

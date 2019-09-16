@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
-	"github.com/go-redis/redis"
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -22,32 +21,6 @@ func IDParser(sid string) (int64, error) {
 		return 0, err
 	}
 	return int64(id), nil
-}
-
-// CheckCache checks if the given key exists in cache.
-func CheckCache(rc *redis.Client, key string, dest interface{}) (bool, error) {
-	cacheValue, _ := rc.Get(key).Result()
-	if cacheValue != "" {
-		if err := UnmarshalBinary([]byte(cacheValue), dest); err != nil {
-			return false, err
-		}
-	}
-
-	return true, nil
-}
-
-// SetCache sets the given key in cache.
-func SetCache(rc *redis.Client, key string, dest interface{}) error {
-	cacheValue, err := MarshalBinary(dest)
-	if err != nil {
-		return err
-	}
-
-	if err := rc.Set(key, cacheValue, redisTimeout).Err(); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // HashPassword encrypts a given password using bcrypt algorithm.
