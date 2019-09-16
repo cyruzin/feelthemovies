@@ -15,23 +15,26 @@ import (
 
 // GetRecommendationItems gets all recommendation items.
 func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := helper.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	//Redis check start
-	rrKey := fmt.Sprintf("recommendation_items-%d", id)
-	val, _ := s.rc.Get(rrKey).Result()
-	if val != "" {
-		rr := &model.RecommendationItemFinal{}
-		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
-			return
-		}
+	redisKey := fmt.Sprintf("recommendation_items-%d", id)
+
+	recommendationItem := &model.RecommendationItemFinal{}
+
+	cache, err := helper.CheckCache(s.rc, redisKey, recommendationItem)
+	if err != nil {
+		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
+		return
+	}
+
+	if cache {
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(rr)
+		json.NewEncoder(w).Encode(recommendationItem)
 		return
 	}
 	// Redis check end
@@ -61,21 +64,15 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 	resultFinal := &model.RecommendationItemFinal{Data: result}
 
 	// Redis set start
-	rr, err := helper.MarshalBinary(resultFinal)
+	err = helper.SetCache(s.rc, redisKey, resultFinal)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
-		return
-	}
-
-	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
-		helper.DecodeError(w, r, s.l, errKeySet, http.StatusInternalServerError)
 		return
 	}
 	// Redis set end
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resultFinal)
-
 }
 
 // GetRecommendationItem gets a recommendation item by ID.
