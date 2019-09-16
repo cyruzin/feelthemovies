@@ -18,15 +18,15 @@ import (
 func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
-	//Redis check start
 	var redisKey string
+
 	if params["page"] != nil {
 		redisKey = fmt.Sprintf("recommendation?page=%s", params["page"][0])
 	} else {
 		redisKey = "recommendation"
 	}
 
-	recommendation := &model.RecommendationResult{}
+	var recommendation *model.RecommendationResult
 
 	cache, err := s.CheckCache(redisKey, recommendation)
 	if err != nil {
@@ -38,34 +38,25 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(recommendation)
 		return
 	}
-	// Redis check end
 
-	// Start pagination
-	total, err := s.h.GetRecommendationTotalRows() // total results
+	total, err := s.h.GetRecommendationTotalRows()
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	newPage := 1
-	if params["page"] != nil && params["page"][0] != "" {
-		newPage, err = strconv.Atoi(params["page"][0])
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
-			return
-		}
+	newPage, err := helper.PageParser(params)
+	if err != nil {
+		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		return
 	}
 
-	chapter := &tome.Chapter{
-		NewPage:      newPage,
-		TotalResults: total,
-	}
+	chapter := &tome.Chapter{NewPage: newPage, TotalResults: total}
 
 	if err := chapter.Paginate(); err != nil {
 		helper.DecodeError(w, r, s.l, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// End pagination
 
 	result, err := s.h.GetRecommendations(chapter.Offset, chapter.Limit)
 	if err != nil {
@@ -78,13 +69,11 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 		Chapter: chapter,
 	}
 
-	// Redis set check start
 	err = s.SetCache(redisKey, resultFinal)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errMarhsal, http.StatusInternalServerError)
 		return
 	}
-	// Redis set check end
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resultFinal)

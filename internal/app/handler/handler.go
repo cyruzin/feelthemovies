@@ -67,9 +67,10 @@ func (s *Setup) CheckCache(key string, dest interface{}) (bool, error) {
 		if err := helper.UnmarshalBinary([]byte(cacheValue), dest); err != nil {
 			return false, err
 		}
+		return true, nil
 	}
 
-	return true, nil
+	return false, nil
 }
 
 // SetCache sets the given key in cache.
