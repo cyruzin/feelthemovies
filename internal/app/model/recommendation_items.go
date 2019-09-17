@@ -6,32 +6,29 @@ import (
 	"time"
 )
 
-// RecommendationItem type is a struct for recommendation_items table.
+// RecommendationItem type is a struct for
+// recommendation_items table.
 type RecommendationItem struct {
 	ID               int64     `json:"id"`
-	RecommendationID int64     `json:"recommendation_id" validate:"required,numeric"`
+	RecommendationID int64     `db:"recommendation_id" json:"recommendation_id" validate:"required,numeric"`
 	Name             string    `json:"name" validate:"required"`
-	TMDBID           int64     `json:"tmdb_id" validate:"required,numeric"`
+	TMDBID           int64     `db:"tmdb_id" json:"tmdb_id" validate:"required,numeric"`
 	Year             time.Time `json:"year"`
 	Overview         string    `json:"overview" validate:"required"`
 	Poster           string    `json:"poster" validate:"required"`
 	Backdrop         string    `json:"backdrop" validate:"required"`
 	Trailer          string    `json:"trailer"`
 	Commentary       string    `json:"commentary"`
-	MediaType        string    `json:"media_type" validate:"required"`
-	CreatedAt        time.Time `json:"created_at"`
-	UpdatedAt        time.Time `json:"updated_at"`
+	MediaType        string    `db:"media_type" json:"media_type" validate:"required"`
+	Sources          string    `json:"sources"`
+	CreatedAt        time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt        time.Time `db:"updated_at" json:"updated_at"`
 }
 
-// RecommendationItemResult type is a slice of recommendation items.
+// RecommendationItemResult type is a slice
+// of recommendation items.
 type RecommendationItemResult struct {
-	Data []*RecommendationItem `json:"data"`
-}
-
-// RecommendationItemResponse type is a struct for a final response.
-type RecommendationItemResponse struct {
-	*RecommendationItem
-	Sources []*RecommendationItemSources `json:"sources"`
+	Data *[]RecommendationItem `json:"data"`
 }
 
 // RecommendationItemSources type is a struct for
@@ -41,14 +38,8 @@ type RecommendationItemSources struct {
 	Name string `json:"name"`
 }
 
-// RecommendationItemFinal type is a struct for
-// the final response.
-type RecommendationItemFinal struct {
-	Data []*RecommendationItemResponse `json:"data"`
-}
-
-// RecommendationItemCreate type is a struct for decode
-// recommendation item post request.
+// RecommendationItemCreate type is a struct for
+// decode recommendation item post request.
 type RecommendationItemCreate struct {
 	*RecommendationItem
 	Sources []int  `json:"sources" validate:"required"`
@@ -57,227 +48,125 @@ type RecommendationItemCreate struct {
 
 // GetRecommendationItems retrieves all items of
 // a given recommendation by ID.
-func (c *Conn) GetRecommendationItems(
-	id int64,
-) (*RecommendationItemResult, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, recommendation_id, name, tmdb_id, 
-		year, overview, poster, backdrop, 
-		trailer, commentary, media_type, created_at, 
-		updated_at
-		FROM recommendation_items
-		WHERE recommendation_id = ?
-	`)
-	if err != nil {
+func (c *Conn) GetRecommendationItems(id int64) (*RecommendationItemResult, error) {
+	var recommendationItem []RecommendationItem
+
+	err := c.db.Select(&recommendationItem, queryRecommendationItems, id)
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
-	defer stmt.Close()
-	rows, err := stmt.Query(id)
-	if err != nil {
-		return nil, err
-	}
-	res := RecommendationItemResult{}
-	for rows.Next() {
-		rec := RecommendationItem{}
-		err = rows.Scan(
-			&rec.ID, &rec.RecommendationID, &rec.Name, &rec.TMDBID,
-			&rec.Year, &rec.Overview, &rec.Poster, &rec.Backdrop,
-			&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
-			&rec.UpdatedAt,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		res.Data = append(res.Data, &rec)
-	}
-	return &res, nil
+
+	return &RecommendationItemResult{&recommendationItem}, nil
 }
 
 // GetRecommendationItem retrieves a recommendation
 // items by a given ID.
-func (c *Conn) GetRecommendationItem(
-	id int64,
-) (*RecommendationItem, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, recommendation_id, name, tmdb_id, 
-		year, overview, poster, backdrop, 
-		trailer, commentary, media_type, created_at, 
-		updated_at
-		FROM recommendation_items
-		WHERE id = ?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	rec := RecommendationItem{}
-	err = stmt.QueryRow(id).Scan(
-		&rec.ID, &rec.RecommendationID, &rec.Name, &rec.TMDBID,
-		&rec.Year, &rec.Overview, &rec.Poster, &rec.Backdrop,
-		&rec.Trailer, &rec.Commentary, &rec.MediaType, &rec.CreatedAt,
-		&rec.UpdatedAt,
-	)
+func (c *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
+	var recommendationItem RecommendationItem
+
+	err := c.db.Get(&recommendationItem, queryRecommendationItem, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
-	return &rec, nil
+
+	return &recommendationItem, nil
 }
 
 // CreateRecommendationItem creates a new recommendation item.
-func (c *Conn) CreateRecommendationItem(
-	r *RecommendationItem,
-) (*RecommendationItem, error) {
-	stmt, err := c.db.Prepare(`
-		INSERT INTO recommendation_items (
-		recommendation_id, name, tmdb_id, year, 
-		overview, poster, backdrop, trailer, 
-		commentary, media_type, created_at, updated_at
-		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&r.RecommendationID, &r.Name, &r.TMDBID, &r.Year,
-		&r.Overview, &r.Poster, &r.Backdrop, &r.Trailer,
-		&r.Commentary, &r.MediaType, &r.CreatedAt, &r.UpdatedAt,
+func (c *Conn) CreateRecommendationItem(r *RecommendationItem) (int64, error) {
+	result, err := c.db.Exec(
+		queryRecommendationItemInsert,
+		r.RecommendationID,
+		r.Name,
+		r.TMDBID,
+		r.Year,
+		r.Overview,
+		r.Poster,
+		r.Backdrop,
+		r.Trailer,
+		r.Commentary,
+		r.MediaType,
+		r.CreatedAt,
+		r.UpdatedAt,
 	)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	id, err := res.LastInsertId()
+
+	id, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	data, err := c.GetRecommendationItem(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return id, nil
 }
 
 // UpdateRecommendationItem updates a recommendation
 // item by a given ID.
-func (c *Conn) UpdateRecommendationItem(
-	id int64, r *RecommendationItem,
-) (*RecommendationItem, error) {
-	stmt, err := c.db.Prepare(`
-		UPDATE recommendation_items
-		SET name=?, tmdb_id=?, year=?, overview=?,
-		poster=?, backdrop=?, trailer=?, commentary=?,
-		media_type=?, updated_at=?
-		WHERE id=?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&r.Name, &r.TMDBID, &r.Year, &r.Overview,
-		&r.Poster, &r.Backdrop, &r.Trailer, &r.Commentary,
-		&r.MediaType, &r.UpdatedAt, &id,
+func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
+	result, err := c.db.Exec(
+		queryRecommendationItemUpdate,
+		r.Name,
+		r.TMDBID,
+		r.Year,
+		r.Overview,
+		r.Poster,
+		r.Backdrop,
+		r.Trailer,
+		r.Commentary,
+		r.MediaType,
+		r.UpdatedAt,
+		id,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	_, err = res.RowsAffected()
-	if err != nil {
-		return nil, err
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
-	data, err := c.GetRecommendationItem(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return nil
 }
 
 // DeleteRecommendationItem deletes a recommendation
 // item by a given ID.
 func (c *Conn) DeleteRecommendationItem(id int64) error {
-	stmt, err := c.db.Prepare(`
-		DELETE 
-		FROM recommendation_items
-		WHERE id=?
-	`)
+	result, err := c.db.Exec(queryRecommendationItemDelete, id)
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
-	res, err := stmt.Exec(id)
-	if err != nil {
-		return err
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
-	data, err := res.RowsAffected()
-	if err != nil || data == 0 {
-		return errors.New("The resource you requested could not be found")
-	}
+
 	return nil
 }
 
-// GetRecommendationItemSources retrieves all sources of a given recommendation item.
-func (c *Conn) GetRecommendationItemSources(id int64) ([]*RecommendationItemSources, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		s.id, s.name 
-		FROM sources AS s
-		JOIN recommendation_item_source AS ris ON ris.source_id = s.id 	
-		JOIN recommendation_items AS ri ON ri.id = ris.recommendation_item_id	
-		WHERE ri.id = ?
-	`)
+// GetRecommendationItemSources retrieves all
+// sources of a given recommendation item.
+func (c *Conn) GetRecommendationItemSources(id int64) (*[]RecommendationItemSources, error) {
+	var recommendationItemSources []RecommendationItemSources
 
-	if err != nil {
+	err := c.db.Select(&recommendationItemSources, queryRecommendationItemSources, id)
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
-	defer stmt.Close()
-
-	rows, err := stmt.Query(id)
-
-	recS := []*RecommendationItemSources{}
-
-	for rows.Next() {
-		rec := RecommendationItemSources{}
-
-		err = rows.Scan(
-			&rec.ID, &rec.Name,
-		)
-
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-
-		recS = append(recS, &rec)
-
-	}
-
-	return recS, err
+	return &recommendationItemSources, nil
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
 func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT COUNT(*) 
-		FROM recommendation_items 
-		WHERE recommendation_id = ?
-		`)
+	var totalRows float64
 
-	if err != nil {
+	err := c.db.Get(&totalRows, queryRecommendationItemsTotalRows, id)
+	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}
 
-	defer stmt.Close()
-
-	var total float64
-
-	err = stmt.QueryRow(id).Scan(&total)
-
-	if err != nil && err != sql.ErrNoRows {
-		return 0, nil
-	}
-
-	return total, err
+	return totalRows, err
 }

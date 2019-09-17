@@ -126,3 +126,107 @@ const (
 
 	queryRecommendationsTotalRows = "SELECT COUNT(*) FROM recommendations"
 )
+
+// Recommendation Items Queries
+const (
+	queryRecommendationItems = `
+		SELECT 
+		ri.id, 
+		ri.recommendation_id, 
+		ri.name, 
+		ri.tmdb_id, 
+		ri.year, 
+		ri.overview, 
+		ri.poster, 
+		ri.backdrop, 
+		ri.trailer, 
+		ri.commentary, 
+		ri.media_type,
+		ri.sources,
+		ri.created_at, 
+		ri.updated_at,
+		GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') AS sources
+		FROM recommendation_items AS ri
+		JOIN recommendation_item_source AS ris ON ris.recommendation_item_id = ri.id
+		JOIN sources AS s ON s.id = ris.source_id
+		WHERE ri.recommendation_id = ?
+		GROUP BY ri.id
+	`
+
+	queryRecommendationItem = `
+		SELECT 
+		ri.id, 
+		ri.recommendation_id, 
+		ri.name, 
+		ri.tmdb_id, 
+		ri.year, 
+		ri.overview, 
+		ri.poster, 
+		ri.backdrop, 
+		ri.trailer, 
+		ri.commentary, 
+		ri.media_type,
+		ri.sources,
+		ri.created_at, 
+		ri.updated_at,
+		GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') AS sources
+		FROM recommendation_items AS ri
+		JOIN recommendation_item_source AS ris ON ris.recommendation_item_id = ri.id
+		JOIN sources AS s ON s.id = ris.source_id
+		WHERE ri.id = ?
+		GROUP BY ri.id
+	`
+
+	queryRecommendationItemInsert = `
+		INSERT INTO recommendation_items (
+		recommendation_id, 
+		name, 
+		tmdb_id, 
+		year, 
+		overview, 
+		poster, 
+		backdrop, 
+		trailer, 
+		commentary, 
+		media_type, 
+		created_at, 
+		updated_at
+		)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`
+
+	queryRecommendationItemUpdate = `
+		UPDATE recommendation_items
+		SET 
+		name = ?, 
+		tmdb_id = ?, 
+		year = ?, 
+		overview = ?,
+		poster=?, 
+		backdrop = ?, 
+		trailer = ?, 
+		commentary = ?,
+		media_type = ?, 
+		updated_at = ?
+		WHERE id = ?
+	`
+
+	queryRecommendationItemDelete = "DELETE FROM recommendation_items WHERE id = ?"
+
+	queryRecommendationItemSources = `
+		SELECT 
+		s.id, 
+		s.name 
+		FROM sources AS s
+		JOIN recommendation_item_source AS ris ON ris.source_id = s.id 	
+		JOIN recommendation_items AS ri ON ri.id = ris.recommendation_item_id	
+		WHERE ri.id = ?
+	`
+
+	queryRecommendationItemsTotalRows = `
+		SELECT 
+		COUNT(*) 
+		FROM recommendation_items 
+		WHERE recommendation_id = ?
+	`
+)
