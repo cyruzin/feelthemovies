@@ -26,9 +26,9 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 		redisKey = "recommendation"
 	}
 
-	var recommendation *model.RecommendationResult
+	var recommendation model.RecommendationResult
 
-	cache, err := s.CheckCache(redisKey, recommendation)
+	cache, err := s.CheckCache(redisKey, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
 		return
