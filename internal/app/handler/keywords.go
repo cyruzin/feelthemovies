@@ -14,9 +14,9 @@ import (
 
 // GetKeywords gets all keywords.
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
-	keywords, err := s.h.GetKeywords(20)
+	keywords, err := s.model.GetKeywords(20)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -28,13 +28,13 @@ func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	keyword, err := s.h.GetKeyword(id)
+	keyword, err := s.model.GetKeyword(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -48,11 +48,11 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(keyword); err != nil {
+	if err := s.validator.Struct(keyword); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -60,9 +60,9 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	keyword.CreatedAt = time.Now()
 	keyword.UpdatedAt = time.Now()
 
-	err = s.h.CreateKeyword(&keyword)
+	err = s.model.CreateKeyword(&keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
@@ -76,11 +76,11 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(keyword); err != nil {
+	if err := s.validator.Struct(keyword); err != nil {
 		helper.ValidatorMessage(w, err)
 	}
 
@@ -88,13 +88,13 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.h.UpdateKeyword(id, &keyword)
+	err = s.model.UpdateKeyword(id, &keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
@@ -106,12 +106,12 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.h.DeleteKeyword(id); err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+	if err := s.model.DeleteKeyword(id); err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 

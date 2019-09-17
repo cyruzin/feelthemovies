@@ -3,41 +3,11 @@ package helper
 import (
 	"encoding/json"
 	"net/http"
-	"net/url"
-	"strconv"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
 )
-
-// IDParser converts the given ID to int64.
-func IDParser(sid string) (int64, error) {
-	id, err := strconv.Atoi(sid)
-	if err != nil {
-		return 0, err
-	}
-	return int64(id), nil
-}
-
-// PageParser checks if page string exists in the
-// given URL params. If exists, it will be parsed to
-// int and returned. If some error occurs, the default
-// value will be returned.
-//
-// Default value: 1.
-func PageParser(params url.Values) (int, error) {
-	newPage := 1
-	if params["page"] != nil && params["page"][0] != "" {
-		newPage, err := strconv.Atoi(params["page"][0])
-		if err != nil {
-			return newPage, err
-		}
-		return newPage, nil
-	}
-
-	return newPage, nil
-}
 
 // HashPassword encrypts a given password using bcrypt algorithm.
 func HashPassword(password string, cost int) (string, error) {

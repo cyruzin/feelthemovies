@@ -15,9 +15,9 @@ import (
 
 // GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
-	genres, err := s.h.GetGenres(20)
+	genres, err := s.model.GetGenres(20)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -29,13 +29,13 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	genre, err := s.h.GetGenre(id)
+	genre, err := s.model.GetGenre(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -49,11 +49,11 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(genre); err != nil {
+	if err := s.validator.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -61,9 +61,9 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	genre.CreatedAt = time.Now()
 	genre.UpdatedAt = time.Now()
 
-	err = s.h.CreateGenre(&genre)
+	err = s.model.CreateGenre(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
@@ -77,11 +77,11 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(genre); err != nil {
+	if err := s.validator.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -90,13 +90,13 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.h.UpdateGenre(id, &genre)
+	err = s.model.UpdateGenre(id, &genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
@@ -108,12 +108,12 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.h.DeleteGenre(id); err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+	if err := s.model.DeleteGenre(id); err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 

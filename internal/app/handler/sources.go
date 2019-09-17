@@ -14,9 +14,9 @@ import (
 
 // GetSources gets all sources.
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
-	so, err := s.h.GetSources()
+	so, err := s.model.GetSources()
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -27,12 +27,12 @@ func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	so, err := s.h.GetSource(id)
+	so, err := s.model.GetSource(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -43,10 +43,10 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqS); err != nil {
+	if err := s.validator.Struct(reqS); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -55,9 +55,9 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	so, err := s.h.CreateSource(&newS)
+	so, err := s.model.CreateSource(&newS)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -68,10 +68,10 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	reqS := &model.Source{}
 	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqS); err != nil {
+	if err := s.validator.Struct(reqS); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -81,12 +81,12 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	so, err := s.h.UpdateSource(id, &upS)
+	so, err := s.model.UpdateSource(id, &upS)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -97,11 +97,11 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	if err := s.h.DeleteSource(id); err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+	if err := s.model.DeleteSource(id); err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

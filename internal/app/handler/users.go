@@ -15,9 +15,9 @@ import (
 
 // GetUsers get all users.
 func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
-	u, err := s.h.GetUsers()
+	u, err := s.model.GetUsers()
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -28,12 +28,12 @@ func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	u, err := s.h.GetUser(id)
+	u, err := s.model.GetUser(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -44,16 +44,16 @@ func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqU); err != nil {
+	if err := s.validator.Struct(reqU); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errPassHash, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
 	hashAPI := uuid.New()
@@ -65,9 +65,9 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	u, err := s.h.CreateUser(&newU)
+	u, err := s.model.CreateUser(&newU)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -78,16 +78,16 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	reqU := &model.User{}
 	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqU); err != nil {
+	if err := s.validator.Struct(reqU); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 	hashPass, err := helper.HashPassword(reqU.Password, 10)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errPassHash, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
 	hashAPI := uuid.New()
@@ -100,12 +100,12 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	u, err := s.h.UpdateUser(id, &upU)
+	u, err := s.model.UpdateUser(id, &upU)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -116,11 +116,11 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	if err := s.h.DeleteUser(id); err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+	if err := s.model.DeleteUser(id); err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

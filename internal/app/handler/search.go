@@ -11,7 +11,7 @@ import (
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// params := r.URL.Query()
 	// if len(params) == 0 {
-	// 	helper.DecodeError(w, r, s.l, errQueryField, http.StatusBadRequest)
+	// 	helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 	// 	return
 	// }
 	// if err := s.v.Var(params["query"][0], "required"); err != nil {
@@ -33,7 +33,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// if val != "" {
 	// 	rr := &model.RecommendationPagination{}
 	// 	if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-	// 		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
+	// 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 	// 		return
 	// 	}
 	// 	w.WriteHeader(http.StatusOK)
@@ -42,10 +42,10 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// // Start pagination
-	// total, err := s.h.GetSearchRecommendationTotalRows(params["query"][0]) // total results
+	// total, err := s.model.GetSearchRecommendationTotalRows(params["query"][0]) // total results
 
 	// if err != nil {
-	// 	helper.DecodeError(w, r, s.l, errFetchRows, http.StatusInternalServerError)
+	// 	helper.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
 	// 	return
 	// }
 
@@ -59,7 +59,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// if params["page"] != nil && params["page"][0] != "" {
 	// 	newPage, err = strconv.Atoi(params["page"][0])
 	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+	// 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 	// 		return
 	// 	}
 	// }
@@ -70,28 +70,28 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// if err := chapter.Paginate(); err != nil {
-	// 	helper.DecodeError(w, r, s.l, err.Error(), http.StatusInternalServerError)
+	// 	helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
 	// 	return
 	// }
 	// // End pagination
 
-	// search, err := s.h.SearchRecommendation(chapter.Offset, chapter.Limit, params["query"][0])
+	// search, err := s.model.SearchRecommendation(chapter.Offset, chapter.Limit, params["query"][0])
 	// if err != nil {
-	// 	helper.DecodeError(w, r, s.l, errSearch, http.StatusInternalServerError)
+	// 	helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 	// 	return
 	// }
 
 	// result := []*model.RecommendationResponse{}
 
 	// for _, rr := range search.Data {
-	// 	recG, err := s.h.GetRecommendationGenres(rr.ID)
+	// 	recG, err := s.model.GetRecommendationGenres(rr.ID)
 	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+	// 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 	// 		return
 	// 	}
-	// 	recK, err := s.h.GetRecommendationKeywords(rr.ID)
+	// 	recK, err := s.model.GetRecommendationKeywords(rr.ID)
 	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+	// 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 	// 		return
 	// 	}
 	// 	recFinal := &model.RecommendationResponse{
@@ -110,12 +110,12 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	// // Redis set
 	// rr, err := helper.MarshalBinary(resultFinal)
 	// if err != nil {
-	// 	helper.DecodeError(w, r, s.l, errMarhsal, http.StatusInternalServerError)
+	// 	helper.DecodeError(w, r, s.logger, errMarhsal, http.StatusInternalServerError)
 	// 	return
 	// }
 	// err = s.rc.Set(rrKey, rr, redisTimeout).Err()
 	// if err != nil {
-	// 	helper.DecodeError(w, r, s.l, errKeySet, http.StatusInternalServerError)
+	// 	helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
 	// 	return
 	// }
 	// // Redis set check end
@@ -128,16 +128,16 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.l, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
-	if err := s.v.Var(params["query"][0], "required"); err != nil {
+	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := s.h.SearchUser(params["query"][0])
+	search, err := s.model.SearchUser(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errSearch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -148,16 +148,16 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.l, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
-	if err := s.v.Var(params["query"][0], "required"); err != nil {
+	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := s.h.SearchGenre(params["query"][0])
+	search, err := s.model.SearchGenre(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.l, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, "Could not do the search", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -168,16 +168,16 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.l, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
-	if err := s.v.Var(params["query"][0], "required"); err != nil {
+	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := s.h.SearchKeyword(params["query"][0])
+	search, err := s.model.SearchKeyword(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errSearch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -188,16 +188,16 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.l, errQueryField, http.StatusBadRequest)
+		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
-	if err := s.v.Var(params["query"][0], "required"); err != nil {
+	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
-	search, err := s.h.SearchSource(params["query"][0])
+	search, err := s.model.SearchSource(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errSearch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
