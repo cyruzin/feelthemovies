@@ -14,70 +14,66 @@ import (
 
 // AuthUser authenticates the user.
 func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
-	var reqA model.Auth
+	request := model.Auth{}
 
-	if err := json.NewDecoder(r.Body).Decode(&reqA); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.validator.Struct(reqA); err != nil {
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	dbPass, err := s.model.Authenticate(reqA.Email)
+	dbPassword, err := s.model.Authenticate(request.Email)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errAuth, http.StatusInternalServerError)
 		return
 	}
 
-	if checkPass := helper.CheckPasswordHash(reqA.Password, dbPass); !checkPass {
+	if checkPassword := helper.CheckPasswordHash(request.Password, dbPassword); !checkPassword {
 		helper.DecodeError(w, r, s.logger, errUnauthorized, http.StatusUnauthorized)
 		return
 	}
 
-	authInfo, err := s.model.GetAuthInfo(reqA.Email)
+	authenticationInfo, err := s.model.GetAuthenticationInfo(request.Email)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	token, err := s.GenerateToken(authInfo)
+	token, err := s.GenerateToken(authenticationInfo)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	finalInfo := &model.AuthJWT{Token: token}
+	userInfo := model.AuthJWT{Token: token}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(finalInfo)
+	s.ToJSON(w, http.StatusOK, &userInfo)
 }
 
 // GenerateToken generates a new JWT Token.
 func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
 	secret := []byte(os.Getenv("JWTSECRET"))
 
-	claims := struct {
-		ID    int64  `json:"id"`
-		Name  string `json:"name"`
-		Email string `json:"email"`
-		jwt.StandardClaims
-	}{
-		info.ID,
-		info.Name,
-		info.Email,
-		jwt.StandardClaims{
+	claims := model.AuthClaims{
+		ID:    info.ID,
+		Name:  info.Name,
+		Email: info.Email,
+		Claims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
 			Issuer:    "Feel the Movies",
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, err := token.SignedString(secret)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.Claims)
+
+	signedString, err := token.SignedString(secret)
 	if err != nil {
-		return "", errors.New("Could not generate the Token")
+		return "", errors.New(errGeneratingToken)
 	}
-	return ss, nil
+
+	return signedString, nil
 }

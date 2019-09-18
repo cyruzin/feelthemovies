@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
@@ -14,96 +13,105 @@ import (
 
 // GetSources gets all sources.
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
-	so, err := s.model.GetSources()
+	sources, err := s.model.GetSources()
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&so)
+
+	s.ToJSON(w, http.StatusOK, &sources)
 }
 
 // GetSource gets a source by ID.
 func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	so, err := s.model.GetSource(id)
+
+	source, err := s.model.GetSource(id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&so)
+
+	s.ToJSON(w, http.StatusOK, &source)
 }
 
 // CreateSource creates a new source.
 func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
-	reqS := &model.Source{}
-	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
+	request := model.Source{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.validator.Struct(reqS); err != nil {
+
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	newS := model.Source{
-		Name:      reqS.Name,
+
+	source := model.Source{
+		Name:      request.Name,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	so, err := s.model.CreateSource(&newS)
+
+	err := s.model.CreateSource(&source)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&so)
+
+	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "Source created successfully!"})
 }
 
 // UpdateSource updates a source.
 func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
-	reqS := &model.Source{}
-	if err := json.NewDecoder(r.Body).Decode(reqS); err != nil {
+	request := model.Source{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.validator.Struct(reqS); err != nil {
+
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	upS := model.Source{
-		Name:      reqS.Name,
+
+	source := model.Source{
+		Name:      request.Name,
 		UpdatedAt: time.Now(),
 	}
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	so, err := s.model.UpdateSource(id, &upS)
+
+	err = s.model.UpdateSource(id, &source)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&so)
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Source updated successfully!"})
 }
 
 // DeleteSource deletes a source.
 func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
+
 	if err := s.model.DeleteSource(id); err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Source deleted successfully!"})
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Source deleted successfully!"})
 }

@@ -21,8 +21,7 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&genres)
+	s.ToJSON(w, http.StatusOK, &genres)
 }
 
 // GetGenre gets a genre by ID.
@@ -39,13 +38,12 @@ func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&genre)
+	s.ToJSON(w, http.StatusOK, &genre)
 }
 
 // CreateGenre creates a new genre.
 func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
-	var genre model.Genre
+	genre := model.Genre{}
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
@@ -67,13 +65,12 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Genre created successfully!"})
+	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "Genre created successfully!"})
 }
 
 // UpdateGenre updates a genre.
 func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
-	var genre model.Genre
+	genre := model.Genre{}
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
@@ -88,7 +85,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 	genre.UpdatedAt = time.Now()
 
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
@@ -100,13 +97,12 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Genre updated successfully!"})
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre updated successfully!"})
 }
 
 // DeleteGenre deletes a genre.
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
@@ -117,6 +113,5 @@ func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Genre deleted successfully!"})
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre deleted successfully!"})
 }

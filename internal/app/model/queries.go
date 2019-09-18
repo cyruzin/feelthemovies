@@ -24,6 +24,70 @@ const (
 	queryKeywordDelete     = "DELETE FROM keywords WHERE id = ?"
 )
 
+// Sources Queries
+const (
+	querySourcesSelect     = "SELECT * FROM sources ORDER BY id DESC LIMIT ?"
+	querySourcesSelectByID = "SELECT * FROM sources WHERE id = ?"
+	querySourcesInsert     = "INSERT INTO sources (name, created_at, updated_at) VALUES (?, ?, ?)"
+	querySourcesUpdate     = "UPDATE sources SET name = ?, updated_at = ? WHERE id = ?"
+	querySourcesDelete     = "DELETE FROM sources WHERE id = ?"
+)
+
+// Users Queries
+const (
+	queryUsersSelect = `
+		SELECT 
+		id, 
+		name, 
+		email, 
+		password,
+		api_token, 
+		created_at, 
+		updated_at
+		FROM users
+		ORDER BY id DESC
+		LIMIT ?
+	`
+
+	queryUserSelectByID = `
+		SELECT 
+		id, 
+		name, 
+		email, 
+		password,
+		api_token, 
+		created_at, 
+		updated_at
+		FROM users
+		WHERE id = ?
+	`
+
+	queryUserInsert = `
+		INSERT INTO users (
+		name, 
+		email, 
+		password,
+		api_token, 
+		created_at, 
+		updated_at
+		)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`
+
+	queryUserUpdate = `
+		UPDATE users
+		SET 
+		name = ?, 
+		email = ?, 
+		password = ?,
+		api_token = ?, 
+		updated_at = ?
+		WHERE id = ?
+	`
+
+	queryUserDelete = "DELETE FROM users WHERE id = ?"
+)
+
 // Recommendations Queries
 const (
 	queryRecommendationsSelect = `
@@ -256,5 +320,69 @@ const (
 		GROUP BY r.id
 		ORDER BY r.id DESC
 		LIMIT ?,?
+	`
+
+	querySearchRecommendationsTotalRows = `
+		SELECT 
+		COUNT(DISTINCT r.id)
+		FROM recommendations AS r
+		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
+		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
+		JOIN genres AS g ON g.id = gr.genre_id
+		JOIN keywords AS k ON k.id = kr.keyword_id
+		WHERE r.title LIKE ?
+		OR k.name LIKE ?
+		OR g.name LIKE ?
+	`
+
+	querySearchUsers = `
+		SELECT 
+		id, 
+		name, 
+		email, 
+		password, 
+		api_token, 
+		created_at, 
+		updated_at
+		FROM users
+		WHERE name LIKE ?
+		ORDER BY id DESC
+		LIMIT ?
+	`
+
+	querySearchGenres = `
+		SELECT 
+		id, 
+		name, 
+		created_at, 
+		updated_at
+		FROM genres
+		WHERE name LIKE ?
+		ORDER BY id DESC
+		LIMIT ?
+	`
+
+	querySearchKeywords = `
+		SELECT 
+		id, 
+		name, 
+		created_at, 
+		updated_at
+		FROM keywords
+		WHERE name LIKE ?
+		ORDER BY id DESC
+		LIMIT ?
+	`
+
+	querySearchSources = `
+		SELECT 
+		id, 
+		name, 
+		created_at, 
+		updated_at
+		FROM sources
+		WHERE name LIKE ?
+		ORDER BY id DESC
+		LIMIT ?
 	`
 )

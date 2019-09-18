@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
@@ -25,19 +23,11 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var rrKey string
-	if params["page"] != nil {
-		rrKey = fmt.Sprintf(
-			"?query=%s?page=%s",
-			query, params["page"][0],
-		)
-	} else {
-		rrKey = query
-	}
+	redisKey := s.GenerateCacheKey(params, "")
 
 	recommendationCache := model.RecommendationResult{}
 
-	cache, err := s.CheckCache(rrKey, &recommendationCache)
+	cache, err := s.CheckCache(redisKey, &recommendationCache)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
@@ -81,7 +71,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	recommendation := model.RecommendationResult{Data: result, Chapter: &chapter}
 
-	err = s.SetCache(rrKey, &recommendation)
+	err = s.SetCache(redisKey, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
 		return
@@ -97,17 +87,19 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
+
 	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
+
 	search, err := s.model.SearchUser(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&search)
+
+	s.ToJSON(w, http.StatusOK, &search)
 }
 
 // SearchGenre searches for genres.
@@ -117,17 +109,19 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
+
 	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
+
 	search, err := s.model.SearchGenre(params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, "Could not do the search", http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&search)
+
+	s.ToJSON(w, http.StatusOK, &search)
 }
 
 // SearchKeyword searches for keywords.
@@ -137,17 +131,19 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
+
 	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
+
 	search, err := s.model.SearchKeyword(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&search)
+
+	s.ToJSON(w, http.StatusOK, &search)
 }
 
 // SearchSource searches for sources.
@@ -157,15 +153,17 @@ func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
+
 	if err := s.validator.Var(params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
+
 	search, err := s.model.SearchSource(params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&search)
+
+	s.ToJSON(w, http.StatusOK, &search)
 }

@@ -43,6 +43,7 @@ const (
 	errInvalidToken    = "Invalid API Token"
 	errInvalidJWTToken = "Invalid Token"
 	errMalformedToken  = "Malformed token"
+	errGeneratingToken = "Could not generate the Token"
 	errQueryField      = "The query field is required"
 	errEmptyRec        = "The recommendation is empty or does not exist"
 )
@@ -111,6 +112,8 @@ func (s *Setup) GenerateCacheKey(params url.Values, key string) string {
 	var cacheKey string
 	if params["page"] != nil {
 		cacheKey = fmt.Sprintf("%s?page=%s", key, params["page"][0])
+	} else if params["page"] != nil && params["query"] != nil {
+		cacheKey = fmt.Sprintf("?query=%s&page=%s", params["query"][0], params["page"][0])
 	} else {
 		cacheKey = key
 	}

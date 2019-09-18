@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -15,114 +14,127 @@ import (
 
 // GetUsers get all users.
 func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
-	u, err := s.model.GetUsers()
+	users, err := s.model.GetUsers()
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&u)
+
+	s.ToJSON(w, http.StatusOK, &users)
 }
 
 // GetUser gets a user by ID.
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	u, err := s.model.GetUser(id)
+
+	user, err := s.model.GetUser(id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&u)
+
+	s.ToJSON(w, http.StatusOK, &user)
 }
 
 // CreateUser creates a new user.
 func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
-	reqU := &model.User{}
-	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
+	request := model.User{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.validator.Struct(reqU); err != nil {
+
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	hashPass, err := helper.HashPassword(reqU.Password, 10)
+
+	hashPass, err := helper.HashPassword(request.Password, 10)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
+
 	hashAPI := uuid.New()
-	newU := model.User{
-		Name:      reqU.Name,
-		Email:     reqU.Email,
+
+	user := model.User{
+		Name:      request.Name,
+		Email:     request.Email,
 		Password:  hashPass,
 		APIToken:  hashAPI,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	u, err := s.model.CreateUser(&newU)
+
+	err = s.model.CreateUser(&user)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&u)
+
+	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "User created successfully!"})
 }
 
 // UpdateUser updates a user.
 func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	reqU := &model.User{}
-	if err := json.NewDecoder(r.Body).Decode(reqU); err != nil {
+	request := model.User{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.validator.Struct(reqU); err != nil {
+
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	hashPass, err := helper.HashPassword(reqU.Password, 10)
+
+	hashPass, err := helper.HashPassword(request.Password, 10)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
+
 	hashAPI := uuid.New()
-	upU := model.User{
-		Name:      reqU.Name,
-		Email:     reqU.Email,
+
+	user := model.User{
+		Name:      request.Name,
+		Email:     request.Email,
 		Password:  hashPass,
 		APIToken:  hashAPI,
 		UpdatedAt: time.Now(),
 	}
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	u, err := s.model.UpdateUser(id, &upU)
+
+	err = s.model.UpdateUser(id, &user)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&u)
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "User updated successfully!"})
 }
 
 // DeleteUser deletes a user.
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
+
 	if err := s.model.DeleteUser(id); err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "User deleted successfully!"})
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "User deleted successfully!"})
 }

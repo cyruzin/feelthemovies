@@ -2,6 +2,8 @@ package model
 
 import (
 	"database/sql"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 // Auth type is a struct for authentication.
@@ -10,6 +12,14 @@ type Auth struct {
 	Name     string `json:"name"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password,omitempty" validate:"required"`
+}
+
+// AuthClaims type is a struct for JWT Claims.
+type AuthClaims struct {
+	ID     int64  `json:"id"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	Claims jwt.StandardClaims
 }
 
 // AuthJWT type is a struct for JWT authentication.
@@ -29,8 +39,8 @@ func (c *Conn) Authenticate(email string) (string, error) {
 	return password, nil
 }
 
-// GetAuthInfo retrieves info for the authenticated user.
-func (c *Conn) GetAuthInfo(email string) (*Auth, error) {
+// GetAuthenticationInfo retrieves info for the authenticated user.
+func (c *Conn) GetAuthenticationInfo(email string) (*Auth, error) {
 	var auth Auth
 
 	err := c.db.Get(&auth, queryAuthGetInfo, email)
