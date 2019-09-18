@@ -228,3 +228,33 @@ const (
 		WHERE recommendation_id = ?
 	`
 )
+
+// Search Queries
+const (
+	querySearchRecommendations = `
+		SELECT DISTINCT
+		r.id,
+		r.user_id,
+		r.title,
+		r.type,
+		r.body,
+		r.poster,
+		r.backdrop,
+		r.status,
+		r.created_at,
+		r.updated_at,
+		GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres,
+		GROUP_CONCAT(DISTINCT k.name SEPARATOR ', ') AS keywords
+		FROM recommendations AS r
+		JOIN keyword_recommendation AS kr ON kr.recommendation_id = r.id
+		JOIN genre_recommendation AS gr ON gr.recommendation_id = r.id
+		JOIN genres AS g ON g.id = gr.genre_id
+		JOIN keywords AS k ON k.id = kr.keyword_id
+		WHERE r.title LIKE ?
+		OR k.name LIKE ?
+		OR g.name LIKE ?
+		GROUP BY r.id
+		ORDER BY r.id DESC
+		LIMIT ?,?
+	`
+)

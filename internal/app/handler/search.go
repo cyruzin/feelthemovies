@@ -2,126 +2,92 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/tome"
 )
 
 // SearchRecommendation searches for recommendations.
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
-	// params := r.URL.Query()
-	// if len(params) == 0 {
-	// 	helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
-	// 	return
-	// }
-	// if err := s.v.Var(params["query"][0], "required"); err != nil {
-	// 	helper.SearchValidatorMessage(w)
-	// 	return
-	// }
-	// //Redis check
-	// var rrKey string
-	// if params["page"] != nil {
-	// 	rrKey = fmt.Sprintf(
-	// 		"?query=%s?page=%s",
-	// 		params["query"][0], params["page"][0],
-	// 	)
-	// } else {
-	// 	rrKey = params["query"][0]
-	// }
+	params := r.URL.Query()
+	if len(params) == 0 {
+		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		return
+	}
 
-	// val, _ := s.rc.Get(rrKey).Result()
-	// if val != "" {
-	// 	rr := &model.RecommendationPagination{}
-	// 	if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-	// 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(&rr)
-	// 	return
-	// }
+	query := params["query"][0]
 
-	// // Start pagination
-	// total, err := s.model.GetSearchRecommendationTotalRows(params["query"][0]) // total results
+	if err := s.validator.Var(query, "required"); err != nil {
+		helper.SearchValidatorMessage(w)
+		return
+	}
 
-	// if err != nil {
-	// 	helper.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
-	// 	return
-	// }
+	var rrKey string
+	if params["page"] != nil {
+		rrKey = fmt.Sprintf(
+			"?query=%s?page=%s",
+			query, params["page"][0],
+		)
+	} else {
+		rrKey = query
+	}
 
-	// if total == 0 { // Fix for total rows equal to zero.
-	// 	w.WriteHeader(http.StatusOK)
-	// 	json.NewEncoder(w).Encode(&model.RecommendationPagination{})
-	// 	return
-	// }
+	recommendationCache := model.RecommendationResult{}
 
-	// newPage := 1
-	// if params["page"] != nil && params["page"][0] != "" {
-	// 	newPage, err = strconv.Atoi(params["page"][0])
-	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// }
+	cache, err := s.CheckCache(rrKey, &recommendationCache)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
+		return
+	}
 
-	// chapter := &tome.Chapter{
-	// 	NewPage:      newPage,
-	// 	TotalResults: total,
-	// }
+	if cache {
+		s.ToJSON(w, http.StatusOK, &recommendationCache)
+		return
+	}
 
-	// if err := chapter.Paginate(); err != nil {
-	// 	helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// // End pagination
+	total, err := s.model.GetSearchRecommendationTotalRows(query)
 
-	// search, err := s.model.SearchRecommendation(chapter.Offset, chapter.Limit, params["query"][0])
-	// if err != nil {
-	// 	helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
-	// 	return
-	// }
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
+		return
+	}
 
-	// result := []*model.RecommendationResponse{}
+	if total == 0 {
+		s.ToJSON(w, http.StatusOK, &model.RecommendationResult{})
+		return
+	}
 
-	// for _, rr := range search.Data {
-	// 	recG, err := s.model.GetRecommendationGenres(rr.ID)
-	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	recK, err := s.model.GetRecommendationKeywords(rr.ID)
-	// 	if err != nil {
-	// 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
-	// 		return
-	// 	}
-	// 	recFinal := &model.RecommendationResponse{
-	// 		Recommendation: rr,
-	// 		Genres:         recG,
-	// 		Keywords:       recK,
-	// 	}
-	// 	result = append(result, recFinal)
-	// }
+	newPage, err := s.PageParser(params)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		return
+	}
 
-	// resultFinal := &model.RecommendationPagination{
-	// 	Data:    result,
-	// 	Chapter: chapter,
-	// }
+	chapter := tome.Chapter{NewPage: newPage, TotalResults: total}
 
-	// // Redis set
-	// rr, err := helper.MarshalBinary(resultFinal)
-	// if err != nil {
-	// 	helper.DecodeError(w, r, s.logger, errMarhsal, http.StatusInternalServerError)
-	// 	return
-	// }
-	// err = s.rc.Set(rrKey, rr, redisTimeout).Err()
-	// if err != nil {
-	// 	helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
-	// 	return
-	// }
-	// // Redis set check end
+	if err := chapter.Paginate(); err != nil {
+		helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	// w.WriteHeader(http.StatusOK)
-	// json.NewEncoder(w).Encode(resultFinal)
+	result, err := s.model.SearchRecommendation(chapter.Offset, chapter.Limit, query)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		return
+	}
+
+	recommendation := model.RecommendationResult{Data: result, Chapter: &chapter}
+
+	err = s.SetCache(rrKey, &recommendation)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendation)
 }
 
 // SearchUser searches for users.

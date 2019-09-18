@@ -86,7 +86,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	newRec := &model.RecommendationItem{
+	recommendation := model.RecommendationItem{
 		RecommendationID: request.RecommendationID,
 		Name:             request.Name,
 		TMDBID:           request.TMDBID,
@@ -101,7 +101,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		UpdatedAt:        time.Now(),
 	}
 
-	recommendationID, err := s.model.CreateRecommendationItem(newRec)
+	recommendationID, err := s.model.CreateRecommendationItem(&recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
@@ -147,7 +147,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	upRec := &model.RecommendationItem{
+	recommendation := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
 		Year:       yearParsed,
@@ -166,7 +166,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	recommendationItemID, err := s.model.UpdateRecommendationItem(id, upRec)
+	recommendationItemID, err := s.model.UpdateRecommendationItem(id, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
