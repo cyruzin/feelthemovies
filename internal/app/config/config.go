@@ -8,7 +8,7 @@ import (
 // all environment variables of the app.
 type Config struct {
 	EnvMode      string `envconfig:"ENVMODE" required:"true" default:"development"`
-	ServerPort   string `envconfig:"SERVERPORT" required:"true"`
+	ServerPort   string `envconfig:"SERVERPORT" required:"true" default:"8000"`
 	DBHost       string `envconfig:"DBHOST" required:"true"`
 	DBUser       string `envconfig:"DBUSER" required:"true"`
 	DBName       string `envconfig:"DBNAME" required:"true"`
