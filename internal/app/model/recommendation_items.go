@@ -103,7 +103,7 @@ func (c *Conn) CreateRecommendationItem(r *RecommendationItem) (int64, error) {
 
 // UpdateRecommendationItem updates a recommendation
 // item by a given ID.
-func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
+func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (int64, error) {
 	result, err := c.db.Exec(
 		queryRecommendationItemUpdate,
 		r.Name,
@@ -119,15 +119,15 @@ func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
 		id,
 	)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		return errors.New(errResourceNotFound)
+		return 0, errors.New(errResourceNotFound)
 	}
 
-	return nil
+	return id, nil
 }
 
 // DeleteRecommendationItem deletes a recommendation

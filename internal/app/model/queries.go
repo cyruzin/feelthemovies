@@ -142,7 +142,6 @@ const (
 		ri.trailer, 
 		ri.commentary, 
 		ri.media_type,
-		ri.sources,
 		ri.created_at, 
 		ri.updated_at,
 		GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') AS sources
@@ -166,7 +165,6 @@ const (
 		ri.trailer, 
 		ri.commentary, 
 		ri.media_type,
-		ri.sources,
 		ri.created_at, 
 		ri.updated_at,
 		GROUP_CONCAT(DISTINCT s.name SEPARATOR ', ') AS sources

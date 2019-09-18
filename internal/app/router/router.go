@@ -20,9 +20,20 @@ func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Api-Token"},
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"DELETE",
+			"OPTIONS",
+		},
+		AllowedHeaders: []string{
+			"Accept",
+			"Authorization",
+			"Content-Type",
+			"X-CSRF-Token",
+		},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
@@ -94,7 +105,7 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 		r.Put("/v1/user/{id}", h.UpdateUser)
 		r.Delete("/v1/user/{id}", h.DeleteUser)
 
-		r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin) // Workaround to list without filter.
+		//r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin) // Workaround to list without filter.
 		r.Post("/v1/recommendation", h.CreateRecommendation)
 		r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
 		r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
