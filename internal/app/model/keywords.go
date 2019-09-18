@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -56,9 +57,14 @@ func (c *Conn) CreateKeyword(k *Keyword) error {
 
 // UpdateKeyword updates a keyword by ID.
 func (c *Conn) UpdateKeyword(id int64, k *Keyword) error {
-	_, err := c.db.Exec(queryKeywordUpdate, k.Name, k.UpdatedAt, id)
+	result, err := c.db.Exec(queryKeywordUpdate, k.Name, k.UpdatedAt, id)
 	if err != nil {
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
 
 	return nil
@@ -66,9 +72,14 @@ func (c *Conn) UpdateKeyword(id int64, k *Keyword) error {
 
 // DeleteKeyword deletes a keyword by ID.
 func (c *Conn) DeleteKeyword(id int64) error {
-	_, err := c.db.Exec(queryKeywordDelete, id)
+	result, err := c.db.Exec(queryKeywordDelete, id)
 	if err != nil {
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
 
 	return nil

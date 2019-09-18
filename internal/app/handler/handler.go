@@ -24,7 +24,7 @@ const (
 	errParseInt        = "Could not parse to int"
 	errParseFloat      = "Could not parse to float"
 	errParseDate       = "Could not parse the date"
-	errMarhsal         = "Could not marshal the payload"
+	errMarshal         = "Could not marshal the payload"
 	errUnmarshal       = "Could not unmarshal the payload"
 	errFetch           = "Could not fetch the item"
 	errFetchRows       = "Could not fetch the item total rows"

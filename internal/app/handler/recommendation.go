@@ -61,7 +61,7 @@ func (s *Setup) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 
 	err = s.SetCache(redisKey, recommendations)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errMarhsal, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errMarshal, http.StatusInternalServerError)
 		return
 	}
 
@@ -99,7 +99,7 @@ func (s *Setup) GetRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	s.SetCache(redisKey, &recommendation)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errMarhsal, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errMarshal, http.StatusInternalServerError)
 		return
 	}
 

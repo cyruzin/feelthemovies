@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -56,9 +57,14 @@ func (c *Conn) CreateGenre(g *Genre) error {
 
 // UpdateGenre updates a genre by ID.
 func (c *Conn) UpdateGenre(id int64, g *Genre) error {
-	_, err := c.db.Exec(queryGenreUpdate, g.Name, g.UpdatedAt, id)
+	result, err := c.db.Exec(queryGenreUpdate, g.Name, g.UpdatedAt, id)
 	if err != nil {
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
 
 	return nil
@@ -66,9 +72,14 @@ func (c *Conn) UpdateGenre(id int64, g *Genre) error {
 
 // DeleteGenre deletes a genre by ID.
 func (c *Conn) DeleteGenre(id int64) error {
-	_, err := c.db.Exec(queryGenreDelete, id)
+	result, err := c.db.Exec(queryGenreDelete, id)
 	if err != nil {
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
 
 	return nil
