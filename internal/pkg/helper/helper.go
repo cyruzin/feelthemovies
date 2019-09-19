@@ -3,6 +3,7 @@ package helper
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
@@ -15,12 +16,14 @@ func HashPassword(password string, cost int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(bytes), nil
 }
 
 // CheckPasswordHash checks if the given passwords matches.
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
 	return err == nil
 }
 
@@ -30,6 +33,7 @@ func MarshalBinary(d interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }
 
@@ -39,6 +43,7 @@ func UnmarshalBinary(d []byte, v interface{}) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -62,7 +67,9 @@ func DecodeError(
 		"method", r.Method,
 		"end-point", r.RequestURI,
 	) // Loggin before JSON response.
+
 	w.WriteHeader(code) // Setting error code.
+
 	e := &APIMessage{apiErr, code}
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		w.Write([]byte("Could not encode the payload"))
@@ -78,12 +85,29 @@ type APIValidator struct {
 // ValidatorMessage handles validation error messages.
 func ValidatorMessage(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusBadRequest)
-	av := &APIValidator{}
+
+	apiValidator := &APIValidator{}
+
 	for _, err := range err.(validator.ValidationErrors) {
-		v := &APIMessage{Message: "Check the " + err.Field() + " field"}
-		av.Errors = append(av.Errors, v)
+		var customError string
+
+		switch err.Tag() {
+		case "required":
+			customError = "is required"
+		case "email":
+			customError = "is not valid"
+		case "min":
+			customError = "minimum length is " + err.Param()
+		}
+
+		message := &APIMessage{
+			Message: "The " + strings.ToLower(err.Field()) + " field " + customError,
+		}
+
+		apiValidator.Errors = append(apiValidator.Errors, message)
 	}
-	if err := json.NewEncoder(w).Encode(av); err != nil {
+
+	if err := json.NewEncoder(w).Encode(apiValidator); err != nil {
 		w.Write([]byte("Could not encode the payload"))
 		return
 	}
@@ -92,7 +116,9 @@ func ValidatorMessage(w http.ResponseWriter, err error) {
 // SearchValidatorMessage handles search validation errors.
 func SearchValidatorMessage(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusBadRequest)
+
 	s := &APIMessage{Message: "The query field is empty"}
+
 	if err := json.NewEncoder(w).Encode(s); err != nil {
 		w.Write([]byte("Could not encode the payload"))
 		return
