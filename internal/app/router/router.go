@@ -136,13 +136,17 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 // New Relic Application instance.
 func newRelicApp() (newrelic.Application, error) {
 	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
+
 	app, err := newrelic.NewApplication(config)
 	if err != nil {
 		return nil, errors.New("Could not create New Relic Application")
 	}
+
 	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
 		return nil, errors.New("Could not connect to New Relic server")
 	}
+
 	log.Println("New Relic: Connection OK.")
+
 	return app, nil
 }
