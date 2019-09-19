@@ -31,7 +31,7 @@ func (c *Conn) SearchRecommendation(offset, limit int, search string) (*[]Recomm
 }
 
 // SearchUser search for users.
-func (c *Conn) SearchUser(search string) (*[]User, error) {
+func (c *Conn) SearchUser(search string) (*UserResult, error) {
 	var users []User
 
 	err := c.db.Select(&users, querySearchUsers, "%"+search+"%", 20)
@@ -39,11 +39,11 @@ func (c *Conn) SearchUser(search string) (*[]User, error) {
 		return nil, err
 	}
 
-	return &users, nil
+	return &UserResult{&users}, nil
 }
 
 // SearchGenre search for genres.
-func (c *Conn) SearchGenre(search string) (*[]Genre, error) {
+func (c *Conn) SearchGenre(search string) (*GenreResult, error) {
 	var genres []Genre
 
 	err := c.db.Select(&genres, querySearchGenres, "%"+search+"%", 20)
@@ -51,11 +51,11 @@ func (c *Conn) SearchGenre(search string) (*[]Genre, error) {
 		return nil, err
 	}
 
-	return &genres, nil
+	return &GenreResult{&genres}, nil
 }
 
 // SearchKeyword search for keywords.
-func (c *Conn) SearchKeyword(search string) (*[]Keyword, error) {
+func (c *Conn) SearchKeyword(search string) (*KeywordResult, error) {
 	var keywords []Keyword
 
 	err := c.db.Select(&keywords, querySearchKeywords, "%"+search+"%", 20)
@@ -63,11 +63,11 @@ func (c *Conn) SearchKeyword(search string) (*[]Keyword, error) {
 		return nil, err
 	}
 
-	return &keywords, nil
+	return &KeywordResult{&keywords}, nil
 }
 
 // SearchSource search for sources.
-func (c *Conn) SearchSource(search string) (*[]Source, error) {
+func (c *Conn) SearchSource(search string) (*SourceResult, error) {
 	var sources []Source
 
 	err := c.db.Select(&sources, querySearchSources, "%"+search+"%", 20)
@@ -75,7 +75,7 @@ func (c *Conn) SearchSource(search string) (*[]Source, error) {
 		return nil, err
 	}
 
-	return &sources, nil
+	return &SourceResult{&sources}, nil
 }
 
 // GetSearchRecommendationTotalRows retrieves the total

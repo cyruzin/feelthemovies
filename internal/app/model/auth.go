@@ -16,10 +16,10 @@ type Auth struct {
 
 // AuthClaims type is a struct for JWT Claims.
 type AuthClaims struct {
-	ID     int64  `json:"id"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
-	Claims jwt.StandardClaims
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	jwt.StandardClaims
 }
 
 // AuthJWT type is a struct for JWT authentication.

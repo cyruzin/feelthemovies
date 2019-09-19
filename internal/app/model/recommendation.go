@@ -179,3 +179,16 @@ func (c *Conn) GetRecommendationTotalRows() (int, error) {
 
 	return totalRows, nil
 }
+
+// GetRecommendationsAdmin retrieves the latest recommendations.
+// Admin does not have filter for status.
+func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
+	var result []Recommendation
+
+	err := c.db.Select(&result, queryRecommendationsAdminSelect, 20)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+
+	return &RecommendationResult{&result, nil}, nil
+}

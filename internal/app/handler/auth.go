@@ -45,7 +45,7 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 
 	token, err := s.GenerateToken(authenticationInfo)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -59,16 +59,16 @@ func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
 	secret := []byte(os.Getenv("JWTSECRET"))
 
 	claims := model.AuthClaims{
-		ID:    info.ID,
-		Name:  info.Name,
-		Email: info.Email,
-		Claims: jwt.StandardClaims{
+		info.ID,
+		info.Name,
+		info.Email,
+		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
 			Issuer:    "Feel the Movies",
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.Claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	signedString, err := token.SignedString(secret)
 	if err != nil {

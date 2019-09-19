@@ -260,3 +260,14 @@ func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Recommendation deleted successfully!"})
 }
+
+// GetRecommendationsAdmin ...
+func (s *Setup) GetRecommendationsAdmin(w http.ResponseWriter, r *http.Request) {
+	recommendations, err := s.model.GetRecommendationsAdmin()
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendations)
+}
