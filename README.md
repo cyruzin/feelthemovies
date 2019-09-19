@@ -46,6 +46,7 @@ The uuid package generates and inspects UUIDs based on RFC 4122 and DCE 1.1: Aut
 * [tome](https://github.com/cyruzin/tome) - Package tome was designed to paginate simple RESTful APIs.
 * [envconfig](https://github.com/kelseyhightower/envconfig) - Golang library for managing configuration data from environment variables.
 * [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
+* [jmoiron/sqlx](https://github.com/jmoiron/sqlx) - sqlx is a library which provides a set of extensions on go's standard database/sql library.
 * [go-redis](https://github.com/go-redis/redis) - Type-safe Redis client for Golang.
 
 ## Useful links

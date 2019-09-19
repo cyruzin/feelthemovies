@@ -15,98 +15,103 @@ import (
 
 // GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
-	g, err := s.h.GetGenres()
+	genres, err := s.model.GetGenres(20)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&g)
+
+	s.ToJSON(w, http.StatusOK, &genres)
 }
 
 // GetGenre gets a genre by ID.
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	g, err := s.h.GetGenre(id)
+
+	genre, err := s.model.GetGenre(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&g)
+
+	s.ToJSON(w, http.StatusOK, &genre)
 }
 
 // CreateGenre creates a new genre.
 func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
-	reqG := &model.Genre{}
-	err := json.NewDecoder(r.Body).Decode(reqG)
+	genre := model.Genre{}
+
+	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqG); err != nil {
+
+	if err := s.validator.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	newG := model.Genre{
-		Name:      reqG.Name,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	g, err := s.h.CreateGenre(&newG)
+
+	genre.CreatedAt = time.Now()
+	genre.UpdatedAt = time.Now()
+
+	err = s.model.CreateGenre(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&g)
+
+	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "Genre created successfully!"})
 }
 
 // UpdateGenre updates a genre.
 func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
-	reqG := &model.Genre{}
-	err := json.NewDecoder(r.Body).Decode(reqG)
+	genre := model.Genre{}
+
+	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
-	if err := s.v.Struct(reqG); err != nil {
+
+	if err := s.validator.Struct(genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
-	upG := model.Genre{
-		Name:      reqG.Name,
-		UpdatedAt: time.Now(),
-	}
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	genre.UpdatedAt = time.Now()
+
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	g, err := s.h.UpdateGenre(id, &upG)
+
+	err = s.model.UpdateGenre(id, &genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&g)
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre updated successfully!"})
 }
 
 // DeleteGenre deletes a genre.
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
-	if err := s.h.DeleteGenre(id); err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+
+	if err := s.model.DeleteGenre(id); err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Genre deleted successfully!"})
+
+	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre deleted successfully!"})
 }

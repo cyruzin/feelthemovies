@@ -20,9 +20,20 @@ func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Api-Token"},
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"DELETE",
+			"OPTIONS",
+		},
+		AllowedHeaders: []string{
+			"Accept",
+			"Authorization",
+			"Content-Type",
+			"X-CSRF-Token",
+		},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: true,
 		MaxAge:           300,
@@ -94,11 +105,14 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 		r.Put("/v1/user/{id}", h.UpdateUser)
 		r.Delete("/v1/user/{id}", h.DeleteUser)
 
-		r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin) // Workaround to list without filter.
+		r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin)
+		r.Get("/v1/recommendation_genres/{id}", h.GetRecommendationGenres)
+		r.Get("/v1/recommendation_keywords/{id}", h.GetRecommendationKeywords)
 		r.Post("/v1/recommendation", h.CreateRecommendation)
 		r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
 		r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
 
+		r.Get("/v1/recommendation_item_sources/{id}", h.GetRecommendationItemSources)
 		r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
 		r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
 		r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
@@ -122,13 +136,17 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 // New Relic Application instance.
 func newRelicApp() (newrelic.Application, error) {
 	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
+
 	app, err := newrelic.NewApplication(config)
 	if err != nil {
 		return nil, errors.New("Could not create New Relic Application")
 	}
+
 	if err = app.WaitForConnection(time.Duration(10 * time.Second)); err != nil {
 		return nil, errors.New("Could not connect to New Relic server")
 	}
+
 	log.Println("New Relic: Connection OK.")
+
 	return app, nil
 }

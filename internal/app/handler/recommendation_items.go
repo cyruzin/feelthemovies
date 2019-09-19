@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -15,185 +14,140 @@ import (
 
 // GetRecommendationItems gets all recommendation items.
 func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	//Redis check start
-	rrKey := fmt.Sprintf("recommendation_items-%d", id)
-	val, _ := s.rc.Get(rrKey).Result()
-	if val != "" {
-		rr := &model.RecommendationItemFinal{}
-		if err := helper.UnmarshalBinary([]byte(val), rr); err != nil {
-			helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(rr)
-		return
-	}
-	// Redis check end
+	redisKey := fmt.Sprintf("recommendation_items-%d", id)
 
-	rec, err := s.h.GetRecommendationItems(id)
+	recommendationItemCache := model.RecommendationItemResult{}
+
+	cache, err := s.CheckCache(redisKey, &recommendationItemCache)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
 	}
 
-	result := []*model.RecommendationItemResponse{}
-	for _, rr := range rec.Data {
-		recS, err := s.h.GetRecommendationItemSources(rr.ID)
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-			return
-		}
-
-		recFinal := &model.RecommendationItemResponse{
-			RecommendationItem: rr,
-			Sources:            recS,
-		}
-
-		result = append(result, recFinal)
+	if cache {
+		s.ToJSON(w, http.StatusOK, &recommendationItemCache)
+		return
 	}
 
-	resultFinal := &model.RecommendationItemFinal{Data: result}
-
-	// Redis set start
-	rr, err := helper.MarshalBinary(resultFinal)
+	recommendationItems, err := s.model.GetRecommendationItems(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUnmarshal, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.rc.Set(rrKey, rr, redisTimeout).Err(); err != nil {
-		helper.DecodeError(w, r, s.l, errKeySet, http.StatusInternalServerError)
+	err = s.SetCache(redisKey, &recommendationItems)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
 	}
-	// Redis set end
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(resultFinal)
-
+	s.ToJSON(w, http.StatusOK, &recommendationItems)
 }
 
 // GetRecommendationItem gets a recommendation item by ID.
 func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	rec, err := s.h.GetRecommendationItem(id)
+	recommendationItem, err := s.model.GetRecommendationItem(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	recS, err := s.h.GetRecommendationItemSources(id)
-	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
-		return
-	}
-
-	response := &model.RecommendationItemResponse{
-		RecommendationItem: rec,
-		Sources:            recS,
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	s.ToJSON(w, http.StatusOK, &recommendationItem)
 }
 
 // CreateRecommendationItem creates a new recommendation item.
 func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	reqRec := &model.RecommendationItemCreate{}
-	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+	request := model.RecommendationItemCreate{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(reqRec); err != nil {
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	// Parsing string to time.Time
-	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
+	yearParsed, err := time.Parse("2006-01-02", request.Year)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseDate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseDate, http.StatusInternalServerError)
 		return
 	}
 
-	newRec := &model.RecommendationItem{
-		RecommendationID: reqRec.RecommendationID,
-		Name:             reqRec.Name,
-		TMDBID:           reqRec.TMDBID,
+	recommendation := model.RecommendationItem{
+		RecommendationID: request.RecommendationID,
+		Name:             request.Name,
+		TMDBID:           request.TMDBID,
 		Year:             yearParsed,
-		Overview:         reqRec.Overview,
-		Poster:           reqRec.Poster,
-		Backdrop:         reqRec.Backdrop,
-		Trailer:          reqRec.Trailer,
-		Commentary:       reqRec.Commentary,
-		MediaType:        reqRec.MediaType,
+		Overview:         request.Overview,
+		Poster:           request.Poster,
+		Backdrop:         request.Backdrop,
+		Trailer:          request.Trailer,
+		Commentary:       request.Commentary,
+		MediaType:        request.MediaType,
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
 	}
 
-	rec, err := s.h.CreateRecommendationItem(newRec)
+	recommendationID, err := s.model.CreateRecommendationItem(&recommendation)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errCreate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
-	// Attaching sources
 	sources := make(map[int64][]int)
-	sources[rec.ID] = reqRec.Sources
-	err = s.h.Attach(sources, "recommendation_item_source")
+	sources[recommendationID] = request.Sources
+	err = s.model.Attach(sources, "recommendation_item_source")
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errAttach, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errAttach, http.StatusInternalServerError)
 		return
 	}
 
-	// Redis check start
-	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, _ := s.rc.Get(rrKey).Result()
-	if val != "" {
-		_, err = s.rc.Unlink(rrKey).Result()
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errKeyUnlink, http.StatusInternalServerError)
-			return
-		}
+	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", recommendationID))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
+		return
 	}
-	// Redis check end
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&rec)
-
+	s.ToJSON(
+		w,
+		http.StatusCreated,
+		&helper.APIMessage{Message: "Recommendation item created successfully!"},
+	)
 }
 
 // UpdateRecommendationItem updates a recommendation item.
 func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request) {
 	reqRec := &model.RecommendationItemCreate{}
 	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
-		helper.DecodeError(w, r, s.l, errDecode, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.v.Struct(reqRec); err != nil {
+	if err := s.validator.Struct(reqRec); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
 	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseDate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseDate, http.StatusInternalServerError)
 		return
 	}
 
-	upRec := &model.RecommendationItem{
+	recommendation := model.RecommendationItem{
 		Name:       reqRec.Name,
 		TMDBID:     reqRec.TMDBID,
 		Year:       yearParsed,
@@ -206,74 +160,88 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		UpdatedAt:  time.Now(),
 	}
 
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	rec, err := s.h.UpdateRecommendationItem(id, upRec)
+	recommendationItemID, err := s.model.UpdateRecommendationItem(id, &recommendation)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errUpdate, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
-	// Syncing sources
 	sources := make(map[int64][]int)
-	sources[rec.ID] = reqRec.Sources
-	err = s.h.Sync(sources, "recommendation_item_source", "recommendation_item_id")
+	sources[recommendationItemID] = reqRec.Sources
+	err = s.model.Sync(sources, "recommendation_item_source", "recommendation_item_id")
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errSync, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errSync, http.StatusInternalServerError)
 		return
 	}
 
-	// Redis check start
-	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, _ := s.rc.Get(rrKey).Result()
-	if val != "" {
-		_, err = s.rc.Unlink(rrKey).Result()
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errKeyUnlink, http.StatusInternalServerError)
-			return
-		}
+	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", recommendationItemID))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
+		return
 	}
-	// Redis check end
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&rec)
+	s.ToJSON(
+		w,
+		http.StatusOK,
+		&helper.APIMessage{Message: "Recommendation item updated successfully!"},
+	)
 }
 
-// DeleteRecommendationItem ...
+// DeleteRecommendationItem deletes a recommendation item.
 func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errParseInt, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
-	rec, err := s.h.GetRecommendationItem(id)
+	recommendationItem, err := s.model.GetRecommendationItem(id)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errFetch, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	// Redis check start
-	rrKey := fmt.Sprintf("recommendation_items-%d", rec.RecommendationID)
-	val, _ := s.rc.Get(rrKey).Result()
-	if val != "" {
-		_, err = s.rc.Unlink(rrKey).Result()
-		if err != nil {
-			helper.DecodeError(w, r, s.l, errKeyUnlink, http.StatusInternalServerError)
-			return
-		}
-	}
-
-	err = s.h.DeleteRecommendationItem(id)
+	err = s.RemoveCache(
+		fmt.Sprintf("recommendation_items-%d", recommendationItem.RecommendationID),
+	)
 	if err != nil {
-		helper.DecodeError(w, r, s.l, errDelete, http.StatusInternalServerError)
+		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&helper.APIMessage{Message: "Recommendation item deleted successfully!"})
+	err = s.model.DeleteRecommendationItem(id)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(
+		w,
+		http.StatusOK,
+		&helper.APIMessage{Message: "Recommendation item deleted successfully!"},
+	)
+}
+
+// GetRecommendationItemSources gets all sources
+// of a specific recommendation item.
+func (s *Setup) GetRecommendationItemSources(w http.ResponseWriter, r *http.Request) {
+	id, err := s.IDParser(chi.URLParam(r, "id"))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		return
+	}
+
+	recommendationItemSources, err := s.model.GetRecommendationItemSources(id)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendationItemSources)
 }

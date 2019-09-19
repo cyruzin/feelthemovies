@@ -4,154 +4,83 @@ import (
 	"database/sql"
 	"errors"
 	"time"
-
-	"github.com/go-sql-driver/mysql"
 )
 
 // Genre type is a struct for genres table.
 type Genre struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name" validate:"required"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
 
-// GenreResult type is a slice of genres.
+// GenreResult type is a result slice for genres.
 type GenreResult struct {
-	Data []*Genre `json:"data"`
+	Data *[]Genre `json:"data"`
 }
 
-// GetGenres retrieves the latest 20 genres.
-func (c *Conn) GetGenres() (*GenreResult, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, name, created_at, updated_at
-		FROM genres
-		ORDER BY id DESC
-		LIMIT ?
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query(10)
-	if err != nil {
-		return nil, err
-	}
-	res := GenreResult{}
-	for rows.Next() {
-		genre := Genre{}
-		err = rows.Scan(
-			&genre.ID, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, err
-		}
-		res.Data = append(res.Data, &genre)
-	}
-	return &res, nil
-}
+// GetGenres retrieves the latest genres.
+func (c *Conn) GetGenres(limit int) (*GenreResult, error) {
+	var result []Genre
 
-// GetGenre retrieves a genre by a given ID.
-func (c *Conn) GetGenre(id int64) (*Genre, error) {
-	stmt, err := c.db.Prepare(`
-		SELECT 
-		id, name, created_at, updated_at
-		FROM genres
-		WHERE id = ?
-`)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	genre := Genre{}
-	err = stmt.QueryRow(id).Scan(
-		&genre.ID, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
-	)
+	err := c.db.Select(&result, queryGenresSelect, limit)
+
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
+
+	return &GenreResult{&result}, nil
+}
+
+// GetGenre retrieves a genre by ID.
+func (c *Conn) GetGenre(id int64) (*Genre, error) {
+	var genre Genre
+
+	err := c.db.Get(&genre, queryGenreSelectByID, id)
+
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+
 	return &genre, nil
 }
 
 // CreateGenre creates a new genre.
-func (c *Conn) CreateGenre(g *Genre) (*Genre, error) {
-	stmt, err := c.db.Prepare(`
-		INSERT INTO genres (
-		name, created_at, updated_at
-		)
-		VALUES (?, ?, ?)
-`)
+func (c *Conn) CreateGenre(g *Genre) error {
+	_, err := c.db.Exec(queryGenreInsert, g.Name, g.CreatedAt, g.UpdatedAt)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&g.Name, &g.CreatedAt, &g.UpdatedAt,
-	)
-	// Error handler for duplicate entries
-	if mysqlError, ok := err.(*mysql.MySQLError); ok {
-		if mysqlError.Number == 1062 {
-			return nil, err
-		}
-	}
-	id, err := res.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-	data, err := c.GetGenre(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return nil
 }
 
-// UpdateGenre updates a genre by a given ID.
-func (c *Conn) UpdateGenre(id int64, g *Genre) (*Genre, error) {
-	stmt, err := c.db.Prepare(`
-		UPDATE genres
-		SET name=?, updated_at=?
-		WHERE id=?
-`)
+// UpdateGenre updates a genre by ID.
+func (c *Conn) UpdateGenre(id int64, g *Genre) error {
+	result, err := c.db.Exec(queryGenreUpdate, g.Name, g.UpdatedAt, id)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	defer stmt.Close()
-	res, err := stmt.Exec(
-		&g.Name, &g.UpdatedAt, &id,
-	)
-	if err != nil {
-		return nil, err
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
-	_, err = res.RowsAffected()
-	if err != nil {
-		return nil, err
-	}
-	data, err := c.GetGenre(id)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+
+	return nil
 }
 
-// DeleteGenre deletes a genre by a given ID.
+// DeleteGenre deletes a genre by ID.
 func (c *Conn) DeleteGenre(id int64) error {
-	stmt, err := c.db.Prepare(`
-		DELETE 
-		FROM genres
-		WHERE id=?
-`)
+	result, err := c.db.Exec(queryGenreDelete, id)
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
-	res, err := stmt.Exec(id)
-	if err != nil {
-		return err
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil || rowsAffected == 0 {
+		return errors.New(errResourceNotFound)
 	}
-	data, err := res.RowsAffected()
-	if err != nil || data == 0 {
-		return errors.New("The resource you requested could not be found")
-	}
+
 	return nil
 }

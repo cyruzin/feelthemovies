@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"time"
 
 	"github.com/InVisionApp/go-health/handlers"
+	"github.com/jmoiron/sqlx"
 
 	health "github.com/InVisionApp/go-health"
 	"github.com/InVisionApp/go-health/checkers"
@@ -28,7 +28,7 @@ import (
 var v *validator.Validate
 
 func main() {
-	l, err := logger.Init() // Uber Zap Logger instance.
+	loggerInstance, err := logger.Init() // Uber Zap Logger instance.
 	if err != nil {
 		log.Fatal("Could not initiate the logger: " + err.Error())
 	}
@@ -38,22 +38,30 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	db := database(cfg)                   // Database instance.
-	rc := redis(cfg)                      // Redis client instance.
-	mc := model.Connect(db)               // Passing database instance to the model pkg.
-	v = validator.New()                   // Validator instance.
-	h := handler.NewHandler(mc, rc, v, l) // Passing instances to the handlers pkg.
+	databaseInstance := database(cfg)                // Database instance.
+	redisInstance := redis(cfg)                      // Redis client instance.
+	modelInstance := model.Connect(databaseInstance) // Passing database instance to the model pkg.
+	validatorInstance := validator.New()             // Validator instance.
+	handlersInstance := handler.NewHandler(
+		modelInstance,
+		redisInstance,
+		validatorInstance,
+		loggerInstance,
+	) // Passing instances to the handlers pkg.
 
-	defer l.Sync()
-	defer db.Close()
-	defer rc.Close()
+	defer loggerInstance.Sync()
+	defer databaseInstance.Close()
+	defer redisInstance.Close()
 
-	healthCheck, err := healthChecks(cfg, db) // Health instance.
+	healthCheck, err := healthChecks(cfg, databaseInstance) // Health instance.
 	if err != nil {
 		log.Println("Failed to perform health checks")
 	}
 
-	r := router.NewRouter(h, handlers.NewJSONHandlerFunc(healthCheck, nil)) // Passing handlers to the router.
+	r := router.NewRouter(
+		handlersInstance,
+		handlers.NewJSONHandlerFunc(healthCheck, nil),
+	) // Passing handlers to the router.
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.ServerPort,
@@ -82,6 +90,7 @@ func main() {
 	// Initiating the server.
 	log.Println("Listening on port: " + cfg.ServerPort)
 	log.Println("You're good to go! :)")
+
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
 		log.Printf("HTTP server ListenAndServe: %v", err) // Error starting or closing listener.
 	}
@@ -89,20 +98,23 @@ func main() {
 }
 
 // Database connection.
-func database(cfg *config.Config) *sql.DB {
+func database(cfg *config.Config) *sqlx.DB {
 	url := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		cfg.DBUser, cfg.DBPass, cfg.DBHost,
 		cfg.DBPort, cfg.DBName,
 	)
-	db, err := sql.Open("mysql", url)
+
+	db, err := sqlx.Connect("mysql", url)
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
+
 	err = db.Ping()
 	if err != nil {
 		log.Fatal("Could not connect to MySQL: ", err)
 	}
+
 	log.Println("MySQL: Connection OK.")
 	return db
 }
@@ -118,16 +130,19 @@ func redis(cfg *config.Config) *re.Client {
 		PoolSize:     20,
 		PoolTimeout:  10 * time.Second,
 	})
+
 	_, err := client.Ping().Result()
 	if err != nil {
 		log.Fatal("Could not open connection to Redis: ", err)
 	}
+
 	log.Println("Redis: Connection OK.")
+
 	return client
 }
 
 // healthChecks checks the services health periodically.
-func healthChecks(cfg *config.Config, db *sql.DB) (*health.Health, error) {
+func healthChecks(cfg *config.Config, db *sqlx.DB) (*health.Health, error) {
 	h := health.New()
 	h.DisableLogging()
 
