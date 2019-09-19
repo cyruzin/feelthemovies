@@ -261,7 +261,8 @@ func (s *Setup) DeleteRecommendation(w http.ResponseWriter, r *http.Request) {
 	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Recommendation deleted successfully!"})
 }
 
-// GetRecommendationsAdmin ...
+// GetRecommendationsAdmin get the latest recommendations
+// without status filter.
 func (s *Setup) GetRecommendationsAdmin(w http.ResponseWriter, r *http.Request) {
 	recommendations, err := s.model.GetRecommendationsAdmin()
 	if err != nil {
@@ -270,4 +271,40 @@ func (s *Setup) GetRecommendationsAdmin(w http.ResponseWriter, r *http.Request) 
 	}
 
 	s.ToJSON(w, http.StatusOK, &recommendations)
+}
+
+// GetRecommendationGenres gets all genres
+// of a specific recommendation.
+func (s *Setup) GetRecommendationGenres(w http.ResponseWriter, r *http.Request) {
+	id, err := s.IDParser(chi.URLParam(r, "id"))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		return
+	}
+
+	recommendationGenres, err := s.model.GetRecommendationGenres(id)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendationGenres)
+}
+
+// GetRecommendationKeywords gets all keywords
+// of a specific recommendation.
+func (s *Setup) GetRecommendationKeywords(w http.ResponseWriter, r *http.Request) {
+	id, err := s.IDParser(chi.URLParam(r, "id"))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		return
+	}
+
+	recommendationKeywords, err := s.model.GetRecommendationKeywords(id)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendationKeywords)
 }

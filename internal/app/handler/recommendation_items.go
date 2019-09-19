@@ -227,3 +227,21 @@ func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request)
 		&helper.APIMessage{Message: "Recommendation item deleted successfully!"},
 	)
 }
+
+// GetRecommendationItemSources gets all sources
+// of a specific recommendation item.
+func (s *Setup) GetRecommendationItemSources(w http.ResponseWriter, r *http.Request) {
+	id, err := s.IDParser(chi.URLParam(r, "id"))
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		return
+	}
+
+	recommendationItemSources, err := s.model.GetRecommendationItemSources(id)
+	if err != nil {
+		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		return
+	}
+
+	s.ToJSON(w, http.StatusOK, &recommendationItemSources)
+}

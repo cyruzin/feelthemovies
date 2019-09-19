@@ -106,10 +106,13 @@ func authRoutes(r *chi.Mux, h *handler.Setup) {
 		r.Delete("/v1/user/{id}", h.DeleteUser)
 
 		r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin)
+		r.Get("/v1/recommendation_genres/{id}", h.GetRecommendationGenres)
+		r.Get("/v1/recommendation_keywords/{id}", h.GetRecommendationKeywords)
 		r.Post("/v1/recommendation", h.CreateRecommendation)
 		r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
 		r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
 
+		r.Get("/v1/recommendation_item_sources/{id}", h.GetRecommendationItemSources)
 		r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
 		r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
 		r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
