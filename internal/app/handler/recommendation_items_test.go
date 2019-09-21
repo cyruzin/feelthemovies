@@ -293,3 +293,23 @@ func TestDeleteRecommendationItemSuccess(t *testing.T) {
 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
 	}
 }
+
+func TestGetRecommendationItemSources(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendation_item_sources/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	router.HandleFunc(
+		"/v1/recommendation_item_sources/{id}",
+		h.handler.GetRecommendationItemSources,
+	)
+
+	router.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
