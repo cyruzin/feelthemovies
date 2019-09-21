@@ -144,27 +144,27 @@ func (c *Conn) DeleteRecommendation(id int64) error {
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
-func (c *Conn) GetRecommendationGenres(id int64) (*[]RecommendationGenres, error) {
-	var recommendationGenres []RecommendationGenres
+func (c *Conn) GetRecommendationGenres(id int64) (*GenreResult, error) {
+	var genres []Genre
 
-	err := c.db.Select(&recommendationGenres, queryRecommendationGenres, id)
+	err := c.db.Select(&genres, queryRecommendationGenres, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
-	return &recommendationGenres, nil
+	return &GenreResult{&genres}, nil
 }
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
-func (c *Conn) GetRecommendationKeywords(id int64) (*[]RecommendationKeywords, error) {
-	var recommendationKeywords []RecommendationKeywords
+func (c *Conn) GetRecommendationKeywords(id int64) (*KeywordResult, error) {
+	var keywords []Keyword
 
-	err := c.db.Select(&recommendationKeywords, queryRecommendationKeywords, id)
+	err := c.db.Select(&keywords, queryRecommendationKeywords, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
-	return &recommendationKeywords, nil
+	return &KeywordResult{&keywords}, nil
 }
 
 // GetRecommendationTotalRows retrieves the total rows

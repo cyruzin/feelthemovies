@@ -148,15 +148,15 @@ func (c *Conn) DeleteRecommendationItem(id int64) error {
 
 // GetRecommendationItemSources retrieves all
 // sources of a given recommendation item.
-func (c *Conn) GetRecommendationItemSources(id int64) (*[]RecommendationItemSources, error) {
-	var recommendationItemSources []RecommendationItemSources
+func (c *Conn) GetRecommendationItemSources(id int64) (*SourceResult, error) {
+	var sources []Source
 
-	err := c.db.Select(&recommendationItemSources, queryRecommendationItemSources, id)
+	err := c.db.Select(&sources, queryRecommendationItemSources, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
-	return &recommendationItemSources, nil
+	return &SourceResult{&sources}, nil
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
