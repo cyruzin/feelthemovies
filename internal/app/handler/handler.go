@@ -101,6 +101,7 @@ func (s *Setup) RemoveCache(key string) error {
 		if err != nil {
 			return err
 		}
+		return nil
 	}
 
 	return nil
