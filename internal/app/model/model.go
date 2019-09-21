@@ -1,7 +1,7 @@
 package model
 
 import (
-	// Importing MySQL driver for so the helper
+	// Importing MySQL driver so the helper
 	// functions can work.
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"

@@ -152,9 +152,9 @@ func (s *Setup) PageParser(params url.Values) (int, error) {
 // ToJSON returns a JSON response.
 func (s *Setup) ToJSON(
 	w http.ResponseWriter,
-	httpStatus uint,
+	httpStatus int,
 	dest interface{},
 ) {
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(httpStatus)
 	json.NewEncoder(w).Encode(dest)
 }
