@@ -3,6 +3,9 @@ package handler
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
 
@@ -116,4 +119,94 @@ func tearDownHandlers(h *setupTest) {
 	h.database.Close()
 	h.redis.Close()
 	h.logger.Sync()
+}
+
+func TestSetCache(t *testing.T) {
+	testKey := struct {
+		Name string
+	}{
+		"Test",
+	}
+
+	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRemoveCache(t *testing.T) {
+	testKey := struct {
+		Name string
+	}{
+		"Test",
+	}
+
+	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := h.handler.RemoveCache("testKey"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCheckCache(t *testing.T) {
+	testKey := struct {
+		Name string
+	}{
+		"Test",
+	}
+
+	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+		t.Fatal(err)
+	}
+
+	cacheKey := struct{ Name string }{}
+
+	cache, err := h.handler.CheckCache("testKey", &cacheKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !cache {
+		t.Errorf("Cache key differs. Expected %t.\n Got %t", true, cache)
+	}
+}
+
+func TestIDParse(t *testing.T) {
+	id, err := h.handler.IDParser("1")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if id != 1 {
+		t.Errorf("ID differs. Expected %d.\n Got %d", 1, id)
+	}
+}
+
+func TestPageParser(t *testing.T) {
+	params := url.Values{}
+	params["page"] = []string{"1"}
+
+	id, err := h.handler.PageParser(params)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if id != 1 {
+		t.Errorf("ID differs. Expected %d.\n Got %d", 1, id)
+	}
+}
+
+func TestToJSON(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendations", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(h.handler.GetRecommendations)
+
+	handler.ServeHTTP(rr, req)
+
+	h.handler.ToJSON(rr, http.StatusOK, &model.Recommendation{})
 }
