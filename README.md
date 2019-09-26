@@ -4,8 +4,6 @@
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source.
 
-This is my first Golang project, so probably there's a lot to improve. Any kind of help is welcome. I did my best researching the best practices, the best folder structuration and all that I could find. In the future, I pretend to bump this project to the version 2.0 using advanced concepts, like design patterns.
-
 ## Installation
 
 Set the environment variables on the .env file.
