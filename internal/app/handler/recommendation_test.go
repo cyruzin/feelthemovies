@@ -297,3 +297,37 @@ func TestDeleteRecommendationSuccess(t *testing.T) {
 		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
 	}
 }
+
+func TestGetRecommendationGenres(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendation_genres/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	router.HandleFunc("/v1/recommendation_genres/{id}", h.handler.GetRecommendationGenres)
+
+	router.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}
+
+func TestGetRecommendationKeywords(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/recommendation_keywords/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rr := httptest.NewRecorder()
+
+	router.HandleFunc("/v1/recommendation_keywords/{id}", h.handler.GetRecommendationKeywords)
+
+	router.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d.\n Got %d", http.StatusOK, status)
+	}
+}

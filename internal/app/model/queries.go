@@ -195,7 +195,9 @@ const (
 	queryRecommendationGenres = `
 		SELECT 
 		g.id, 
-		g.name 
+		g.name,
+		g.created_at,
+		g.updated_at 
 		FROM genres AS g
 		JOIN genre_recommendation AS gr ON gr.genre_id = g.id
 		JOIN recommendations AS r ON r.id = gr.recommendation_id
@@ -205,7 +207,9 @@ const (
 	queryRecommendationKeywords = `
 		SELECT 
 		k.id, 
-		k.name 
+		k.name,
+		k.created_at,
+		k.updated_at 
 		FROM keywords AS k
 		JOIN keyword_recommendation AS kr ON kr.keyword_id = k.id
 		JOIN recommendations AS r ON r.id = kr.recommendation_id
@@ -302,7 +306,9 @@ const (
 	queryRecommendationItemSources = `
 		SELECT 
 		s.id, 
-		s.name 
+		s.name,
+		s.created_at,
+		s.updated_at 
 		FROM sources AS s
 		JOIN recommendation_item_source AS ris ON ris.source_id = s.id 	
 		JOIN recommendation_items AS ri ON ri.id = ris.recommendation_item_id	

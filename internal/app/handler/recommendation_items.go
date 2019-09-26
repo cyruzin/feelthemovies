@@ -115,7 +115,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", recommendationID))
+	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
 		return
@@ -130,33 +130,33 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 // UpdateRecommendationItem updates a recommendation item.
 func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request) {
-	reqRec := &model.RecommendationItemCreate{}
-	if err := json.NewDecoder(r.Body).Decode(reqRec); err != nil {
+	request := &model.RecommendationItemCreate{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
 		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
-	if err := s.validator.Struct(reqRec); err != nil {
+	if err := s.validator.Struct(request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	yearParsed, err := time.Parse("2006-01-02", reqRec.Year)
+	yearParsed, err := time.Parse("2006-01-02", request.Year)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errParseDate, http.StatusInternalServerError)
 		return
 	}
 
 	recommendation := model.RecommendationItem{
-		Name:       reqRec.Name,
-		TMDBID:     reqRec.TMDBID,
+		Name:       request.Name,
+		TMDBID:     request.TMDBID,
 		Year:       yearParsed,
-		Overview:   reqRec.Overview,
-		Poster:     reqRec.Poster,
-		Backdrop:   reqRec.Backdrop,
-		Trailer:    reqRec.Trailer,
-		Commentary: reqRec.Commentary,
-		MediaType:  reqRec.MediaType,
+		Overview:   request.Overview,
+		Poster:     request.Poster,
+		Backdrop:   request.Backdrop,
+		Trailer:    request.Trailer,
+		Commentary: request.Commentary,
+		MediaType:  request.MediaType,
 		UpdatedAt:  time.Now(),
 	}
 
@@ -166,21 +166,21 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	recommendationItemID, err := s.model.UpdateRecommendationItem(id, &recommendation)
+	err = s.model.UpdateRecommendationItem(id, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
 	sources := make(map[int64][]int)
-	sources[recommendationItemID] = reqRec.Sources
+	sources[id] = request.Sources
 	err = s.model.Sync(sources, "recommendation_item_source", "recommendation_item_id")
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSync, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", recommendationItemID))
+	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
 		return

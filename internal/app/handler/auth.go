@@ -58,14 +58,14 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
 	secret := []byte(os.Getenv("JWTSECRET"))
 
-	claims := model.AuthClaims{
-		info.ID,
-		info.Name,
-		info.Email,
-		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
-			Issuer:    "Feel the Movies",
-		},
+	var claims model.AuthClaims
+
+	claims.ID = info.ID
+	claims.Name = info.Name
+	claims.Email = info.Email
+	claims.StandardClaims = jwt.StandardClaims{
+		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+		Issuer:    "Feel the Movies",
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

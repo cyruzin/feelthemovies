@@ -103,7 +103,7 @@ func (c *Conn) CreateRecommendationItem(r *RecommendationItem) (int64, error) {
 
 // UpdateRecommendationItem updates a recommendation
 // item by a given ID.
-func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (int64, error) {
+func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
 	result, err := c.db.Exec(
 		queryRecommendationItemUpdate,
 		r.Name,
@@ -119,15 +119,15 @@ func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) (int64,
 		id,
 	)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil || rowsAffected == 0 {
-		return 0, errors.New(errResourceNotFound)
+		return errors.New(errResourceNotFound)
 	}
 
-	return id, nil
+	return nil
 }
 
 // DeleteRecommendationItem deletes a recommendation
@@ -148,15 +148,15 @@ func (c *Conn) DeleteRecommendationItem(id int64) error {
 
 // GetRecommendationItemSources retrieves all
 // sources of a given recommendation item.
-func (c *Conn) GetRecommendationItemSources(id int64) (*[]RecommendationItemSources, error) {
-	var recommendationItemSources []RecommendationItemSources
+func (c *Conn) GetRecommendationItemSources(id int64) (*SourceResult, error) {
+	var sources []Source
 
-	err := c.db.Select(&recommendationItemSources, queryRecommendationItemSources, id)
+	err := c.db.Select(&sources, queryRecommendationItemSources, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
-	return &recommendationItemSources, nil
+	return &SourceResult{&sources}, nil
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
