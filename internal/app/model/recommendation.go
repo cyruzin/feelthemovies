@@ -121,7 +121,11 @@ func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 
@@ -136,7 +140,11 @@ func (c *Conn) DeleteRecommendation(id int64) error {
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 

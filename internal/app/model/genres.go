@@ -63,7 +63,11 @@ func (c *Conn) UpdateGenre(id int64, g *Genre) error {
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 
@@ -78,7 +82,11 @@ func (c *Conn) DeleteGenre(id int64) error {
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 
