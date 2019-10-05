@@ -48,8 +48,8 @@ type RecommendationKeywords struct {
 // the recommendation post request.
 type RecommendationCreate struct {
 	*Recommendation
-	Genres   []int `json:"genres"`
-	Keywords []int `json:"keywords"`
+	Genres   []int `json:"genres" validate:"gte=1"`
+	Keywords []int `json:"keywords" validate:"gte=1"`
 }
 
 // GetRecommendations retrieves the latest recommendations.

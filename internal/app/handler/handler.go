@@ -39,13 +39,12 @@ const (
 	errPassHash        = "Could not hash the password"
 	errAuth            = "Could not authenticate"
 	errUnauthorized    = "Unauthorized"
-	errEmptyToken      = "An API Token is necessary"
-	errInvalidToken    = "Invalid API Token"
-	errInvalidJWTToken = "Invalid Token"
+	errEmptyToken      = "JWT Token not provided"
+	errInvalidJWTToken = "Invalid JWT Token"
 	errMalformedToken  = "Malformed token"
 	errGeneratingToken = "Could not generate the Token"
 	errQueryField      = "The query field is required"
-	errEmptyRec        = "The recommendation is empty or does not exist"
+	errEmptyRec        = "The recommendation is, add at least one item"
 )
 
 // Setup for handlers package.

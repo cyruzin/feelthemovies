@@ -42,7 +42,7 @@ type RecommendationItemSources struct {
 // decode recommendation item post request.
 type RecommendationItemCreate struct {
 	*RecommendationItem
-	Sources []int  `json:"sources" validate:"required"`
+	Sources []int  `json:"sources" validate:"gte=1"`
 	Year    string `json:"year" validate:"required"`
 }
 
