@@ -44,7 +44,7 @@ const (
 	errMalformedToken  = "Malformed token"
 	errGeneratingToken = "Could not generate the Token"
 	errQueryField      = "The query field is required"
-	errEmptyRec        = "The recommendation is, add at least one item"
+	errEmptyRec        = "The recommendation is empty, add at least one item"
 )
 
 // Setup for handlers package.
