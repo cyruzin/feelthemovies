@@ -1,5 +1,5 @@
-# Start from golang v1.12.x base image.
-FROM golang:1.12.6 as build-stage
+# Start from golang v1.13.x base image.
+FROM golang:1.13.1 as build-stage
 
 # Set the Current Working Directory inside the container.
 WORKDIR /go/src/github.com/cyruzin/feelthemovies
@@ -9,10 +9,10 @@ WORKDIR /go/src/github.com/cyruzin/feelthemovies
 COPY . .
 
 # Download all the dependencies.
-RUN go get -d -v ./...
+# RUN go get -d -v ./...
 
 # Build the Go App.
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags '-w -extldflags "-static"' ./cmd/feelthemovies
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install -mod vendor -a -tags netgo -ldflags '-w -extldflags "-static"' ./cmd/feelthemovies
 
 # Start a new stage from scratch.
 FROM alpine:latest  
