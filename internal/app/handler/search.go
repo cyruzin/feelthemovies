@@ -18,7 +18,9 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	query := params["query"][0]
 
-	if err := s.validator.Var(query, "required"); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.VarCtx(ctx, query, "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
@@ -27,7 +29,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	recommendationCache := model.RecommendationResult{}
 
-	cache, err := s.CheckCache(redisKey, &recommendationCache)
+	cache, err := s.CheckCache(ctx, redisKey, &recommendationCache)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
@@ -38,7 +40,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	total, err := s.model.GetSearchRecommendationTotalRows(query)
+	total, err := s.model.GetSearchRecommendationTotalRows(ctx, query)
 
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
@@ -63,7 +65,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := s.model.SearchRecommendation(chapter.Offset, chapter.Limit, query)
+	result, err := s.model.SearchRecommendation(ctx, chapter.Offset, chapter.Limit, query)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
@@ -71,7 +73,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	recommendation := model.RecommendationResult{Data: result, Chapter: &chapter}
 
-	err = s.SetCache(redisKey, &recommendation)
+	err = s.SetCache(ctx, redisKey, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
 		return
@@ -88,12 +90,14 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Var(params["query"][0], "required"); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
 
-	search, err := s.model.SearchUser(params["query"][0])
+	search, err := s.model.SearchUser(ctx, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
@@ -110,12 +114,14 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Var(params["query"][0], "required"); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
 
-	search, err := s.model.SearchGenre(params["query"][0])
+	search, err := s.model.SearchGenre(ctx, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
@@ -132,12 +138,14 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Var(params["query"][0], "required"); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
 
-	search, err := s.model.SearchKeyword(params["query"][0])
+	search, err := s.model.SearchKeyword(ctx, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
@@ -154,12 +162,14 @@ func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Var(params["query"][0], "required"); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
 		helper.SearchValidatorMessage(w)
 		return
 	}
 
-	search, err := s.model.SearchSource(params["query"][0])
+	search, err := s.model.SearchSource(ctx, params["query"][0])
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return

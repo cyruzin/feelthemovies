@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -48,16 +49,16 @@ type RecommendationKeywords struct {
 // the recommendation post request.
 type RecommendationCreate struct {
 	*Recommendation
-	Genres   []int `json:"genres"`
-	Keywords []int `json:"keywords"`
+	Genres   []int `json:"genres" validate:"gte=1"`
+	Keywords []int `json:"keywords" validate:"gte=1"`
 }
 
 // GetRecommendations retrieves the latest recommendations.
 // Receives two parameters, the database offset and limit.
-func (c *Conn) GetRecommendations(offset, limit int) (*[]Recommendation, error) {
+func (c *Conn) GetRecommendations(ctx context.Context, offset, limit int) (*[]Recommendation, error) {
 	var result []Recommendation
 
-	err := c.db.Select(&result, queryRecommendationsSelect, offset, limit)
+	err := c.db.SelectContext(ctx, &result, queryRecommendationsSelect, offset, limit)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -66,10 +67,10 @@ func (c *Conn) GetRecommendations(offset, limit int) (*[]Recommendation, error) 
 }
 
 // GetRecommendation retrieves a recommendation by ID.
-func (c *Conn) GetRecommendation(id int64) (*Recommendation, error) {
+func (c *Conn) GetRecommendation(ctx context.Context, id int64) (*Recommendation, error) {
 	var recommendation Recommendation
 
-	err := c.db.Get(&recommendation, queryRecommendationSelectByID, id)
+	err := c.db.GetContext(ctx, &recommendation, queryRecommendationSelectByID, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -78,8 +79,9 @@ func (c *Conn) GetRecommendation(id int64) (*Recommendation, error) {
 }
 
 // CreateRecommendation creates a new recommendation.
-func (c *Conn) CreateRecommendation(r *Recommendation) (int64, error) {
-	result, err := c.db.Exec(
+func (c *Conn) CreateRecommendation(ctx context.Context, r *Recommendation) (int64, error) {
+	result, err := c.db.ExecContext(
+		ctx,
 		queryRecommendationInsert,
 		r.UserID,
 		r.Title,
@@ -104,8 +106,9 @@ func (c *Conn) CreateRecommendation(r *Recommendation) (int64, error) {
 }
 
 // UpdateRecommendation updates a recommendation by a given ID.
-func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
-	result, err := c.db.Exec(
+func (c *Conn) UpdateRecommendation(ctx context.Context, id int64, r *Recommendation) error {
+	result, err := c.db.ExecContext(
+		ctx,
 		queryRecommendationUpdate,
 		r.Title,
 		r.Type,
@@ -121,7 +124,11 @@ func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 
@@ -129,14 +136,18 @@ func (c *Conn) UpdateRecommendation(id int64, r *Recommendation) error {
 }
 
 // DeleteRecommendation deletes a recommendation by a given ID.
-func (c *Conn) DeleteRecommendation(id int64) error {
-	result, err := c.db.Exec(queryRecommendationDelete, id)
+func (c *Conn) DeleteRecommendation(ctx context.Context, id int64) error {
+	result, err := c.db.ExecContext(ctx, queryRecommendationDelete, id)
 	if err != nil {
 		return err
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if err != nil || rowsAffected == 0 {
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
 		return errors.New(errResourceNotFound)
 	}
 
@@ -144,10 +155,10 @@ func (c *Conn) DeleteRecommendation(id int64) error {
 }
 
 // GetRecommendationGenres retrieves all genres of a given recommendation.
-func (c *Conn) GetRecommendationGenres(id int64) (*GenreResult, error) {
+func (c *Conn) GetRecommendationGenres(ctx context.Context, id int64) (*GenreResult, error) {
 	var genres []Genre
 
-	err := c.db.Select(&genres, queryRecommendationGenres, id)
+	err := c.db.SelectContext(ctx, &genres, queryRecommendationGenres, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -156,10 +167,10 @@ func (c *Conn) GetRecommendationGenres(id int64) (*GenreResult, error) {
 }
 
 // GetRecommendationKeywords retrieves all keywords of a given recommendation.
-func (c *Conn) GetRecommendationKeywords(id int64) (*KeywordResult, error) {
+func (c *Conn) GetRecommendationKeywords(ctx context.Context, id int64) (*KeywordResult, error) {
 	var keywords []Keyword
 
-	err := c.db.Select(&keywords, queryRecommendationKeywords, id)
+	err := c.db.SelectContext(ctx, &keywords, queryRecommendationKeywords, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -169,10 +180,10 @@ func (c *Conn) GetRecommendationKeywords(id int64) (*KeywordResult, error) {
 
 // GetRecommendationTotalRows retrieves the total rows
 // of recommendations table.
-func (c *Conn) GetRecommendationTotalRows() (int, error) {
+func (c *Conn) GetRecommendationTotalRows(ctx context.Context) (int, error) {
 	var totalRows int
 
-	err := c.db.Get(&totalRows, queryRecommendationsTotalRows)
+	err := c.db.GetContext(ctx, &totalRows, queryRecommendationsTotalRows)
 	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}
@@ -182,10 +193,10 @@ func (c *Conn) GetRecommendationTotalRows() (int, error) {
 
 // GetRecommendationsAdmin retrieves the latest recommendations.
 // Admin does not have filter for status.
-func (c *Conn) GetRecommendationsAdmin() (*RecommendationResult, error) {
+func (c *Conn) GetRecommendationsAdmin(ctx context.Context) (*RecommendationResult, error) {
 	var result []Recommendation
 
-	err := c.db.Select(&result, queryRecommendationsAdminSelect, 20)
+	err := c.db.SelectContext(ctx, &result, queryRecommendationsAdminSelect, 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}

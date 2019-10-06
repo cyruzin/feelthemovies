@@ -98,6 +98,8 @@ func ValidatorMessage(w http.ResponseWriter, err error) {
 			customError = "is not valid"
 		case "min":
 			customError = "minimum length is " + err.Param()
+		case "gte":
+			customError = "minimum length is " + err.Param()
 		}
 
 		message := &APIMessage{

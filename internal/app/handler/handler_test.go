@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -128,7 +129,10 @@ func TestSetCache(t *testing.T) {
 		"Test",
 	}
 
-	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -140,11 +144,14 @@ func TestRemoveCache(t *testing.T) {
 		"Test",
 	}
 
-	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := h.handler.RemoveCache("testKey"); err != nil {
+	if err := h.handler.RemoveCache(ctx, "testKey"); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -156,13 +163,16 @@ func TestCheckCache(t *testing.T) {
 		"Test",
 	}
 
-	if err := h.handler.SetCache("testKey", &testKey); err != nil {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 
 	cacheKey := struct{ Name string }{}
 
-	cache, err := h.handler.CheckCache("testKey", &cacheKey)
+	cache, err := h.handler.CheckCache(ctx, "testKey", &cacheKey)
 	if err != nil {
 		t.Fatal(err)
 	}
