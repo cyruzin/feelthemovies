@@ -28,6 +28,9 @@ import (
 var v *validator.Validate
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	loggerInstance, err := logger.Init() // Uber Zap Logger instance.
 	if err != nil {
 		log.Fatal("Could not initiate the logger: " + err.Error())
@@ -38,8 +41,8 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	databaseInstance := database(cfg)                // Database instance.
-	redisInstance := redis(cfg)                      // Redis client instance.
+	databaseInstance := database(ctx, cfg)           // Database instance.
+	redisInstance := redis(ctx, cfg)                 // Redis client instance.
 	modelInstance := model.Connect(databaseInstance) // Passing database instance to the model pkg.
 	validatorInstance := validator.New()             // Validator instance.
 	handlersInstance := handler.NewHandler(
@@ -65,9 +68,9 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.ServerPort,
-		ReadTimeout:       5 * time.Second,
-		ReadHeaderTimeout: 5 * time.Second,
-		WriteTimeout:      10 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      20 * time.Second,
 		IdleTimeout:       120 * time.Second,
 		Handler:           r,
 	}
@@ -98,14 +101,14 @@ func main() {
 }
 
 // Database connection.
-func database(cfg *config.Config) *sqlx.DB {
+func database(ctx context.Context, cfg *config.Config) *sqlx.DB {
 	url := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		cfg.DBUser, cfg.DBPass, cfg.DBHost,
 		cfg.DBPort, cfg.DBName,
 	)
 
-	db, err := sqlx.Connect("mysql", url)
+	db, err := sqlx.ConnectContext(ctx, "mysql", url)
 	if err != nil {
 		log.Fatal("Could not open connection to MySQL: ", err)
 	}
@@ -120,7 +123,7 @@ func database(cfg *config.Config) *sqlx.DB {
 }
 
 // Redis connection.
-func redis(cfg *config.Config) *re.Client {
+func redis(ctx context.Context, cfg *config.Config) *re.Client {
 	client := re.NewClient(&re.Options{
 		Addr:         cfg.RedisAddress,
 		Password:     cfg.RedisPass,
@@ -131,7 +134,7 @@ func redis(cfg *config.Config) *re.Client {
 		PoolTimeout:  10 * time.Second,
 	})
 
-	_, err := client.Ping().Result()
+	_, err := client.WithContext(ctx).Ping().Result()
 	if err != nil {
 		log.Fatal("Could not open connection to Redis: ", err)
 	}

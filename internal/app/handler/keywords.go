@@ -13,7 +13,7 @@ import (
 
 // GetKeywords gets all keywords.
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
-	keywords, err := s.model.GetKeywords(20)
+	keywords, err := s.model.GetKeywords(r.Context(), 20)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -30,7 +30,7 @@ func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	keyword, err := s.model.GetKeyword(id)
+	keyword, err := s.model.GetKeyword(r.Context(), id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -49,7 +49,9 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(keyword); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, keyword); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -57,7 +59,7 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 	keyword.CreatedAt = time.Now()
 	keyword.UpdatedAt = time.Now()
 
-	err = s.model.CreateKeyword(&keyword)
+	err = s.model.CreateKeyword(ctx, &keyword)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
@@ -76,7 +78,9 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(keyword); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, keyword); err != nil {
 		helper.ValidatorMessage(w, err)
 	}
 
@@ -88,7 +92,7 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.model.UpdateKeyword(id, &keyword)
+	err = s.model.UpdateKeyword(ctx, id, &keyword)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
@@ -105,7 +109,7 @@ func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.model.DeleteKeyword(id); err != nil {
+	if err := s.model.DeleteKeyword(r.Context(), id); err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,10 +29,10 @@ type AuthJWT struct {
 }
 
 // Authenticate authenticates the current user and returns it's info.
-func (c *Conn) Authenticate(email string) (string, error) {
+func (c *Conn) Authenticate(ctx context.Context, email string) (string, error) {
 	var password string
 
-	err := c.db.Get(&password, queryAuthAuthenticate, email)
+	err := c.db.GetContext(ctx, &password, queryAuthAuthenticate, email)
 	if err != nil && err != sql.ErrNoRows {
 		return "", err
 	}
@@ -40,10 +41,10 @@ func (c *Conn) Authenticate(email string) (string, error) {
 }
 
 // GetAuthenticationInfo retrieves info for the authenticated user.
-func (c *Conn) GetAuthenticationInfo(email string) (*Auth, error) {
+func (c *Conn) GetAuthenticationInfo(ctx context.Context, email string) (*Auth, error) {
 	var auth Auth
 
-	err := c.db.Get(&auth, queryAuthGetInfo, email)
+	err := c.db.GetContext(ctx, &auth, queryAuthGetInfo, email)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}

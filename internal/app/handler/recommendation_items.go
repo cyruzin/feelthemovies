@@ -20,11 +20,13 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx := r.Context()
+
 	redisKey := fmt.Sprintf("recommendation_items-%d", id)
 
 	recommendationItemCache := model.RecommendationItemResult{}
 
-	cache, err := s.CheckCache(redisKey, &recommendationItemCache)
+	cache, err := s.CheckCache(ctx, redisKey, &recommendationItemCache)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
@@ -35,13 +37,13 @@ func (s *Setup) GetRecommendationItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	recommendationItems, err := s.model.GetRecommendationItems(id)
+	recommendationItems, err := s.model.GetRecommendationItems(ctx, id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.SetCache(redisKey, &recommendationItems)
+	err = s.SetCache(ctx, redisKey, &recommendationItems)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
@@ -58,7 +60,7 @@ func (s *Setup) GetRecommendationItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	recommendationItem, err := s.model.GetRecommendationItem(id)
+	recommendationItem, err := s.model.GetRecommendationItem(r.Context(), id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -75,7 +77,9 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := s.validator.Struct(request); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -101,7 +105,7 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		UpdatedAt:        time.Now(),
 	}
 
-	recommendationID, err := s.model.CreateRecommendationItem(&recommendation)
+	recommendationID, err := s.model.CreateRecommendationItem(ctx, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
@@ -109,13 +113,13 @@ func (s *Setup) CreateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 	sources := make(map[int64][]int)
 	sources[recommendationID] = request.Sources
-	err = s.model.Attach(sources, "recommendation_item_source")
+	err = s.model.Attach(ctx, sources, "recommendation_item_source")
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errAttach, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
+	err = s.RemoveCache(ctx, fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
 		return
@@ -136,7 +140,9 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := s.validator.Struct(request); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -166,7 +172,7 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = s.model.UpdateRecommendationItem(id, &recommendation)
+	err = s.model.UpdateRecommendationItem(ctx, id, &recommendation)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
@@ -174,13 +180,13 @@ func (s *Setup) UpdateRecommendationItem(w http.ResponseWriter, r *http.Request)
 
 	sources := make(map[int64][]int)
 	sources[id] = request.Sources
-	err = s.model.Sync(sources, "recommendation_item_source", "recommendation_item_id")
+	err = s.model.Sync(ctx, sources, "recommendation_item_source", "recommendation_item_id")
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errSync, http.StatusInternalServerError)
 		return
 	}
 
-	err = s.RemoveCache(fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
+	err = s.RemoveCache(ctx, fmt.Sprintf("recommendation_items-%d", request.RecommendationID))
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errKeyUnlink, http.StatusInternalServerError)
 		return
@@ -201,13 +207,16 @@ func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	recommendationItem, err := s.model.GetRecommendationItem(id)
+	ctx := r.Context()
+
+	recommendationItem, err := s.model.GetRecommendationItem(ctx, id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
 	err = s.RemoveCache(
+		ctx,
 		fmt.Sprintf("recommendation_items-%d", recommendationItem.RecommendationID),
 	)
 	if err != nil {
@@ -215,7 +224,7 @@ func (s *Setup) DeleteRecommendationItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = s.model.DeleteRecommendationItem(id)
+	err = s.model.DeleteRecommendationItem(ctx, id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
@@ -237,7 +246,7 @@ func (s *Setup) GetRecommendationItemSources(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	recommendationItemSources, err := s.model.GetRecommendationItemSources(id)
+	recommendationItemSources, err := s.model.GetRecommendationItemSources(r.Context(), id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return

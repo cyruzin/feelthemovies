@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -20,10 +21,10 @@ type SourceResult struct {
 }
 
 // GetSources retrieves the latest 20 sources.
-func (c *Conn) GetSources() (*SourceResult, error) {
+func (c *Conn) GetSources(ctx context.Context) (*SourceResult, error) {
 	var sources []Source
 
-	err := c.db.Select(&sources, querySourcesSelect, 20)
+	err := c.db.SelectContext(ctx, &sources, querySourcesSelect, 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -32,10 +33,10 @@ func (c *Conn) GetSources() (*SourceResult, error) {
 }
 
 // GetSource retrieves a source by a given ID.
-func (c *Conn) GetSource(id int64) (*Source, error) {
+func (c *Conn) GetSource(ctx context.Context, id int64) (*Source, error) {
 	var source Source
 
-	err := c.db.Get(&source, querySourcesSelectByID, id)
+	err := c.db.GetContext(ctx, &source, querySourcesSelectByID, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -44,8 +45,9 @@ func (c *Conn) GetSource(id int64) (*Source, error) {
 }
 
 // CreateSource creates a new source.
-func (c *Conn) CreateSource(s *Source) error {
-	_, err := c.db.Exec(
+func (c *Conn) CreateSource(ctx context.Context, s *Source) error {
+	_, err := c.db.ExecContext(
+		ctx,
 		querySourcesInsert,
 		s.Name,
 		s.CreatedAt,
@@ -59,8 +61,9 @@ func (c *Conn) CreateSource(s *Source) error {
 }
 
 // UpdateSource updates a source by a given ID.
-func (c *Conn) UpdateSource(id int64, s *Source) error {
-	result, err := c.db.Exec(
+func (c *Conn) UpdateSource(ctx context.Context, id int64, s *Source) error {
+	result, err := c.db.ExecContext(
+		ctx,
 		querySourcesUpdate,
 		s.Name,
 		s.UpdatedAt,
@@ -83,8 +86,8 @@ func (c *Conn) UpdateSource(id int64, s *Source) error {
 }
 
 // DeleteSource deletes a source by a given ID.
-func (c *Conn) DeleteSource(id int64) error {
-	result, err := c.db.Exec(querySourcesDelete, id)
+func (c *Conn) DeleteSource(ctx context.Context, id int64) error {
+	result, err := c.db.ExecContext(ctx, querySourcesDelete, id)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 )
 
@@ -11,10 +12,11 @@ type Search struct {
 }
 
 // SearchRecommendation search for recommendations.
-func (c *Conn) SearchRecommendation(offset, limit int, search string) (*[]Recommendation, error) {
+func (c *Conn) SearchRecommendation(ctx context.Context, offset, limit int, search string) (*[]Recommendation, error) {
 	var recommendations []Recommendation
 
-	err := c.db.Select(
+	err := c.db.SelectContext(
+		ctx,
 		&recommendations,
 		querySearchRecommendations,
 		"%"+search+"%",
@@ -31,10 +33,10 @@ func (c *Conn) SearchRecommendation(offset, limit int, search string) (*[]Recomm
 }
 
 // SearchUser search for users.
-func (c *Conn) SearchUser(search string) (*UserResult, error) {
+func (c *Conn) SearchUser(ctx context.Context, search string) (*UserResult, error) {
 	var users []User
 
-	err := c.db.Select(&users, querySearchUsers, "%"+search+"%", 20)
+	err := c.db.SelectContext(ctx, &users, querySearchUsers, "%"+search+"%", 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -43,10 +45,10 @@ func (c *Conn) SearchUser(search string) (*UserResult, error) {
 }
 
 // SearchGenre search for genres.
-func (c *Conn) SearchGenre(search string) (*GenreResult, error) {
+func (c *Conn) SearchGenre(ctx context.Context, search string) (*GenreResult, error) {
 	var genres []Genre
 
-	err := c.db.Select(&genres, querySearchGenres, "%"+search+"%", 20)
+	err := c.db.SelectContext(ctx, &genres, querySearchGenres, "%"+search+"%", 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -55,10 +57,10 @@ func (c *Conn) SearchGenre(search string) (*GenreResult, error) {
 }
 
 // SearchKeyword search for keywords.
-func (c *Conn) SearchKeyword(search string) (*KeywordResult, error) {
+func (c *Conn) SearchKeyword(ctx context.Context, search string) (*KeywordResult, error) {
 	var keywords []Keyword
 
-	err := c.db.Select(&keywords, querySearchKeywords, "%"+search+"%", 20)
+	err := c.db.SelectContext(ctx, &keywords, querySearchKeywords, "%"+search+"%", 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -67,10 +69,10 @@ func (c *Conn) SearchKeyword(search string) (*KeywordResult, error) {
 }
 
 // SearchSource search for sources.
-func (c *Conn) SearchSource(search string) (*SourceResult, error) {
+func (c *Conn) SearchSource(ctx context.Context, search string) (*SourceResult, error) {
 	var sources []Source
 
-	err := c.db.Select(&sources, querySearchSources, "%"+search+"%", 20)
+	err := c.db.SelectContext(ctx, &sources, querySearchSources, "%"+search+"%", 20)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -80,10 +82,11 @@ func (c *Conn) SearchSource(search string) (*SourceResult, error) {
 
 // GetSearchRecommendationTotalRows retrieves the total
 // rows of recommendations table.
-func (c *Conn) GetSearchRecommendationTotalRows(search string) (int, error) {
+func (c *Conn) GetSearchRecommendationTotalRows(ctx context.Context, search string) (int, error) {
 	var totalRows int
 
-	err := c.db.Get(
+	err := c.db.GetContext(
+		ctx,
 		&totalRows,
 		querySearchRecommendationsTotalRows,
 		"%"+search+"%",

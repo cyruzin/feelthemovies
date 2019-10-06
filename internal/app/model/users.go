@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -25,10 +26,10 @@ type UserResult struct {
 }
 
 // GetUsers retrieves the first twenty users.
-func (c *Conn) GetUsers() (*UserResult, error) {
+func (c *Conn) GetUsers(ctx context.Context) (*UserResult, error) {
 	var users []User
 
-	err := c.db.Select(&users, queryUsersSelect, 10)
+	err := c.db.SelectContext(ctx, &users, queryUsersSelect, 10)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -37,10 +38,10 @@ func (c *Conn) GetUsers() (*UserResult, error) {
 }
 
 // GetUser retrieves a user by a given ID.
-func (c *Conn) GetUser(id int64) (*User, error) {
+func (c *Conn) GetUser(ctx context.Context, id int64) (*User, error) {
 	var user User
 
-	err := c.db.Get(&user, queryUserSelectByID, id)
+	err := c.db.GetContext(ctx, &user, queryUserSelectByID, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -49,8 +50,9 @@ func (c *Conn) GetUser(id int64) (*User, error) {
 }
 
 // CreateUser creates a new user.
-func (c *Conn) CreateUser(u *User) error {
-	_, err := c.db.Exec(
+func (c *Conn) CreateUser(ctx context.Context, u *User) error {
+	_, err := c.db.ExecContext(
+		ctx,
 		queryUserInsert,
 		u.Name,
 		u.Email,
@@ -67,8 +69,9 @@ func (c *Conn) CreateUser(u *User) error {
 }
 
 // UpdateUser updates a user by a given ID.
-func (c *Conn) UpdateUser(id int64, u *User) error {
-	result, err := c.db.Exec(
+func (c *Conn) UpdateUser(ctx context.Context, id int64, u *User) error {
+	result, err := c.db.ExecContext(
+		ctx,
 		queryUserUpdate,
 		u.Name,
 		u.Email,
@@ -94,8 +97,8 @@ func (c *Conn) UpdateUser(id int64, u *User) error {
 }
 
 // DeleteUser deletes a user by a given ID.
-func (c *Conn) DeleteUser(id int64) error {
-	result, err := c.db.Exec(queryUserDelete, id)
+func (c *Conn) DeleteUser(ctx context.Context, id int64) error {
+	result, err := c.db.ExecContext(ctx, queryUserDelete, id)
 	if err != nil {
 		return err
 	}

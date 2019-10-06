@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -20,10 +21,10 @@ type GenreResult struct {
 }
 
 // GetGenres retrieves the latest genres.
-func (c *Conn) GetGenres(limit int) (*GenreResult, error) {
+func (c *Conn) GetGenres(ctx context.Context, limit int) (*GenreResult, error) {
 	var result []Genre
 
-	err := c.db.Select(&result, queryGenresSelect, limit)
+	err := c.db.SelectContext(ctx, &result, queryGenresSelect, limit)
 
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
@@ -33,10 +34,10 @@ func (c *Conn) GetGenres(limit int) (*GenreResult, error) {
 }
 
 // GetGenre retrieves a genre by ID.
-func (c *Conn) GetGenre(id int64) (*Genre, error) {
+func (c *Conn) GetGenre(ctx context.Context, id int64) (*Genre, error) {
 	var genre Genre
 
-	err := c.db.Get(&genre, queryGenreSelectByID, id)
+	err := c.db.GetContext(ctx, &genre, queryGenreSelectByID, id)
 
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
@@ -46,8 +47,8 @@ func (c *Conn) GetGenre(id int64) (*Genre, error) {
 }
 
 // CreateGenre creates a new genre.
-func (c *Conn) CreateGenre(g *Genre) error {
-	_, err := c.db.Exec(queryGenreInsert, g.Name, g.CreatedAt, g.UpdatedAt)
+func (c *Conn) CreateGenre(ctx context.Context, g *Genre) error {
+	_, err := c.db.ExecContext(ctx, queryGenreInsert, g.Name, g.CreatedAt, g.UpdatedAt)
 	if err != nil {
 		return err
 	}
@@ -56,8 +57,8 @@ func (c *Conn) CreateGenre(g *Genre) error {
 }
 
 // UpdateGenre updates a genre by ID.
-func (c *Conn) UpdateGenre(id int64, g *Genre) error {
-	result, err := c.db.Exec(queryGenreUpdate, g.Name, g.UpdatedAt, id)
+func (c *Conn) UpdateGenre(ctx context.Context, id int64, g *Genre) error {
+	result, err := c.db.ExecContext(ctx, queryGenreUpdate, g.Name, g.UpdatedAt, id)
 	if err != nil {
 		return err
 	}
@@ -75,8 +76,8 @@ func (c *Conn) UpdateGenre(id int64, g *Genre) error {
 }
 
 // DeleteGenre deletes a genre by ID.
-func (c *Conn) DeleteGenre(id int64) error {
-	result, err := c.db.Exec(queryGenreDelete, id)
+func (c *Conn) DeleteGenre(ctx context.Context, id int64) error {
+	result, err := c.db.ExecContext(ctx, queryGenreDelete, id)
 	if err != nil {
 		return err
 	}

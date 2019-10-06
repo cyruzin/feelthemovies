@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -48,10 +49,10 @@ type RecommendationItemCreate struct {
 
 // GetRecommendationItems retrieves all items of
 // a given recommendation by ID.
-func (c *Conn) GetRecommendationItems(id int64) (*RecommendationItemResult, error) {
+func (c *Conn) GetRecommendationItems(ctx context.Context, id int64) (*RecommendationItemResult, error) {
 	var recommendationItem []RecommendationItem
 
-	err := c.db.Select(&recommendationItem, queryRecommendationItems, id)
+	err := c.db.SelectContext(ctx, &recommendationItem, queryRecommendationItems, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -61,10 +62,10 @@ func (c *Conn) GetRecommendationItems(id int64) (*RecommendationItemResult, erro
 
 // GetRecommendationItem retrieves a recommendation
 // items by a given ID.
-func (c *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
+func (c *Conn) GetRecommendationItem(ctx context.Context, id int64) (*RecommendationItem, error) {
 	var recommendationItem RecommendationItem
 
-	err := c.db.Get(&recommendationItem, queryRecommendationItem, id)
+	err := c.db.GetContext(ctx, &recommendationItem, queryRecommendationItem, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -73,8 +74,9 @@ func (c *Conn) GetRecommendationItem(id int64) (*RecommendationItem, error) {
 }
 
 // CreateRecommendationItem creates a new recommendation item.
-func (c *Conn) CreateRecommendationItem(r *RecommendationItem) (int64, error) {
-	result, err := c.db.Exec(
+func (c *Conn) CreateRecommendationItem(ctx context.Context, r *RecommendationItem) (int64, error) {
+	result, err := c.db.ExecContext(
+		ctx,
 		queryRecommendationItemInsert,
 		r.RecommendationID,
 		r.Name,
@@ -103,8 +105,9 @@ func (c *Conn) CreateRecommendationItem(r *RecommendationItem) (int64, error) {
 
 // UpdateRecommendationItem updates a recommendation
 // item by a given ID.
-func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
-	result, err := c.db.Exec(
+func (c *Conn) UpdateRecommendationItem(ctx context.Context, id int64, r *RecommendationItem) error {
+	result, err := c.db.ExecContext(
+		ctx,
 		queryRecommendationItemUpdate,
 		r.Name,
 		r.TMDBID,
@@ -136,8 +139,8 @@ func (c *Conn) UpdateRecommendationItem(id int64, r *RecommendationItem) error {
 
 // DeleteRecommendationItem deletes a recommendation
 // item by a given ID.
-func (c *Conn) DeleteRecommendationItem(id int64) error {
-	result, err := c.db.Exec(queryRecommendationItemDelete, id)
+func (c *Conn) DeleteRecommendationItem(ctx context.Context, id int64) error {
+	result, err := c.db.ExecContext(ctx, queryRecommendationItemDelete, id)
 	if err != nil {
 		return err
 	}
@@ -156,10 +159,10 @@ func (c *Conn) DeleteRecommendationItem(id int64) error {
 
 // GetRecommendationItemSources retrieves all
 // sources of a given recommendation item.
-func (c *Conn) GetRecommendationItemSources(id int64) (*SourceResult, error) {
+func (c *Conn) GetRecommendationItemSources(ctx context.Context, id int64) (*SourceResult, error) {
 	var sources []Source
 
-	err := c.db.Select(&sources, queryRecommendationItemSources, id)
+	err := c.db.SelectContext(ctx, &sources, queryRecommendationItemSources, id)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -168,10 +171,10 @@ func (c *Conn) GetRecommendationItemSources(id int64) (*SourceResult, error) {
 }
 
 // GetRecommendationItemsTotalRows retrieves the total rows of items of a recommendation.
-func (c *Conn) GetRecommendationItemsTotalRows(id int64) (float64, error) {
+func (c *Conn) GetRecommendationItemsTotalRows(ctx context.Context, id int64) (float64, error) {
 	var totalRows float64
 
-	err := c.db.Get(&totalRows, queryRecommendationItemsTotalRows, id)
+	err := c.db.GetContext(ctx, &totalRows, queryRecommendationItemsTotalRows, id)
 	if err != nil && err != sql.ErrNoRows {
 		return 0, err
 	}

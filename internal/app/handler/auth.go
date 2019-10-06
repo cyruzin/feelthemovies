@@ -21,12 +21,14 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(request); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
 
-	dbPassword, err := s.model.Authenticate(request.Email)
+	dbPassword, err := s.model.Authenticate(ctx, request.Email)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errAuth, http.StatusInternalServerError)
 		return
@@ -37,7 +39,7 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authenticationInfo, err := s.model.GetAuthenticationInfo(request.Email)
+	authenticationInfo, err := s.model.GetAuthenticationInfo(ctx, request.Email)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return

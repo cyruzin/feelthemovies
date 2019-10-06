@@ -13,7 +13,7 @@ import (
 
 // GetSources gets all sources.
 func (s *Setup) GetSources(w http.ResponseWriter, r *http.Request) {
-	sources, err := s.model.GetSources()
+	sources, err := s.model.GetSources(r.Context())
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -30,7 +30,7 @@ func (s *Setup) GetSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	source, err := s.model.GetSource(id)
+	source, err := s.model.GetSource(r.Context(), id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -47,7 +47,9 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(request); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -58,7 +60,7 @@ func (s *Setup) CreateSource(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now(),
 	}
 
-	err := s.model.CreateSource(&source)
+	err := s.model.CreateSource(ctx, &source)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
@@ -75,7 +77,9 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(request); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, request); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -91,7 +95,7 @@ func (s *Setup) UpdateSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.model.UpdateSource(id, &source)
+	err = s.model.UpdateSource(ctx, id, &source)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
@@ -108,7 +112,7 @@ func (s *Setup) DeleteSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.model.DeleteSource(id); err != nil {
+	if err := s.model.DeleteSource(r.Context(), id); err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"context"
+
 	// Importing MySQL driver so the helper
 	// functions can work.
 	_ "github.com/go-sql-driver/mysql"
@@ -23,12 +25,12 @@ func Connect(db *sqlx.DB) *Conn {
 
 // Attach receives a map of int/[]int and attach
 // the IDs on the given pivot table.
-func (c *Conn) Attach(s map[int64][]int, pivot string) error {
+func (c *Conn) Attach(ctx context.Context, s map[int64][]int, pivot string) error {
 	for index, ids := range s {
 		for _, values := range ids {
 			query := "INSERT INTO " + pivot + " VALUES (?,?)"
 
-			_, err := c.db.Exec(query, index, values)
+			_, err := c.db.ExecContext(ctx, query, index, values)
 			if err != nil {
 				return err
 			}
@@ -40,11 +42,11 @@ func (c *Conn) Attach(s map[int64][]int, pivot string) error {
 
 // Detach receives a map of int/[]int and Detach
 // the IDs on the given pivot table.
-func (c *Conn) Detach(s map[int64][]int, pivot, field string) error {
+func (c *Conn) Detach(ctx context.Context, s map[int64][]int, pivot, field string) error {
 	for index := range s {
 		query := "DELETE FROM " + pivot + " WHERE " + field + " = ?"
 
-		_, err := c.db.Exec(query, index)
+		_, err := c.db.ExecContext(ctx, query, index)
 		if err != nil {
 			return err
 		}
@@ -55,21 +57,21 @@ func (c *Conn) Detach(s map[int64][]int, pivot, field string) error {
 
 // Sync receives a map of int/[]int and sync
 // the IDs on the given pivot table.
-func (c *Conn) Sync(s map[int64][]int, pivot, field string) error {
+func (c *Conn) Sync(ctx context.Context, s map[int64][]int, pivot, field string) error {
 	empty := c.IsEmpty(s)
 
 	if !empty {
-		err := c.Detach(s, pivot, field)
+		err := c.Detach(ctx, s, pivot, field)
 		if err != nil {
 			return err
 		}
 
-		err = c.Attach(s, pivot)
+		err = c.Attach(ctx, s, pivot)
 		if err != nil {
 			return err
 		}
 	} else {
-		err := c.Detach(s, pivot, field)
+		err := c.Detach(ctx, s, pivot, field)
 		if err != nil {
 			return err
 		}

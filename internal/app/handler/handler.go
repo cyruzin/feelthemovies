@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -66,8 +67,8 @@ func NewHandler(
 }
 
 // CheckCache checks if the given key exists in cache.
-func (s *Setup) CheckCache(key string, dest interface{}) (bool, error) {
-	cacheValue, _ := s.redis.Get(key).Result()
+func (s *Setup) CheckCache(ctx context.Context, key string, dest interface{}) (bool, error) {
+	cacheValue, _ := s.redis.WithContext(ctx).Get(key).Result()
 	if cacheValue != "" {
 		if err := helper.UnmarshalBinary([]byte(cacheValue), dest); err != nil {
 			return false, err
@@ -79,13 +80,13 @@ func (s *Setup) CheckCache(key string, dest interface{}) (bool, error) {
 }
 
 // SetCache sets the given key in cache.
-func (s *Setup) SetCache(key string, dest interface{}) error {
+func (s *Setup) SetCache(ctx context.Context, key string, dest interface{}) error {
 	cacheValue, err := helper.MarshalBinary(dest)
 	if err != nil {
 		return err
 	}
 
-	if err := s.redis.Set(key, cacheValue, redisTimeout).Err(); err != nil {
+	if err := s.redis.WithContext(ctx).Set(key, cacheValue, redisTimeout).Err(); err != nil {
 		return err
 	}
 
@@ -93,8 +94,8 @@ func (s *Setup) SetCache(key string, dest interface{}) error {
 }
 
 // RemoveCache removes the given key from the cache.
-func (s *Setup) RemoveCache(key string) error {
-	val, _ := s.redis.Get(key).Result()
+func (s *Setup) RemoveCache(ctx context.Context, key string) error {
+	val, _ := s.redis.WithContext(ctx).Get(key).Result()
 	if val != "" {
 		_, err := s.redis.Unlink(key).Result()
 		if err != nil {

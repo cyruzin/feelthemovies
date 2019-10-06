@@ -15,7 +15,7 @@ import (
 
 // GetGenres gets all genres.
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
-	genres, err := s.model.GetGenres(20)
+	genres, err := s.model.GetGenres(r.Context(), 20)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -32,7 +32,7 @@ func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	genre, err := s.model.GetGenre(id)
+	genre, err := s.model.GetGenre(r.Context(), id)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
@@ -51,7 +51,9 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(genre); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -59,7 +61,7 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 	genre.CreatedAt = time.Now()
 	genre.UpdatedAt = time.Now()
 
-	err = s.model.CreateGenre(&genre)
+	err = s.model.CreateGenre(ctx, &genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
@@ -78,7 +80,9 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.validator.Struct(genre); err != nil {
+	ctx := r.Context()
+
+	if err := s.validator.StructCtx(ctx, genre); err != nil {
 		helper.ValidatorMessage(w, err)
 		return
 	}
@@ -91,7 +95,7 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.model.UpdateGenre(id, &genre)
+	err = s.model.UpdateGenre(ctx, id, &genre)
 	if err != nil {
 		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
@@ -108,7 +112,7 @@ func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.model.DeleteGenre(id); err != nil {
+	if err := s.model.DeleteGenre(r.Context(), id); err != nil {
 		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
