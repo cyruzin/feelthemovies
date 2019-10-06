@@ -125,13 +125,9 @@ func database(ctx context.Context, cfg *config.Config) *sqlx.DB {
 // Redis connection.
 func redis(ctx context.Context, cfg *config.Config) *re.Client {
 	client := re.NewClient(&re.Options{
-		Addr:         cfg.RedisAddress,
-		Password:     cfg.RedisPass,
-		DB:           0,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		PoolSize:     20,
-		PoolTimeout:  10 * time.Second,
+		Addr:     cfg.RedisAddress,
+		Password: cfg.RedisPass,
+		DB:       0,
 	})
 
 	_, err := client.WithContext(ctx).Ping().Result()
