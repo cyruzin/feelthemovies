@@ -1,0 +1,66 @@
+# github.com/InVisionApp/go-health v2.1.0+incompatible
+github.com/InVisionApp/go-health
+github.com/InVisionApp/go-health/checkers
+github.com/InVisionApp/go-health/checkers/redis
+github.com/InVisionApp/go-health/handlers
+# github.com/InVisionApp/go-logger v1.0.1
+github.com/InVisionApp/go-logger
+# github.com/cyruzin/tome v1.0.2
+github.com/cyruzin/tome
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+github.com/dgrijalva/jwt-go
+# github.com/go-chi/chi v4.0.2+incompatible
+github.com/go-chi/chi
+github.com/go-chi/chi/middleware
+# github.com/go-chi/cors v1.0.0
+github.com/go-chi/cors
+# github.com/go-playground/locales v0.12.1
+github.com/go-playground/locales
+github.com/go-playground/locales/currency
+# github.com/go-playground/universal-translator v0.16.0
+github.com/go-playground/universal-translator
+# github.com/go-redis/redis v6.15.2+incompatible
+github.com/go-redis/redis
+github.com/go-redis/redis/internal
+github.com/go-redis/redis/internal/consistenthash
+github.com/go-redis/redis/internal/hashtag
+github.com/go-redis/redis/internal/pool
+github.com/go-redis/redis/internal/proto
+github.com/go-redis/redis/internal/util
+# github.com/go-sql-driver/mysql v1.4.1
+github.com/go-sql-driver/mysql
+# github.com/google/uuid v1.1.1
+github.com/google/uuid
+# github.com/jmoiron/sqlx v1.2.0
+github.com/jmoiron/sqlx
+github.com/jmoiron/sqlx/reflectx
+# github.com/kelseyhightower/envconfig v1.4.0
+github.com/kelseyhightower/envconfig
+# github.com/leodido/go-urn v1.1.0
+github.com/leodido/go-urn
+# github.com/newrelic/go-agent v2.13.0+incompatible
+github.com/newrelic/go-agent
+github.com/newrelic/go-agent/internal
+github.com/newrelic/go-agent/internal/cat
+github.com/newrelic/go-agent/internal/jsonx
+github.com/newrelic/go-agent/internal/logger
+github.com/newrelic/go-agent/internal/sysinfo
+github.com/newrelic/go-agent/internal/utilization
+# go.uber.org/atomic v1.4.0
+go.uber.org/atomic
+# go.uber.org/multierr v1.2.0
+go.uber.org/multierr
+# go.uber.org/zap v1.10.0
+go.uber.org/zap
+go.uber.org/zap/buffer
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+go.uber.org/zap/zapcore
+# golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
+golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blowfish
+# google.golang.org/appengine v1.6.4
+google.golang.org/appengine/cloudsql
+# gopkg.in/go-playground/validator.v9 v9.30.0
+gopkg.in/go-playground/validator.v9
