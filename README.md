@@ -6,19 +6,20 @@ This is the new API repository for Feel the Movies. Written in Go, totally open 
 
 ## Installation
 
-Set the environment variables on the .env file.
+Rename the .env.example file to .env and change the environment variables values if you wish. 
 
-Make sure that you have Docker installed and then run the following commands:
+Make sure that you have Docker and Docker Compose installed and then run the following command:
 
 ```sh
 $ docker-compose up -d
-$ go mod download 
 ```
 
-That's it! Go to folder "cmd/feelthemovies" and run the command:
+That's it!
+
+To recompile the api container, run:
 
 ```sh
-$ go run main.go
+$ docker-compose up -d --build
 ```
 
 ## Build
