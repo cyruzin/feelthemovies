@@ -111,9 +111,12 @@ func (s *Setup) RemoveCache(ctx context.Context, key string) error {
 // the given key and returns a string.
 func (s *Setup) GenerateCacheKey(params url.Values, key string) string {
 	var cacheKey string
-	if params["page"] != nil {
+
+	if params["page"] != nil && params["query"] == nil { // Only page param.
 		cacheKey = fmt.Sprintf("%s?page=%s", key, params["page"][0])
-	} else if params["page"] != nil && params["query"] != nil {
+	} else if params["page"] == nil && params["query"] != nil { // Only query param.
+		cacheKey = fmt.Sprintf("%s?query=%s", key, params["query"][0])
+	} else if params["page"] != nil && params["query"] != nil { // Both.
 		cacheKey = fmt.Sprintf("?query=%s&page=%s", params["query"][0], params["page"][0])
 	} else {
 		cacheKey = key
