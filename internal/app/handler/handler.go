@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -13,8 +12,11 @@ import (
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"github.com/go-redis/redis"
+	jsoniter "github.com/json-iterator/go"
 	validator "gopkg.in/go-playground/validator.v9"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // Redis expiration time.
 const redisTimeout = time.Duration(5 * time.Minute)

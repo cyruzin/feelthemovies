@@ -1,14 +1,16 @@
 package helper
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
+	jsoniter "github.com/json-iterator/go"
 	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // HashPassword encrypts a given password using bcrypt algorithm.
 func HashPassword(password string, cost int) (string, error) {
