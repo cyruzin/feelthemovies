@@ -4,6 +4,12 @@
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source.
 
+## App
+
+Currently available for Android only. I have plans for an iOS version, since the application was written in React Native, it should be no problem to release a version in the future.
+
+[Download it on Play Store](https://play.google.com/store/apps/details?id=br.com.feelthemovies&hl=en_ZA)
+
 ## Installation
 
 Change the values of environment variables in the .env file if desired. 
@@ -54,6 +60,13 @@ The uuid package generates and inspects UUIDs based on RFC 4122 and DCE 1.1: Aut
 * [avelino / awesome-go](https://github.com/avelino/awesome-go) - 
 A curated list of awesome Go frameworks, libraries and software.
 * [insomnia](https://insomnia.rest/download/) - Rest client.
+
+## Front-End & Mobile Apps
+
+These two projects here needs a lot of improvements.
+
+- [Front-End](https://github.com/cyruzin/feelthemovies_dashboard)
+- [Mobile](https://github.com/cyruzin/feelthemovies_mobile)
 
 ## Contributing
 
