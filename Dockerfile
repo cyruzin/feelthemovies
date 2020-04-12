@@ -1,5 +1,5 @@
-# Start from golang v1.13.x base image.
-FROM golang:1.13.5 as build-stage
+# Start from golang v1.14.2.x base image.
+FROM golang:1.14.2 as build-stage
 
 # Set the Current Working Directory inside the container.
 WORKDIR /go/src/github.com/cyruzin/feelthemovies

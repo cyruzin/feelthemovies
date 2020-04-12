@@ -534,7 +534,98 @@ var (
 		internal.AttributeErrorLimit)
 )
 
-func (txn *txn) NoticeError(err error) error {
+// errorCause returns the error's deepest wrapped ancestor.
+func errorCause(err error) error {
+	for {
+		if unwrapper, ok := err.(interface{ Unwrap() error }); ok {
+			if next := unwrapper.Unwrap(); nil != next {
+				err = next
+				continue
+			}
+		}
+		return err
+	}
+}
+
+func errorClassMethod(err error) string {
+	if ec, ok := err.(ErrorClasser); ok {
+		return ec.ErrorClass()
+	}
+	return ""
+}
+
+func errorStackTraceMethod(err error) internal.StackTrace {
+	if st, ok := err.(StackTracer); ok {
+		return st.StackTrace()
+	}
+	return nil
+}
+
+func errorAttributesMethod(err error) map[string]interface{} {
+	if st, ok := err.(ErrorAttributer); ok {
+		return st.ErrorAttributes()
+	}
+	return nil
+}
+
+func errDataFromError(input error) (data internal.ErrorData, err error) {
+	cause := errorCause(input)
+
+	data = internal.ErrorData{
+		When: time.Now(),
+		Msg:  input.Error(),
+	}
+
+	if c := errorClassMethod(input); "" != c {
+		// If the error implements ErrorClasser, use that.
+		data.Klass = c
+	} else if c := errorClassMethod(cause); "" != c {
+		// Otherwise, if the error's cause implements ErrorClasser, use that.
+		data.Klass = c
+	} else {
+		// As a final fallback, use the type of the error's cause.
+		data.Klass = reflect.TypeOf(cause).String()
+	}
+
+	if st := errorStackTraceMethod(input); nil != st {
+		// If the error implements StackTracer, use that.
+		data.Stack = st
+	} else if st := errorStackTraceMethod(cause); nil != st {
+		// Otherwise, if the error's cause implements StackTracer, use that.
+		data.Stack = st
+	} else {
+		// As a final fallback, generate a StackTrace here.
+		data.Stack = internal.GetStackTrace()
+	}
+
+	var unvetted map[string]interface{}
+	if ats := errorAttributesMethod(input); nil != ats {
+		// If the error implements ErrorAttributer, use that.
+		unvetted = ats
+	} else {
+		// Otherwise, if the error's cause implements ErrorAttributer, use that.
+		unvetted = errorAttributesMethod(cause)
+	}
+	if unvetted != nil {
+		if len(unvetted) > internal.AttributeErrorLimit {
+			err = errTooManyErrorAttributes
+			return
+		}
+
+		data.ExtraAttributes = make(map[string]interface{})
+		for key, val := range unvetted {
+			val, err = internal.ValidateUserAttribute(key, val)
+			if nil != err {
+				return
+			}
+			data.ExtraAttributes[key] = val
+		}
+	}
+
+	return data, nil
+}
+
+func (txn *txn) NoticeError(input error) error {
 	txn.Lock()
 	defer txn.Unlock()
 
@@ -542,46 +633,20 @@ func (txn *txn) NoticeError(err error) error {
 		return errAlreadyEnded
 	}
 
-	if nil == err {
+	if nil == input {
 		return errNilError
 	}
 
-	e := internal.ErrorData{
-		When: time.Now(),
-		Msg:  err.Error(),
-	}
-	if ec, ok := err.(ErrorClasser); ok {
-		e.Klass = ec.ErrorClass()
-	}
-	if "" == e.Klass {
-		e.Klass = reflect.TypeOf(err).String()
-	}
-	if st, ok := err.(StackTracer); ok {
-		e.Stack = st.StackTrace()
-		// Note that if the provided stack trace is excessive in length,
-		// it will be truncated during JSON creation.
-	}
-	if nil == e.Stack {
-		e.Stack = internal.GetStackTrace()
+	data, err := errDataFromError(input)
+	if nil != err {
+		return err
 	}
 
-	if ea, ok := err.(ErrorAttributer); ok && !txn.Config.HighSecurity && txn.Reply.SecurityPolicies.CustomParameters.Enabled() {
-		unvetted := ea.ErrorAttributes()
-		if len(unvetted) > internal.AttributeErrorLimit {
-			return errTooManyErrorAttributes
-		}
-
-		e.ExtraAttributes = make(map[string]interface{})
-		for key, val := range unvetted {
-			val, errr := internal.ValidateUserAttribute(key, val)
-			if nil != errr {
-				return errr
-			}
-			e.ExtraAttributes[key] = val
-		}
+	if txn.Config.HighSecurity || !txn.Reply.SecurityPolicies.CustomParameters.Enabled() {
+		data.ExtraAttributes = nil
 	}
 
-	return txn.noticeErrorInternal(e)
+	return txn.noticeErrorInternal(data)
 }
 
 func (txn *txn) SetName(name string) error {
@@ -852,6 +917,39 @@ func endExternal(s *ExternalSegment) error {
 		Host:     s.Host,
 		Library:  s.Library,
 		Method:   externalSegmentMethod(s),
+	})
+}
+
+func endMessage(s *MessageProducerSegment) error {
+	if nil == s {
+		return nil
+	}
+	thd := s.StartTime.thread
+	if nil == thd {
+		return nil
+	}
+	txn := thd.txn
+	txn.Lock()
+	defer txn.Unlock()
+
+	if txn.finished {
+		return errAlreadyEnded
+	}
+
+	if "" == s.DestinationType {
+		s.DestinationType = MessageQueue
+	}
+
+	return internal.EndMessageSegment(internal.EndMessageParams{
+		TxnData:         &txn.TxnData,
+		Thread:          thd.thread,
+		Start:           s.StartTime.start,
+		Now:             time.Now(),
+		Library:         s.Library,
+		Logger:          txn.Config.Logger,
+		DestinationName: s.DestinationName,
+		DestinationType: string(s.DestinationType),
+		DestinationTemp: s.DestinationTemporary,
 	})
 }
 
@@ -1131,4 +1229,15 @@ func (thd *thread) GetLinkingMetadata() (metadata LinkingMetadata) {
 	metadata.SpanID = md.SpanID
 
 	return
+}
+
+func (txn *txn) IsSampled() bool {
+	txn.Lock()
+	defer txn.Unlock()
+
+	if txn.finished {
+		return false
+	}
+
+	return txn.lazilyCalculateSampled()
 }

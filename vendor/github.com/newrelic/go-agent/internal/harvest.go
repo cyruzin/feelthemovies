@@ -11,48 +11,62 @@ type Harvestable interface {
 	MergeIntoHarvest(h *Harvest)
 }
 
+// HarvestTypes is a bit set used to indicate which data types are ready to be
+// reported.
+type HarvestTypes uint
+
+const (
+	// HarvestMetricsTraces is the Metrics Traces type
+	HarvestMetricsTraces HarvestTypes = 1 << iota
+	// HarvestSpanEvents is the Span Event type
+	HarvestSpanEvents
+	// HarvestCustomEvents is the Custom Event type
+	HarvestCustomEvents
+	// HarvestTxnEvents is the Transaction Event type
+	HarvestTxnEvents
+	// HarvestErrorEvents is the Error Event type
+	HarvestErrorEvents
+)
+
+const (
+	// HarvestTypesEvents includes all Event types
+	HarvestTypesEvents = HarvestSpanEvents | HarvestCustomEvents | HarvestTxnEvents | HarvestErrorEvents
+	// HarvestTypesAll includes all harvest types
+	HarvestTypesAll = HarvestMetricsTraces | HarvestTypesEvents
+)
+
 type harvestTimer struct {
-	lastHarvest time.Time
-	period      time.Duration
+	periods     map[HarvestTypes]time.Duration
+	lastHarvest map[HarvestTypes]time.Time
 }
 
-func newHarvestTimer(now time.Time, period time.Duration) harvestTimer {
-	return harvestTimer{
-		lastHarvest: now,
-		period:      period,
+func newHarvestTimer(now time.Time, periods map[HarvestTypes]time.Duration) *harvestTimer {
+	lastHarvest := make(map[HarvestTypes]time.Time, len(periods))
+	for tp := range periods {
+		lastHarvest[tp] = now
 	}
+	return &harvestTimer{periods: periods, lastHarvest: lastHarvest}
 }
 
-func (timer *harvestTimer) ready(now time.Time) bool {
-	deadline := timer.lastHarvest.Add(timer.period)
-	if now.After(deadline) {
-		timer.lastHarvest = deadline
-		return true
+func (timer *harvestTimer) ready(now time.Time) (ready HarvestTypes) {
+	for tp, period := range timer.periods {
+		if deadline := timer.lastHarvest[tp].Add(period); now.After(deadline) {
+			timer.lastHarvest[tp] = deadline
+			ready |= tp
+		}
 	}
-	return false
+	return
 }
 
 // Harvest contains collected data.
 type Harvest struct {
-	configurableHarvestTimer harvestTimer
-	fixedHarvestTimer        harvestTimer
+	timer *harvestTimer
 
-	// fixedHarvest and configurableHarvest are non-nil in the main Harvest
-	// used in app.process(), but may be nil in the Harvest returned by
-	// Harvest.Ready().
-	*fixedHarvest
-	*configurableHarvest
-}
-
-type fixedHarvest struct {
-	Metrics     *metricTable
-	ErrorTraces harvestErrors
-	TxnTraces   *harvestTraces
-	SlowSQLs    *slowQueries
-	SpanEvents  *spanEvents
-}
-
-type configurableHarvest struct {
+	Metrics      *metricTable
+	ErrorTraces  harvestErrors
+	TxnTraces    *harvestTraces
+	SlowSQLs     *slowQueries
+	SpanEvents   *spanEvents
 	CustomEvents *customEvents
 	TxnEvents    *txnEvents
 	ErrorEvents  *errorEvents
@@ -66,107 +80,121 @@ const (
 
 // Ready returns a new Harvest which contains the data types ready for harvest,
 // or nil if no data is ready for harvest.
-func (h *Harvest) Ready(now time.Time, reply *ConnectReply) *Harvest {
+func (h *Harvest) Ready(now time.Time) *Harvest {
 	ready := &Harvest{}
 
-	if h.configurableHarvestTimer.ready(now) {
+	types := h.timer.ready(now)
+	if 0 == types {
+		return nil
+	}
+
+	if 0 != types&HarvestCustomEvents {
 		h.Metrics.addCount(customEventsSeen, h.CustomEvents.NumSeen(), forced)
 		h.Metrics.addCount(customEventsSent, h.CustomEvents.NumSaved(), forced)
-
+		ready.CustomEvents = h.CustomEvents
+		h.CustomEvents = newCustomEvents(h.CustomEvents.capacity())
+	}
+	if 0 != types&HarvestTxnEvents {
 		h.Metrics.addCount(txnEventsSeen, h.TxnEvents.NumSeen(), forced)
 		h.Metrics.addCount(txnEventsSent, h.TxnEvents.NumSaved(), forced)
-
+		ready.TxnEvents = h.TxnEvents
+		h.TxnEvents = newTxnEvents(h.TxnEvents.capacity())
+	}
+	if 0 != types&HarvestErrorEvents {
 		h.Metrics.addCount(errorEventsSeen, h.ErrorEvents.NumSeen(), forced)
 		h.Metrics.addCount(errorEventsSent, h.ErrorEvents.NumSaved(), forced)
-
-		ready.configurableHarvest = h.configurableHarvest
-		h.configurableHarvest = newConfigurableHarvest(now, reply)
+		ready.ErrorEvents = h.ErrorEvents
+		h.ErrorEvents = newErrorEvents(h.ErrorEvents.capacity())
 	}
-
-	// NOTE!  This must happen after the configurable harvest conditional to
-	// ensure that the metrics contain the event supportability metrics.
-	if h.fixedHarvestTimer.ready(now) {
+	if 0 != types&HarvestSpanEvents {
 		h.Metrics.addCount(spanEventsSeen, h.SpanEvents.NumSeen(), forced)
 		h.Metrics.addCount(spanEventsSent, h.SpanEvents.NumSaved(), forced)
-
-		ready.fixedHarvest = h.fixedHarvest
-		h.fixedHarvest = newFixedHarvest(now)
+		ready.SpanEvents = h.SpanEvents
+		h.SpanEvents = newSpanEvents(h.SpanEvents.capacity())
 	}
-
-	if nil == ready.fixedHarvest && nil == ready.configurableHarvest {
-		return nil
+	// NOTE! Metrics must happen after the event harvest conditionals to
+	// ensure that the metrics contain the event supportability metrics.
+	if 0 != types&HarvestMetricsTraces {
+		ready.Metrics = h.Metrics
+		ready.ErrorTraces = h.ErrorTraces
+		ready.SlowSQLs = h.SlowSQLs
+		ready.TxnTraces = h.TxnTraces
+		h.Metrics = newMetricTable(maxMetrics, now)
+		h.ErrorTraces = newHarvestErrors(maxHarvestErrors)
+		h.SlowSQLs = newSlowQueries(maxHarvestSlowSQLs)
+		h.TxnTraces = newHarvestTraces()
 	}
 	return ready
 }
 
-func (h *configurableHarvest) payloads(splitLargeTxnEvents bool) []PayloadCreator {
+// Payloads returns a slice of payload creators.
+func (h *Harvest) Payloads(splitLargeTxnEvents bool) (ps []PayloadCreator) {
 	if nil == h {
-		return nil
+		return
 	}
-	ps := []PayloadCreator{
-		h.CustomEvents,
-		h.ErrorEvents,
+	if nil != h.CustomEvents {
+		ps = append(ps, h.CustomEvents)
 	}
-	if splitLargeTxnEvents {
-		ps = append(ps, h.TxnEvents.payloads(txnEventPayloadlimit)...)
-	} else {
-		ps = append(ps, h.TxnEvents)
+	if nil != h.ErrorEvents {
+		ps = append(ps, h.ErrorEvents)
 	}
-	return ps
+	if nil != h.SpanEvents {
+		ps = append(ps, h.SpanEvents)
+	}
+	if nil != h.Metrics {
+		ps = append(ps, h.Metrics)
+	}
+	if nil != h.ErrorTraces {
+		ps = append(ps, h.ErrorTraces)
+	}
+	if nil != h.TxnTraces {
+		ps = append(ps, h.TxnTraces)
+	}
+	if nil != h.SlowSQLs {
+		ps = append(ps, h.SlowSQLs)
+	}
+	if nil != h.TxnEvents {
+		if splitLargeTxnEvents {
+			ps = append(ps, h.TxnEvents.payloads(txnEventPayloadlimit)...)
+		} else {
+			ps = append(ps, h.TxnEvents)
+		}
+	}
+	return
 }
 
-func (h *fixedHarvest) payloads() []PayloadCreator {
-	if nil == h {
-		return nil
-	}
-	return []PayloadCreator{
-		h.Metrics,
-		h.ErrorTraces,
-		h.TxnTraces,
-		h.SlowSQLs,
-		h.SpanEvents,
-	}
+// MaxTxnEventer returns the maximum number of Transaction Events that should be reported per period
+type MaxTxnEventer interface {
+	MaxTxnEvents() int
 }
 
-// Payloads returns a map from expected collector method name to data type.
-func (h *Harvest) Payloads(splitLargeTxnEvents bool) []PayloadCreator {
-	if nil == h {
-		return nil
-	}
-	var ps []PayloadCreator
-	ps = append(ps, h.configurableHarvest.payloads(splitLargeTxnEvents)...)
-	ps = append(ps, h.fixedHarvest.payloads()...)
-	return ps
-}
-
-func newFixedHarvest(now time.Time) *fixedHarvest {
-	return &fixedHarvest{
-		Metrics:     newMetricTable(maxMetrics, now),
-		ErrorTraces: newHarvestErrors(maxHarvestErrors),
-		TxnTraces:   newHarvestTraces(),
-		SlowSQLs:    newSlowQueries(maxHarvestSlowSQLs),
-		SpanEvents:  newSpanEvents(maxSpanEvents),
-	}
-}
-
-func newConfigurableHarvest(now time.Time, reply *ConnectReply) *configurableHarvest {
-	harvestData := reply.getHarvestData()
-	return &configurableHarvest{
-		CustomEvents: newCustomEvents(int(harvestData.HarvestLimits.CustomEvents)),
-		TxnEvents:    newTxnEvents(int(harvestData.HarvestLimits.TxnEvents)),
-		ErrorEvents:  newErrorEvents(int(harvestData.HarvestLimits.ErrorEvents)),
-	}
+// HarvestConfigurer contains information about the configured number of various
+// types of events as well as the Faster Event Harvest report period.
+// It is implemented by AppRun and DfltHarvestCfgr.
+type HarvestConfigurer interface {
+	// ReportPeriods returns a map from the bitset of harvest types to the period that those types should be reported
+	ReportPeriods() map[HarvestTypes]time.Duration
+	// MaxSpanEvents returns the maximum number of Span Events that should be reported per period
+	MaxSpanEvents() int
+	// MaxCustomEvents returns the maximum number of Custom Events that should be reported per period
+	MaxCustomEvents() int
+	// MaxErrorEvents returns the maximum number of Error Events that should be reported per period
+	MaxErrorEvents() int
+	MaxTxnEventer
 }
 
 // NewHarvest returns a new Harvest.
-func NewHarvest(now time.Time, reply *ConnectReply) *Harvest {
-	harvestData := reply.getHarvestData()
+func NewHarvest(now time.Time, configurer HarvestConfigurer) *Harvest {
 	return &Harvest{
-		configurableHarvestTimer: newHarvestTimer(now, harvestData.eventReportPeriod()),
-		fixedHarvestTimer:        newHarvestTimer(now, fixedHarvestPeriod),
-
-		configurableHarvest: newConfigurableHarvest(now, reply),
-		fixedHarvest:        newFixedHarvest(now),
+		timer:        newHarvestTimer(now, configurer.ReportPeriods()),
+		Metrics:      newMetricTable(maxMetrics, now),
+		ErrorTraces:  newHarvestErrors(maxHarvestErrors),
+		TxnTraces:    newHarvestTraces(),
+		SlowSQLs:     newSlowQueries(maxHarvestSlowSQLs),
+		SpanEvents:   newSpanEvents(configurer.MaxSpanEvents()),
+		CustomEvents: newCustomEvents(configurer.MaxCustomEvents()),
+		TxnEvents:    newTxnEvents(configurer.MaxTxnEvents()),
+		ErrorEvents:  newErrorEvents(configurer.MaxErrorEvents()),
 	}
 }
 
@@ -194,8 +222,13 @@ func createTrackUsageMetrics(metrics *metricTable) {
 }
 
 // CreateFinalMetrics creates extra metrics at harvest time.
-func (h *fixedHarvest) CreateFinalMetrics(reply *ConnectReply) {
+func (h *Harvest) CreateFinalMetrics(reply *ConnectReply, hc HarvestConfigurer) {
 	if nil == h {
+		return
+	}
+	// Metrics will be non-nil when harvesting metrics (regardless of
+	// whether or not there are any metrics to send).
+	if nil == h.Metrics {
 		return
 	}
 
@@ -203,12 +236,12 @@ func (h *fixedHarvest) CreateFinalMetrics(reply *ConnectReply) {
 
 	// Configurable event harvest supportability metrics:
 	// https://source.datanerd.us/agents/agent-specs/blob/master/Connect-LEGACY.md#event-harvest-config
-	hd := reply.getHarvestData()
-	period := hd.eventReportPeriod()
+	period := reply.ConfigurablePeriod()
 	h.Metrics.addDuration(supportReportPeriod, "", period, period, forced)
-	h.Metrics.addValue(supportTxnEventLimit, "", float64(hd.HarvestLimits.TxnEvents), forced)
-	h.Metrics.addValue(supportCustomEventLimit, "", float64(hd.HarvestLimits.CustomEvents), forced)
-	h.Metrics.addValue(supportErrorEventLimit, "", float64(hd.HarvestLimits.ErrorEvents), forced)
+	h.Metrics.addValue(supportTxnEventLimit, "", float64(hc.MaxTxnEvents()), forced)
+	h.Metrics.addValue(supportCustomEventLimit, "", float64(hc.MaxCustomEvents()), forced)
+	h.Metrics.addValue(supportErrorEventLimit, "", float64(hc.MaxErrorEvents()), forced)
+	h.Metrics.addValue(supportSpanEventLimit, "", float64(hc.MaxSpanEvents()), forced)
 
 	createTrackUsageMetrics(h.Metrics)
 
@@ -314,4 +347,54 @@ func CreateTxnMetrics(args *TxnData, metrics *metricTable) {
 	if args.Queuing > 0 {
 		metrics.addDuration(queueMetric, "", args.Queuing, args.Queuing, forced)
 	}
+}
+
+// DfltHarvestCfgr implements HarvestConfigurer for internal test cases, and for situations where we don't
+// have a ConnectReply, such as for serverless harvests
+type DfltHarvestCfgr struct {
+	reportPeriods   map[HarvestTypes]time.Duration
+	maxTxnEvents    *uint
+	maxSpanEvents   *uint
+	maxCustomEvents *uint
+	maxErrorEvents  *uint
+}
+
+// ReportPeriods returns a map from the bitset of harvest types to the period that those types should be reported
+func (d *DfltHarvestCfgr) ReportPeriods() map[HarvestTypes]time.Duration {
+	if d.reportPeriods != nil {
+		return d.reportPeriods
+	}
+	return map[HarvestTypes]time.Duration{HarvestTypesAll: FixedHarvestPeriod}
+}
+
+// MaxTxnEvents returns the maximum number of Transaction Events that should be reported per period
+func (d *DfltHarvestCfgr) MaxTxnEvents() int {
+	if d.maxTxnEvents != nil {
+		return int(*d.maxTxnEvents)
+	}
+	return MaxTxnEvents
+}
+
+// MaxSpanEvents returns the maximum number of Span Events that should be reported per period
+func (d *DfltHarvestCfgr) MaxSpanEvents() int {
+	if d.maxSpanEvents != nil {
+		return int(*d.maxSpanEvents)
+	}
+	return MaxSpanEvents
+}
+
+// MaxCustomEvents returns the maximum number of Custom Events that should be reported per period
+func (d *DfltHarvestCfgr) MaxCustomEvents() int {
+	if d.maxCustomEvents != nil {
+		return int(*d.maxCustomEvents)
+	}
+	return MaxCustomEvents
+}
+
+// MaxErrorEvents returns the maximum number of Error Events that should be reported per period
+func (d *DfltHarvestCfgr) MaxErrorEvents() int {
+	if d.maxErrorEvents != nil {
+		return int(*d.maxErrorEvents)
+	}
+	return MaxErrorEvents
 }

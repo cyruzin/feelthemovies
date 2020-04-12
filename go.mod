@@ -1,6 +1,6 @@
 module github.com/cyruzin/feelthemovies
 
-go 1.13.1
+go 1.14
 
 require (
 	github.com/InVisionApp/go-health v2.1.0+incompatible
@@ -9,8 +9,9 @@ require (
 	github.com/alicebob/miniredis v2.5.0+incompatible // indirect
 	github.com/cyruzin/tome v1.0.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-chi/chi v4.0.2+incompatible
-	github.com/go-chi/cors v1.0.0
+	github.com/go-chi/chi v4.1.0+incompatible
+	github.com/go-chi/cors v1.1.1
+	github.com/go-chi/render v1.0.1
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/go-redis/redis v6.15.2+incompatible
@@ -23,7 +24,7 @@ require (
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/newrelic/go-agent v2.13.0+incompatible
+	github.com/newrelic/go-agent v3.4.0+incompatible
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
@@ -35,6 +36,7 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
 	google.golang.org/appengine v1.6.4 // indirect
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0
 )

@@ -1,4 +1,4 @@
-# New Relic Go Agent [![GoDoc](https://godoc.org/github.com/newrelic/go-agent?status.svg)](https://godoc.org/github.com/newrelic/go-agent)
+# New Relic Go Agent [![GoDoc](https://godoc.org/github.com/newrelic/go-agent?status.svg)](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic/) [![Go Report Card](https://goreportcard.com/badge/github.com/newrelic/go-agent)](https://goreportcard.com/report/github.com/newrelic/go-agent)
 
 ## Description
 
@@ -11,53 +11,97 @@ All pull requests will be reviewed by the New Relic product team. Any questions 
 site](http://support.newrelic.com/) or our [community
 forum](https://discuss.newrelic.com).
 
+## Upgrading
+If you have already been using version 2.X of the agent and are upgrading to
+version 3.0, see our [Migration Guide](MIGRATION.md) for details.
+
 ## Requirements
 
-Go 1.3+ is required, due to the use of http.Client's Timeout field.
+For the latest version of the agent, Go 1.7+ is required, due to the use of `context.Context`.
+(For versions 2.X and earlier of the Go agent, Go 1.3+ is required.)
 
 Linux, OS X, and Windows (Vista, Server 2008 and later) are supported.
 
 ## Integrations
 
-The following [_integration packages](https://godoc.org/github.com/newrelic/go-agent/_integrations)
-extend the base [newrelic](https://godoc.org/github.com/newrelic/go-agent) package
+The following [integration packages](https://godoc.org/github.com/newrelic/go-agent/v3/integrations)
+extend the base [newrelic](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic/) package
 to support the following frameworks and libraries.
 Frameworks and databases which don't have an integration package may still be
-instrumented using the [newrelic](https://godoc.org/github.com/newrelic/go-agent)
-package primitives.  Specifically, more information about instrumenting your database using
-these primitives can be found
-[here](https://github.com/newrelic/go-agent/blob/master/GUIDE.md#datastore-segments).
+instrumented using the [newrelic](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic/)
+package primitives.
 
 <!---
-NOTE!  When updating the table below, be sure to update the docs site version too:
+NOTE!  When updating the tables below, be sure to update the docs site version too:
 https://docs.newrelic.com/docs/agents/go-agent/get-started/go-agent-compatibility-requirements
 -->
 
+### Service Frameworks
+
 | Project | Integration Package |  |
 | ------------- | ------------- | - |
-| [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) | [_integrations/nrawssdk/v1](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrawssdk/v1) | Instrument outbound calls made using Go AWS SDK |
-| [aws/aws-sdk-go-v2](https://github.com/aws/aws-sdk-go-v2) | [_integrations/nrawssdk/v2](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrawssdk/v2) | Instrument outbound calls made using Go AWS SDK v2 |
-| [labstack/echo](https://github.com/labstack/echo) | [_integrations/nrecho](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrecho) | Instrument inbound requests through the Echo framework |
-| [gin-gonic/gin](https://github.com/gin-gonic/gin) | [_integrations/nrgin/v1](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrgin/v1) | Instrument inbound requests through the Gin framework |
-| [gorilla/mux](https://github.com/gorilla/mux) | [_integrations/nrgorilla/v1](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrgorilla/v1) | Instrument inbound requests through the Gorilla framework |
-| [julienschmidt/httprouter](https://github.com/julienschmidt/httprouter) | [_integrations/nrhttprouter](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrhttprouter) | Instrument inbound requests through the HttpRouter framework |
-| [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go) | [_integrations/nrlambda](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrlambda) | Instrument AWS Lambda applications |
-| [sirupsen/logrus](https://github.com/sirupsen/logrus) | [_integrations/nrlogrus](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrlogrus) | Send agent log messages to Logrus |
-| [mgutz/logxi](https://github.com/mgutz/logxi) | [_integrations/nrlogxi/v1](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrlogxi/v1) | Send agent log messages to Logxi |
-| [uber-go/zap](https://github.com/uber-go/zap) | [_integrations/nrzap](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrzap) | Send agent log messages to Zap |
-| [pkg/errors](https://github.com/pkg/errors) | [_integrations/nrpkgerrors](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrpkgerrors) | Wrap pkg/errors errors to improve stack traces and error class information |
-| [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) | [_integrations/nrmysql](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrmysql) | Instrument MySQL driver |
-| [lib/pq](https://github.com/lib/pq) | [_integrations/nrpq](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrpq) | Instrument PostgreSQL driver |
-| [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) | [_integrations/nrsqlite3](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrsqlite3) | Instrument SQLite driver |
-| [google.golang.org/grpc](https://github.com/grpc/grpc-go) | [_integrations/nrgrpc](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrgrpc) | Instrument gRPC servers and clients |
-| [micro/go-micro](https://github.com/micro/go-micro) | [_integrations/nrmicro](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrmicro) | Instrument servers, clients, publishers, and subscribers through the Micro framework |
-| [nats-io/nats.go](https://github.com/nats-io/nats.go) | [_integrations/nrnats](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrnats) | Instrument publishers and subscribers using the NATS client |
-| [nats-io/stan.go](https://github.com/nats-io/stan.go) | [_integrations/nrstan](https://godoc.org/github.com/newrelic/go-agent/_integrations/nrstan) | Instrument publishers and subscribers using the NATS streaming client |
+| [gin-gonic/gin](https://github.com/gin-gonic/gin) | [v3/integrations/nrgin](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrgin) | Instrument inbound requests through the Gin framework |
+| [gorilla/mux](https://github.com/gorilla/mux) | [v3/integrations/nrgorilla](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrgorilla) | Instrument inbound requests through the Gorilla framework |
+| [google.golang.org/grpc](https://github.com/grpc/grpc-go) | [v3/integrations/nrgrpc](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrgrpc) | Instrument gRPC servers and clients |
+| [labstack/echo](https://github.com/labstack/echo) | [v3/integrations/nrecho-v3](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrecho-v3) | Instrument inbound requests through version 3 of the Echo framework |
+| [labstack/echo](https://github.com/labstack/echo) | [v3/integrations/nrecho-v4](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrecho-v4) | Instrument inbound requests through version 4 of the Echo framework |
+| [julienschmidt/httprouter](https://github.com/julienschmidt/httprouter) | [v3/integrations/nrhttprouter](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrhttprouter) | Instrument inbound requests through the HttpRouter framework |
+| [micro/go-micro](https://github.com/micro/go-micro) | [v3/integrations/nrmicro](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrmicro) | Instrument servers, clients, publishers, and subscribers through the Micro framework |
+
+### Datastores
+
+More information about instrumenting databases without an integration package
+using [newrelic](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic/)
+package primitives can be found [here](GUIDE.md#datastore-segments).
+
+| Project | Integration Package |  |
+| ------------- | ------------- | - |
+| [lib/pq](https://github.com/lib/pq) | [v3/integrations/nrpq](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrpq) | Instrument PostgreSQL driver |
+| [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) | [v3/integrations/nrmysql](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrmysql) | Instrument MySQL driver |
+| [elastic/go-elasticsearch](https://github.com/elastic/go-elasticsearch) | [v3/integrations/nrelasticsearch-v7](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrelasticsearch-v7) | Instrument Elasticsearch datastore calls |
+| [database/sql](https://godoc.org/database/sql) | Use a supported database driver or [builtin instrumentation](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic#InstrumentSQLConnector) | Instrument database calls with SQL |
+| [jmoiron/sqlx](https://github.com/jmoiron/sqlx) | Use a supported [database driver](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrpq/example/sqlx) or [builtin instrumentation](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic#InstrumentSQLConnector) | Instrument database calls with SQLx |
+| [go-redis/redis](https://github.com/go-redis/redis) | [v3/integrations/nrredis-v7](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrredis-v7) | Instrument Redis calls |
+| [mattn/go-sqlite3](https://github.com/mattn/go-sqlite3) | [v3/integrations/nrsqlite3](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrsqlite3) | Instrument SQLite driver |
+| [snowflakedb/gosnowflake](https://github.com/snowflakedb/gosnowflake) | [v3/integrations/nrsnowflake](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrsnowflake) | Instrument Snowflake driver |
+| [mongodb/mongo-go-driver](https://github.com/mongodb/mongo-go-driver) | [v3/integrations/nrmongo](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrmongo) | Instrument MongoDB calls |
+
+### Logging
+
+| Project | Integration Package |  |
+| ------------- | ------------- | - |
+| [sirupsen/logrus](https://github.com/sirupsen/logrus) | [v3/integrations/nrlogrus](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrlogrus) | Send agent log messages to Logrus |
+| [mgutz/logxi](https://github.com/mgutz/logxi) | [v3/integrations/nrlogxi](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrlogxi) | Send agent log messages to Logxi |
+| [uber-go/zap](https://github.com/uber-go/zap) | [v3/integrations/nrzap](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrzap) | Send agent log messages to Zap |
+
+### AWS
+
+| Project | Integration Package |  |
+| ------------- | ------------- | - |
+| [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go) | [v3/integrations/nrawssdk-v1](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrawssdk-v1) | Instrument outbound calls made using Go AWS SDK |
+| [aws/aws-sdk-go-v2](https://github.com/aws/aws-sdk-go-v2) | [v3/integrations/nrawssdk-v2](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrawssdk-v2) | Instrument outbound calls made using Go AWS SDK v2 |
+| [aws/aws-lambda-go](https://github.com/aws/aws-lambda-go) | [v3/integrations/nrlambda](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrlambda) | Instrument AWS Lambda applications |
+
+### GraphQL
+
+| Project | Integration Package |  |
+| ------------- | ------------- | - |
+| [graph-gophers/graphql-go](https://github.com/graph-gophers/graphql-go) | [v3/integrations/nrgraphgophers](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrgraphgophers) | Instrument inbound requests using graph-gophers/graphql-go |
+| [graphql-go/graphql](https://github.com/graphql-go/graphql) | [v3/integrations/nrgraphqlgo](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrgraphqlgo) | Instrument inbound requests using graphql-go/graphql |
+
+### Misc
+
+| Project | Integration Package |  |
+| ------------- | ------------- | - |
+| [pkg/errors](https://github.com/pkg/errors) | [v3/integrations/nrpkgerrors](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrpkgerrors) | Wrap pkg/errors errors to improve stack traces and error class information |
+| [openzipkin/b3-propagation](https://github.com/openzipkin/b3-propagation) | [v3/integrations/nrb3](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrb3) | Add B3 headers to outgoing requests |
+| [nats-io/nats.go](https://github.com/nats-io/nats.go) | [v3/integrations/nrnats](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrnats) | Instrument publishers and subscribers using the NATS client |
+| [nats-io/stan.go](https://github.com/nats-io/stan.go) | [v3/integrations/nrstan](https://godoc.org/github.com/newrelic/go-agent/v3/integrations/nrstan) | Instrument publishers and subscribers using the NATS streaming client |
 
 
 These integration packages must be imported along
-with the [newrelic](https://godoc.org/github.com/newrelic/go-agent) package, as shown in this
-[nrgin example](https://github.com/newrelic/go-agent/blob/master/_integrations/nrgin/v1/example/main.go).
+with the [newrelic](https://godoc.org/github.com/newrelic/go-agent/v3/newrelic/) package, as shown in this
+[nrgin example](https://github.com/newrelic/go-agent/blob/master/v3/integrations/nrgin/example/main.go).
 
 ## Getting Started
 
@@ -66,16 +110,26 @@ application.
 
 ## Runnable Example
 
-[examples/server/main.go](./examples/server/main.go) is an example that will
-appear as "Example App" in your New Relic applications list.  To run it:
+[v3/examples/server/main.go](v3/examples/server/main.go) is an example that
+will appear as "Example App" in your New Relic applications list.  To run it:
 
 ```
 env NEW_RELIC_LICENSE_KEY=__YOUR_NEW_RELIC_LICENSE_KEY__LICENSE__ \
-    go run examples/server/main.go
+    go run v3/examples/server/main.go
 ```
 
 Some endpoints exposed are [http://localhost:8000/](http://localhost:8000/)
 and [http://localhost:8000/notice_error](http://localhost:8000/notice_error)
+
+## Alternatives
+
+If you are already using another open source solution to gather telemetry data, you may find it easier to use one of our open source exporters to send this data to New Relic:
+
+* OpenTelemetry: [github.com/newrelic/opentelemetry-exporter-go](https://github.com/newrelic/opentelemetry-exporter-go)
+* OpenCensus: [github.com/newrelic/newrelic-opencensus-exporter-go](https://github.com/newrelic/newrelic-opencensus-exporter-go)
+* Prometheus Exporter: [github.com/newrelic/nri-prometheus](https://github.com/newrelic/nri-prometheus)
+* Istio Adapter: [github.com/newrelic/newrelic-istio-adapter](https://github.com/newrelic/newrelic-istio-adapter)
+* Telemetry SDK: [github.com/newrelic/newrelic-telemetry-sdk-go](https://github.com/newrelic/newrelic-telemetry-sdk-go)
 
 ## Support
 
