@@ -15,7 +15,7 @@ func TestSearchRecommendationSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_recommendation", h.handler.SearchRecommendation)
+	router.HandleFunc("/v1/search_recommendation", c.controllers.SearchRecommendation)
 
 	router.ServeHTTP(rr, req)
 
@@ -32,7 +32,7 @@ func TestSearchRecommendationEmpty(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_recommendation", h.handler.SearchRecommendation)
+	router.HandleFunc("/v1/search_recommendation", c.controllers.SearchRecommendation)
 
 	router.ServeHTTP(rr, req)
 
@@ -49,7 +49,7 @@ func TestSearchRecommendationMissingField(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_recommendation", h.handler.SearchRecommendation)
+	router.HandleFunc("/v1/search_recommendation", c.controllers.SearchRecommendation)
 
 	router.ServeHTTP(rr, req)
 
@@ -66,7 +66,7 @@ func TestSearchUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_user", h.handler.SearchUser)
+	router.HandleFunc("/v1/search_user", c.controllers.SearchUser)
 
 	router.ServeHTTP(rr, req)
 
@@ -83,7 +83,7 @@ func TestSearchGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_genre", h.handler.SearchGenre)
+	router.HandleFunc("/v1/search_genre", c.controllers.SearchGenre)
 
 	router.ServeHTTP(rr, req)
 
@@ -100,7 +100,7 @@ func TestSearchKewordSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_keyword", h.handler.SearchKeyword)
+	router.HandleFunc("/v1/search_keyword", c.controllers.SearchKeyword)
 
 	router.ServeHTTP(rr, req)
 
@@ -117,7 +117,7 @@ func TestSearchSourceSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/search_source", h.handler.SearchSource)
+	router.HandleFunc("/v1/search_source", c.controllers.SearchSource)
 
 	router.ServeHTTP(rr, req)
 

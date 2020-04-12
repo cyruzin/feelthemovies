@@ -20,7 +20,7 @@ func TestGetUsersSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/users", h.handler.GetUsers)
+	router.HandleFunc("/v1/users", c.controllers.GetUsers)
 
 	router.ServeHTTP(rr, req)
 
@@ -36,7 +36,7 @@ func TestGetUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/user/{id}", h.handler.GetUser)
+	router.HandleFunc("/v1/user/{id}", c.controllers.GetUser)
 
 	router.ServeHTTP(rr, req)
 
@@ -52,7 +52,7 @@ func TestCreateUserSuccess(t *testing.T) {
 		"password": "qw12erty"
 		}`)
 
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func TestCreateUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/user", h.handler.CreateUser)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/user", c.controllers.CreateUser)
 
 	router.ServeHTTP(rr, req)
 
@@ -82,7 +82,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 		"password": "qw12erty"
 		}`)
 
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +97,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/user/{id}", h.handler.UpdateUser)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/user/{id}", c.controllers.UpdateUser)
 
 	router.ServeHTTP(rr, req)
 
@@ -107,7 +107,7 @@ func TestUpdateUserSuccess(t *testing.T) {
 }
 
 func TestDeleteUserSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,7 +133,7 @@ func TestDeleteUserSuccess(t *testing.T) {
 		VALUES (?, ?, ?, ?, ?, ?)
 	`
 
-	result, err := h.database.Exec(
+	result, err := c.database.Exec(
 		queryUserInsert,
 		newUser.Name,
 		newUser.Email,
@@ -160,7 +160,7 @@ func TestDeleteUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/user/{id}", h.handler.DeleteUser)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/user/{id}", c.controllers.DeleteUser)
 
 	router.ServeHTTP(rr, req)
 

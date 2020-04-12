@@ -10,14 +10,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-// JSONMiddleware set content type for all requests.
-func (s *Setup) JSONMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "Application/json")
-		next.ServeHTTP(w, r)
-	})
-}
-
 // AuthMiddleware checks if the request contains Bearer Token
 // on the headers and if it is valid.
 func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {

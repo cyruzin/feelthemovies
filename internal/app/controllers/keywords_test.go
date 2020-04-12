@@ -20,7 +20,7 @@ func TestGetKeywordsSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/keywords", h.handler.GetKeywords)
+	router.HandleFunc("/v1/keywords", c.controllers.GetKeywords)
 
 	router.ServeHTTP(rr, req)
 
@@ -38,7 +38,7 @@ func TestGetKeywordSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/keyword/{id}", h.handler.GetKeyword)
+	router.HandleFunc("/v1/keyword/{id}", c.controllers.GetKeyword)
 
 	router.ServeHTTP(rr, req)
 
@@ -49,7 +49,7 @@ func TestGetKeywordSuccess(t *testing.T) {
 
 func TestCreateKeywordSuccess(t *testing.T) {
 	var newKeyword = []byte(`{"name":"Tsunami"}`)
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +65,7 @@ func TestCreateKeywordSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/keyword", h.handler.CreateKeyword)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/keyword", c.controllers.CreateKeyword)
 
 	router.ServeHTTP(rr, req)
 
@@ -76,7 +76,7 @@ func TestCreateKeywordSuccess(t *testing.T) {
 
 func TestUpdateKeywordSuccess(t *testing.T) {
 	var newKeyword = []byte(`{"name":"Witness"}`)
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -92,7 +92,7 @@ func TestUpdateKeywordSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/keyword/{id}", h.handler.UpdateKeyword)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/keyword/{id}", c.controllers.UpdateKeyword)
 
 	router.ServeHTTP(rr, req)
 
@@ -102,7 +102,7 @@ func TestUpdateKeywordSuccess(t *testing.T) {
 }
 
 func TestDeleteKeywordSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -115,7 +115,7 @@ func TestDeleteKeywordSuccess(t *testing.T) {
 
 	queryGenreInsert := "INSERT INTO keywords (name, created_at, updated_at) VALUES (?, ?, ?)"
 
-	result, err := h.database.Exec(queryGenreInsert, newKeyword.Name, newKeyword.CreatedAt, newKeyword.UpdatedAt)
+	result, err := c.database.Exec(queryGenreInsert, newKeyword.Name, newKeyword.CreatedAt, newKeyword.UpdatedAt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -132,7 +132,7 @@ func TestDeleteKeywordSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/keyword/{id}", h.handler.DeleteKeyword)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/keyword/{id}", c.controllers.DeleteKeyword)
 
 	req.Header.Add("Authorization", "Bearer "+token)
 

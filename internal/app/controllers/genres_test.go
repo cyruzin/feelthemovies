@@ -22,7 +22,7 @@ func TestGetGenresSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/genres", h.handler.GetGenres)
+	router.HandleFunc("/v1/genres", c.controllers.GetGenres)
 
 	router.ServeHTTP(rr, req)
 
@@ -40,7 +40,7 @@ func TestGetGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/genre/{id}", h.handler.GetGenre)
+	router.HandleFunc("/v1/genre/{id}", c.controllers.GetGenre)
 
 	router.ServeHTTP(rr, req)
 
@@ -52,7 +52,7 @@ func TestGetGenreSuccess(t *testing.T) {
 func TestCreateGenreSuccess(t *testing.T) {
 	var newGenre = []byte(`{"name":"SpongeBob"}`)
 
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre", h.handler.CreateGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre", c.controllers.CreateGenre)
 
 	router.ServeHTTP(rr, req)
 
@@ -77,7 +77,7 @@ func TestCreateGenreSuccess(t *testing.T) {
 
 func TestUpdateGenreSuccess(t *testing.T) {
 	var newGenre = []byte(`{"name":"SquidwardTentacles"}`)
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -93,7 +93,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.handler.UpdateGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre/{id}", c.controllers.UpdateGenre)
 
 	router.ServeHTTP(rr, req)
 
@@ -103,7 +103,7 @@ func TestUpdateGenreSuccess(t *testing.T) {
 }
 
 func TestDeleteGenreSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,7 +116,7 @@ func TestDeleteGenreSuccess(t *testing.T) {
 
 	queryGenreInsert := "INSERT INTO genres (name, created_at, updated_at) VALUES (?, ?, ?)"
 
-	result, err := h.database.Exec(queryGenreInsert, newGenre.Name, newGenre.CreatedAt, newGenre.UpdatedAt)
+	result, err := c.database.Exec(queryGenreInsert, newGenre.Name, newGenre.CreatedAt, newGenre.UpdatedAt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,7 +133,7 @@ func TestDeleteGenreSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.handler.DeleteGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre/{id}", c.controllers.DeleteGenre)
 
 	req.Header.Add("Authorization", "Bearer "+token)
 
@@ -145,7 +145,7 @@ func TestDeleteGenreSuccess(t *testing.T) {
 }
 
 func TestMalformedToken(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 
 	if err != nil {
 		t.Fatal(err)
@@ -159,7 +159,7 @@ func TestMalformedToken(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.handler.DeleteGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre/{id}", c.controllers.DeleteGenre)
 
 	req.Header.Add("Authorization", token)
 
@@ -179,7 +179,7 @@ func TestEmptyToken(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.handler.DeleteGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre/{id}", c.controllers.DeleteGenre)
 
 	req.Header.Add("Authorization", "")
 
@@ -198,7 +198,7 @@ func TestInvalidToken(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/genre/{id}", h.handler.DeleteGenre)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/genre/{id}", c.controllers.DeleteGenre)
 
 	req.Header.Add("Authorization", "Bearer a")
 

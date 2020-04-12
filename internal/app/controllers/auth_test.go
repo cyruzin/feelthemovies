@@ -18,7 +18,7 @@ func TestAuthUserSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/auth", h.handler.AuthUser)
+	router.HandleFunc("/v1/auth", c.controllers.AuthUser)
 
 	router.ServeHTTP(rr, req)
 
@@ -38,7 +38,7 @@ func TestAuthUserFailure(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/auth", h.handler.AuthUser)
+	router.HandleFunc("/v1/auth", c.controllers.AuthUser)
 
 	router.ServeHTTP(rr, req)
 

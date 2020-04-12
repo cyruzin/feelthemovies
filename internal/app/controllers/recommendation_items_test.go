@@ -20,7 +20,7 @@ func TestGetRecommendationItemsSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/recommendation_items/{id}", h.handler.GetRecommendationItems)
+	router.HandleFunc("/v1/recommendation_items/{id}", c.controllers.GetRecommendationItems)
 
 	router.ServeHTTP(rr, req)
 
@@ -36,7 +36,7 @@ func TestGetRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.HandleFunc("/v1/recommendation_item/{id}", h.handler.GetRecommendationItem)
+	router.HandleFunc("/v1/recommendation_item/{id}", c.controllers.GetRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -46,7 +46,7 @@ func TestGetRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestCreateRecommendationItemSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,7 +89,7 @@ func TestCreateRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/recommendation_item", h.handler.CreateRecommendationItem)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/recommendation_item", c.controllers.CreateRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -100,7 +100,7 @@ func TestCreateRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestUpdateRecommendationItemSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -142,7 +142,7 @@ func TestUpdateRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", h.handler.UpdateRecommendationItem)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", c.controllers.UpdateRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -152,7 +152,7 @@ func TestUpdateRecommendationItemSuccess(t *testing.T) {
 }
 
 func TestCreateRecommendationItemFail(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +168,7 @@ func TestCreateRecommendationItemFail(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/recommendation_item", h.handler.CreateRecommendationItem)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/recommendation_item", c.controllers.CreateRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -178,7 +178,7 @@ func TestCreateRecommendationItemFail(t *testing.T) {
 }
 
 func TestUpdateRecommendationItemFail(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -194,7 +194,7 @@ func TestUpdateRecommendationItemFail(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", h.handler.UpdateRecommendationItem)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", c.controllers.UpdateRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -204,7 +204,7 @@ func TestUpdateRecommendationItemFail(t *testing.T) {
 }
 
 func TestDeleteRecommendationItemSuccess(t *testing.T) {
-	token, err := h.handler.GenerateToken(info)
+	token, err := c.controllers.GenerateToken(info)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -252,7 +252,7 @@ func TestDeleteRecommendationItemSuccess(t *testing.T) {
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
-	result, err := h.database.Exec(
+	result, err := c.database.Exec(
 		queryRecommendationItemInsert,
 		request.RecommendationID,
 		request.Name,
@@ -285,7 +285,7 @@ func TestDeleteRecommendationItemSuccess(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 
-	router.With(h.handler.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", h.handler.DeleteRecommendationItem)
+	router.With(c.controllers.AuthMiddleware).HandleFunc("/v1/recommendation_item/{id}", c.controllers.DeleteRecommendationItem)
 
 	router.ServeHTTP(rr, req)
 
@@ -304,7 +304,7 @@ func TestGetRecommendationItemSources(t *testing.T) {
 
 	router.HandleFunc(
 		"/v1/recommendation_item_sources/{id}",
-		h.handler.GetRecommendationItemSources,
+		c.controllers.GetRecommendationItemSources,
 	)
 
 	router.ServeHTTP(rr, req)

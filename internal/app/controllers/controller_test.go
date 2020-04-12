@@ -13,13 +13,14 @@ import (
 	model "github.com/cyruzin/feelthemovies/internal/app/models"
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 	re "github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
 var (
-	h      = initHandlers()
+	c      = initControllers()
 	router = chi.NewRouter()
 	v      *validator.Validate
 	info   = &model.Auth{
@@ -30,15 +31,15 @@ var (
 )
 
 type setupTest struct {
-	handler  *Setup
-	database *sqlx.DB
-	redis    *re.Client
-	logger   *logger.Logger
+	controllers *Setup
+	database    *sqlx.DB
+	redis       *re.Client
+	logger      *logger.Logger
 }
 
 func TestMain(m *testing.M) {
-	router.Use(h.handler.JSONMiddleware)
-	defer tearDownHandlers(h)
+	router.Use(render.SetContentType(render.ContentTypeJSON))
+	defer tearDownControllers(c)
 	os.Exit(m.Run())
 }
 
@@ -90,7 +91,7 @@ func redisConn(logger *logger.Logger) *re.Client {
 	return client
 }
 
-func initHandlers() *setupTest {
+func initControllers() *setupTest {
 	logger, err := logger.Init()
 	if err != nil {
 		panic("Could not initiate the logger: " + err.Error())
@@ -115,10 +116,10 @@ func initHandlers() *setupTest {
 	}
 }
 
-func tearDownHandlers(h *setupTest) {
-	h.database.Close()
-	h.redis.Close()
-	h.logger.Sync()
+func tearDownControllers(c *setupTest) {
+	c.database.Close()
+	c.redis.Close()
+	c.logger.Sync()
 }
 
 func TestSetCache(t *testing.T) {
@@ -131,7 +132,7 @@ func TestSetCache(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
+	if err := c.controllers.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -146,11 +147,11 @@ func TestRemoveCache(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
+	if err := c.controllers.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := h.handler.RemoveCache(ctx, "testKey"); err != nil {
+	if err := c.controllers.RemoveCache(ctx, "testKey"); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -165,13 +166,13 @@ func TestCheckCache(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if err := h.handler.SetCache(ctx, "testKey", &testKey); err != nil {
+	if err := c.controllers.SetCache(ctx, "testKey", &testKey); err != nil {
 		t.Fatal(err)
 	}
 
 	cacheKey := struct{ Name string }{}
 
-	cache, err := h.handler.CheckCache(ctx, "testKey", &cacheKey)
+	cache, err := c.controllers.CheckCache(ctx, "testKey", &cacheKey)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +183,7 @@ func TestCheckCache(t *testing.T) {
 }
 
 func TestIDParse(t *testing.T) {
-	id, err := h.handler.IDParser("1")
+	id, err := c.controllers.IDParser("1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -196,7 +197,7 @@ func TestPageParser(t *testing.T) {
 	params := url.Values{}
 	params["page"] = []string{"1"}
 
-	id, err := h.handler.PageParser(params)
+	id, err := c.controllers.PageParser(params)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -213,9 +214,9 @@ func TestToJSON(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(h.handler.GetRecommendations)
+	handler := http.HandlerFunc(c.controllers.GetRecommendations)
 
 	handler.ServeHTTP(rr, req)
 
-	h.handler.ToJSON(rr, http.StatusOK, &model.Recommendation{})
+	c.controllers.ToJSON(rr, http.StatusOK, &model.Recommendation{})
 }
