@@ -9,7 +9,6 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 )
 
@@ -56,7 +55,7 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashPass, err := helper.HashPassword(request.Password, 10)
+	hashPass, err := s.HashPassword(request.Password, 10)
 	if err != nil {
 		errhandler.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
@@ -97,7 +96,7 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashPass, err := helper.HashPassword(request.Password, 10)
+	hashPass, err := s.HashPassword(request.Password, 10)
 	if err != nil {
 		errhandler.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return

@@ -8,7 +8,6 @@ import (
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -35,7 +34,7 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if checkPassword := helper.CheckPasswordHash(request.Password, dbPassword); !checkPassword {
+	if checkPassword := s.CheckPasswordHash(request.Password, dbPassword); !checkPassword {
 		errhandler.DecodeError(w, r, s.logger, errUnauthorized, http.StatusUnauthorized)
 		return
 	}
