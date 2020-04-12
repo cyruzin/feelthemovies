@@ -4,7 +4,8 @@ import (
 	"net/http"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
+	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 	"github.com/cyruzin/tome"
 )
 
@@ -12,7 +13,7 @@ import (
 func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		errhandler.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
 
@@ -21,7 +22,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	if err := s.validator.VarCtx(ctx, query, "required"); err != nil {
-		helper.SearchValidatorMessage(w)
+		validation.SearchValidatorMessage(w)
 		return
 	}
 
@@ -31,7 +32,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	cache, err := s.CheckCache(ctx, redisKey, &recommendationCache)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errUnmarshal, http.StatusInternalServerError)
 		return
 	}
 
@@ -43,7 +44,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 	total, err := s.model.GetSearchRecommendationTotalRows(ctx, query)
 
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetchRows, http.StatusInternalServerError)
 		return
 	}
 
@@ -54,20 +55,20 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	newPage, err := s.PageParser(params)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	chapter := tome.Chapter{NewPage: newPage, TotalResults: total}
 
 	if err := chapter.Paginate(); err != nil {
-		helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	result, err := s.model.SearchRecommendation(ctx, chapter.Offset, chapter.Limit, query)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 
@@ -75,7 +76,7 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 
 	err = s.SetCache(ctx, redisKey, &recommendation)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errKeySet, http.StatusInternalServerError)
 		return
 	}
 
@@ -86,20 +87,20 @@ func (s *Setup) SearchRecommendation(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		errhandler.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
-		helper.SearchValidatorMessage(w)
+		validation.SearchValidatorMessage(w)
 		return
 	}
 
 	search, err := s.model.SearchUser(ctx, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 
@@ -110,20 +111,20 @@ func (s *Setup) SearchUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		errhandler.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
-		helper.SearchValidatorMessage(w)
+		validation.SearchValidatorMessage(w)
 		return
 	}
 
 	search, err := s.model.SearchGenre(ctx, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 
@@ -134,20 +135,20 @@ func (s *Setup) SearchGenre(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		errhandler.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
-		helper.SearchValidatorMessage(w)
+		validation.SearchValidatorMessage(w)
 		return
 	}
 
 	search, err := s.model.SearchKeyword(ctx, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 
@@ -158,20 +159,20 @@ func (s *Setup) SearchKeyword(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) SearchSource(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	if len(params) == 0 {
-		helper.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
+		errhandler.DecodeError(w, r, s.logger, errQueryField, http.StatusBadRequest)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.VarCtx(ctx, params["query"][0], "required"); err != nil {
-		helper.SearchValidatorMessage(w)
+		validation.SearchValidatorMessage(w)
 		return
 	}
 
 	search, err := s.model.SearchSource(ctx, params["query"][0])
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errSearch, http.StatusInternalServerError)
 		return
 	}
 

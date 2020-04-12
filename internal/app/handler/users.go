@@ -8,14 +8,16 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 )
 
 // GetUsers get all users.
 func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := s.model.GetUsers(r.Context())
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -26,13 +28,13 @@ func (s *Setup) GetUsers(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	user, err := s.model.GetUser(r.Context(), id)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -43,20 +45,20 @@ func (s *Setup) GetUser(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 	request := model.User{}
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, request); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
 	hashPass, err := helper.HashPassword(request.Password, 10)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
 
@@ -73,31 +75,31 @@ func (s *Setup) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = s.model.CreateUser(ctx, &user)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "User created successfully!"})
+	s.ToJSON(w, http.StatusCreated, &errhandler.APIMessage{Message: "User created successfully!"})
 }
 
 // UpdateUser updates a user.
 func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	request := model.User{}
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, request); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
 	hashPass, err := helper.HashPassword(request.Password, 10)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errPassHash, http.StatusInternalServerError)
 		return
 	}
 
@@ -113,31 +115,31 @@ func (s *Setup) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	err = s.model.UpdateUser(ctx, id, &user)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "User updated successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "User updated successfully!"})
 }
 
 // DeleteUser deletes a user.
 func (s *Setup) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	if err := s.model.DeleteUser(r.Context(), id); err != nil {
-		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "User deleted successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "User deleted successfully!"})
 }

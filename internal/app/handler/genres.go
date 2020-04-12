@@ -7,7 +7,8 @@ import (
 
 	"github.com/go-chi/chi"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
+	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
 )
@@ -16,7 +17,7 @@ import (
 func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 	genres, err := s.model.GetGenres(r.Context(), 20)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -27,13 +28,13 @@ func (s *Setup) GetGenres(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	genre, err := s.model.GetGenre(r.Context(), id)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -46,14 +47,14 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, genre); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
@@ -62,11 +63,11 @@ func (s *Setup) CreateGenre(w http.ResponseWriter, r *http.Request) {
 
 	err = s.model.CreateGenre(ctx, &genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "Genre created successfully!"})
+	s.ToJSON(w, http.StatusCreated, &errhandler.APIMessage{Message: "Genre created successfully!"})
 }
 
 // UpdateGenre updates a genre.
@@ -75,14 +76,14 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, genre); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
@@ -90,31 +91,31 @@ func (s *Setup) UpdateGenre(w http.ResponseWriter, r *http.Request) {
 
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	err = s.model.UpdateGenre(ctx, id, &genre)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre updated successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "Genre updated successfully!"})
 }
 
 // DeleteGenre deletes a genre.
 func (s *Setup) DeleteGenre(w http.ResponseWriter, r *http.Request) {
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	if err := s.model.DeleteGenre(r.Context(), id); err != nil {
-		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Genre deleted successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "Genre deleted successfully!"})
 }

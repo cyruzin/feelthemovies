@@ -9,14 +9,14 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"github.com/go-redis/redis"
 	jsoniter "github.com/json-iterator/go"
+	"golang.org/x/crypto/bcrypt"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
+var json = jsoniter.ConfigFastest
 
 // Redis expiration time.
 const redisTimeout = time.Duration(5 * time.Minute)
@@ -72,7 +72,7 @@ func NewHandler(
 func (s *Setup) CheckCache(ctx context.Context, key string, dest interface{}) (bool, error) {
 	cacheValue, _ := s.redis.WithContext(ctx).Get(key).Result()
 	if cacheValue != "" {
-		if err := helper.UnmarshalBinary([]byte(cacheValue), dest); err != nil {
+		if err := s.UnmarshalBinary([]byte(cacheValue), dest); err != nil {
 			return false, err
 		}
 		return true, nil
@@ -83,7 +83,7 @@ func (s *Setup) CheckCache(ctx context.Context, key string, dest interface{}) (b
 
 // SetCache sets the given key in cache.
 func (s *Setup) SetCache(ctx context.Context, key string, dest interface{}) error {
-	cacheValue, err := helper.MarshalBinary(dest)
+	cacheValue, err := s.MarshalBinary(dest)
 	if err != nil {
 		return err
 	}
@@ -163,4 +163,41 @@ func (s *Setup) ToJSON(
 ) {
 	w.WriteHeader(httpStatus)
 	json.NewEncoder(w).Encode(dest)
+}
+
+// MarshalBinary is a implementation of BinaryMarshaler interface.
+func (s *Setup) MarshalBinary(d interface{}) ([]byte, error) {
+	data, err := json.Marshal(d)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+// UnmarshalBinary is a implementation of BinaryUnmarshaler interface.
+func (s *Setup) UnmarshalBinary(d []byte, v interface{}) error {
+	err := json.Unmarshal(d, &v)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// HashPassword encrypts a given password using bcrypt algorithm.
+func (s *Setup) HashPassword(password string, cost int) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
+}
+
+// CheckPasswordHash checks if the given passwords matches.
+func (s *Setup) CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	return err == nil
 }

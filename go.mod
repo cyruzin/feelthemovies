@@ -1,6 +1,6 @@
 module github.com/cyruzin/feelthemovies
 
-go 1.13.1
+go 1.14
 
 require (
 	github.com/InVisionApp/go-health v2.1.0+incompatible
@@ -35,6 +35,7 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
 	google.golang.org/appengine v1.6.4 // indirect
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0
 )

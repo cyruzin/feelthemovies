@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
+	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
 	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -16,37 +18,37 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 	request := model.Auth{}
 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, request); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
 	dbPassword, err := s.model.Authenticate(ctx, request.Email)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errAuth, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errAuth, http.StatusInternalServerError)
 		return
 	}
 
 	if checkPassword := helper.CheckPasswordHash(request.Password, dbPassword); !checkPassword {
-		helper.DecodeError(w, r, s.logger, errUnauthorized, http.StatusUnauthorized)
+		errhandler.DecodeError(w, r, s.logger, errUnauthorized, http.StatusUnauthorized)
 		return
 	}
 
 	authenticationInfo, err := s.model.GetAuthenticationInfo(ctx, request.Email)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
 	token, err := s.GenerateToken(authenticationInfo)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

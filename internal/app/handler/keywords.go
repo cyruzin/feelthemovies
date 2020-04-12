@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cyruzin/feelthemovies/internal/pkg/helper"
+	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
+	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
 	"github.com/go-chi/chi"
 
 	"github.com/cyruzin/feelthemovies/internal/app/model"
@@ -14,7 +15,7 @@ import (
 func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 	keywords, err := s.model.GetKeywords(r.Context(), 20)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -25,13 +26,13 @@ func (s *Setup) GetKeywords(w http.ResponseWriter, r *http.Request) {
 func (s *Setup) GetKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	keyword, err := s.model.GetKeyword(r.Context(), id)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errFetch, http.StatusInternalServerError)
 		return
 	}
 
@@ -44,14 +45,14 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, keyword); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 		return
 	}
 
@@ -60,11 +61,11 @@ func (s *Setup) CreateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err = s.model.CreateKeyword(ctx, &keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errCreate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusCreated, &helper.APIMessage{Message: "Keyword created successfully!"})
+	s.ToJSON(w, http.StatusCreated, &errhandler.APIMessage{Message: "Keyword created successfully!"})
 }
 
 // UpdateKeyword updates a keyword.
@@ -73,45 +74,45 @@ func (s *Setup) UpdateKeyword(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDecode, http.StatusInternalServerError)
 		return
 	}
 
 	ctx := r.Context()
 
 	if err := s.validator.StructCtx(ctx, keyword); err != nil {
-		helper.ValidatorMessage(w, err)
+		validation.ValidatorMessage(w, err)
 	}
 
 	keyword.UpdatedAt = time.Now()
 
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	err = s.model.UpdateKeyword(ctx, id, &keyword)
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errUpdate, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Keyword updated successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "Keyword updated successfully!"})
 }
 
 // DeleteKeyword deletes a keyword.
 func (s *Setup) DeleteKeyword(w http.ResponseWriter, r *http.Request) {
 	id, err := s.IDParser(chi.URLParam(r, "id"))
 	if err != nil {
-		helper.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errParseInt, http.StatusInternalServerError)
 		return
 	}
 
 	if err := s.model.DeleteKeyword(r.Context(), id); err != nil {
-		helper.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
+		errhandler.DecodeError(w, r, s.logger, errDelete, http.StatusInternalServerError)
 		return
 	}
 
-	s.ToJSON(w, http.StatusOK, &helper.APIMessage{Message: "Keyword deleted successfully!"})
+	s.ToJSON(w, http.StatusOK, &errhandler.APIMessage{Message: "Keyword deleted successfully!"})
 }
