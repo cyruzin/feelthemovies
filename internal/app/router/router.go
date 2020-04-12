@@ -48,6 +48,7 @@ func New(
 			start := time.Now()
 
 			logger.Infow(
+				"router_logging",
 				"method", r.Method,
 				"url", r.URL.String(),
 				"agent", r.UserAgent(),
