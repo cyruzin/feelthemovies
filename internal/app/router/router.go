@@ -2,12 +2,12 @@ package router
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/controllers"
+	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
 	"github.com/go-chi/cors"
 
 	"github.com/go-chi/chi"
@@ -16,8 +16,11 @@ import (
 )
 
 // New has all routes setup with CORS and middlewares.
-func New(c *controllers.Setup, healthHandler http.Handler) *chi.Mux {
-	r := chi.NewRouter()
+func New(
+	c *controllers.Setup,
+	healthHandler http.Handler,
+	logger *logger.Logger) *chi.Mux {
+	router := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -39,22 +42,26 @@ func New(c *controllers.Setup, healthHandler http.Handler) *chi.Mux {
 		MaxAge:           300,
 	})
 
-	r.Use(cors.Handler)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Timeout(60 * time.Second))
+	router.Use(cors.Handler)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Timeout(60 * time.Second))
 
-	authRoutes(r, c)
-	publicRoutes(r, c)
-	r.Handle("/healthcheck", healthHandler)
+	authRoutes(router, c)
+	publicRoutes(router, c, logger)
+	router.Handle("/healthcheck", healthHandler)
 
-	return r
+	return router
 }
 
 // Public routes.
-func publicRoutes(r *chi.Mux, c *controllers.Setup) {
-	app, err := newRelicApp()
+func publicRoutes(
+	r *chi.Mux,
+	c *controllers.Setup,
+	logger *logger.Logger,
+) {
+	app, err := newRelicApp(logger)
 	if err != nil {
-		log.Println(err)
+		logger.Warn(err)
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +92,10 @@ func publicRoutes(r *chi.Mux, c *controllers.Setup) {
 }
 
 // Auth routes.
-func authRoutes(r *chi.Mux, c *controllers.Setup) {
+func authRoutes(
+	r *chi.Mux,
+	c *controllers.Setup,
+) {
 	r.Group(func(r chi.Router) {
 		r.Use(c.AuthMiddleware)
 
@@ -124,7 +134,7 @@ func authRoutes(r *chi.Mux, c *controllers.Setup) {
 }
 
 // New Relic Application instance.
-func newRelicApp() (newrelic.Application, error) {
+func newRelicApp(logger *logger.Logger) (newrelic.Application, error) {
 	config := newrelic.NewConfig("Feel the Movies", os.Getenv("NEWRELICKEY"))
 
 	app, err := newrelic.NewApplication(config)
@@ -136,7 +146,7 @@ func newRelicApp() (newrelic.Application, error) {
 		return nil, errors.New("Could not connect to New Relic server")
 	}
 
-	log.Println("New Relic: Connection OK.")
+	logger.Info("New Relic: Connection OK.")
 
 	return app, nil
 }

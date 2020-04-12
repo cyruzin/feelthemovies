@@ -3,9 +3,9 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
+	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -46,7 +46,11 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 			}
-			return []byte(os.Getenv("JWTSECRET")), nil
+			cfg, err := config.Load()
+			if err != nil {
+				return nil, err
+			}
+			return []byte(cfg.JWTSecret), nil
 		})
 
 		// Returning parsing errors.

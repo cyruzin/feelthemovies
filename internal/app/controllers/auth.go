@@ -3,9 +3,9 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"os"
 	"time"
 
+	"github.com/cyruzin/feelthemovies/internal/app/config"
 	model "github.com/cyruzin/feelthemovies/internal/app/models"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
 	"github.com/cyruzin/feelthemovies/internal/pkg/validation"
@@ -58,7 +58,12 @@ func (s *Setup) AuthUser(w http.ResponseWriter, r *http.Request) {
 
 // GenerateToken generates a new JWT Token.
 func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
-	secret := []byte(os.Getenv("JWTSECRET"))
+	cfg, err := config.Load()
+	if err != nil {
+		return "", err
+	}
+
+	secret := []byte(cfg.JWTSecret)
 
 	var claims model.AuthClaims
 
@@ -67,7 +72,7 @@ func (s *Setup) GenerateToken(info *model.Auth) (string, error) {
 	claims.Email = info.Email
 	claims.StandardClaims = jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
-		Issuer:    "Feel the Movies",
+		Issuer:    cfg.AppName,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

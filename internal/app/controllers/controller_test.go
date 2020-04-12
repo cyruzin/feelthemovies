@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -39,14 +38,14 @@ type setupTest struct {
 
 func TestMain(m *testing.M) {
 	router.Use(h.handler.JSONMiddleware)
-	defer tearDownHandlers(h) // Closing connections.
+	defer tearDownHandlers(h)
 	os.Exit(m.Run())
 }
 
-func databaseConn() *sqlx.DB {
-	cfg, err := config.Load() // Loading environment variables.
+func databaseConn(logger *logger.Logger) *sqlx.DB {
+	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal(err.Error())
+		logger.Fatal(err.Error())
 	}
 
 	url := fmt.Sprintf(
@@ -57,22 +56,22 @@ func databaseConn() *sqlx.DB {
 
 	db, err := sqlx.Connect("mysql", url)
 	if err != nil {
-		log.Fatal("Could not open connection to MySQL: ", err)
+		logger.Fatal("Could not open connection to MySQL: ", err)
 	}
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Could not connect to MySQL: ", err)
+		logger.Fatal("Could not connect to MySQL: ", err)
 	}
 
-	log.Println("MySQL: Connection OK.")
+	logger.Info("MySQL: Connection OK.")
 	return db
 }
 
-func redisConn() *re.Client {
-	cfg, err := config.Load() // Loading environment variables.
+func redisConn(logger *logger.Logger) *re.Client {
+	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal(err.Error())
+		logger.Fatal(err.Error())
 	}
 
 	client := re.NewClient(&re.Options{
@@ -83,36 +82,36 @@ func redisConn() *re.Client {
 
 	_, err = client.Ping().Result()
 	if err != nil {
-		log.Fatal("Could not open connection to Redis: ", err)
+		logger.Fatal("Could not open connection to Redis: ", err)
 	}
 
-	log.Println("Redis: Connection OK.")
+	logger.Info("Redis: Connection OK.")
 
 	return client
 }
 
 func initHandlers() *setupTest {
-	loggerInstance, err := logger.Init()
+	logger, err := logger.Init()
 	if err != nil {
-		loggerInstance.Fatal("Could not initiate the logger: " + err.Error())
+		panic("Could not initiate the logger: " + err.Error())
 	}
 
-	databaseInstance := databaseConn()
-	redisInstance := redisConn()
-	modelInstance := model.New(databaseInstance)
-	validatorInstance := validator.New()
-	controllersInstance := New(
-		modelInstance,
-		redisInstance,
-		validatorInstance,
-		loggerInstance,
+	database := databaseConn(logger)
+	redis := redisConn(logger)
+	model := model.New(database)
+	validator := validator.New()
+	controllers := New(
+		model,
+		redis,
+		validator,
+		logger,
 	)
 
 	return &setupTest{
-		controllersInstance,
-		databaseInstance,
-		redisInstance,
-		loggerInstance,
+		controllers,
+		database,
+		redis,
+		logger,
 	}
 }
 

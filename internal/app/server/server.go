@@ -28,14 +28,14 @@ var v *validator.Validate
 
 // New initiates the server.
 func New(ctx context.Context) {
+	cfg, err := config.Load()
+	if err != nil {
+		panic(err.Error())
+	}
+
 	logger, err := logger.Init()
 	if err != nil {
 		panic("Could not initiate the logger: " + err.Error())
-	}
-
-	cfg, err := config.Load()
-	if err != nil {
-		logger.Error(err.Error())
 	}
 
 	database := database(ctx, cfg, logger)
@@ -61,6 +61,7 @@ func New(ctx context.Context) {
 	r := router.New(
 		controllers,
 		handlers.NewJSONHandlerFunc(healthCheck, nil),
+		logger,
 	)
 
 	srv := &http.Server{
@@ -145,7 +146,10 @@ func redis(
 }
 
 // healthChecks checks the services health periodically.
-func healthChecks(cfg *config.Config, db *sqlx.DB) (*health.Health, error) {
+func healthChecks(
+	cfg *config.Config,
+	db *sqlx.DB,
+) (*health.Health, error) {
 	h := health.New()
 	h.DisableLogging()
 
@@ -156,14 +160,15 @@ func healthChecks(cfg *config.Config, db *sqlx.DB) (*health.Health, error) {
 		return nil, err
 	}
 
-	redisDB, err := redisCheck.NewRedis(&redisCheck.RedisConfig{
-		Auth: &redisCheck.RedisAuthConfig{
-			Addr:     cfg.RedisAddress,
-			Password: cfg.RedisPass,
-			DB:       0,
-		},
-		Ping: true,
-	})
+	redisDB, err := redisCheck.NewRedis(
+		&redisCheck.RedisConfig{
+			Auth: &redisCheck.RedisAuthConfig{
+				Addr:     cfg.RedisAddress,
+				Password: cfg.RedisPass,
+				DB:       0,
+			},
+			Ping: true,
+		})
 	if err != nil {
 		return nil, err
 	}
