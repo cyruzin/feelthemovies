@@ -15,14 +15,6 @@ import (
 	"github.com/newrelic/go-agent/internal/logger"
 )
 
-var (
-	// NEW_RELIC_DEBUG_LOGGING can be set to anything to enable additional
-	// debug logging: the agent will log every transaction's data at info
-	// level.
-	envDebugLogging = "NEW_RELIC_DEBUG_LOGGING"
-	debugLogging    = os.Getenv(envDebugLogging)
-)
-
 type dataConsumer interface {
 	Consume(internal.AgentRunID, internal.Harvestable)
 }
@@ -74,7 +66,7 @@ type app struct {
 }
 
 func (app *app) doHarvest(h *internal.Harvest, harvestStart time.Time, run *appRun) {
-	h.CreateFinalMetrics(run.Reply)
+	h.CreateFinalMetrics(run.Reply, run)
 
 	payloads := h.Payloads(app.config.DistributedTracer.Enabled)
 	for _, p := range payloads {
@@ -170,31 +162,6 @@ func getConnectBackoffTime(attempt int) int {
 	return connectBackoffTimes[attempt]
 }
 
-func debug(data internal.Harvestable, lg Logger) {
-	now := time.Now()
-	h := internal.NewHarvest(now, nil)
-	data.MergeIntoHarvest(h)
-	ps := h.Payloads(false)
-	for _, p := range ps {
-		cmd := p.EndpointMethod()
-		d, err := p.Data("agent run id", now)
-		if nil == d && nil == err {
-			continue
-		}
-		if nil != err {
-			lg.Info("integration", map[string]interface{}{
-				"cmd":   cmd,
-				"error": err.Error(),
-			})
-			continue
-		}
-		lg.Info("integration", map[string]interface{}{
-			"cmd":  cmd,
-			"data": internal.JSONString(d),
-		})
-	}
-}
-
 func processConnectMessages(run *appRun, lg Logger) {
 	for _, msg := range run.Reply.Messages {
 		event := "collector message"
@@ -227,7 +194,7 @@ func (app *app) process() {
 		case <-harvestTicker.C:
 			if nil != run {
 				now := time.Now()
-				if ready := h.Ready(now, run.Reply); nil != ready {
+				if ready := h.Ready(now); nil != ready {
 					go app.doHarvest(ready, now, run)
 				}
 			}
@@ -275,7 +242,7 @@ func (app *app) process() {
 				go app.connectRoutine()
 			}
 		case run = <-app.connectChan:
-			h = internal.NewHarvest(time.Now(), run.Reply)
+			h = internal.NewHarvest(time.Now(), run)
 			app.setState(run, nil)
 
 			app.Info("application connected", map[string]interface{}{
@@ -425,7 +392,7 @@ func (app *app) HarvestTesting(replyfn func(*internal.ConnectReply)) {
 		replyfn(reply)
 		app.placeholderRun = newAppRun(app.config, reply)
 	}
-	app.testHarvest = internal.NewHarvest(time.Now(), nil)
+	app.testHarvest = internal.NewHarvest(time.Now(), &internal.DfltHarvestCfgr{})
 }
 
 func (app *app) getState() (*appRun, error) {
@@ -536,9 +503,6 @@ func (app *app) ServerlessWrite(arn string, writer io.Writer) {
 }
 
 func (app *app) Consume(id internal.AgentRunID, data internal.Harvestable) {
-	if "" != debugLogging {
-		debug(data, app)
-	}
 
 	app.serverless.Consume(data)
 

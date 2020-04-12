@@ -80,6 +80,7 @@ type TxnData struct {
 	customSegments    map[string]*metricData
 	datastoreSegments map[DatastoreMetricKey]*metricData
 	externalSegments  map[externalMetricKey]*metricData
+	messageSegments   map[MessageMetricKey]*metricData
 
 	TxnTrace
 
@@ -277,7 +278,7 @@ func (t *TxnData) CurrentSpanIdentifier(thread *Thread) string {
 
 func (t *TxnData) saveSpanEvent(e *SpanEvent) {
 	e.Attributes = t.Attrs.filterSpanAttributes(e.Attributes, destSpan)
-	if len(t.spanEvents) < maxSpanEvents {
+	if len(t.spanEvents) < MaxSpanEvents {
 		t.spanEvents = append(t.spanEvents, e)
 	}
 }
@@ -479,6 +480,62 @@ func EndExternalSegment(p EndExternalParams) error {
 			evt.Attributes.addString(spanAttributeHTTPURL, SafeURL(p.URL))
 			evt.Attributes.addString(spanAttributeHTTPMethod, p.Method)
 		}
+		t.saveSpanEvent(evt)
+	}
+
+	return nil
+}
+
+// EndMessageParams contains the parameters for EndMessageSegment.
+type EndMessageParams struct {
+	TxnData         *TxnData
+	Thread          *Thread
+	Start           SegmentStartTime
+	Now             time.Time
+	Logger          logger.Logger
+	DestinationName string
+	Library         string
+	DestinationType string
+	DestinationTemp bool
+}
+
+// EndMessageSegment ends an external segment.
+func EndMessageSegment(p EndMessageParams) error {
+	t := p.TxnData
+	end, err := endSegment(t, p.Thread, p.Start, p.Now)
+	if nil != err {
+		return err
+	}
+
+	key := MessageMetricKey{
+		Library:         p.Library,
+		DestinationType: p.DestinationType,
+		DestinationName: p.DestinationName,
+		DestinationTemp: p.DestinationTemp,
+	}
+
+	if nil == t.messageSegments {
+		t.messageSegments = make(map[MessageMetricKey]*metricData)
+	}
+	m := metricDataFromDuration(end.duration, end.exclusive)
+	if data, ok := t.messageSegments[key]; ok {
+		data.aggregate(m)
+	} else {
+		// Use `new` in place of &m so that m is not
+		// automatically moved to the heap.
+		cpy := new(metricData)
+		*cpy = m
+		t.messageSegments[key] = cpy
+	}
+
+	if t.TxnTrace.considerNode(end) {
+		attributes := end.attributes.copy()
+		t.saveTraceSegment(end, key.Name(), attributes, "")
+	}
+
+	if evt := end.spanEvent(); evt != nil {
+		evt.Name = key.Name()
+		evt.Category = spanCategoryGeneric
 		t.saveSpanEvent(evt)
 	}
 
@@ -701,5 +758,11 @@ func MergeBreakdownMetrics(t *TxnData, metrics *metricTable) {
 		} else {
 			metrics.add(operation, scope, *data, unforced)
 		}
+	}
+	// Message Segment Metrics
+	for key, data := range t.messageSegments {
+		metric := key.Name()
+		metrics.add(metric, scope, *data, unforced)
+		metrics.add(metric, "", *data, unforced)
 	}
 }

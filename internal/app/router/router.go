@@ -7,16 +7,16 @@ import (
 	"os"
 	"time"
 
+	"github.com/cyruzin/feelthemovies/internal/app/controllers"
 	"github.com/go-chi/cors"
 
-	"github.com/cyruzin/feelthemovies/internal/app/handler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	newrelic "github.com/newrelic/go-agent"
 )
 
-// NewRouter has all routes setup with CORS and middlewares.
-func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
+// New has all routes setup with CORS and middlewares.
+func New(c *controllers.Setup, healthHandler http.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
@@ -43,93 +43,83 @@ func NewRouter(h *handler.Setup, healthHandler http.Handler) *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	authRoutes(r, h)                        // Auth routes.
-	publicRoutes(r, h)                      // Public routes.
-	r.Handle("/healthcheck", healthHandler) // Health check route.
+	authRoutes(r, c)
+	publicRoutes(r, c)
+	r.Handle("/healthcheck", healthHandler)
 
 	return r
 }
 
 // Public routes.
-func publicRoutes(r *chi.Mux, h *handler.Setup) {
+func publicRoutes(r *chi.Mux, c *controllers.Setup) {
 	app, err := newRelicApp()
 	if err != nil {
 		log.Println(err)
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`
-		 
- 		 ____        __  __  __         __  ___         _               ___ ___ 
-		/ __/__ ___ / / / /_/ /  ___   /  |/  /__ _  __(_)__ ___   _  _<  // _ \
-	   / _// -_) -_) / / __/ _ \/ -_) / /|_/ / _ \ |/ / / -_|_-<  | |/ / // // /
-	  /_/  \__/\__/_/  \__/_//_/\__/ /_/  /_/\___/___/_/\__/___/  |___/_(_)___/ 
-																				
-	  
-	  
-	  https://github.com/cyruzin/feelthemovies
-		`))
-	}) // Initial page.
+		w.Write([]byte("https://github.com/cyruzin/feelthemovies"))
+	})
 
-	r.Post("/auth", h.AuthUser) // Authentication end-point.
+	r.Post("/auth", c.AuthUser)
 
-	r.Get(newrelic.WrapHandleFunc(app, "/v1/recommendations", h.GetRecommendations))
-	r.Get("/v1/recommendation/{id}", h.GetRecommendation)
+	r.Get(newrelic.WrapHandleFunc(app, "/v1/recommendations", c.GetRecommendations))
+	r.Get("/v1/recommendation/{id}", c.GetRecommendation)
 
-	r.Get(newrelic.WrapHandleFunc(app, "/v1/recommendation_items/{id}", h.GetRecommendationItems))
-	r.Get("/v1/recommendation_item/{id}", h.GetRecommendationItem)
+	r.Get(newrelic.WrapHandleFunc(app, "/v1/recommendation_items/{id}", c.GetRecommendationItems))
+	r.Get("/v1/recommendation_item/{id}", c.GetRecommendationItem)
 
-	r.Get("/v1/genres", h.GetGenres)
-	r.Get("/v1/genre/{id}", h.GetGenre)
+	r.Get("/v1/genres", c.GetGenres)
+	r.Get("/v1/genre/{id}", c.GetGenre)
 
-	r.Get("/v1/keywords", h.GetKeywords)
-	r.Get("/v1/keyword/{id}", h.GetKeyword)
+	r.Get("/v1/keywords", c.GetKeywords)
+	r.Get("/v1/keyword/{id}", c.GetKeyword)
 
-	r.Get("/v1/sources", h.GetSources)
-	r.Get("/v1/source/{id}", h.GetSource)
+	r.Get("/v1/sources", c.GetSources)
+	r.Get("/v1/source/{id}", c.GetSource)
 
-	r.Get(newrelic.WrapHandleFunc(app, "/v1/search_recommendation", h.SearchRecommendation))
-	r.Get("/v1/search_genre", h.SearchGenre)
-	r.Get("/v1/search_keyword", h.SearchKeyword)
-	r.Get("/v1/search_source", h.SearchSource)
+	r.Get(newrelic.WrapHandleFunc(app, "/v1/search_recommendation", c.SearchRecommendation))
+	r.Get("/v1/search_genre", c.SearchGenre)
+	r.Get("/v1/search_keyword", c.SearchKeyword)
+	r.Get("/v1/search_source", c.SearchSource)
 }
 
 // Auth routes.
-func authRoutes(r *chi.Mux, h *handler.Setup) {
+func authRoutes(r *chi.Mux, c *controllers.Setup) {
 	r.Group(func(r chi.Router) {
-		r.Use(h.AuthMiddleware) // Authentication Middleware.
+		r.Use(c.AuthMiddleware)
 
-		r.Get("/v1/users", h.GetUsers)
-		r.Get("/v1/user/{id}", h.GetUser)
-		r.Post("/v1/user", h.CreateUser)
-		r.Put("/v1/user/{id}", h.UpdateUser)
-		r.Delete("/v1/user/{id}", h.DeleteUser)
+		r.Get("/v1/users", c.GetUsers)
+		r.Get("/v1/user/{id}", c.GetUser)
+		r.Post("/v1/user", c.CreateUser)
+		r.Put("/v1/user/{id}", c.UpdateUser)
+		r.Delete("/v1/user/{id}", c.DeleteUser)
 
-		r.Get("/v1/recommendations_admin", h.GetRecommendationsAdmin)
-		r.Get("/v1/recommendation_genres/{id}", h.GetRecommendationGenres)
-		r.Get("/v1/recommendation_keywords/{id}", h.GetRecommendationKeywords)
-		r.Post("/v1/recommendation", h.CreateRecommendation)
-		r.Put("/v1/recommendation/{id}", h.UpdateRecommendation)
-		r.Delete("/v1/recommendation/{id}", h.DeleteRecommendation)
+		r.Get("/v1/recommendations_admin", c.GetRecommendationsAdmin)
+		r.Get("/v1/recommendation_genres/{id}", c.GetRecommendationGenres)
+		r.Get("/v1/recommendation_keywords/{id}", c.GetRecommendationKeywords)
+		r.Post("/v1/recommendation", c.CreateRecommendation)
+		r.Put("/v1/recommendation/{id}", c.UpdateRecommendation)
+		r.Delete("/v1/recommendation/{id}", c.DeleteRecommendation)
 
-		r.Get("/v1/recommendation_item_sources/{id}", h.GetRecommendationItemSources)
-		r.Post("/v1/recommendation_item", h.CreateRecommendationItem)
-		r.Put("/v1/recommendation_item/{id}", h.UpdateRecommendationItem)
-		r.Delete("/v1/recommendation_item/{id}", h.DeleteRecommendationItem)
+		r.Get("/v1/recommendation_item_sources/{id}", c.GetRecommendationItemSources)
+		r.Post("/v1/recommendation_item", c.CreateRecommendationItem)
+		r.Put("/v1/recommendation_item/{id}", c.UpdateRecommendationItem)
+		r.Delete("/v1/recommendation_item/{id}", c.DeleteRecommendationItem)
 
-		r.Post("/v1/genre", h.CreateGenre)
-		r.Put("/v1/genre/{id}", h.UpdateGenre)
-		r.Delete("/v1/genre/{id}", h.DeleteGenre)
+		r.Post("/v1/genre", c.CreateGenre)
+		r.Put("/v1/genre/{id}", c.UpdateGenre)
+		r.Delete("/v1/genre/{id}", c.DeleteGenre)
 
-		r.Post("/v1/keyword", h.CreateKeyword)
-		r.Put("/v1/keyword/{id}", h.UpdateKeyword)
-		r.Delete("/v1/keyword/{id}", h.DeleteKeyword)
+		r.Post("/v1/keyword", c.CreateKeyword)
+		r.Put("/v1/keyword/{id}", c.UpdateKeyword)
+		r.Delete("/v1/keyword/{id}", c.DeleteKeyword)
 
-		r.Post("/v1/source", h.CreateSource)
-		r.Put("/v1/source/{id}", h.UpdateSource)
-		r.Delete("/v1/source/{id}", h.DeleteSource)
+		r.Post("/v1/source", c.CreateSource)
+		r.Put("/v1/source/{id}", c.UpdateSource)
+		r.Delete("/v1/source/{id}", c.DeleteSource)
 
-		r.Get("/v1/search_user", h.SearchUser)
+		r.Get("/v1/search_user", c.SearchUser)
 	})
 }
 
