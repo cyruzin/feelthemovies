@@ -1,13 +1,15 @@
 package validation
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
+	jsoniter "github.com/json-iterator/go"
 	"gopkg.in/go-playground/validator.v9"
 )
+
+var json = jsoniter.ConfigFastest
 
 // APIValidator type is a struct for multiple error messages.
 type APIValidator struct {

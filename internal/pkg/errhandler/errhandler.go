@@ -1,11 +1,13 @@
 package errhandler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/cyruzin/feelthemovies/internal/pkg/logger"
+	jsoniter "github.com/json-iterator/go"
 )
+
+var json = jsoniter.ConfigFastest
 
 // APIMessage is a struct for generic JSON response.
 type APIMessage struct {

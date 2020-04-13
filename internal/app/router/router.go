@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/render"
 
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 	newrelic "github.com/newrelic/go-agent"
 )
 
@@ -43,28 +42,11 @@ func New(
 		MaxAge:           300,
 	})
 
-	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			start := time.Now()
-
-			logger.Infow(
-				"router_logging",
-				"method", r.Method,
-				"url", r.URL.String(),
-				"agent", r.UserAgent(),
-				"referer", r.Referer(),
-				"proto", r.Proto,
-				"remote_address", r.RemoteAddr,
-				"latency", time.Since(start),
-			)
-
-			next.ServeHTTP(w, r)
-		})
-	})
-
-	router.Use(render.SetContentType(render.ContentTypeJSON))
-	router.Use(cors.Handler)
-	router.Use(middleware.Timeout(60 * time.Second))
+	router.Use(
+		c.LoggerMiddleware,
+		render.SetContentType(render.ContentTypeJSON),
+		cors.Handler,
+	)
 
 	authRoutes(router, c)
 	publicRoutes(router, c, logger)

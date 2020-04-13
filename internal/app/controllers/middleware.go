@@ -4,11 +4,32 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
 	jwt "github.com/dgrijalva/jwt-go"
 )
+
+// LoggerMiddleware logs the details of all requests.
+func (s *Setup) LoggerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		s.logger.Infow(
+			"request_logging",
+			"method", r.Method,
+			"url", r.URL.String(),
+			"agent", r.UserAgent(),
+			"referer", r.Referer(),
+			"proto", r.Proto,
+			"remote_address", r.RemoteAddr,
+			"latency", time.Since(start),
+		)
+
+		next.ServeHTTP(w, r)
+	})
+}
 
 // AuthMiddleware checks if the request contains Bearer Token
 // on the headers and if it is valid.

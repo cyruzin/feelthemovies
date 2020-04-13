@@ -9,7 +9,7 @@ import (
 // Config is a configuration struct that contains
 // all environment variables of the app.
 type Config struct {
-	EnvMode           string        `envconfig:"ENVMODE" required:"true" default:"development"`
+	EnvMode           string        `envconfig:"ENVMODE" required:"true" default:"production"`
 	AppName           string        `envconfig:"APPNAME" required:"true" default:"Feel the Movies"`
 	ServerPort        string        `envconfig:"SERVERPORT" required:"true" default:"8000"`
 	ReadTimeOut       time.Duration `envconfig:"READ_TIMEOUT" default:"10s" required:"true"`
