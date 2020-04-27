@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/cyruzin/feelthemovies/internal/app/config"
 	"github.com/cyruzin/feelthemovies/internal/pkg/errhandler"
+	"github.com/cyruzin/feelthemovies/internal/pkg/ratelimit"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -79,5 +81,30 @@ func (s *Setup) AuthMiddleware(next http.Handler) http.Handler {
 			errhandler.DecodeError(w, r, s.logger, errInvalidJWTToken, http.StatusUnauthorized)
 			return
 		}
+	})
+}
+
+// RateLimit middleware handles the rate limiting.
+func (s *Setup) RateLimit(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ip, _, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil {
+			errhandler.DecodeError(w, r, s.logger, errInternal, http.StatusInternalServerError)
+			return
+		}
+
+		limiter := ratelimit.GetVisitor(ip)
+		if limiter.Allow() == false {
+			errhandler.DecodeError(
+				w,
+				r,
+				s.logger,
+				http.StatusText(http.StatusTooManyRequests),
+				http.StatusTooManyRequests,
+			)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

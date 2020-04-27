@@ -46,6 +46,7 @@ func New(
 		c.LoggerMiddleware,
 		render.SetContentType(render.ContentTypeJSON),
 		cors.Handler,
+		c.RateLimit,
 	)
 
 	authRoutes(router, c)

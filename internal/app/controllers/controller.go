@@ -48,6 +48,7 @@ const (
 	errGeneratingToken = "Could not generate the Token"
 	errQueryField      = "The query field is required"
 	errEmptyRec        = "The recommendation is empty, add at least one item"
+	errInternal        = "Internal server error"
 )
 
 // Setup for handlers package.
