@@ -39,7 +39,7 @@ func GetVisitor(ip string) *rate.Limiter {
 }
 
 // CleanupVisitors checks the map for visitors that haven't
-// been seen for more than 3 minutes and delete the entries.
+// been seen for more than 2 minutes and delete the entries.
 func CleanupVisitors() {
 	for {
 		time.Sleep(time.Minute)
