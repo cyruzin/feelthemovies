@@ -14,7 +14,7 @@ type Visitor struct {
 	lastSeen time.Time
 }
 
-// Change the the map to hold values of the type visitor.
+// Change the map to hold values of the type visitor.
 var (
 	visitors = make(map[string]*Visitor)
 	mu       sync.Mutex
