@@ -27,7 +27,7 @@ func GetVisitor(ip string) *rate.Limiter {
 
 	v, exists := visitors[ip]
 	if !exists {
-		limiter := rate.NewLimiter(1, 10)
+		limiter := rate.NewLimiter(rate.Every(time.Second/10), 2)
 		// Include the current time when creating a new visitor.
 		visitors[ip] = &Visitor{limiter, time.Now()}
 		return limiter

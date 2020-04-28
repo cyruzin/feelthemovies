@@ -94,7 +94,7 @@ func (s *Setup) RateLimit(next http.Handler) http.Handler {
 		}
 
 		limiter := ratelimit.GetVisitor(ip)
-		if limiter.Allow() == false {
+		if !limiter.Allow() {
 			errhandler.DecodeError(
 				w,
 				r,
