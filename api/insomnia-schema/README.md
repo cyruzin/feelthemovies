@@ -13,7 +13,7 @@ If you have any doubt, open an issue or send me an e-mail: xorycx@gmail.com.
 
 ## Recommendations
 
-This endpoitn will give you the last 10 recommendations.
+This endpoint will provide the last 10 recommendations.
 
 **GET - /recommendations?page=1**
 
@@ -23,13 +23,13 @@ If you want to paginate, increase the page number, like this:
 
 ## Recomendation Items
 
-This endpoint will give you all movies or tv shows of a spefic recommendation.
+This endpoint will provide all movies or tv shows of a specific recommendation.
 
 **GET - /recommendation_items/80**
 
 ## Search Recommendations
 
-This endpoint will give you 10 results based on your search. You can search using keywords
+This endpoint will provide 10 results based on your search. You can search using keywords
 or genres, like this:
 
 **GET - /search_recommendation?query=drama&page=1**
