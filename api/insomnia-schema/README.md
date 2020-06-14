@@ -11,6 +11,25 @@ If you have any doubt, open an issue or send me an e-mail: xorycx@gmail.com.
 
 **Base URL:** https://feelthemovies.com.br/v1
 
+**Image URL:** https://image.tmdb.org/t/p/
+
+Supported sizes by TMDB:
+
+- w45
+- w92
+- w154
+- w300
+- w780
+- w1280
+- h632
+- original
+
+Build the image URL like this:
+
+**The image URL + Size + Image Key**
+
+https://image.tmdb.org/t/p/w500/aMpyrCizvSdc0UIMblJ1srVgAEF.jpg
+
 ## Recommendations
 
 This endpoint will provide the last 10 recommendations.
