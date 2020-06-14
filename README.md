@@ -1,6 +1,6 @@
 <p align="center"><img src="./assets/img/logo.png" width="350"></p>
 
-[![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master&service=github)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master&service=github) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/cyruzin/feelthemovies.svg?branch=master)](https://travis-ci.org/cyruzin/feelthemovies) [![Coverage Status](https://coveralls.io/repos/github/cyruzin/feelthemovies/badge.svg?branch=master&service=github)](https://coveralls.io/github/cyruzin/feelthemovies?branch=master&service=github) [![Go Report Card](https://goreportcard.com/badge/github.com/cyruzin/feelthemovies)](https://goreportcard.com/report/github.com/cyruzin/feelthemovies) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
 
 This is the new API repository for Feel the Movies. Written in Go, totally open source.
 
