@@ -36,38 +36,6 @@ Run the command below and check the binary in the dist folder.
 $ make build
 ```
 
-## Packages
-
-These are the packages that helped me build this project:
-
-* [go-chi/chi](https://github.com/go-chi/chi) - chi is a lightweight, idiomatic and composable router for building Go HTTP services.
-* [uber-go/zap](https://github.com/uber-go/zap) - Blazing fast, structured, leveled logging in Go.
-* [InVisionApp/go-health](https://github.com/InVisionApp/go-health) - Library for enabling asynchronous health checks in your service.
-* [dgrijalva/jwt-go](https://github.com/dgrijalva/jwt-go) - Golang implementation of JSON Web Tokens (JWT).
-* [go-playground/validator](https://github.com/go-playground/validator) - 
-Package validator implements value validations for structs and individual fields based on tags.
-* [google/uuid](https://github.com/google/uuid) - 
-The uuid package generates and inspects UUIDs based on RFC 4122 and DCE 1.1: Authentication and Security Services.
-* [tome](https://github.com/cyruzin/tome) - Package tome was designed to paginate simple RESTful APIs.
-* [envconfig](https://github.com/kelseyhightower/envconfig) - Golang library for managing configuration data from environment variables.
-* [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) - A MySQL-Driver for Go's database/sql package.
-* [jmoiron/sqlx](https://github.com/jmoiron/sqlx) - sqlx is a library which provides a set of extensions on go's standard database/sql library.
-* [go-redis](https://github.com/go-redis/redis) - Type-safe Redis client for Golang.
-
-## Useful links
-
-* [golang-standards / project-layout](https://github.com/golang-standards/project-layout) - Standard Go Project Layout.
-* [avelino / awesome-go](https://github.com/avelino/awesome-go) - 
-A curated list of awesome Go frameworks, libraries and software.
-* [insomnia](https://insomnia.rest/download/) - Rest client.
-
-## Front-End & Mobile Apps
-
-These two projects here needs a lot of improvements.
-
-- [Front-End](https://github.com/cyruzin/feelthemovies_dashboard)
-- [Mobile](https://github.com/cyruzin/feelthemovies_mobile)
-
 ## Contributing
 
 To start contributing, please check [CONTRIBUTING](https://github.com/cyruzin/feelthemovies/blob/master/CONTRIBUTING.md).
