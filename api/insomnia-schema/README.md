@@ -66,3 +66,7 @@ If you want to paginate, increase the page number, like this:
 This endpoint will return a single result of a given recommendation.
 
 **GET - /recommendation/80**
+
+## Healthcheck
+
+**GET - https://feelthemovies.com.br/healthcheck**
